@@ -736,10 +736,24 @@ elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms,P4,1);
 P4=(ZZ/3)[x_0..x_4]
 setRandomSeed("s>2")
 Ms={}
-elapsedTime Ms=collectSchreyerSurfaces(Ms,3,P4,2);
+elapsedTime Ms=collectSchreyerSurfaces(Ms,3,P4,1);
 
-
-
+toString Ms
+-*
+Ms={ideal(-x_1^2+x_1*x_2+x_1*x_3+x_2*x_3-x_3^2-x_1*x_4-x_3*x_4+x_4^2,x_0*x_1-x_0*x_2+x_0*x_3+
+     x_1*x_4-x_2*x_4+x_4^2,-x_2^2-x_0*x_3-x_2*x_3-x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_3*x_4+x_4^2,x
+     _2^2+x_1*x_3+x_2*x_4+x_4^2,x_0*x_2-x_1*x_2+x_2^2-x_0*x_3+x_1*x_3-x_2*x_3,x_2^2-x_2*x_3-x_1
+     *x_4-x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1+x_1^2-x_1*x_2-x_0*x_3-x_1*x_3-x_2*x_3+x_3^2+x_0*x_4+x_
+     3*x_4-x_4^2,-x_1*x_2+x_1*x_3-x_2*x_3+x_3^2+x_1*x_4+x_2*x_4-x_3*x_4,x_0^2-x_0*x_1+x_0*x_2+x
+     _1*x_3-x_2*x_3+x_3^2-x_1*x_4-x_2*x_4+x_3*x_4-x_4^2,x_0*x_2+x_0*x_3-x_2*x_3+x_3^2+x_0*x_4-x
+     _1*x_4+x_2*x_4-x_4^2), ideal(x_0*x_3-x_1*x_3+x_2*x_3-x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4,-x_0*
+     x_2+x_1*x_2-x_2^2+x_0*x_3-x_1*x_3+x_3^2+x_0*x_4-x_1*x_4-x_4^2,-x_1*x_2+x_2^2+x_0*x_3-x_2*x
+     _3+x_3^2-x_0*x_4-x_1*x_4+x_2*x_4+x_4^2,-x_0*x_2+x_2^2-x_1*x_3+x_3^2-x_1*x_4-x_2*x_4-x_4^2,
+     x_0*x_1-x_1^2+x_1*x_2-x_0*x_3+x_3^2-x_0*x_4+x_3*x_4-x_4^2,x_1^2-x_1*x_2-x_1*x_3-x_2*x_3+x_
+     3^2-x_0*x_4+x_2*x_4-x_3*x_4,x_0*x_1-x_1*x_2-x_1*x_3+x_2*x_4-x_4^2,-x_0^2+x_0*x_1-x_0*x_2+x
+     _0*x_3-x_2*x_3-x_3^2+x_0*x_4+x_2*x_4,-x_0*x_1+x_0*x_2-x_0*x_3-x_1*x_3-x_2*x_3-x_1*x_4+x_4^
+     2,-x_0^2+x_0*x_2-x_1*x_3-x_3^2-x_0*x_4-x_2*x_4-x_3*x_4)};
+*-
 
 #Mwith3syzs
 elapsedTime tally apply(Mspecial1_{4}, M -> (
