@@ -736,7 +736,7 @@ elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms,P4,1);
 P4=(ZZ/3)[x_0..x_4]
 setRandomSeed("s>2")
 Ms={}
-elapsedTime Ms=collectSchreyerSurfaces(Ms,3,P4,1);
+elapsedTime Ms=collectSchreyerSurfaces(Ms,3,P4,2);
 
 
 
