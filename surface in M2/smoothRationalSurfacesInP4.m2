@@ -531,7 +531,7 @@ elapsedTime minimalBetti(X=degree10DESSurface(P4,E))
 degree X, genera X
 tex minimalBetti X
 
-elapsedTime minimalBetti(X=schreyerSurface(P4))
+
 
 minimalBetti(X=popescuSurface(P4,E,0))
 singX=X+minors(2,jacobian X);
@@ -568,9 +568,14 @@ T=res (coker M,LengthLimit=>8)
 betti ((dual T)[-7]**E^{-6})
 tex betti ((dual T)[-7]**E^{-6})
 
-
+----------------------------------------
+-- Exploring Abo-Ranestad surfaces    --
+----------------------------------------
 elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,117,3))
 tex minimalBetti X
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 117.663 seconds elapsed
+numList == {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+
 
 X5=ideal (gens X)_{0..4};
 d=degree X, sg=(genera X)_1
@@ -579,22 +584,43 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 
 elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,116,4))
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
+numList == {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}
+Ksquare(12,13,1)==-12
+
 X5=ideal (gens X)_{0..4};
 d=degree X, sg=(genera X)_1
 R=X5:X;
 dim R, degree R
 LeBarzN6(d,sg,1)
 
-P4=ZZ/11[x_0..x_4]
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,115,4))
+P4=ZZ/7[x_0..x_4]
+elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,115,4)) -- 29.666 seconds elapsed
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4); -- 126.766 seconds elapsed
+numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
+
 X5=ideal (gens X)_{0..4};
 d=degree X, sg=(genera X)_1
 R=X5:X;
 dim R, degree R
 LeBarzN6(d,sg,1)
 
-P4=ZZ/3[x_0..x_4]
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,114,4))  -- 88.1064 seconds elapsed
+P4=ZZ/7[x_0..x_4]
+elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,114,4)) -- 54.388 seconds elapsed
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);-- 131.332 seconds elapsed
+numList ==  {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+minimalBetti J
+fJ=res J
+betti(m2x5=fJ.dd_5^{4..8})
+scroll=minors(2, m2x5);
+degree scroll, dim scroll
+minimalBetti scroll
+trim ideal m2x5
+-- scoll=S(2,1,1); J \cong 2H-2R,
+dim scroll, dim J
+degree scroll, degree J
+degree J==2*5-2
+
 X5=ideal (gens X)_{0..4};
 d=degree X, sg=(genera X)_1
 R=X5:X;
@@ -603,8 +629,33 @@ LeBarzN6(d,sg,1)
 Ksquare(d,sg,1)
 
 
+P4=ZZ/7[x_0..x_4]
+elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,113,4))  -- 69.173 seconds elapsed
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 136.393 seconds elapsed
+numList=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
+minimalBetti J
+fJ=res J
+betti(m2x6=fJ.dd_6^{5..10})
+scroll=minors(2, m2x6);
+degree scroll, dim scroll
+minimalBetti scroll
+trim ideal m2x6
+degree J
+minimalBetti X
+X5=ideal (gens X)_{0..4};
+R=X5:X;
+dim R, degree R, minimalBetti R
+dim (R+X),degree (R+X)
+singR=(R+minors(3,jacobian R));
+dim singR
+-- => R is a smooth plane conic, which intersects X in 11 points.
+LeBarzN6(12,13,1)==8
 
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,113,4))
+
+
+--------------------------------
+-- exploring Schreyer surface --
+--------------------------------
 
 
 kk=ZZ/3
@@ -655,6 +706,7 @@ adjTypes=adjointTypes Ms
 tally adjTypes2
 toString Ms
 -*
+-- Example Data for s=2 surfaces --
 P4=(ZZ/3)[x_0..x_4]
 Ms={ideal(-x_2*x_3+x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+
        x_2^2+x_0*x_3-x_1*x_3+x_3^2+x_0*x_4+x_1*x_4-x_2*x_4-x_4^2,x_
@@ -740,6 +792,8 @@ elapsedTime Ms=collectSchreyerSurfaces(Ms,3,P4,1);
 
 toString Ms
 -*
+-- Example data for s=3 surfaces --
+P4=(ZZ/3)[x_0..x_4]
 Ms={ideal(-x_1^2+x_1*x_2+x_1*x_3+x_2*x_3-x_3^2-x_1*x_4-x_3*x_4+x_4^2,x_0*x_1-x_0*x_2+x_0*x_3
       +x_1*x_4-x_2*x_4+x_4^2,-x_2^2-x_0*x_3-x_2*x_3-x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_3*x_4+x_4^2
       ,x_2^2+x_1*x_3+x_2*x_4+x_4^2,x_0*x_2-x_1*x_2+x_2^2-x_0*x_3+x_1*x_3-x_2*x_3,x_2^2-x_2*x_3-
