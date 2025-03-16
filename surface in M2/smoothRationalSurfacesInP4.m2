@@ -234,7 +234,7 @@ prepareAboRanestadSurfaces(Ring) := P4 -> (
 
 AboRanestadSurface=method()
 AboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
-    assert(member(n,toList(113..117)));
+    assert(member(n,toList(112..117)));
     kk:= coefficientRing P4;
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
     assert(n+k <121);
@@ -268,7 +268,7 @@ AboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
 
 smoothAboRanestadSurface=method()
 smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
-    assert(member(n,toList(113..117)));
+    assert(member(n,toList(112..117)));
     assert(n+k <121);
     countSmooth:=1;singX:=null;X:=null;
     while (
@@ -383,11 +383,12 @@ collectSchreyerSurfaces=method()
 	
 collectSchreyerSurfaces(List,List,Ring,Number) :=(adjTypes,Ms,P4,N) -> ( 
     adjTypes1:=adjTypes;Ms1:=Ms;
-    count:=0;
+    count:=0;count2:=0;
     X:= null; numList:=null; adjList:=null; ptsList:=null;M:= null;
     while (
     elapsedTime X=findRandomSmoothSchreyerSurface(P4,Verbose=>false);
-    <<minimalBetti X << endl;
+    <<minimalBetti X << endl;count2=count2+1;
+    <<count2 <<endl;
     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
     if not member(numList,adjTypes1)
     then (
@@ -405,13 +406,15 @@ collectSchreyerSurfaces(List,List,Ring,Number) :=(adjTypes,Ms,P4,N) -> (
 
 collectSchreyerSurfaces(List,Number,Ring,Number) :=(Ms,s,P4,N) -> ( 
     if s<3 then error "expected number of extra syzygies >2";
-    elapsedTime tally (adjTypes1=adjointTypes(Ms));
+    elapsedTime (adjTypes1=adjointTypes(Ms));
+    << tally adjTypes1 <<endl;
     Ms1:=Ms;
-    count:=0;
+    count:=0;count1:=0;
     X:= null; numList:=null; adjList:=null; ptsList:=null;M:= null;
     while (
     elapsedTime X=findRandomSmoothSchreyerSurface(P4,s);
-    <<minimalBetti X << endl;
+    <<minimalBetti X << endl;count1=count1+1;
+    <<count1 <<endl;
     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
     if not member(numList,adjTypes1)
     then (
@@ -426,12 +429,7 @@ collectSchreyerSurfaces(List,Number,Ring,Number) :=(Ms,s,P4,N) -> (
     count<N) do ();
     Ms1)
 
-
-
-
-
 adjointTypes=method()
-
 adjointTypes(List):= Ms -> (
     X:= null;L1:=null;L2:=null;J:=null;
     apply(Ms,M-> (
@@ -630,6 +628,12 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 Ksquare(d,sg,1)
 
+P4=ZZ/7[x_0..x_4]
+elapsedTime tally apply(3,c->(
+	elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,112,4));  -- 69.173 seconds elapsed
+	elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 136.393 seconds elapse
+	<< (betti X,numList,minimalBetti J) <<endl;
+        numList))
 
 P4=ZZ/7[x_0..x_4]
 elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,113,4))  -- 69.173 seconds elapsed
@@ -738,9 +742,9 @@ elapsedTime tally apply(Ms_{4}, M -> (
 	numList))
 -- with input data from the d=11pi=10 file
 
-adjTypes={};Ms={}; P4=(ZZ/3)[x_0..x_4]
-string="surface1";N=2;
-elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms,string,P4);
+--adjTypes={};Ms={}; P4=(ZZ/3)[x_0..x_4]
+string="surface1aa";N=2;
+elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms,P4,1);
 #Ms
 Ms=Ms1
 tally adjTypes
@@ -751,86 +755,77 @@ toString Ms
 -*
 -- Example Data for s=2 surfaces --
 P4=(ZZ/3)[x_0..x_4]
-Ms={ideal(-x_2*x_3+x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+
-       x_2^2+x_0*x_3-x_1*x_3+x_3^2+x_0*x_4+x_1*x_4-x_2*x_4-x_4^2,x_
-       0*x_2-x_1*x_2+x_2^2-x_2*x_3+x_3^2+x_0*x_4-x_1*x_4-x_3*x_4-x_
-       4^2,x_2^2+x_0*x_3+x_1*x_3-x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_3*
-       x_4-x_4^2,-x_0*x_1-x_1^2-x_1*x_2+x_0*x_3+x_2*x_3+x_3^2+x_2*x
-       _4+x_3*x_4,-x_0*x_1+x_1^2-x_1*x_2+x_0*x_3-x_1*x_3+x_2*x_3+x_
-       3^2-x_0*x_4+x_2*x_4-x_4^2,-x_1*x_2-x_0*x_3+x_1*x_3-x_2*x_3+x
-       _3^2+x_0*x_4-x_1*x_4+x_2*x_4+x_4^2,x_0^2+x_0*x_1+x_0*x_2-x_0
-       *x_3-x_1*x_3-x_2*x_3-x_3^2-x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,x_0
-       ^2-x_0*x_1+x_0*x_2-x_0*x_3+x_2*x_3+x_3^2+x_0*x_4,x_0*x_2+x_0
-       *x_3-x_1*x_3+x_2*x_3-x_3^2+x_0*x_4+x_1*x_4-x_2*x_4+x_3*x_4+x
-       _4^2), ideal(-x_0*x_2+x_1*x_2+x_0*x_3+x_2*x_3-x_0*x_4+x_1*x_
-       4+x_2*x_4-x_3*x_4,x_1*x_2-x_1*x_3+x_2*x_3-x_3^2+x_0*x_4-x_1*
-       x_4+x_2*x_4-x_3*x_4,x_0*x_2-x_1*x_2+x_0*x_3-x_1*x_3-x_0*x_4-
-       x_2*x_4+x_4^2,-x_1*x_2+x_2^2-x_0*x_3+x_1*x_3+x_2*x_3+x_1*x_4
-       -x_2*x_4+x_3*x_4-x_4^2,-x_1^2+x_0*x_3+x_3^2-x_0*x_4+x_1*x_4-
-       x_2*x_4+x_3*x_4,-x_0*x_1+x_1^2-x_0*x_3-x_1*x_3+x_3^2+x_3*x_4
-       ,x_1^2-x_1*x_2-x_0*x_3-x_1*x_3+x_2*x_3+x_3^2-x_3*x_4+x_4^2,x
-       _0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_4+x_3*x_4+x_4^2,x
-       _0^2-x_0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_4+x_2*x_4-x
-       _3*x_4-x_4^2,-x_0*x_1+x_0*x_2-x_0*x_3-x_2*x_3-x_0*x_4+x_2*x_
-       4-x_3*x_4+x_4^2), ideal(x_1*x_3+x_2*x_3-x_3^2-x_0*x_4+x_1*x_
-       4,-x_0*x_2-x_1*x_2-x_2^2+x_0*x_3-x_1*x_3-x_2*x_3-x_0*x_4-x_1
-       *x_4+x_2*x_4,x_1*x_2-x_2^2-x_0*x_3+x_2*x_3+x_0*x_4+x_2*x_4+x
-       _4^2,-x_1*x_2-x_2^2-x_0*x_3-x_1*x_3+x_2*x_3-x_0*x_4-x_1*x_4-
-       x_3*x_4,x_0*x_1+x_1^2+x_1*x_2+x_0*x_3+x_3^2-x_0*x_4+x_3*x_4
-       ,-x_1^2+x_1*x_2+x_0*x_3+x_1*x_3-x_3^2+x_1*x_4+x_2*x_4-x_3*x_
-       4+x_4^2,x_1^2+x_1*x_2+x_2*x_3+x_3^2-x_0*x_4-x_3*x_4,-x_0^2-x
-       _0*x_1-x_0*x_2+x_0*x_3-x_1*x_3-x_2*x_3-x_3^2+x_0*x_4-x_1*x_4
-       +x_4^2,x_0*x_1-x_0*x_2-x_1*x_3-x_2*x_3-x_3^2-x_1*x_4+x_2*x_4
-       +x_4^2,-x_0*x_1-x_0*x_2-x_0*x_3+x_1*x_3-x_2*x_3+x_3^2-x_1*x_
-       4+x_4^2), ideal(-x_1*x_2+x_2^2+x_0*x_3-x_1*x_3+x_2*x_3+x_2*x
-       _4-x_3*x_4,-x_0*x_2-x_1*x_2-x_1*x_4+x_2*x_4-x_3*x_4+x_4^2,-x
-       _0*x_1-x_1^2-x_1*x_2-x_2*x_3+x_3^2+x_0*x_4-x_2*x_4+x_3*x_4,-
-       x_0*x_1-x_1^2-x_1*x_3+x_3^2-x_0*x_4+x_1*x_4,x_1^2-x_1*x_2-x_
-       0*x_3-x_3^2-x_0*x_4-x_1*x_4+x_2*x_4+x_3*x_4,x_0*x_1+x_1^2-x_
-       0*x_3-x_1*x_3+x_2*x_3-x_3^2+x_1*x_4+x_3*x_4+x_4^2,x_0^2+x_0*
-       x_1+x_0*x_2-x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4,x_0^2+x_0*x_1+x_
-       0*x_3-x_1*x_3-x_3^2-x_0*x_4-x_1*x_4-x_2*x_4-x_3*x_4,-x_0*x_1
-       +x_0*x_2-x_0*x_3+x_1*x_3+x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,-x_0^
-       2-x_0*x_1+x_0*x_3-x_3^2-x_1*x_4+x_3*x_4-x_4^2),
-       ideal(x_0*x_2-x_1*x_2+x_2^2-x_0*x_3+x_2*x_3-x_0*x_4+x_2*x_4-
-       x_3*x_4,-x_0*x_2+x_1*x_2-x_2^2+x_1*x_3+x_3^2-x_0*x_4+x_1*x_4
-       -x_2*x_4+x_3*x_4-x_4^2,x_0*x_2+x_1*x_2-x_2*x_3+x_0*x_4+x_1*x
-       _4-x_2*x_4+x_4^2,-x_0*x_2-x_1*x_2-x_2^2+x_0*x_3+x_0*x_4+x_2*
-       x_4-x_3*x_4+x_4^2,x_0*x_1-x_1^2+x_1*x_2+x_1*x_3-x_2*x_3+x_3^
-       2+x_0*x_4-x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,-x_0*x_1-x_1^2+x_0*x
-       _3+x_1*x_3-x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_4^2,x_0*x_1+x_1^2
-       +x_1*x_2+x_0*x_3-x_2*x_3-x_1*x_4+x_2*x_4-x_3*x_4+x_4^2,-x_0^
-       2+x_0*x_1-x_0*x_2+x_0*x_3+x_1*x_3+x_3^2+x_0*x_4+x_4^2,x_0^2+
-       x_0*x_1+x_3^2-x_2*x_4+x_3*x_4,-x_0^2-x_0*x_1-x_0*x_2-x_0*x_3
-       +x_1*x_3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2),
-       ideal(-x_0*x_3+x_1*x_3-x_2*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4
-       ,-x_0*x_2+x_1*x_2-x_0*x_3-x_1*x_3-x_2*x_3+x_3^2-x_0*x_4+x_2*
-       x_4+x_3*x_4+x_4^2,x_1*x_2+x_1*x_3-x_2*x_3-x_3*x_4,x_0*x_2-x_
-       1*x_2+x_2^2+x_0*x_3-x_1*x_3+x_2*x_3+x_3^2+x_0*x_4-x_1*x_4,x_
-       0*x_1-x_1^2+x_0*x_3+x_1*x_3+x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_
-       3*x_4+x_4^2,-x_1^2+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1+x_
-       1^2-x_1*x_2-x_0*x_3+x_2*x_3+x_3^2-x_1*x_4-x_2*x_4+x_3*x_4,-x
-       _0^2+x_0*x_1-x_0*x_3-x_2*x_3+x_3^2+x_0*x_4+x_1*x_4-x_3*x_4-x
-       _4^2,x_0*x_1+x_0*x_3-x_1*x_3-x_2*x_3-x_3^2+x_0*x_4+x_1*x_4+x
-       _2*x_4+x_3*x_4+x_4^2,x_0^2-x_0*x_1+x_0*x_2-x_0*x_3+x_1*x_3-x
-       _2*x_3-x_3^2+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2)};
-elapsedTime tally apply(Ms,M->minimalBetti M)
+Ms={ideal(-x_2*x_3+x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+x_2^2+x_0*x_3-x_1*x_3+x_3^2+x_0*x_4+x_1*x
+      _4-x_2*x_4-x_4^2,x_0*x_2-x_1*x_2+x_2^2-x_2*x_3+x_3^2+x_0*x_4-x_1*x_4-x_3*x_4-x_4^2,x_2^2+x_0*x_3+x_1*
+      x_3-x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4-x_4^2,-x_0*x_1-x_1^2-x_1*x_2+x_0*x_3+x_2*x_3+x_3^2+x_2*x_4+
+      x_3*x_4,-x_0*x_1+x_1^2-x_1*x_2+x_0*x_3-x_1*x_3+x_2*x_3+x_3^2-x_0*x_4+x_2*x_4-x_4^2,-x_1*x_2-x_0*x_3+x
+      _1*x_3-x_2*x_3+x_3^2+x_0*x_4-x_1*x_4+x_2*x_4+x_4^2,x_0^2+x_0*x_1+x_0*x_2-x_0*x_3-x_1*x_3-x_2*x_3-x_3^
+      2-x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,x_0^2-x_0*x_1+x_0*x_2-x_0*x_3+x_2*x_3+x_3^2+x_0*x_4,x_0*x_2+x_0*x_3-x
+      _1*x_3+x_2*x_3-x_3^2+x_0*x_4+x_1*x_4-x_2*x_4+x_3*x_4+x_4^2),
+      ideal(-x_0*x_2+x_1*x_2+x_0*x_3+x_2*x_3-x_0*x_4+x_1*x_4+x_2*x_4-x_3*x_4,x_1*x_2-x_1*x_3+x_2*x_3-x_3^2+
+      x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4,x_0*x_2-x_1*x_2+x_0*x_3-x_1*x_3-x_0*x_4-x_2*x_4+x_4^2,-x_1*x_2+x_2^2-
+      x_0*x_3+x_1*x_3+x_2*x_3+x_1*x_4-x_2*x_4+x_3*x_4-x_4^2,-x_1^2+x_0*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4+x_
+      3*x_4,-x_0*x_1+x_1^2-x_0*x_3-x_1*x_3+x_3^2+x_3*x_4,x_1^2-x_1*x_2-x_0*x_3-x_1*x_3+x_2*x_3+x_3^2-x_3*x_
+      4+x_4^2,x_0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_4+x_3*x_4+x_4^2,x_0^2-x_0*x_1-x_0*x_3-x_2*x_3+x_3
+      ^2-x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1+x_0*x_2-x_0*x_3-x_2*x_3-x_0*x_4+x_2*x_4-x_3*x_4+x_4
+      ^2), ideal(x_1*x_3+x_2*x_3-x_3^2-x_0*x_4+x_1*x_4,-x_0*x_2-x_1*x_2-x_2^2+x_0*x_3-x_1*x_3-x_2*x_3-x_0*x
+      _4-x_1*x_4+x_2*x_4,x_1*x_2-x_2^2-x_0*x_3+x_2*x_3+x_0*x_4+x_2*x_4+x_4^2,-x_1*x_2-x_2^2-x_0*x_3-x_1*x_3
+      +x_2*x_3-x_0*x_4-x_1*x_4-x_3*x_4,x_0*x_1+x_1^2+x_1*x_2+x_0*x_3+x_3^2-x_0*x_4+x_3*x_4,-x_1^2+x_1*x_2+x
+      _0*x_3+x_1*x_3-x_3^2+x_1*x_4+x_2*x_4-x_3*x_4+x_4^2,x_1^2+x_1*x_2+x_2*x_3+x_3^2-x_0*x_4-x_3*x_4,-x_0^2
+      -x_0*x_1-x_0*x_2+x_0*x_3-x_1*x_3-x_2*x_3-x_3^2+x_0*x_4-x_1*x_4+x_4^2,x_0*x_1-x_0*x_2-x_1*x_3-x_2*x_3-
+      x_3^2-x_1*x_4+x_2*x_4+x_4^2,-x_0*x_1-x_0*x_2-x_0*x_3+x_1*x_3-x_2*x_3+x_3^2-x_1*x_4+x_4^2),
+      ideal(-x_1*x_2+x_2^2+x_0*x_3-x_1*x_3+x_2*x_3+x_2*x_4-x_3*x_4,-x_0*x_2-x_1*x_2-x_1*x_4+x_2*x_4-x_3*x_4
+      +x_4^2,-x_0*x_1-x_1^2-x_1*x_2-x_2*x_3+x_3^2+x_0*x_4-x_2*x_4+x_3*x_4,-x_0*x_1-x_1^2-x_1*x_3+x_3^2-x_0*
+      x_4+x_1*x_4,x_1^2-x_1*x_2-x_0*x_3-x_3^2-x_0*x_4-x_1*x_4+x_2*x_4+x_3*x_4,x_0*x_1+x_1^2-x_0*x_3-x_1*x_3
+      +x_2*x_3-x_3^2+x_1*x_4+x_3*x_4+x_4^2,x_0^2+x_0*x_1+x_0*x_2-x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4,x_0^2+x_0*
+      x_1+x_0*x_3-x_1*x_3-x_3^2-x_0*x_4-x_1*x_4-x_2*x_4-x_3*x_4,-x_0*x_1+x_0*x_2-x_0*x_3+x_1*x_3+x_1*x_4+x_
+      2*x_4+x_3*x_4+x_4^2,-x_0^2-x_0*x_1+x_0*x_3-x_3^2-x_1*x_4+x_3*x_4-x_4^2),
+      ideal(x_0*x_2-x_1*x_2+x_2^2-x_0*x_3+x_2*x_3-x_0*x_4+x_2*x_4-x_3*x_4,-x_0*x_2+x_1*x_2-x_2^2+x_1*x_3+x_
+      3^2-x_0*x_4+x_1*x_4-x_2*x_4+x_3*x_4-x_4^2,x_0*x_2+x_1*x_2-x_2*x_3+x_0*x_4+x_1*x_4-x_2*x_4+x_4^2,-x_0*
+      x_2-x_1*x_2-x_2^2+x_0*x_3+x_0*x_4+x_2*x_4-x_3*x_4+x_4^2,x_0*x_1-x_1^2+x_1*x_2+x_1*x_3-x_2*x_3+x_3^2+x
+      _0*x_4-x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,-x_0*x_1-x_1^2+x_0*x_3+x_1*x_3-x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_4
+      ^2,x_0*x_1+x_1^2+x_1*x_2+x_0*x_3-x_2*x_3-x_1*x_4+x_2*x_4-x_3*x_4+x_4^2,-x_0^2+x_0*x_1-x_0*x_2+x_0*x_3
+      +x_1*x_3+x_3^2+x_0*x_4+x_4^2,x_0^2+x_0*x_1+x_3^2-x_2*x_4+x_3*x_4,-x_0^2-x_0*x_1-x_0*x_2-x_0*x_3+x_1*x
+      _3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2),
+      ideal(-x_0*x_3+x_1*x_3-x_2*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4,-x_0*x_2+x_1*x_2-x_0*x_3-x_1*x_3-x_2*x_3
+      +x_3^2-x_0*x_4+x_2*x_4+x_3*x_4+x_4^2,x_1*x_2+x_1*x_3-x_2*x_3-x_3*x_4,x_0*x_2-x_1*x_2+x_2^2+x_0*x_3-x_
+      1*x_3+x_2*x_3+x_3^2+x_0*x_4-x_1*x_4,x_0*x_1-x_1^2+x_0*x_3+x_1*x_3+x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_3*x
+      _4+x_4^2,-x_1^2+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1+x_1^2-x_1*x_2-x_0*x_3+x_2*x_3+x_3^2-x_1*x_4-x_
+      2*x_4+x_3*x_4,-x_0^2+x_0*x_1-x_0*x_3-x_2*x_3+x_3^2+x_0*x_4+x_1*x_4-x_3*x_4-x_4^2,x_0*x_1+x_0*x_3-x_1*
+      x_3-x_2*x_3-x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,x_0^2-x_0*x_1+x_0*x_2-x_0*x_3+x_1*x_3-x_2*x_3
+      -x_3^2+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2),
+      ideal(x_1*x_3-x_2*x_3-x_3^2-x_0*x_4-x_3*x_4,x_0*x_2+x_1*x_2+x_2^2+x_0*x_3+x_1*x_3+x_2*x_3+x_0*x_4+x_1
+      *x_4+x_3*x_4-x_4^2,-x_0*x_1+x_1^2-x_1*x_2-x_0*x_3+x_2*x_3-x_0*x_4-x_2*x_4-x_3*x_4,-x_0*x_1-x_0*x_3-x_
+      2*x_3+x_0*x_4-x_1*x_4-x_2*x_4-x_3*x_4,-x_0*x_3-x_1*x_3+x_2*x_3-x_0*x_4-x_1*x_4+x_2*x_4-x_4^2,-x_0*x_1
+      -x_1^2-x_1*x_2-x_0*x_3-x_1*x_3+x_2*x_3+x_3^2-x_0*x_4-x_2*x_4+x_3*x_4+x_4^2,x_0^2-x_0*x_1+x_0*x_2+x_0*
+      x_3+x_1*x_3+x_2*x_3-x_0*x_4-x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,x_0^2+x_0*x_3+x_1*x_3+x_3^2+x_0*x_4+x_2*x_4
+      +x_3*x_4-x_4^2,-x_0*x_3-x_1*x_3-x_3^2+x_4^2,x_0^2+x_0*x_1+x_0*x_2+x_0*x_3+x_2*x_3+x_0*x_4+x_2*x_4-x_4
+      ^2)};
 
-elapsedTime tally (adjTypes=adjointTypes(Ms))  -- 217.792 seconds elapsed
+adjTypes={{(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)}, {(4,11,10), 5, (9,19,11), 1,
+       (10,20,11), 0, (10,20,11), 0, (10,20,11)}, {(4,11,10), 3, (9,19,11), 1, (10,18,9), 2, (8,12,5), 4,
+       (4,4,1)}, {(4,11,10), 2, (9,19,11), 3, (10,17,8), 2, (7,10,4), 2, (3,3,1)}, {(4,11,10), 2,
+       (9,19,11), 3, (10,17,8), 1, (7,10,4), 8, (3,2,0)}, {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0,
+       (8,13,6), 3, (5,6,2)}, {(4,11,10), 0, (9,19,11), 6, (10,15,6), 5, (5,5,1)}};
+elapsedTime tally apply(Ms,M->minimalBetti M)
+tally adjTypes
+--elapsedTime tally (adjTypes=adjointTypes(Ms))  -- 217.792 seconds elapsed
 
 *-
 
 
 
 
-setRandomSeed("7thSurface1")
+setRandomSeed("8thSurfaceD")
 elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms,P4,1);
 
+tally adjTypes
 
 
 P4=(ZZ/3)[x_0..x_4]
 setRandomSeed("s>2")
 Ms={}
+setRandomSeed("newSurfacesA")
 elapsedTime Ms=collectSchreyerSurfaces(Ms,3,P4,1);
 
 toString Ms
@@ -865,6 +860,8 @@ Ms={ideal(-x_1^2+x_1*x_2+x_1*x_3+x_2*x_3-x_3^2-x_1*x_4-x_3*x_4+x_4^2,x_0*x_1-x_0
       2*x_3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4-x_4^2,x_0^2+x_0*x_1-x_0*x_2-x_1*x_3-x_3^2-x_0*x_4+x_1
       *x_4-x_2*x_4+x_4^2,x_0*x_2-x_0*x_3+x_1*x_3+x_0*x_4-x_2*x_4+x_4^2,x_0^2+x_0*x_2-x_0*x_3-x_
       1*x_3+x_3^2-x_1*x_4+x_2*x_4-x_4^2)};
+
+tally apply(Ms,M->minimalBetti M)
 *-
 
 #Mwith3syzs
