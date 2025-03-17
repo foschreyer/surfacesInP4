@@ -266,6 +266,45 @@ AboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
     <<test <<endl;
     X)
 
+AboRanestadSurface(Ring,Number,Number,Number) := (P4,n,k,b) -> (
+    assert(member(n,toList(112..117)));
+    kk:= coefficientRing P4;
+    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
+    assert(n+k <121);
+    count:=1;test:=1;
+    m2xk:= null; m2x2:=null;I:=null;sol:=null;randSol:=null;
+    b4x2r:=null;bb:=null;test1:=null;test2:=null;T:=null;X:=null;
+    while(
+    while(
+    while(
+    m2xk=map(kk^2,kk^0,0);
+    scan(k,c-> (
+	    while (m2x2=random(kk^2,kk^2); det m2x2==0) do ();
+	    m2xk=m2xk|m2x2*m2x3*random(kk^3,kk^1)));
+    m4x2=map(E^4,,transpose (m2xk|random(E^2,E^{4-k:-1})));
+    c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+    I=trim ideal sub(contract(E3,flatten c),B);
+    numgens I =!= n) do (count=count+1);
+    sol=vars B%I;
+    randSol=sub(sol,random(kk^1,kk^140));
+    b4x2r=sub(b4x2,vars E|randSol);
+    betti(bb=map(E^4,,m4x2|b4x2r));
+    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
+    not(test1 and test2) ) do (test=test+1;count=count+1);
+    betti(T=res(coker bb, LengthLimit=>4));
+    X=saturate ideal syz symExt(T.dd_4,P4);
+    not ( numgens X == b and dim X ==3 and degree X==12) ) do ();
+    X5:=ideal (gens X)_{0..4};
+    R:=X5:X;
+    << (degree R, dim R) <<endl;
+    << minimalBetti X <<endl;
+    <<count <<endl;
+    <<test <<endl;
+    X)
+
+
+
 smoothAboRanestadSurface=method()
 smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
     assert(member(n,toList(112..117)));
@@ -273,6 +312,17 @@ smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
     countSmooth:=1;singX:=null;X:=null;
     while (
 	elapsedTime X=AboRanestadSurface(P4,n,k);
+	singX=X+minors(2,jacobian X);
+	dim singX !=0 ) do (countSmooth=countSmooth+1);
+    <<countSmooth;
+    X)
+
+smoothAboRanestadSurface(Ring,Number,Number,Number) := (P4,n,k,b) -> (
+    assert(member(n,toList(112..117)));
+    assert(n+k <121);
+    countSmooth:=1;singX:=null;X:=null;
+    while (
+	elapsedTime X=AboRanestadSurface(P4,n,k,b);
 	singX=X+minors(2,jacobian X);
 	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
@@ -449,7 +499,7 @@ loadPackage "AdjunctionForSurfaces"
 --viewHelp AdjunctionForSurfaces    
 load"smoothRationalSurfacesInP4.m2"
 --peek loadedFiles
-
+ 
 
 
 
@@ -595,7 +645,7 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 
 P4=ZZ/7[x_0..x_4]
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,115,4)) -- 29.666 seconds elapsed
+elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,113,4)) -- 29.666 seconds elapsed
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4); -- 126.766 seconds elapsed
 numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
 
@@ -628,13 +678,28 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 Ksquare(d,sg,1)
 
-P4=ZZ/7[x_0..x_4]
-elapsedTime tally apply(3,c->(
-	elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,112,4));  -- 69.173 seconds elapsed
+setRandomSeed("newSurface")
+P4=ZZ/3[x_0..x_4]
+elapsedTime tally apply(1,c->(
+	elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,112,4,10));  -- 69.173 seconds elapsed
 	elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 136.393 seconds elapse
 	<< (betti X,numList,minimalBetti J) <<endl;
         numList))
 
+-*
+(dim R, degree R)==(2, 3)
+       0  1  2  3 4
+total: 1 10 19 13 3
+    0: 1  .  .  . .
+    1: .  .  .  . .
+    2: .  .  .  . .
+    3: .  .  .  . .
+    4: .  5  1  . .
+    5: .  5 18 13 3
+9882
+20
+ -- 354.722 seconds elapsed
+*-
 P4=ZZ/7[x_0..x_4]
 elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,113,4))  -- 69.173 seconds elapsed
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 136.393 seconds elapsed
