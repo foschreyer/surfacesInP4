@@ -483,14 +483,37 @@ adjointTypes=method()
 adjointTypes(List):= Ms -> (
     X:= null;L1:=null;L2:=null;J:=null;
     apply(Ms,M-> (
-	    X=schreyerSurfaceFromModule(M);
+	    elapsedTime X=schreyerSurfaceFromModule(M);
 	    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
 	    numList)
 	)
     )
 
+-------------------------------------
+-- extension to charcteristic zero --
+-------------------------------------
+tangentDimension=method()
+tangentDimension(Ideal) := (M) -> (
+    -- computes the dimension tangent space at the strata with
+    -- the same syzygies as M of G(5,S_2(V)) at the point M
+    P4:= ring M;
+    kk:=coefficientRing P4;
+    fM:=res M;
+    s:=rank fM_3-26;
+    mons:=flatten entries sub(basis(2,P4/ideal fM.dd_1),P4);
+    def1:=flatten apply(10,i->apply(mons,m->matrix{apply(10,j->
+		if j==i then m else 0_P4)}));
+    t:= symbol t;
+    T:=kk[t_0..t_49];
+    m7x2:=sum(50, i-> (d=def1_i;
+	betti (d2=d*fM.dd_2//fM.dd_1);
+	betti (d3=d2*fM.dd_3//fM.dd_2);
+	T_i*sub(d3^{15..19+s}_{0..s-1},T)));
+    50-codim ideal leadTerm mingens trim ideal m7x2)
 
 end
+
+cohomologyTable(sheaf module X,-5,5)
 
 ---%%%%%%%%%%%%%%%%%%%%
 restart
@@ -499,7 +522,7 @@ loadPackage "AdjunctionForSurfaces"
 --viewHelp AdjunctionForSurfaces    
 load"smoothRationalSurfacesInP4.m2"
 --peek loadedFiles
- 
+--viewHelp BGG
 
 
 
@@ -837,6 +860,7 @@ Ksquare(11,10,1)
 
 setRandomSeed("surface4a")
 elapsedTime betti (X=findRandomSmoothSchreyerSurface(P4,Verbose=>false)) -- 175.104 seconds elapsed 
+minimalBetti X
 elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);  -- 13.0141 seconds elapsed
 numList=={(4, 11, 10), 0, (9, 19, 11), 6, (10, 15, 6), 5, (5, 5, 1)}
 minimalBetti J
@@ -917,6 +941,7 @@ adjTypes={{(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)}, {(
        (9,19,11), 3, (10,17,8), 1, (7,10,4), 8, (3,2,0)}, {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0,
        (8,13,6), 3, (5,6,2)}, {(4,11,10), 0, (9,19,11), 6, (10,15,6), 5, (5,5,1)}};
 elapsedTime tally apply(Ms,M->minimalBetti M)
+
 tally adjTypes
 --elapsedTime tally (adjTypes=adjointTypes(Ms))  -- 217.792 seconds elapsed
 
@@ -971,7 +996,86 @@ Ms={ideal(-x_1^2+x_1*x_2+x_1*x_3+x_2*x_3-x_3^2-x_1*x_4-x_3*x_4+x_4^2,x_0*x_1-x_0
       1*x_3+x_3^2-x_1*x_4+x_2*x_4-x_4^2)};
 
 tally apply(Ms,M->minimalBetti M)
+
+P4=ZZ/3[x_0..x_4]
+
+Mspecial1={ideal(x_0*x_1+x_1^2+x_0*x_2+x_1*x_2+x_0*x_3-x_1*x_3+x_2*x_3+x_3^2-x_0*x_4+x_2*x_4+x_3
+      *x_4+x_4^2,x_1*x_3+x_3^2-x_0*x_4-x_1*x_4-x_2*x_4+x_3*x_4,x_2^2+x_1*x_3+x_3*x_4+x_4^2,x
+      _0*x_2-x_0*x_3-x_1*x_3-x_3^2+x_0*x_4-x_1*x_4-x_2*x_4-x_3*x_4-x_4^2,x_0*x_3+x_1*x_3-x_3
+      ^2-x_1*x_4-x_4^2,-x_1*x_2+x_0*x_3+x_1*x_3+x_2*x_3+x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_4^2
+      ,-x_0*x_1+x_0*x_3+x_3^2-x_2*x_4+x_3*x_4+x_4^2,x_0*x_3-x_1*x_3+x_3^2-x_0*x_4+x_1*x_4-x_
+      2*x_4-x_3*x_4,x_0*x_2-x_1*x_3+x_3^2+x_0*x_4+x_1*x_4+x_3*x_4-x_4^2,x_0^2-x_2*x_3-x_3^2+
+      x_0*x_4+x_4^2), ideal(-x_2*x_3-x_3^2-x_1*x_4+x_2*x_4+x_3*x_4,x_1*x_2-x_2*x_4-x_4^2,x_0
+      *x_2+x_1*x_2-x_2^2-x_2*x_3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4,x_2^2+x_0*x_3+x_1*x_3
+      -x_2*x_3+x_3^2-x_0*x_4+x_1*x_4-x_3*x_4,-x_1^2-x_0*x_3+x_2*x_3-x_0*x_4+x_2*x_4+x_3*x_4
+      ,-x_0*x_1-x_1^2+x_1*x_2-x_1*x_3+x_2*x_3+x_3^2-x_0*x_4+x_2*x_4+x_4^2,-x_1*x_2-x_2*x_3-x
+      _0*x_4+x_1*x_4-x_2*x_4-x_4^2,x_0*x_1+x_0*x_3+x_1*x_3+x_2*x_3+x_3^2-x_0*x_4+x_2*x_4+x_3
+      *x_4+x_4^2,x_0^2+x_0*x_1-x_0*x_2-x_0*x_3-x_1*x_3-x_2*x_3+x_3^2-x_0*x_4+x_2*x_4+x_3*x_4
+      -x_4^2,x_0*x_2-x_0*x_3-x_1*x_3+x_2*x_3+x_3^2+x_1*x_4+x_2*x_4+x_3*x_4+x_4^2),
+      ideal(-x_0*x_1+x_0*x_2-x_0*x_3-x_0*x_4+x_1*x_4-x_2*x_4+x_3*x_4-x_4^2,x_0*x_2+x_1*x_2+x
+      _2^2-x_1*x_3-x_3^2+x_0*x_4+x_1*x_4+x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+x_2^2-x_0*x_3-x_1*x_3
+      +x_2*x_3+x_3^2-x_0*x_4-x_1*x_4-x_4^2,x_2^2-x_0*x_3+x_1*x_3-x_2*x_3+x_3^2+x_0*x_4-x_2*x
+      _4-x_3*x_4+x_4^2,-x_0*x_1-x_1^2-x_1*x_2+x_0*x_3-x_1*x_3+x_2*x_3+x_0*x_4+x_1*x_4+x_2*x_
+      4+x_3*x_4,-x_0*x_1-x_1^2-x_1*x_2+x_0*x_3-x_1*x_3+x_2*x_3-x_3^2+x_0*x_4+x_2*x_4+x_4^2,-
+      x_1*x_2-x_0*x_3+x_1*x_3+x_2*x_3+x_3^2+x_0*x_4-x_1*x_4+x_3*x_4,x_0^2+x_0*x_1+x_0*x_2-x_
+      0*x_3+x_1*x_3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4,x_0^2+x_0*x_1+x_0*x_2+x_0*x_3-x_1*
+      x_3-x_2*x_3+x_3^2+x_0*x_4-x_3*x_4,x_0*x_2-x_1*x_3-x_2*x_3-x_3^2+x_0*x_4-x_1*x_4-x_2*x_
+      4-x_3*x_4+x_4^2), ideal(-x_0*x_3+x_2*x_3-x_3^2+x_0*x_4-x_2*x_4,-x_1*x_2-x_2^2-x_1*x_3-
+      x_2*x_3+x_3^2+x_0*x_4+x_1*x_4+x_2*x_4-x_4^2,x_0*x_3-x_0*x_4-x_4^2,x_0*x_2-x_1*x_2-x_2^
+      2+x_0*x_3+x_2*x_3+x_0*x_4-x_2*x_4+x_4^2,x_1^2+x_1*x_2+x_0*x_3-x_1*x_3-x_2*x_3+x_3^2-x_
+      1*x_4-x_2*x_4+x_3*x_4,x_1*x_3+x_3^2-x_1*x_4+x_2*x_4-x_3*x_4+x_4^2,-x_0*x_1+x_1^2-x_1*x
+      _2+x_0*x_3+x_1*x_3-x_2*x_3-x_0*x_4-x_1*x_4-x_4^2,-x_0*x_1-x_0*x_2+x_1*x_3+x_2*x_3+x_3^
+      2-x_0*x_4+x_1*x_4-x_2*x_4+x_4^2,x_0*x_3+x_1*x_3-x_2*x_3-x_3^2-x_0*x_4+x_1*x_4-x_2*x_4+
+      x_4^2,x_0^2-x_0*x_1-x_0*x_2+x_0*x_3-x_1*x_3-x_2*x_3+x_3^2+x_0*x_4+x_3*x_4+x_4^2),
+      ideal(x_2^2+x_0*x_3+x_1*x_3+x_2*x_3+x_3^2+x_0*x_4+x_1*x_4-x_2*x_4-x_3*x_4+x_4^2,x_0*x_
+      2-x_1*x_2-x_0*x_3+x_1*x_3+x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,x_0*x_2-x_0*x_3-x_1*x_3-x_2*x_
+      3-x_3^2-x_0*x_4+x_1*x_4+x_2*x_4,-x_1*x_2-x_0*x_3-x_3^2+x_0*x_4-x_3*x_4-x_4^2,-x_0*x_1+
+      x_1^2-x_0*x_3+x_1*x_3+x_2*x_3+x_3^2+x_3*x_4,-x_0*x_1+x_0*x_3-x_1*x_3+x_2*x_3-x_3^2+x_0
+      *x_4-x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1-x_1*x_3+x_3^2+x_0*x_4-x_1*x_4-x_3*x_4+x_4^2,x_0*x_
+      2-x_2*x_3-x_3^2+x_0*x_4+x_1*x_4-x_2*x_4-x_3*x_4-x_4^2,x_0^2-x_0*x_1+x_0*x_3+x_1*x_3+x_
+      3^2+x_0*x_4+x_1*x_4+x_2*x_4,x_0^2+x_0*x_3+x_1*x_3-x_2*x_3+x_0*x_4-x_1*x_4-x_2*x_4+x_3*
+      x_4), ideal(x_1*x_3+x_2*x_3-x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2-x_2^2+x_2*x_3-
+      x_3^2-x_0*x_4+x_2*x_4-x_4^2,x_1*x_2+x_0*x_3-x_1*x_3-x_2*x_3-x_3^2+x_1*x_4+x_2*x_4,-x_1
+      *x_2-x_2^2+x_1*x_3+x_2*x_3-x_3^2-x_1*x_4+x_2*x_4+x_3*x_4-x_4^2,-x_0*x_1-x_1^2+x_1*x_2+
+      x_2*x_3+x_3^2-x_1*x_4,-x_1^2-x_1*x_3-x_2*x_3-x_3^2-x_0*x_4+x_1*x_4+x_2*x_4-x_3*x_4-x_4
+      ^2,x_1^2+x_1*x_2+x_0*x_3-x_2*x_3+x_3^2-x_4^2,x_0^2+x_0*x_1-x_0*x_2+x_0*x_3+x_0*x_4-x_1
+      *x_4-x_4^2,x_0*x_1-x_0*x_3+x_1*x_3+x_2*x_3-x_3^2+x_0*x_4-x_2*x_4-x_4^2,-x_0*x_1-x_0*x_
+      2+x_0*x_4+x_2*x_4-x_3*x_4+x_4^2),
+      ideal(-x_1*x_2-x_2^2+x_0*x_3-x_3^2-x_0*x_4+x_1*x_4+x_3*x_4,x_0*x_2+x_2^2-x_0*x_3-x_1*x
+      _3-x_3^2+x_1*x_4+x_2*x_4+x_3*x_4,-x_0*x_1-x_1^2-x_1*x_2+x_1*x_3-x_3^2-x_0*x_4-x_1*x_4-
+      x_2*x_4,-x_1^2-x_1*x_2-x_1*x_3-x_2*x_3+x_3^2-x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,x_1^2+x_1*x
+      _2-x_0*x_3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4-x_4^2,-x_0*x_1-x_1*x_2+x_1*x_3+x_3^2+x_0*x_4-
+      x_1*x_4-x_4^2,x_0^2+x_0*x_1+x_0*x_2+x_0*x_3+x_3^2+x_1*x_4-x_2*x_4,x_0*x_1+x_0*x_2+x_0*
+      x_3+x_1*x_3+x_2*x_3+x_3^2-x_2*x_4+x_3*x_4+x_4^2,-x_0*x_1-x_0*x_2-x_0*x_3+x_1*x_3+x_2*x
+      _3+x_0*x_4+x_1*x_4-x_2*x_4-x_3*x_4+x_4^2,x_0^2+x_0*x_2-x_0*x_3-x_1*x_3-x_2*x_3+x_3^2+x
+      _0*x_4+x_2*x_4-x_4^2), ideal(x_1*x_3+x_2*x_3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4,-x_1*x_2-x_
+      2^2-x_0*x_3+x_2*x_3-x_3^2-x_0*x_4-x_3*x_4-x_4^2,-x_0*x_3+x_1*x_3-x_3^2-x_0*x_4-x_1*x_4
+      +x_3*x_4-x_4^2,-x_0*x_1-x_1^2+x_1*x_2+x_0*x_3+x_2*x_3-x_3^2+x_0*x_4+x_1*x_4+x_2*x_4+x_
+      4^2,x_0*x_1-x_1^2-x_1*x_2+x_3^2-x_0*x_4-x_2*x_4-x_3*x_4,x_1^2+x_1*x_2+x_0*x_3-x_1*x_3+
+      x_2*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4-x_3*x_4-x_4^2,-x_1*x_3+x_3*x_4+x_4^2,x_0^2+x_0*x
+      _1-x_0*x_2-x_0*x_3-x_1*x_3-x_3^2-x_1*x_4+x_3*x_4,-x_0^2+x_0*x_1+x_0*x_2+x_0*x_3-x_2*x_
+      3+x_3^2-x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,-x_0*x_1-x_0*x_2+x_0*x_3-x_1*x_3+x_2*x_3
+      -x_3^2-x_0*x_4-x_1*x_4-x_3*x_4-x_4^2)};
+
+tally apply(Mspecial1,M->minimalBetti M)
+
+Mwith3syzs=select(Mspecial1, M->(fM =res M;rank fM_2==23));
+elapsedTime tally apply(Mwith3syzs, M -> (
+	elapsedTime X=schreyerSurfaceFromModule M;
+	<< minimalBetti X <<endl;
+	elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4); 
+	<<numList <<endl;
+	<<minimalBetti J <<endl;
+	numList))
+
+
+
+
 *-
+
+
+
+
 
 #Mwith3syzs
 elapsedTime tally apply(Mspecial1_{4}, M -> (
@@ -1037,6 +1141,47 @@ minimalBetti J
 
 
 --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Ms3=select(Ms,M->(fM=res M;rank fM_2>22))
+tally apply(Ms3,M->minimalBetti M)
+M=Ms3_2
+
+elapsedTime minimalBetti(X=schreyerSurfaceFromModule M)
+tangentDimension M == 30
+elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
+numList, minimalBetti J
+#Ms3
+elapsedTime Ms3a=collectSchreyerSurfaces(Ms3,3,P4,1);
+toString Ms3a
+-*
+P4=ZZ/3[x_0..x_4]
+Ms3 = {ideal(-x_0*x_1-x_1^2+x_1*x_2-x_0*x_4-x_2*x_4+x_3*x_4,x_0*x_2+x_1*x_2-x_2^2-x_0*x_3+x_1*x_3-x_2*x_3-x_0*x
+     _4+x_1*x_4+x_3*x_4-x_4^2,x_1*x_2+x_2^2-x_2*x_3+x_0*x_4+x_1*x_4-x_2*x_4-x_3*x_4+x_4^2,-x_0*x_2+x_0*x_3-x_1
+     *x_3+x_2*x_3-x_0*x_4-x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1-x_1*x_2-x_0*x_3+x_1*x_3-x_3^2+x_1*x_4-x_2*x_4,-x_1^2-
+     x_1*x_2-x_0*x_3+x_2*x_3+x_3^2+x_0*x_4+x_2*x_4-x_3*x_4+x_4^2,x_0*x_1+x_1*x_3+x_0*x_4-x_2*x_4-x_4^2,x_0^2+x
+     _0*x_2-x_0*x_3+x_1*x_3-x_3^2+x_0*x_4-x_3*x_4,x_0*x_1+x_0*x_2+x_0*x_3-x_1*x_3+x_2*x_3+x_3^2-x_3*x_4,-x_0^2
+     -x_0*x_3-x_1*x_3+x_2*x_3+x_3^2+x_1*x_4+x_2*x_4+x_3*x_4+x_4^2),
+     ideal(-x_0*x_3+x_1*x_3-x_2*x_3+x_0*x_4-x_1*x_4+x_2*x_4+x_4^2,x_0*x_2+x_2^2-x_0*x_3+x_1*x_3+x_2*x_3-x_0*x_
+     4+x_3*x_4+x_4^2,x_1*x_2+x_0*x_3-x_1*x_3+x_2*x_3-x_3^2-x_0*x_4+x_1*x_4+x_2*x_4+x_3*x_4+x_4^2,-x_0*x_2+x_1*
+     x_2+x_2^2-x_1*x_3+x_2*x_3-x_3^2-x_0*x_4-x_2*x_4-x_3*x_4-x_4^2,-x_0*x_1-x_1*x_2-x_0*x_3+x_2*x_3+x_0*x_4-x_
+     1*x_4+x_2*x_4-x_3*x_4-x_4^2,-x_1^2-x_0*x_3-x_2*x_3-x_3^2-x_1*x_4-x_2*x_4+x_3*x_4+x_4^2,x_0*x_1-x_1^2-x_1*
+     x_2-x_0*x_3+x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_3*x_4+x_4^2,x_0^2+x_0*x_2+x_0*x_3+x_1*x_3-x_3^2-x_1*x_4-x_2*x
+     _4-x_3*x_4-x_4^2,x_0*x_1+x_0*x_3-x_1*x_3+x_3^2+x_0*x_4+x_2*x_4+x_3*x_4+x_4^2,-x_0^2+x_0*x_1+x_0*x_2-x_0*x
+     _3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_4),
+     ideal(-x_0*x_1-x_1*x_2-x_0*x_3+x_1*x_3-x_2*x_3+x_3^2+x_0*x_4+x_2*x_4-x_4^2,x_0*x_2+x_2^2-x_1*x_3+x_2*x_3-
+     x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,x_1*x_2-x_2*x_3+x_0*x_4-x_1*x_4+x_4^2,x_0*x_2+x_1*x_2-x_2^2-x_0*x_3
+     +x_2*x_3+x_3^2+x_0*x_4-x_1*x_4-x_2*x_4-x_3*x_4,x_0*x_1+x_1^2-x_1*x_2+x_0*x_3+x_1*x_3-x_2*x_3-x_1*x_4+x_3*
+     x_4+x_4^2,-x_1^2-x_1*x_3+x_1*x_4+x_3*x_4-x_4^2,-x_0*x_1-x_1^2+x_1*x_2-x_0*x_3-x_1*x_3+x_2*x_3-x_0*x_4+x_1
+     *x_4-x_2*x_4-x_4^2,-x_0^2-x_0*x_1+x_0*x_2-x_0*x_3+x_1*x_3-x_0*x_4-x_1*x_4-x_4^2,x_0*x_1-x_0*x_3+x_1*x_3+x
+     _2*x_3+x_3^2-x_1*x_4+x_2*x_4-x_3*x_4-x_4^2,x_0^2+x_0*x_1-x_0*x_2-x_0*x_3-x_2*x_3+x_3^2+x_0*x_4-x_2*x_4-x_
+     3*x_4+x_4^2), ideal(-x_0*x_3-x_1*x_3-x_2*x_3+x_3^2+x_3*x_4,-x_0*x_2+x_1*x_2-x_2^2-x_1*x_3-x_3^2-x_0*x_4+x
+     _1*x_4+x_2*x_4,x_2^2-x_2*x_3+x_3^2+x_0*x_4-x_1*x_4+x_2*x_4+x_3*x_4,x_0*x_2+x_1*x_2-x_2^2-x_0*x_3-x_1*x_3+
+     x_2*x_3-x_1*x_4-x_4^2,x_0*x_1-x_1^2+x_1*x_2-x_0*x_3+x_1*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4+x_3*x_4,-x_1*x_
+     2+x_2*x_4+x_3*x_4,-x_0*x_1-x_1^2+x_1*x_2-x_0*x_3+x_2*x_3+x_0*x_4-x_1*x_4-x_3*x_4+x_4^2,-x_0^2+x_0*x_1-x_0
+     *x_2-x_0*x_3-x_2*x_3-x_3^2,x_0*x_2-x_0*x_3-x_1*x_3+x_2*x_3-x_3^2-x_3*x_4,x_0^2+x_0*x_1-x_0*x_2-x_0*x_3-x_
+     2*x_3+x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_3*x_4-x_4^2)};
+
+apply(Ms3a,M->minimalBetti M)
+*-
 
 
 
