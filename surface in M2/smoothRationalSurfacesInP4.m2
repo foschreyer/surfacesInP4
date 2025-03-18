@@ -519,7 +519,7 @@ assert(chiITable(degree X,genX_1)=={0, 0, 0, 3, 13, 35, 75})
 minimalBetti(X=veroneseSurface(P4,P2)),degree X
 genX=genera X
 assert(chiITable(degree X,genX_1)=={0, 0, -1, 0, 7, 25, 60})
-
+///
 
 minimalBetti(X=delPezzoSurface(P4,P2)),degree X
 genX=genera X
@@ -542,20 +542,19 @@ assert(chiITable(degree X,genX_1)=={-3, 0, 0, 0, 4, 17, 45})
 
 elapsedTime  minimalBetti(X=degree8AlexanderSurface(P4,P2))
 degree X, genera X
-tex minimalBetti X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);
+numList, minimalBetti J
 LeBarzN6(8,5,1)
 
-X5=ideal (gens X)_{0..4};
-R=X5:X;
-dim R,degree R
-cR=primaryDecomposition R;
-apply(cR,c->(dim c, degree c, minimalBetti c,dim(c+X),degree (c+X),minimalBetti (c+X), genera(c+X)))
 
 elapsedTime  minimalBetti(X=degree8OkonekSurface(P4,E))
 degree X , genera X
 
 elapsedTime  minimalBetti(X=nonspecialAlexanderSurface(P4))
 degree X, genera X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);
+numList, minimalBetti J
+
 
 elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
 
@@ -563,13 +562,26 @@ degree X, genera X
 
 elapsedTime minimalBetti(X=specialityOneAlexanderSurface(P4,E))
 degree X, genera X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);
+numList, minimalBetti J
+
+
 
 elapsedTime minimalBetti(X=degree10pi8RanestadSurface(P4)) 
-degree X
+degree X, genera X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4); --
+numList, minimalBetti J
+
+
+
+
 
 elapsedTime minimalBetti(X=degree10pi9RanestadSurface(P4,E))
 degree X, genera X
-tex minimalBetti X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);
+numList, minimalBetti J
+
+
 X5=ideal (gens X)_{0..6};
 R=X5:X;
 dim R, degree R, minimalBetti R
@@ -577,7 +589,9 @@ LeBarzN6(10,9,1)
 
 elapsedTime minimalBetti(X=degree10DESSurface(P4,E))
 degree X, genera X
-tex minimalBetti X
+degree X, genera X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);
+numList, minimalBetti J
 
 
 
@@ -593,10 +607,19 @@ R=X5:X;
 dim R, degree R, minimalBetti R
 singX=X+minors(2,jacobian X);
 dim singX == 0
+degree X, genera X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);-- 11.7375 seconds elapsed
+numList, minimalBetti J
+
+
+
 
 
 minimalBetti(X=popescuSurface(P4,E,2))
 degree X,  genera X
+elapsedTime (numList,L1,l2,J)=adjunctionProcess(X,4);-- 11.7375 seconds elapsed
+numList=={(4, 11, 11), 9, (10, 18, 9), 3, (8, 12, 5), 0, (4, 5, 2)}
+minimalBetti J
 X5=ideal (gens X)_{0..9};
 R=X5:X;
 dim R, degree R, minimalBetti R, degree (R+X)
@@ -678,14 +701,35 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 Ksquare(d,sg,1)
 
+setRandomSeed("112surface")
+P4=(ZZ/7)[x_0..x_4]
+--P4=(ZZ/nextPrime 500)[x_0..x_4]
+	elapsedTime minimalBetti(X=AboRanestadSurface(P4,112,4,10))
+	
+kk=coefficientRing P4
+E=kk[e_0..e_4,SkewCommutative=>true]
+elapsedTime betti(m29x68=syz gens truncate(6,X)) -- 65.0379 seconds elapsed
+betti (T=res(coker symExt(m29x68,E)))
+m3x2=T.dd_2^{5..7}_{0,1}
+m2x4=T.dd_3^{2,3}
+m3x2'=sub(m3x2,vars P4)
+m2x4'=sub(m2x4,vars P4)
+surf=minors(2,m3x2');
+curve=minors(2,m2x4');
+dim(curve+surf),dim curve, dim surf
+degree(curve+surf)
+pts=radical(curve+surf)
+degree pts, decompose pts
+
 setRandomSeed("newSurface")
-P4=ZZ/3[x_0..x_4]
+P4=ZZ/7[x_0..x_4]
 elapsedTime tally apply(1,c->(
 	elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,112,4,10));  -- 69.173 seconds elapsed
 	elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 136.393 seconds elapse
 	<< (betti X,numList,minimalBetti J) <<endl;
         numList))
-
+betti X
+numgens X
 -*
 (dim R, degree R)==(2, 3)
        0  1  2  3 4
