@@ -421,9 +421,11 @@ findRandomSmoothSchreyerSurface(Ring) := opt -> (P4 -> (
 
 findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
     X:=null;singX:=null;
+    count:=1;
     while (
-	while (X=findRandomSchreyerSurface(P4,s); dim (X+ideal jacobian X)!=0) do ();
-	 singX=X+minors(2,jacobian X);
+	elapsedTime while (X=findRandomSchreyerSurface(P4,s); dim (X+ideal jacobian X)!=0) do (count=count+1);
+	<<count <<endl;
+	singX=X+minors(2,jacobian X);
 	 dim singX !=0) do ();
    X)
 
@@ -479,6 +481,34 @@ collectSchreyerSurfaces(List,Number,Ring,Number) :=(Ms,s,P4,N) -> (
     count<N) do ();
     Ms1)
 
+collectSpecialSchreyerSurfaces=method()
+collectSpecialSchreyerSurfaces(List,List,Ring,Number) :=(Ms,adjTypes,P4,N) -> ( 
+    --collect s>=3 smooth surfces
+    adjTypes1=adjTypes;
+    Ms1:=Ms;
+    count:=0;count1:=0;
+    X:= null; numList:=null; adjList:=null; ptsList:=null;M:= null;
+    while (
+    elapsedTime X=findRandomSmoothSchreyerSurface(P4,3);
+    <<minimalBetti X << endl;count1=count1+1;
+    <<count1 <<endl;
+    elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
+    if not member(numList,adjTypes1)
+    then (
+	adjTypes1=append(adjTypes1,numList);
+	M=moduleFromSchreyerSurface(X);
+	Ms1=append(Ms1,M);
+	count=count+1;
+	<<count <<endl;
+	<<numList <<endl;
+	<<minimalBetti J <<endl;
+	);
+    count<N) do ();
+    (Ms1,adjTypes1))
+
+
+
+
 adjointTypes=method()
 adjointTypes(List):= Ms -> (
     X:= null;L1:=null;L2:=null;J:=null;
@@ -523,9 +553,9 @@ loadPackage "AdjunctionForSurfaces"
 load"smoothRationalSurfacesInP4.m2"
 --peek loadedFiles
 --viewHelp BGG
-
-
-
+P4=(ZZ/2)[x_0..x_4]
+elapsedTime minimalBetti (X=findRandomSchreyerSurface(P4,3))
+elapsedTime minimalBetti (X=findRandomSmoothSchreyerSurface(P4,3))
 
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
@@ -877,7 +907,7 @@ elapsedTime tally apply(Ms_{4}, M -> (
 
 --adjTypes={};Ms={}; P4=(ZZ/3)[x_0..x_4]
 string="surface1aa";N=2;
-elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms,P4,1);
+elapsedTime (adjTypes,Ms)=collectSchreyerSurfaces(adjTypes,Ms2,P4,1);
 #Ms
 Ms=Ms1
 tally adjTypes
@@ -935,17 +965,36 @@ Ms={ideal(-x_2*x_3+x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+x_2^2+x_0*x_3-x_1
       +x_3*x_4-x_4^2,-x_0*x_3-x_1*x_3-x_3^2+x_4^2,x_0^2+x_0*x_1+x_0*x_2+x_0*x_3+x_2*x_3+x_0*x_4+x_2*x_4-x_4
       ^2)};
 
+Ms5=select(Ms,M->(fM=res M;rank fM_2==25));
+Ms2=select(Ms,M->(fM=res M;rank fM_2==22));#Ms2
+Ms3=select(Ms,M->(fM=res M;rank fM_2==23));#Ms3
+adjTypes3=adjointTypes(Ms3)
+X2s=apply(Ms2,M->schreyerSurfaceFromModule M);
+#X2s
+elapsedTime adj2=apply(X2s,X->(numList,L1,L2,J)=adjunctionProcess(X,4));
+netList apply(adj2,L->(L_0,minimalBetti L_3))
+(first adj2)_0
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(first X2s,5);
+numList
+netList apply(adj2,L->L_0)
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(last X2s,5);
+numList
+minimalBetti J
+fJ=res J
+m3x2=fJ.dd_3^{2..4}
+numgens trim ideal m3x2==6
 adjTypes={{(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)}, {(4,11,10), 5, (9,19,11), 1,
        (10,20,11), 0, (10,20,11), 0, (10,20,11)}, {(4,11,10), 3, (9,19,11), 1, (10,18,9), 2, (8,12,5), 4,
        (4,4,1)}, {(4,11,10), 2, (9,19,11), 3, (10,17,8), 2, (7,10,4), 2, (3,3,1)}, {(4,11,10), 2,
        (9,19,11), 3, (10,17,8), 1, (7,10,4), 8, (3,2,0)}, {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0,
        (8,13,6), 3, (5,6,2)}, {(4,11,10), 0, (9,19,11), 6, (10,15,6), 5, (5,5,1)}};
-elapsedTime tally apply(Ms,M->minimalBetti M)
+elapsedTime tally apply(Ms2,M->minimalBetti M)
 
-tally adjTypes
---elapsedTime tally (adjTypes=adjointTypes(Ms))  -- 217.792 seconds elapsed
+
+elapsedTime tally (adjTypes=adjointTypes(Ms2))  -- 217.792 seconds elapsed
 
 *-
+(Ms3a,adjTypes3a)=collectSpecialSchreyerSurfaces(Ms3,adjTypes3,P4,1);
 
 
 
@@ -1179,37 +1228,12 @@ Ms3 = {ideal(-x_0*x_1-x_1^2+x_1*x_2-x_0*x_4-x_2*x_4+x_3*x_4,x_0*x_2+x_1*x_2-x_2^
      2+x_2*x_4+x_3*x_4,-x_0*x_1-x_1^2+x_1*x_2-x_0*x_3+x_2*x_3+x_0*x_4-x_1*x_4-x_3*x_4+x_4^2,-x_0^2+x_0*x_1-x_0
      *x_2-x_0*x_3-x_2*x_3-x_3^2,x_0*x_2-x_0*x_3-x_1*x_3+x_2*x_3-x_3^2-x_3*x_4,x_0^2+x_0*x_1-x_0*x_2-x_0*x_3-x_
      2*x_3+x_3^2+x_0*x_4-x_1*x_4-x_2*x_4+x_3*x_4-x_4^2)};
+#Ms3
+apply(Ms3,M->minimalBetti M)
+adjTypes=adjointTypes(Ms3)
 
-apply(Ms3a,M->minimalBetti M)
 *-
 
 
 
 
-TEST//
-chiITable(12,12)
-Ksquare(12,12,1)
-LeBarzN6(12,12,1)
-(7+9)*2-3*5
-
-betti(b=map(P4^15,,(koszul(2,vars P4)++koszul(2,vars P4)++koszul(2,vars P4))*random(kk^30,kk^18)))
-betti syz(b,DegreeLimit=>2)
-minimalBetti coker random(P4^5,P4^{18:-1})
-minimalBetti coker random(P4^1,P4^{8:-2})
-betti res coker  random(E^7,E^{5:-1})
-betti syz random(E^3,E^{5:-2})
-
-
-chiITable(13,14),chiITable(13,15), chiITable(12,13)
-Ksquare(12,13,2)
-LeBarzN6(13,15,1)
-(12+9)*2-25
-
-chiITable(14,14),chiITable(14,18)
-Ksquare(14,18,1)
-LeBarzN6(14,18,1)
-(16+9)*2-7*5
-chiITable(11,9)
-Ksquare(11,9,1)
-LeBarzN6(11,9,1)
-///
