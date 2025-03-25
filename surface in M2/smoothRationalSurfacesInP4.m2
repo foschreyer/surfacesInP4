@@ -1324,7 +1324,7 @@ setRandomSeed("two  examples")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,2); -- 98.783 seconds elapsed
 #adjTypes1==#Ms1 -- if not true then we have a further new family
 setRandomSeed("fast examples")
-elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,2);
+elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,1);
 #adjTypes1==#Ms1 -- if not true then we have a further new family
 
 
