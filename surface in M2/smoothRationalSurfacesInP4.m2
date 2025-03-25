@@ -336,7 +336,7 @@ smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
 
 collectSmoothAboRanestadSurfaces=method()
 collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
-    mMats:={};Xs:={0};adjTypes:={};
+    mMats:={};Xs:={};adjTypes:={};
     X:=null;m4x2:=null;m2x3:=null;numList:=null;L1:=null;L2:=null;J:=null;
     count:=0;
     scan(N, i-> (
@@ -348,9 +348,12 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
     return (Xs,adjTypes,mMats))
 
 ///
+setRandomSeed("find two types")
 P4=ZZ/7[x_0..x_4]
-(Xs,adjTypes,mMats)=collectSmoothAboRanesatdSurfaces(P4,114,3);
-#unique adjTypes
+elapsedTime (Xs,adjTypes,mMats)=collectSmoothAboRanestadSurfaces(P4,113,5); -- 530.484 seconds elapsed
+tally apply(Xs,X->minimalBetti X)
+tally adjTypes
+
 ///
 
 
