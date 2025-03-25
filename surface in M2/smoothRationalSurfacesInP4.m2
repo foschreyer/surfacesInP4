@@ -219,7 +219,6 @@ bothmerSurface(Ring,Ring) := (P4,P2) -> (
 prepareAboRanestadSurfaces=method()
 prepareAboRanestadSurfaces(Ring) := P4 -> (
     kk:=coefficientRing P4;
-    --assert(member(char(kk),{2,3,5,7,11,13}));
     E:=kk[e_0..e_4,SkewCommutative=>true];
     m2x3:=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}};-- random(E^2,E^{3:-1})
     bs:=flatten apply(4,i->flatten apply(2,j->apply(10,k->b_(i,j,k))));
@@ -233,11 +232,15 @@ prepareAboRanestadSurfaces(Ring) := P4 -> (
 (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3))
 
 AboRanestadSurface=method()
-AboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
+AboRanestadSurface(Ring,Number) := (P4,n) -> (
+    -- Input: P4 ring of P4
+    --        n number of desired generators of the ideal I below, 
+    -- Output: X an ideal of an AR surface,
+    --         m4x2, m2x3 linear Matrices over the exterior algebra    
     assert(member(n,toList(112..117)));
+    k:=min(4,120-n);
     kk:= coefficientRing P4;
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
-    assert(n+k <121);
     count:=1;test:=1;
     m2xk:= null; m2x2:=null;I:=null;sol:=null;randSol:=null;
     b4x2r:=null;bb:=null;test1:=null;test2:=null;T:=null;X:=null;
@@ -264,18 +267,18 @@ AboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
     not (dim X ==3 and degree X==12) ) do ();
     <<count <<endl;
     <<test <<endl;
-    X)
+    (X,m4x2,m2x3))
 
-AboRanestadSurface(Ring,Number,Number,Number) := (P4,n,k,b) -> (
+AboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     -- Input: P4 ring of P4
     --        n number of desired generators of the ideal I below, 
-    --        b number of generators of the desired surface (b=9 or 10) in the examples
-    --        k the number of forced common column ideal of the 2x4 and 2x3 linear matrices
-    --        (I do not know haow to compute the true number of common column ideals)
+    --        b number of generators of the desired surface (b=9 or 10 in the examples)
+    -- Output: X an ideal of an AR surface,
+    --         m4x2,m2x3 linear Matrices over the exterior algebra     
     assert(member(n,toList(112..117)));
+    k:=min(4,120-n);
     kk:= coefficientRing P4;
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
-    assert(n+k <121);
     count:=1;test:=1;
     m2xk:= null; m2x2:=null;I:=null;sol:=null;randSol:=null;
     b4x2r:=null;bb:=null;test1:=null;test2:=null;T:=null;X:=null;
@@ -306,32 +309,52 @@ AboRanestadSurface(Ring,Number,Number,Number) := (P4,n,k,b) -> (
     << minimalBetti X <<endl;
     <<count <<endl;
     <<test <<endl;
-    X)
+    (X,m4x2,m2x3))
 
 
 
 smoothAboRanestadSurface=method()
-smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,k) -> (
+smoothAboRanestadSurface(Ring,Number) := (P4,n) -> (
     assert(member(n,toList(112..117)));
-    assert(n+k <121);
-    countSmooth:=1;singX:=null;X:=null;
+    countSmooth:=1;singX:=null;X:=null;m4x2:=null;m2x3:=null;
     while (
-	elapsedTime X=AboRanestadSurface(P4,n,k);
+	elapsedTime (X,m4x2,m2x3)=AboRanestadSurface(P4,n);
 	singX=X+minors(2,jacobian X);
 	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
-    X)
+    (X,m4x2,m2x3))
 
-smoothAboRanestadSurface(Ring,Number,Number,Number) := (P4,n,k,b) -> (
+smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     assert(member(n,toList(112..117)));
-    assert(n+k <121);
     countSmooth:=1;singX:=null;X:=null;
     while (
-	elapsedTime X=AboRanestadSurface(P4,n,k,b);
+	elapsedTime (X,m4x2,m2x3)=AboRanestadSurface(P4,n,b);
 	singX=X+minors(2,jacobian X);
 	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
-    X)
+    (X,m4x2,m2x3))
+
+collectSmoothAboRanestadSurfaces=method()
+collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
+    mMats:={};Xs:={0};adjTypes:={};
+    X:=null;m4x2:=null;m2x3:=null;numList:=null;L1:=null;L2:=null;J:=null;
+    count:=0;
+    scan(N, i-> (
+	    elapsedTime (X,m4x2,m2x3)=smoothAboRanestadSurface(P4,n);
+	    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
+	    Xs=append(Xs,X);
+	    adjTypes=append(adjTypes,numList);
+	    mMats=append(mMats,(m4x2,m2x3))));
+    return (Xs,adjTypes,mMats))
+
+///
+P4=ZZ/7[x_0..x_4]
+(Xs,adjTypes,mMats)=collectSmoothAboRanesatdSurfaces(P4,114,3);
+#unique adjTypes
+///
+
+
+
 
 ---------------------------------
 --       schreyer surfaces     --
@@ -1304,12 +1327,93 @@ o104 = Tally{(total: 1 10 22 28 20 5, 36) => 4}
                   2: .  . 10 26 20 5
 *-
 ///
+-----------------------------------------
+-- functions to analyze X              --
+-----------------------------------------
+sixSecantLocus=method()
+sixSecantLocus(Ideal) := X -> (
+    i:=#select(flatten degrees source gens X,d->d<6);
+    X5:=ideal (gens X)_{0..i-1};
+    R:=X5:X;
+    <<(dim R, degree R, minimalBetti R) <<endl;
+    if dim R==2 then (
+    assert(degree (X+R) == 6* degree R);
+    elapsedTime (numList,L1,L2,J):=adjunctionProcess(X,1);
+    <<"Le Barz 6-secant formula is " <<LeBarzN6(degree X,(genera X)_1,1)==numList_1+degree R <<endl;
+    return primaryDecomposition R);
+    if dim R==3 then (
+	cR:=primaryDecomposition R;
+	<<tally apply(cR,c->(dim c, degree c, minimalBetti c, degree(X+c))) <<endl;
+        surfaces:=select(cR,c->dim c==3);
+    <<"surfaces: "<<tally apply(surfaces,c->(dim c,degree c,degree (c+X),
+	    tally apply(primaryDecomposition(c+X),d->(dim d,degree d,degree radical d,minimalBetti d))))<<endl;
+    curves:=select(cR,c->dim c==2);
+    embeddedCurves:=select(flatten apply(surfaces,S->apply(curves,C->{S,C})),SC->dim sum SC==2);
+    radEmbeddedCurves:=apply(embeddedCurves,SC->radical SC_1);
+    apply(radEmbeddedCurves,C->(degree(C+X),degree radical (C+X),degree C));
+    reducedCurves:=apply(curves,c->radical c);
+    <<"reducedCurves: " <<tally apply(reducedCurves,c->(degree c,degree(c+X)))<<endl;
+    <<"curves: "<<tally apply(curves,c->(degree c,degree (c+X),minimalBetti c))<<endl;
+    comp:=surfaces|curves;
+    return comp);
+    )
 
-
+tateResolutionOfSurface=method()
+tateResolutionOfSurface(Ideal) := X -> (
+    if not (dim X==3 and codim X==2) then error "expected the ideal of a surface in P4";
+    P4:= ring X;
+    kk:=coefficientRing P4;
+    e:=symbol e;
+    E:=kk[e_0..e_4,SkewCommutative=>true];
+    m:=syz gens truncate(6,X);
+    m':=symExt(m,E);
+    T1:=res(coker m',LengthLimit=>8);
+    T:=(dual T1)[-7]**E^{-6})
+///
+X=Xs_0;
+betti(T=tateResolutionOfSurface X)    
+///    
 
 end
 
 
+
+
+///
+minimalBetti(X=Xs_1)
+curves=sixSecantLocus(X);
+tally apply(curves,C->(degree(C),degree(C+X)))
+minimalBetti(X=Xs_0)
+curves=sixSecantLocus(X);
+tally apply(curves,C->(degree(C),degree(C+X)))
+minimalBetti(X=Xs_2)
+curves=sixSecantLocus(X);
+tally apply(curves,C->(degree(C),degree(C+X)))
+minimalBetti(X=Xs_3)
+comp=sixSecantLocus(X);
+tally apply(comp,C->(dim C,degree(C),degree(C+X)))
+LeBarzN6(degree X,(genera X)_1,1)
+minimalBetti(X=Xs_4)
+comp=sixSecantLocus(X);
+tally apply(comp,C->(dim C, degree(C),degree(C+X)))
+minimalBetti(X=Xs_5)
+comp=sixSecantLocus(X);
+tally apply(comp,C->(dim C, degree(C),degree(C+X)))
+minimalBetti(X=Xs_6)
+comp=sixSecantLocus(X);
+tally apply(comp,C->(dim C, degree(C),degree(C+X)))
+minimalBetti(X=Xs_7)
+comp=sixSecantLocus(X);
+tally apply(comp,C->(dim C, degree(C),degree(C+X)))
+minimalBetti(X=Xs_8)
+comp=sixSecantLocus(X);
+tally apply(comp,C->(dim C, degree(C),degree(C+X)))
+///
+
+
+    
+    
+    
 restart
 needsPackage"BGG"
 loadPackage "AdjunctionForSurfaces"
@@ -1319,8 +1423,8 @@ load"smoothRationalSurfacesInP4.m2"
 P4=(ZZ/3)[x_0..x_4]
 (Ms,adjTypes)=exampleOfSchreyerSurfaces(P4);
 netList apply(9,i->(minimalBetti Ms_i,adjTypes_i))
-
-setRandomSeed("two  examples")
+Xs=apply(Ms_{0},M->elapsedTime schreyerSurfaceFromModule M);
+setRandomSeed("two examples")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,2); -- 98.783 seconds elapsed
 #adjTypes1==#Ms1 -- if not true then we have a further new family
 setRandomSeed("fast examples")
@@ -1499,12 +1603,11 @@ betti res coker m121x3
 ----------------------------------------
 kk=(ZZ/nextPrime 10^3)
 P4=kk[x_0..x_4]
-E=kk[e_0..e_4,SkewCommutative=>true]
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,117,3))
+elapsedTime minimalBetti(X=first smoothAboRanestadSurface(P4,117))
 --tex minimalBetti X
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 117.663 seconds elapsed
 numList == {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
-
+minimalBetti J
 
 X5=ideal (gens X)_{0..4};
 d=degree X, sg=(genera X)_1
@@ -1514,7 +1617,9 @@ betti(singR=trim(R+minors(3,jacobian R)))
 dim singR
 LeBarzN6(d,sg,1)
 
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,116,4))
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+elapsedTime minimalBetti(X=first smoothAboRanestadSurface(P4,116))
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
 numList == {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}
 Ksquare(12,13,1)==-12
@@ -1526,7 +1631,7 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 
 P4=ZZ/7[x_0..x_4]
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,115,4)) -- 29.666 seconds elapsed
+elapsedTime minimalBetti(X=first smoothAboRanestadSurface(P4,115)) -- 29.666 seconds elapsed
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4); -- 126.766 seconds elapsed
 numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
 
@@ -1537,9 +1642,11 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 
 P4=ZZ/7[x_0..x_4]
-elapsedTime minimalBetti(X=smoothAboRanestadSurface(P4,114,4)) -- 54.388 seconds elapsed
+elapsedTime minimalBetti(X=first smoothAboRanestadSurface(P4,114)) -- 54.388 seconds elapsed
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);-- 131.332 seconds elapsed
-numList ==  {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+adjTypes={{(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)},{(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}}
+member(numList,adjTypes)
+
 minimalBetti J
 fJ=res J
 betti(m2x5=fJ.dd_5^{4..8})
@@ -1559,10 +1666,17 @@ dim R, degree R
 LeBarzN6(d,sg,1)
 Ksquare(d,sg,1)
 
+P4=ZZ/7[x_0..x_4]
+elapsedTime minimalBetti(X=first smoothAboRanestadSurface(P4,113) -- 54.388 seconds elapsed
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);-- 131.332 seconds elapsed
+adjTypes={{(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}}
+numList, minimalBetti J
+
+
 setRandomSeed("112surface")
 P4=(ZZ/7)[x_0..x_4]
 --P4=(ZZ/nextPrime 500)[x_0..x_4]
-	elapsedTime minimalBetti(X=AboRanestadSurface(P4,112,4,10))
+	elapsedTime minimalBetti(X= first AboRanestadSurface(P4,113,4,10))
 	
 kk=coefficientRing P4
 E=kk[e_0..e_4,SkewCommutative=>true]
