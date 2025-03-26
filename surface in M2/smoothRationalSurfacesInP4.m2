@@ -348,11 +348,17 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
     return (Xs,adjTypes,mMats))
 
 ///
-setRandomSeed("find two types")
+setRandomSeed("more adjunction types A")
 P4=ZZ/7[x_0..x_4]
-elapsedTime (Xs,adjTypes,mMats)=collectSmoothAboRanestadSurfaces(P4,113,5); -- 530.484 seconds elapsed
+elapsedTime (Xs,adjTypes,mMats)=collectSmoothAboRanestadSurfaces(P4,113,5);
+
 tally apply(Xs,X->minimalBetti X)
 tally adjTypes
+-*
+Tally{{(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)} => 4}
+      {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)} => 4
+*-
+
 
 ///
 
