@@ -267,7 +267,7 @@ AboRanestadSurface(Ring,Number) := (P4,n) -> (
     not (dim X ==3 and degree X==12) ) do ();
     <<count <<endl;
     <<test <<endl;
-    (X,m4x2,m2x3))
+    (X,m4x2))
 
 AboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     -- Input: P4 ring of P4
@@ -309,7 +309,7 @@ AboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     << minimalBetti X <<endl;
     <<count <<endl;
     <<test <<endl;
-    (X,m4x2,m2x3))
+    (X,m4x2))
 
 
 
@@ -318,44 +318,106 @@ smoothAboRanestadSurface(Ring,Number) := (P4,n) -> (
     assert(member(n,toList(112..117)));
     countSmooth:=1;singX:=null;X:=null;m4x2:=null;m2x3:=null;
     while (
-	elapsedTime (X,m4x2,m2x3)=AboRanestadSurface(P4,n);
+	elapsedTime (X,m4x2)=AboRanestadSurface(P4,n);
 	singX=X+minors(2,jacobian X);
 	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
-    (X,m4x2,m2x3))
+    (X,m4x2))
 
 smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     assert(member(n,toList(112..117)));
     countSmooth:=1;singX:=null;X:=null;
     while (
-	elapsedTime (X,m4x2,m2x3)=AboRanestadSurface(P4,n,b);
+	elapsedTime (X,m4x2)=AboRanestadSurface(P4,n,b);
 	singX=X+minors(2,jacobian X);
 	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
-    (X,m4x2,m2x3))
+    (X,m4x2))
 
 collectSmoothAboRanestadSurfaces=method()
 collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
-    mMats:={};Xs:={};adjTypes:={};
+    m4x2s:={};Xs:={};adjTypes:={};
     X:=null;m4x2:=null;m2x3:=null;numList:=null;L1:=null;L2:=null;J:=null;
     count:=0;
     scan(N, i-> (
-	    elapsedTime (X,m4x2,m2x3)=smoothAboRanestadSurface(P4,n);
+	    elapsedTime (X,m4x2)=smoothAboRanestadSurface(P4,n);
 	    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
 	    Xs=append(Xs,X);
 	    adjTypes=append(adjTypes,numList);
-	    mMats=append(mMats,(m4x2,m2x3))));
-    return (Xs,adjTypes,mMats))
+	    m4x2s=append(m4x2s,m4x2)));
+    return (Xs,adjTypes,m4x2s))
+
+smoothAboRanestadSurfaceFromMatrix=method()
+smoothAboRanestadSurfaceFromMatrix(Matrix) := m4x2 -> (
+    E:=ring m4x2;
+    kk:=coefficientRing E;
+    x:= symbol x;
+    P4:=kk[x_0..x_4];
+    m2x3:=matrix{{E_0,E_1,E_3},{E_1,E_2,E_4}};-- random(E^2,E^{3:-1})
+    bs:=flatten apply(4,i->flatten apply(2,j->apply(10,k->b_(i,j,k))));
+    as:=flatten apply(2,i->flatten apply(3,j->apply(10,k->a_(i,j,k))));
+    B:=kk[bs,as];
+    ExB:=E**B;
+    E2:=sub(basis(2,E),ExB);
+    b4x2:=matrix apply(4,i->apply(2,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    a2x3:=matrix apply(2,i->apply(3,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    E3:=sub(basis(3,E),ExB);
+    c:=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+    I:=trim ideal sub(contract(E3,flatten c),B);
+    <<numgens I<<endl;
+    sol:=vars B%I;
+    test1:=null;test2:=null;b4xr:=null;bb:=null;T:=null;X:=null;singX:=null;
+    test:=1;count:=1;randSol:=null;
+    elapsedTime while (
+	while (randSol=sub(sol,random(kk^1,kk^140));
+	    b4x2r=sub(b4x2,vars E|randSol);
+	    betti(bb=map(E^4,,m4x2|b4x2r));
+	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
+	not(test1 and test2) ) do (test=test+1;count=count+1);
+        betti(T=res(coker bb, LengthLimit=>4));
+	X=saturate ideal syz symExt(T.dd_4,P4);
+	singX=X+minors(2,jacobian X);
+    not (dim singX == 0 and dim X ==3 and degree X==12) ) do ();
+    X)
 
 ///
-setRandomSeed("find two types")
+setRandomSeed("more adjunction types A")
 P4=ZZ/7[x_0..x_4]
-elapsedTime (Xs,adjTypes,mMats)=collectSmoothAboRanestadSurfaces(P4,113,5); -- 530.484 seconds elapsed
+elapsedTime (Xs,adjTypes,m4x2s)=collectSmoothAboRanestadSurfaces(P4,113,8);
+
 tally apply(Xs,X->minimalBetti X)
 tally adjTypes
-
+-*
+Tally{{(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)} => 4}
+      {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)} => 4
+*-
+P4=ZZ/nextPrime 10^3[x_0..x_4]
+elapsedTime (Xs,adjTypes,m4x2s)=collectSmoothAboRanestadSurfaces(P4,116,1);
+m4x2=first m4x2s
+minimalBetti(X=smoothAboRanestadSurfaceFromMatrix m4x2)
 ///
 
+/// -- example (v)
+E=ZZ/3[e_0..e_4,SkewCommutative=>true]
+m4x2=map(E^4,,transpose matrix{{-e_4,-e_2-e_3+e_4,-e_1,e_0-e_1-e_2+e_3+e_4},
+            {-e_2-e_3+e_4,e_0+e_1+e_2+e_3-e_4,e_2,-e_1-e_2+e_3-e_4}})
+minimalBetti(X=smoothAboRanestadSurfaceFromMatrix m4x2)
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+numList, 
+-*
+{(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
+*-
+minimalBetti J
+-*
+             0  1  2  3  4  5 6
+o13 = total: 1 19 58 75 44 11 2
+          0: 1  .  .  .  .  . .
+          1: . 19 58 75 44  5 .
+          2: .  .  .  .  .  6 2
+
+*-
+///
 
 
 
