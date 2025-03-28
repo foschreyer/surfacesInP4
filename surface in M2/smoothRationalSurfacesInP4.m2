@@ -1180,7 +1180,19 @@ collectSchreyerSurfaces(List,List,Number,Number) :=(adjTypes,Ms,s,N) -> (
     if count==1 then (adjTypes1,Ms1) else (adjTypes2,Ms2)
     )
 
+///
+P4=(ZZ/3)[x_0..x_4]
+(Ms,adjTypes)=exampleOfSchreyerSurfaces(P4);
+netList apply(9,i->(minimalBetti Ms_i,adjTypes_i))
 
+Xs=apply(Ms_{4..6},M->elapsedTime schreyerSurfaceFromModule M);
+setRandomSeed("two examples")
+elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{4..8},Ms_{4..8},3,3);
+tally adjTypes1
+#Ms1
+elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{7..8},Ms_{7..8},3,4);
+tally adjTypes1
+///
 
 
 adjointTypes=method()
