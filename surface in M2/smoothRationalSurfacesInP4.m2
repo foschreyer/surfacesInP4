@@ -1190,7 +1190,7 @@ setRandomSeed("two examples")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{4..8},Ms_{4..8},3,3);
 tally adjTypes1
 #Ms1
-elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{7..8},Ms_{7..8},3,4);
+elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{7..8},Ms_{7..8},4,2);
 tally adjTypes1
 ///
 
@@ -1504,7 +1504,7 @@ Xs=apply(Ms_{0},M->elapsedTime schreyerSurfaceFromModule M);
 setRandomSeed("two examples")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,2); -- 98.783 seconds elapsed
 #adjTypes1==#Ms1 -- if not true then we have a further new family
-setRandomSeed("fast examples")
+setRandomSeed("fast examplesA")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,1);
 #adjTypes1==#Ms1 -- if not true then we have a further new family
 
