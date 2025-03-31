@@ -1854,6 +1854,7 @@ degree R4, dim R4, minimalBetti R4
 minimalBetti saturate R4
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);  -- 136.393 seconds elapsed
 numList =={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+
 X5=ideal(gens X)_{0..4};
 R=X5:X;
 dim R, degree R, minimalBetti R
