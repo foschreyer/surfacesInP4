@@ -1,4 +1,6 @@
 
+sectionalGenus= X -> (genera X)_1
+
 chiI=method()
 chiI(Number,Number,Number) := (m,d,sg) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(sg-1)+1)
 
@@ -39,10 +41,10 @@ LeBarzN6(13,15,1)
  
 
 cubicScroll=method()
-cubicScroll(Ring) := P4 -> minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
+cubicScroll(PolynomialRing) := P4 -> minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
 
 veroneseSurface=method()
-veroneseSurface(Ring,Ring) := (P4,P2) -> (
+veroneseSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     kk := coefficientRing P2;
     h:=basis(2,P2)*syz random(kk^1,kk^6); 
     X:=trim ker map(P2,P4,h);
@@ -50,8 +52,8 @@ veroneseSurface(Ring,Ring) := (P4,P2) -> (
     X)
 
 delPezzoSurface=method()
-delPezzoSurface(Ring) := P4 -> ideal random(P4^1,P4^{2:-2})
-delPezzoSurface(Ring,Ring) := (P4,P2) -> (
+delPezzoSurface(PolynomialRing) := P4 -> ideal random(P4^1,P4^{2:-2})
+delPezzoSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     kk:= coefficientRing P2;
     pts := {matrix{{1,0,0}},matrix{{0,1,0}},matrix{{0,0,1}},matrix{{1,1,1}},random(kk^1,kk^3)};
     pts2:= intersect apply(pts, pt-> ideal((vars P2)* (syz pt)));
@@ -62,11 +64,11 @@ delPezzoSurface(Ring,Ring) := (P4,P2) -> (
 
 
 castelnouvoSurface=method()
-castelnouvoSurface(Ring) := P4 -> minors(2,random(P4^{-2,2:-3},P4^{2:-4}))
+castelnouvoSurface(PolynomialRing) := P4 -> minors(2,random(P4^{-2,2:-3},P4^{2:-4}))
 
 bordigaSurface=method()
-bordigaSurface(Ring) := P4 -> minors(3,random(P4^{4:-3},P4^{3:-4}))
-bordigaSurface(Ring,Ring) := (P4,P2) -> (
+bordigaSurface(PolynomialRing) := P4 -> minors(3,random(P4^{4:-3},P4^{3:-4}))
+bordigaSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     kk:= coefficientRing P2;
     pts := {matrix{{1,0,0}},matrix{{0,1,0}},matrix{{0,0,1}},matrix{{1,1,1}}}|apply(6,c->random(kk^1,kk^3));
     pts2:= intersect apply(pts, pt-> ideal((vars P2)* (syz pt)));
@@ -75,8 +77,8 @@ bordigaSurface(Ring,Ring) := (P4,P2) -> (
     assert(degree X ==6 and dim X==3);
     X)
 
-OkonekIonescuSurface=method()
-OkonekIonescuSurface(Ring,Ring) :=(P4,P2) -> (
+ionescuOkonekSurface=method()
+ionescuOkonekSurface(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
     sixPoints:=apply(6,i->ideal random(P2^1,P2^{2:-1}));
     fivePoints:=apply(5,i->ideal random(P2^1,P2^{2:-1}));
     H:= intersect (apply(sixPoints,p->p^2)|fivePoints);
@@ -87,7 +89,7 @@ OkonekIonescuSurface(Ring,Ring) :=(P4,P2) -> (
 
 
 degree8OkonekSurface=method()
-degree8OkonekSurface(Ring,Ring) :=(P4,E) -> (
+degree8OkonekSurface(PolynomialRing,Ring) :=(P4,E) -> (
     m6x2=random(E^6,E^{-2,-4});
     betti(T:=res(coker m6x2,LengthLimit=>3));
     X:= saturate ideal syz symExt(T.dd_3,P4);
@@ -95,7 +97,7 @@ degree8OkonekSurface(Ring,Ring) :=(P4,E) -> (
     X)
 
 degree8AlexanderSurface=method()
-degree8AlexanderSurface(Ring,Ring) := (P4,P2) -> (
+degree8AlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     H:= intersect (apply(10,i->(ideal random(P2^1,P2^{2:-1}))^2)|{ideal random(P2^1,P2^{2:-1})});
     X:= trim ker map(P2,P4,gens H);
     assert(dim X==3 and degree X==8 and (genera X)_1==5);
@@ -103,7 +105,7 @@ degree8AlexanderSurface(Ring,Ring) := (P4,P2) -> (
 
 
 nonspecialAlexanderSurface=method()
-nonspecialAlexanderSurface(Ring) := P4 -> (
+nonspecialAlexanderSurface(PolynomialRing) := P4 -> (
     betti(L :=matrix{{P4_0,P4_1,P4_2}}|random(P4^1,P4^{15:-2}));
     betti(L2 :=map(P4^{3:-1},P4^{3:-1},0)|random(P4^{3:-1},P4^{15:-2}));
     betti (N:=transpose (transpose L| transpose L2));
@@ -113,7 +115,7 @@ nonspecialAlexanderSurface(Ring) := P4 -> (
     X)
 
 
-nonspecialAlexanderSurface(Ring,Ring) := (P4,P2) -> (
+nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     --tenPts = minors(4,random(P4^5,P4^{4:-1}));
     --elapsedTime betti (h1=saturate (tenPts^4))
     betti(h1:=intersect apply(10,c->(ideal random(P2^1,P2^{2:-1}))^4));
@@ -123,8 +125,8 @@ nonspecialAlexanderSurface(Ring,Ring) := (P4,P2) -> (
 
 
 specialityOneAlexanderSurface=method()
-specialityOneAlexanderSurface(Ring,Ring) := (P4,E) -> (
-    b1:=gens trim ideal(basis(2,E)%ideal(E_0,E_1))|matrix{{e_0,e_1}};
+specialityOneAlexanderSurface(PolynomialRing,Ring) := (P4,E) -> (
+    b1:=gens trim ideal(basis(2,E)%ideal(E_0,E_1))|matrix{{E_0,E_1}};
     bb:=b1||random(E^{1},source b1);
     T:=res(coker bb,LengthLimit=>3);
     X:=trim saturate ideal syz symExt(T.dd_3,P4);
@@ -134,7 +136,7 @@ specialityOneAlexanderSurface(Ring,Ring) := (P4,E) -> (
 
 
 degree10pi8RanestadSurface=method()
-degree10pi8RanestadSurface(Ring) := P4 -> (
+degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
     a1:=transpose matrix apply (5,i->{x_i,random(0,P4)*P4_i});
     a2:=map(P4^1,P4^{2:-2},0)||matrix{{sum(3,i->random(0,P4)*P4_i^2),sum(2,i->random(0,P4)*P4_(i+3)^2)}};
     aa:=map(P4^2,,a1|a2);
@@ -144,9 +146,9 @@ degree10pi8RanestadSurface(Ring) := P4 -> (
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
     assert(dim X==3 and degree X==10 and (genera X)_1==8);
     X)
-
+dim X
 degree10pi9RanestadSurface=method()
-degree10pi9RanestadSurface(Ring,Ring) := (P4,E) -> (
+degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     a1:=(syz matrix{{E_0,E_1}})*random(E^{3:-1},E^{2:-2});
     a2:=map(E^2,,random(E^2,E^{2:-3})|transpose a1);
     T :=res(coker a2,LengthLimit=>4);
@@ -169,7 +171,7 @@ degree10pi9RanestadSurface(Ring,Ring) := P4 -> (
 *-
 
 degree10DESSurface=method()
-degree10DESSurface(Ring,Ring) := (P4,E) -> (
+degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
     bb:=random(E^2,E^{2:-2,-3});
     betti (T:= res(coker bb,LengthLimit=>3));
     X := saturate ideal syz symExt(T.dd_3,P4);
@@ -1180,7 +1182,19 @@ collectSchreyerSurfaces(List,List,Number,Number) :=(adjTypes,Ms,s,N) -> (
     if count==1 then (adjTypes1,Ms1) else (adjTypes2,Ms2)
     )
 
+///
+P4=(ZZ/3)[x_0..x_4]
+(Ms,adjTypes)=exampleOfSchreyerSurfaces(P4);
+netList apply(9,i->(minimalBetti Ms_i,adjTypes_i))
 
+Xs=apply(Ms_{4..6},M->elapsedTime schreyerSurfaceFromModule M);
+setRandomSeed("two examples")
+elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{4..8},Ms_{4..8},3,3);
+tally adjTypes1
+#Ms1
+elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes_{7..8},Ms_{7..8},4,2);
+tally adjTypes1
+///
 
 
 adjointTypes=method()
@@ -1492,11 +1506,53 @@ Xs=apply(Ms_{0},M->elapsedTime schreyerSurfaceFromModule M);
 setRandomSeed("two examples")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,2); -- 98.783 seconds elapsed
 #adjTypes1==#Ms1 -- if not true then we have a further new family
-setRandomSeed("fast examples")
+setRandomSeed("fast examplesA")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,1);
 #adjTypes1==#Ms1 -- if not true then we have a further new family
+end
+-* consruction section *-
 
 
+randomSurface=method()
+randomSurface(Function,Ring) := (F,P4) -> (
+    X:=F(P4);
+    (d,sg):=(degree X, sectionalGenus X);
+    <<minimalBetti X << " cohomology "
+    <<cohomologyTable(sheaf module X, -2,6) <<endl;
+    <<"K2=" <<Ksquare(d,sg,1) <<", N6=" <<LeBarzN6(d,sg,1) <<endl;
+    {d,sg})
+
+randomSurface(Function,List) := (F,ringList) -> (
+    (P4,E,P2):=(ringList_0,ringList_1,ringList_2);
+    Larg:=toList first methods F;
+    arguments :=drop(Larg,1);
+    <<endl;
+    <<Larg_0; <<endl;
+    n:= #arguments; X:=null;
+    elapsedTime (if n==1 then X=F(P4) ;
+    if n==2 and member(Ring,arguments) then X=F(P4,E);
+    if n==2 and not member(Ring,arguments) then X=F(P4,P2)); 
+    (d,sg):=(degree X, sectionalGenus X);
+    elapsedTime (<<minimalBetti X << " cohomology "
+    <<cohomologyTable(sheaf module X, -2,6) <<endl);
+    <<"K2=" <<Ksquare(d,sg,1) <<", N6=" <<LeBarzN6(d,sg,1) <<endl;
+    {d,sg})
+
+///
+ringList={P4,E,P2}
+F=degree10pi8RanestadSurface
+
+randomSurface(F,P4)
+Fs={cubicScroll,delPezzoSurface,castelnouvoSurface,bordigaSurface,ionescuOkonekSurface,
+    degree8OkonekSurface,nonspecialAlexanderSurface,
+    specialityOneAlexanderSurface,degree10pi8RanestadSurface,degree10pi9RanestadSurface,
+    degree10DESSurface}
+
+elapsedTime dgs=apply(Fs,F->randomSurface(F,ringList))
+member(Ring,toList first methods degree8OkonekSurface)
+S
+F=degree8OkonekSurface
+///
 restart
 needsPackage"BGG"
 loadPackage "AdjunctionForSurfaces"
