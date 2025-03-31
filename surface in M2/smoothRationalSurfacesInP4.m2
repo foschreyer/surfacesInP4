@@ -146,7 +146,7 @@ degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
     assert(dim X==3 and degree X==10 and (genera X)_1==8);
     X)
-dim X
+
 degree10pi9RanestadSurface=method()
 degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     a1:=(syz matrix{{E_0,E_1}})*random(E^{3:-1},E^{2:-2});
@@ -183,7 +183,7 @@ popescuSurface(Ring,Ring,Number):= (P4,E,s) -> (
     X)
 
 vBELSurface=method()
-bothmerSurface(Ring,Ring) := (P4,P2) -> (
+vBELSurface(Ring,Ring) := (P4,P2) -> (
     if char P4 !=2 then error "expect a ground field of caharcteristic 2";
     if char P2 =!= char P4 then error "P2 and P4 should have the same characteristic 2";
     t:= symbol t;
@@ -200,7 +200,7 @@ bothmerSurface(Ring,Ring) := (P4,P2) -> (
     X:=ker map(P2,P4,(gens H)_{0..4});
     assert(dim(X+minors(2, jacobian X))==0);
     X)
-
+x3
 ---------------------------------------
 --      Abo-Ranestad surfaces        --
 ---------------------------------------
@@ -1497,7 +1497,73 @@ setRandomSeed("fast examplesA")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,1);
 #adjTypes1==#Ms1 -- if not true then we have a further new family
 end
--* consruction section *-
+-* construction section *-
+
+-- the following is a mess a the moment
+getSpecialARSurf=method()
+--conjecture: these surfaces should end up in a conic bundle.
+getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
+    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
+    E':=kk[(gens E)_{0..2}];
+    m4x2:=null;c:=null;I:=null;sol:=null;
+    test:=0; count:=0;bb:=null;
+    randSol:=null;b4x2r:=null;test1:=null;test2:=null;X:=null;singX:=null;
+    while (
+	while(
+		count=1;
+		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
+		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+		I=trim ideal sub(contract(E3,flatten c),B);
+		 not numgens I== n) do (count=count+1;<<"count= " <<count<<endl;);
+	    <<numgens I<<endl;
+	    sol=vars B%I;
+	    test=1;
+	while (
+	    randSol=sub(sol,random(kk^1,kk^140));
+	    b4x2r=sub(b4x2,vars E|randSol);
+	    betti(bb=map(E^4,,m4x2|b4x2r));
+	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
+	not(test1 and test2) and test<10 ) do (test=test+1;<<"test="<< test<<endl;);
+
+        betti(T=res(coker bb, LengthLimit=>4))
+	X=saturate ideal
+	betti ideal syz symExt(T.dd_4,P4)
+	minimalBetti X
+	dim X, degree X
+	not (dim X ==3 and degree X==12)
+	) do (); 
+    singX=X+minors(2,jacobian X);
+    assert(dim singX==0); 
+    X)
+
+///
+restart
+needsPackage"BGG"
+loadPackage "AdjunctionForSurfaces"
+--viewHelp AdjunctionForSurfaces    
+load"smoothRationalSurfacesInP4.m2"
+
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+elapsedTime (Xs,adjTypes,m4x2s)=collectSmoothAboRanestadSurfaces(P4,116,2);
+tally adjTypes
+tally apply(Xs, X-> (X5=ideal (gens X)_{0..4};
+	R=X5:X;
+	tally apply(decompose R,c->(dim c, degree c, degree (c+X)))))
+	
+kk=ZZ/7
+P4=kk[x_0..x_4]
+N=116
+elapsedTime minimalBetti(X=getSpecialARSurf(P4,116))
+betti(fX=res(X,FastNonminimal=>true))
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
+///
+
+
+
+
+
 
 
 randomSurface=method()
