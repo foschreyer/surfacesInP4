@@ -156,19 +156,6 @@ degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     assert(dim X ==3 and degree X==10 and (genera X)_1==9);
     X)
 
--*
-degree10pi9RanestadSurface=method()
-degree10pi9RanestadSurface(Ring,Ring) := P4 -> (
-    N:=coker (matrix{{P4_0,P4_1,P4_2}}|gens (ideal(P4_3,P4_4))^2)
-    betti(fN:=res N)
-    a:=fN.dd_3^{3..13}_{1..15}
-    m10x15:=transpose syz transpose syz ((random(P4^{2:-3},target a)*a),DegreeLimit=>4)
-    a1:=m10x15*(fN.dd_4)^{1..15}
-    syz a1
-    k2:=map(P4^{5:-4},,koszul(2,vars P4))
-    a2:=a1|(k2++k2)
-    betti syz a2
-*-
 
 degree10DESSurface=method()
 degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
@@ -195,7 +182,7 @@ popescuSurface(Ring,Ring,Number):= (P4,E,s) -> (
     assert(dim X==3 and degree X==11 and (genera X)_1==11);
     X)
 
-bothmerSurface=method()
+vBELSurface=method()
 bothmerSurface(Ring,Ring) := (P4,P2) -> (
     if char P4 !=2 then error "expect a ground field of caharcteristic 2";
     if char P2 =!= char P4 then error "P2 and P4 should have the same characteristic 2";
