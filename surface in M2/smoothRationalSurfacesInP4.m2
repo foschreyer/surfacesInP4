@@ -146,7 +146,7 @@ degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
     assert(dim X==3 and degree X==10 and (genera X)_1==8);
     X)
-dim X
+
 degree10pi9RanestadSurface=method()
 degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     a1:=(syz matrix{{E_0,E_1}})*random(E^{3:-1},E^{2:-2});
@@ -156,19 +156,6 @@ degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     assert(dim X ==3 and degree X==10 and (genera X)_1==9);
     X)
 
--*
-degree10pi9RanestadSurface=method()
-degree10pi9RanestadSurface(Ring,Ring) := P4 -> (
-    N:=coker (matrix{{P4_0,P4_1,P4_2}}|gens (ideal(P4_3,P4_4))^2)
-    betti(fN:=res N)
-    a:=fN.dd_3^{3..13}_{1..15}
-    m10x15:=transpose syz transpose syz ((random(P4^{2:-3},target a)*a),DegreeLimit=>4)
-    a1:=m10x15*(fN.dd_4)^{1..15}
-    syz a1
-    k2:=map(P4^{5:-4},,koszul(2,vars P4))
-    a2:=a1|(k2++k2)
-    betti syz a2
-*-
 
 degree10DESSurface=method()
 degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
@@ -195,8 +182,8 @@ popescuSurface(Ring,Ring,Number):= (P4,E,s) -> (
     assert(dim X==3 and degree X==11 and (genera X)_1==11);
     X)
 
-bothmerSurface=method()
-bothmerSurface(Ring,Ring) := (P4,P2) -> (
+vBELSurface=method()
+vBELSurface(Ring,Ring) := (P4,P2) -> (
     if char P4 !=2 then error "expect a ground field of caharcteristic 2";
     if char P2 =!= char P4 then error "P2 and P4 should have the same characteristic 2";
     t:= symbol t;
@@ -213,7 +200,7 @@ bothmerSurface(Ring,Ring) := (P4,P2) -> (
     X:=ker map(P2,P4,(gens H)_{0..4});
     assert(dim(X+minors(2, jacobian X))==0);
     X)
-
+x3
 ---------------------------------------
 --      Abo-Ranestad surfaces        --
 ---------------------------------------
@@ -332,7 +319,7 @@ smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     while (
 	elapsedTime (X,m4x2)=AboRanestadSurface(P4,n,b);
 	singX=X+minors(2,jacobian X);
-	dim singX !=0 ) do (countSmooth=countSmooth+1);
+xx	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
     (X,m4x2))
 
@@ -1453,6 +1440,109 @@ X=Xs_0;
 betti(T=tateResolutionOfSurface X)    
 ///    
 
+getSpecialARSurf=method()
+--conjecture: these surfaces should end up in a conic bundle.
+--n=115, P4=ZZ/7[x_0..x_4], kk=coefficientRing P4
+getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
+    kk:=coefficientRing P4;
+    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3)=prepareAboRanestadSurfaces(P4);
+    E'=kk[(gens E)_{0..2}];
+    m4x2:=null;c:=null;I:=null;sol:=null;
+    test:=0; count:=0;bb:=null;
+    randSol:=null;b4x2r:=null;test1:=null;test2:=null;X:=null;singX:=null;
+    count2:=0;
+    elapsedTime while (
+    elapsedTime while(
+	test=0;
+elapsedTime 	while (
+	    while (
+		count=1;
+		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
+		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+		I=trim ideal sub(contract(E3,flatten c),B);
+	    not numgens I== n) do (count=count+1;);
+	    --<<numgens I<<endl;
+	    sol=vars B%I;
+	    randSol=sub(sol,random(kk^1,kk^140));
+	    b4x2r=sub(b4x2,vars E|randSol);
+	    betti(bb=map(E^4,,m4x2|b4x2r));
+	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    sbb=syz transpose bb;
+	    test2=degrees source sbb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
+	    betti (Ts=res(coker sbb,LengthLimit=>3));
+	    test3= (rank Ts_3==73); 
+	    not(test1 and test2 and test3)) do (test=test+1;);
+	<<test<<endl;
+        betti(T=res(coker bb, LengthLimit=>4));
+	X=saturate ideal syz symExt(T.dd_4,P4);
+	not(dim X==3 and degree X==12)) do (count2=count2+1;);
+	<<count2<<endl;
+	singX=X+minors(2,jacobian X);
+	not dim singX == 0) do ();
+        <<"non smooth examples="<<count2<<endl;
+	X)
+
+///
+P4=ZZ/7[x_0..x_4]
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,114))
+elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4);
+numList -- {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+minimalBetti J, degree J
+-*
+              0  1  2  3 4 5
+o174 = total: 1 13 30 25 9 2
+           0: 1  .  .  . . .
+           1: . 13 30 25 4 .
+           2: .  .  .  . 5 2
+*-
+X5=ideal (gens X)_{0..4};
+R=X5:X;minimalBetti R, degree R
+tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                               0 1 2 3
+o178 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
+                            0: 1 2 1 .
+                            1: . 1 2 1
+                              0 1 2 3
+             (2, 1, 6, total: 1 3 3 1) => 1
+                           0: 1 3 3 1
+*-
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))  -- 50.2148 seconds elapsed
+elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4); -- 116.543 seconds elapsed
+numList -- {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}
+minimalBetti J, degree J
+-*
+               0 1  2 3 4
+o184 = (total: 1 8 12 7 2, 7)
+            0: 1 .  . . .
+            1: . 8 12 3 .
+            2: . .  . 4 2
+*-
+X5=ideal (gens X)_{0..4};
+R=X5:X;minimalBetti R, degree R
+tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                               0 1 2 3
+o162 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
+                            0: 1 2 1 .
+                            1: . 1 2 1
+                              0 1 2 3
+             (2, 1, 6, total: 1 3 3 1) => 2
+                           0: 1 3 3 1
+*-
+tally apply(primaryDecomposition R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                               0 1 2 3
+o202 = Tally{(2, 2, 11, total: 1 3 3 1) => 1  }
+                            0: 1 2 1 .
+                            1: . 1 2 1
+                               0 1 2 3 4
+             (2, 2, 12, total: 1 5 8 5 1) => 1
+                            0: 1 1 . . .
+                            1: . 4 8 5 1
+-- => a double 6-secant line!
+*-
+///
 end
 
 
@@ -1510,7 +1600,40 @@ setRandomSeed("fast examplesA")
 elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,1);
 #adjTypes1==#Ms1 -- if not true then we have a further new family
 end
--* consruction section *-
+-* construction section *-
+
+
+
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))
+
+
+///
+restart
+needsPackage"BGG"
+loadPackage "AdjunctionForSurfaces"
+--viewHelp AdjunctionForSurfaces    
+load"smoothRationalSurfacesInP4.m2"
+
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+elapsedTime (Xs,adjTypes,m4x2s)=collectSmoothAboRanestadSurfaces(P4,116,1);
+tally adjTypes
+tally apply(Xs, X-> (X5=ideal (gens X)_{0..4};
+	R=X5:X;
+	tally apply(decompose R,c->(dim c, degree c, degree (c+X)))))
+	
+kk=ZZ/7
+P4=kk[x_0..x_4]
+N=116
+elapsedTime minimalBetti(X=getSpecialARSurf(P4,116))
+betti(fX=res(X,FastNonminimal=>true))
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
+///
+
+
+
+
+
 
 
 randomSurface=method()
