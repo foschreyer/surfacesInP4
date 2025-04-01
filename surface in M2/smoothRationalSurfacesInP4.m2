@@ -319,7 +319,7 @@ smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     while (
 	elapsedTime (X,m4x2)=AboRanestadSurface(P4,n,b);
 	singX=X+minors(2,jacobian X);
-	dim singX !=0 ) do (countSmooth=countSmooth+1);
+xx	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
     (X,m4x2))
 
@@ -1440,6 +1440,90 @@ X=Xs_0;
 betti(T=tateResolutionOfSurface X)    
 ///    
 
+getSpecialARSurf=method()
+--conjecture: these surfaces should end up in a conic bundle.
+--n=115, P4=ZZ/7[x_0..x_4], kk=coefficientRing P4
+getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
+    kk:=coefficientRing P4;
+    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3)=prepareAboRanestadSurfaces(P4);
+    E'=kk[(gens E)_{0..2}];
+    m4x2:=null;c:=null;I:=null;sol:=null;
+    test:=0; count:=0;bb:=null;
+    randSol:=null;b4x2r:=null;test1:=null;test2:=null;X:=null;singX:=null;
+    count2:=0;
+    elapsedTime while (
+    elapsedTime while(
+	test=0;
+elapsedTime 	while (
+	    while (
+		count=1;
+		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
+		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+		I=trim ideal sub(contract(E3,flatten c),B);
+	    not numgens I== n) do (count=count+1;);
+	    --<<numgens I<<endl;
+	    sol=vars B%I;
+	    randSol=sub(sol,random(kk^1,kk^140));
+	    b4x2r=sub(b4x2,vars E|randSol);
+	    betti(bb=map(E^4,,m4x2|b4x2r));
+	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    sbb=syz transpose bb;
+	    test2=degrees source sbb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
+	    betti (Ts=res(coker sbb,LengthLimit=>3));
+	    test3= (rank Ts_3==73); 
+	    not(test1 and test2 and test3)) do (test=test+1;);
+	<<test<<endl;
+        betti(T=res(coker bb, LengthLimit=>4));
+	X=saturate ideal syz symExt(T.dd_4,P4);
+	not(dim X==3 and degree X==12)) do (count2=count2+1;);
+	<<count2<<endl;
+	singX=X+minors(2,jacobian X);
+	not dim singX == 0) do ();
+        <<"non smooth examples="<<count2<<endl;
+	X)
+
+///
+P4=ZZ/7[x_0..x_4]
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,114))
+elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4);
+numList -- {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+minimalBetti J, degree J
+-*
+              0  1  2  3 4 5
+o174 = total: 1 13 30 25 9 2
+           0: 1  .  .  . . .
+           1: . 13 30 25 4 .
+           2: .  .  .  . 5 2
+*-
+X5=ideal (gens X)_{0..4};
+R=X5:X;minimalBetti R, degree R
+tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                               0 1 2 3
+o178 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
+                            0: 1 2 1 .
+                            1: . 1 2 1
+                              0 1 2 3
+             (2, 1, 6, total: 1 3 3 1) => 1
+                           0: 1 3 3 1
+*-
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))  -- 50.2148 seconds elapsed
+elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4); -- 116.543 seconds elapsed
+numList -- {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}
+minimalBetti J
+X5=ideal (gens X)_{0..4};
+R=X5:X;minimalBetti R, degree R
+tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                               0 1 2 3
+o162 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
+                            0: 1 2 1 .
+                            1: . 1 2 1
+                              0 1 2 3
+             (2, 1, 6, total: 1 3 3 1) => 2
+                           0: 1 3 3 1
+*-
+///
 end
 
 
@@ -1499,43 +1583,10 @@ elapsedTime (adjTypes1,Ms1)=collectSchreyerSurfaces(adjTypes,Ms,3,1);
 end
 -* construction section *-
 
--- the following is a mess a the moment
-getSpecialARSurf=method()
---conjecture: these surfaces should end up in a conic bundle.
-getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
-    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
-    E':=kk[(gens E)_{0..2}];
-    m4x2:=null;c:=null;I:=null;sol:=null;
-    test:=0; count:=0;bb:=null;
-    randSol:=null;b4x2r:=null;test1:=null;test2:=null;X:=null;singX:=null;
-    while (
-	while(
-		count=1;
-		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
-		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
-		I=trim ideal sub(contract(E3,flatten c),B);
-		 not numgens I== n) do (count=count+1;<<"count= " <<count<<endl;);
-	    <<numgens I<<endl;
-	    sol=vars B%I;
-	    test=1;
-	while (
-	    randSol=sub(sol,random(kk^1,kk^140));
-	    b4x2r=sub(b4x2,vars E|randSol);
-	    betti(bb=map(E^4,,m4x2|b4x2r));
-	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
-	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
-	not(test1 and test2) and test<10 ) do (test=test+1;<<"test="<< test<<endl;);
 
-        betti(T=res(coker bb, LengthLimit=>4))
-	X=saturate ideal
-	betti ideal syz symExt(T.dd_4,P4)
-	minimalBetti X
-	dim X, degree X
-	not (dim X ==3 and degree X==12)
-	) do (); 
-    singX=X+minors(2,jacobian X);
-    assert(dim singX==0); 
-    X)
+
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))
+
 
 ///
 restart
@@ -1546,7 +1597,7 @@ load"smoothRationalSurfacesInP4.m2"
 
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
-elapsedTime (Xs,adjTypes,m4x2s)=collectSmoothAboRanestadSurfaces(P4,116,2);
+elapsedTime (Xs,adjTypes,m4x2s)=collectSmoothAboRanestadSurfaces(P4,116,1);
 tally adjTypes
 tally apply(Xs, X-> (X5=ideal (gens X)_{0..4};
 	R=X5:X;
