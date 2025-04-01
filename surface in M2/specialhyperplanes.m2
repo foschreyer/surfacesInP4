@@ -1,5 +1,6 @@
 
 
+
 --ring P4
 
 
@@ -130,10 +131,9 @@ toString decompose sg34
 
 
 
---Example of AR-surface over ZZ/7 with N=115 , an 11-secant conic and adjunction:
--- (4,12,13),6,(12,24,13),7,(12,18,7),2,(6,7,2)
+--Example of AR-surface over ZZ/7 with N=115 , an 11-secant conic and adjounction:  (4,12,13),6,(12,24,13),7,(12,18,7),2,(6,7,2)
 
-P4=ZZ/7[x_0..x_4]
+
 X= ideal(x_0^4*x_2+x_0^3*x_1*x_2+x_0^2*x_1^2*x_2-x_0^3*x_2^2+2*x_0^2*x_1*x_2^2-3*x_0*x_1^2*x_2^2-2*x_0^2*x_2^3-2*x_0*x_1*x_2^3+3*x_1^2*x_2^3+3*x_0*x_2^4-x_1*x_2^4-3*
         x_2^5+3*x_0^3*x_2*x_3+2*x_1^3*x_2*x_3-2*x_0^2*x_2^2*x_3+3*x_0*x_1*x_2^2*x_3+x_0*x_2^3*x_3+2*x_1*x_2^3*x_3-x_2^4*x_3+2*x_0^2*x_2*x_3^2-x_0*x_1*x_2*x_3^2-3*x_1^2*x_
         2*x_3^2-x_0*x_2^2*x_3^2-2*x_1*x_2^2*x_3^2+2*x_2^3*x_3^2+3*x_0*x_2*x_3^3-2*x_1*x_2*x_3^3+3*x_2^2*x_3^3+x_2*x_3^4+3*x_0^4*x_4+2*x_0^3*x_1*x_4+x_0^2*x_1^2*x_4-3*x_1^
@@ -244,56 +244,8 @@ X= ideal(x_0^4*x_2+x_0^3*x_1*x_2+x_0^2*x_1^2*x_2-x_0^3*x_2^2+2*x_0^2*x_1*x_2^2-3
         4+x_0*x_1*x_4^4-x_1^2*x_4^4-x_0*x_2*x_4^4+x_1*x_2*x_4^4-2*x_2^2*x_4^4+3*x_0*x_3*x_4^4+x_1*x_3*x_4^4-x_2*x_3*x_4^4-2*x_3^2*x_4^4-x_0*x_4^5-3*x_1*x_4^5+2*x_2*x_4^5-
         3*x_3*x_4^5-x_4^6);
 
-minimalBetti X
-elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4); -- 116.543 seconds elapsed
-numList -- {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}
-minimalBetti J
--*
-             0 1  2 3 4
-o83 = total: 1 8 12 7 2
-          0: 1 .  . . .
-          1: . 8 12 3 . 
-          2: . .  . 4 2
-*-
-singX=X+minors(2,jacobian X);
-dim singX==0
-X5=ideal (gens X)_{0..4};
-R=X5:X;minimalBetti R
-tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
--*
-                              0 1 2 3
-o33 = Tally{(2, 2, 11, total: 1 3 3 1) => 1  }
-                           0: 1 2 1 .
-                           1: . 1 2 1
-                              0 1 2 3 4
-            (2, 2, 12, total: 1 5 8 5 1) => 1
-                           0: 1 1 . . .
-                           1: . 4 8 5 1
-*-
-singR=R+minors(3,jacobian R);
-dim singR==0
-
-elapsedTime T=tateResolutionOfSurface(X); -- 5.69458 seconds elapsed
-betti T
--*
-              -1  0  1  2 3 4 5  6  7
-o11 = total: 122 73 37 13 4 4 8 29 77
-         -4:   1  .  .  . . . .  .  .
-         -3: 121 73 37 13 . . .  .  .
-         -2:   .  .  .  . 4 2 .  .  .
-         -1:   .  .  .  . . 2 3  .  .
-          0:   .  .  .  . . . 5 29 77
-*-
-betti (m=T.dd_7)
-Y=saturate ideal syz symExt(m,P4);
-betti Y
-
-E=ring T
-betti(m4x2=T.dd_4_{2,3})
-I012=ideal (vars E)_{0,1,2}
 
 
-betti (sm=syz(transpose (m4x2%I012),DegreeLimit=>-1))
-m4x2'=map(E^4,,(transpose sm*m4x2)||random(E^{2:1},E^2))
+--Example of AR-surface over ZZ/7 with N=115 , an 11-secant conic and adjunction:
+-- (4,12,13),6,(12,24,13),7,(12,18,7),2,(6,7,2)
 
-elapsedTime minimalBetti(Y=smoothAboRanestadSurfaceFromMatrix(m4x2'))
