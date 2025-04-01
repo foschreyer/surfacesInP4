@@ -1510,7 +1510,14 @@ o178 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
 elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))  -- 50.2148 seconds elapsed
 elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4); -- 116.543 seconds elapsed
 numList -- {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}
-minimalBetti J
+minimalBetti J, degree J
+-*
+               0 1  2 3 4
+o184 = (total: 1 8 12 7 2, 7)
+            0: 1 .  . . .
+            1: . 8 12 3 .
+            2: . .  . 4 2
+*-
 X5=ideal (gens X)_{0..4};
 R=X5:X;minimalBetti R, degree R
 tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
@@ -1522,6 +1529,18 @@ o162 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
                               0 1 2 3
              (2, 1, 6, total: 1 3 3 1) => 2
                            0: 1 3 3 1
+*-
+tally apply(primaryDecomposition R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                               0 1 2 3
+o202 = Tally{(2, 2, 11, total: 1 3 3 1) => 1  }
+                            0: 1 2 1 .
+                            1: . 1 2 1
+                               0 1 2 3 4
+             (2, 2, 12, total: 1 5 8 5 1) => 1
+                            0: 1 1 . . .
+                            1: . 4 8 5 1
+-- => a double 6-secant line!
 *-
 ///
 end
