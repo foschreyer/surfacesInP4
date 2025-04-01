@@ -252,7 +252,7 @@ minimalBetti J
              0 1  2 3 4
 o83 = total: 1 8 12 7 2
           0: 1 .  . . .
-          1: . 8 12 3 .
+          1: . 8 12 3 . 
           2: . .  . 4 2
 *-
 singX=X+minors(2,jacobian X);

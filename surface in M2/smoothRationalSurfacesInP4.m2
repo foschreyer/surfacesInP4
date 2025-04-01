@@ -1444,6 +1444,7 @@ getSpecialARSurf=method()
 --conjecture: these surfaces should end up in a conic bundle.
 --n=115, P4=ZZ/7[x_0..x_4], kk=coefficientRing P4
 getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
+    if not member(n,toList(113..115)) then error " expect n in {113..115}";
     kk:=coefficientRing P4;
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3)=prepareAboRanestadSurfaces(P4);
     E'=kk[(gens E)_{0..2}];
@@ -1451,16 +1452,24 @@ getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
     test:=0; count:=0;bb:=null;
     randSol:=null;b4x2r:=null;test1:=null;test2:=null;X:=null;singX:=null;
     count2:=0;
-    elapsedTime while (
-    elapsedTime while(
+    n1:=min(116-n,2);m2x2:=null;
+    m2xk:=map(kk^2,kk^0,0);
+    scan(n1,c-> (
+	    while (m2x2=random(kk^2,kk^2); det m2x2==0) do ();
+	    m2xk=m2xk|m2x2*m2x3*random(kk^3,kk^1)));
+    m2xk=m2xk|random(E^2,E^{2-n1:-1});
+     while (
+     while (
 	test=0;
-elapsedTime 	while (
-	    while (
-		count=1;
-		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
-		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+ 	while (
+    	count1=1;
+	    while (	
+--		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
+                m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|m2xk));
+                c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
 		I=trim ideal sub(contract(E3,flatten c),B);
-	    not numgens I== n) do (count=count+1;);
+	    not numgens I== n) do (count1=count1+1;);
+	    <<"count1="<<count1<<endl;
 	    --<<numgens I<<endl;
 	    sol=vars B%I;
 	    randSol=sub(sol,random(kk^1,kk^140));
@@ -1472,20 +1481,21 @@ elapsedTime 	while (
 	    betti (Ts=res(coker sbb,LengthLimit=>3));
 	    test3= (rank Ts_3==73); 
 	    not(test1 and test2 and test3)) do (test=test+1;);
-	<<test<<endl;
+	<<"test="<<test<<endl;
         betti(T=res(coker bb, LengthLimit=>4));
 	X=saturate ideal syz symExt(T.dd_4,P4);
 	not(dim X==3 and degree X==12)) do (count2=count2+1;);
-	<<count2<<endl;
+	<<"count2="<<count2<<endl;
 	singX=X+minors(2,jacobian X);
 	not dim singX == 0) do ();
         <<"non smooth examples="<<count2<<endl;
 	X)
 
 ///
-P4=ZZ/7[x_0..x_4]
+P4=ZZ/nextPrime 10^3[x_0..x_4]
+
 elapsedTime minimalBetti (X=getSpecialARSurf(P4,114))
-elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4);
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
 numList -- {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
 minimalBetti J, degree J
 -*
@@ -1507,8 +1517,8 @@ o178 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
              (2, 1, 6, total: 1 3 3 1) => 1
                            0: 1 3 3 1
 *-
-elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))  -- 50.2148 seconds elapsed
-elapsedTime (numList,L1,L1,J)=adjunctionProcess(X,4); -- 116.543 seconds elapsed
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,115))  -- 4.66018 seconds elapsed
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4); -- 116.543 seconds elapsed
 numList -- {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}
 minimalBetti J, degree J
 -*
@@ -1522,25 +1532,38 @@ X5=ideal (gens X)_{0..4};
 R=X5:X;minimalBetti R, degree R
 tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
 -*
-                               0 1 2 3
-o162 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
-                            0: 1 2 1 .
-                            1: . 1 2 1
                               0 1 2 3
-             (2, 1, 6, total: 1 3 3 1) => 2
-                           0: 1 3 3 1
+o24 = Tally{(2, 2, 11, total: 1 3 3 1) => 1  }
+                           0: 1 2 1 .
+                           1: . 1 2 1
+                              0 1 2 3 4
+            (2, 2, 12, total: 1 5 8 5 1) => 1
+                           0: 1 1 . . .
+                           1: . 4 8 5 1
 *-
-tally apply(primaryDecomposition R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+
+P4=ZZ/11[x_0..x_4]
+setRandomSeed("fast example")
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,113))  -- 28.9023 seconds elapsed
+elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4); 
+numList --  {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
+minimalBetti J, degree J
 -*
-                               0 1 2 3
-o202 = Tally{(2, 2, 11, total: 1 3 3 1) => 1  }
-                            0: 1 2 1 .
-                            1: . 1 2 1
-                               0 1 2 3 4
-             (2, 2, 12, total: 1 5 8 5 1) => 1
-                            0: 1 1 . . .
-                            1: . 4 8 5 1
--- => a double 6-secant line!
+              0  1  2  3  4  5 6
+o29 = (total: 1 19 58 75 44 11 2, 9)
+           0: 1  .  .  .  .  . .
+           1: . 19 58 75 44  5 .
+           2: .  .  .  .  .  6 2
+
+*-
+X5=ideal (gens X)_{0..4};
+R=X5:X;minimalBetti R, degree R
+tally apply(decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+-*
+                              0 1 2 3
+o33 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
+                           0: 1 2 1 .
+                           1: . 1 2 1
 *-
 ///
 end
