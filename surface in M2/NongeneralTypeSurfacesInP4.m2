@@ -1,13 +1,26 @@
+///
+restart
+
+uninstallPackage "NongeneralTypeSurfacesInP4"
+restart
+loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
+installPackage "NongeneralTypeSurfacesInP4"
+
+viewHelp "NongeneralTypeSurfacesInP4"
+check "NongeneralTypeSurfaceInP4"
+path
+viewHelp 
+///
+
 newPackage(
     "NongeneralTypeSurfacesInP4",
     Version => "0.1",
     Date => "March 28, 2025",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
-	--{ Name => "Hirotachi Abo", Email => "abo@uidaho.edu", HomePage => "add"},
-	--       { Name => "Kristian Ranestad", Email => "ranestad@math.uio.no", HomePage => "add"},
-	--        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer/index.php/publications/publications-frank-olaf-schreyer"},
-		},
+	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://add"},
+	        { Name => "Kristian Ranestad", Email => "ranestad@math.uio.no", HomePage => "https://add"},
+	        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer"}},
     AuxiliaryFiles => false,
     DebuggingMode => true,
     PackageExports => {"BGG","AdjunctionForSurfaces"},
@@ -19,7 +32,7 @@ export {
     "sectionalGenus",
     "chiTable",
     "Ksquare",
-    "LeBarzN6formula",
+    "LeBarzN6",
     "cubicScroll",
     "veroneseSurface",
     "delPezzoSurface",
@@ -38,6 +51,7 @@ export {
     "randomSurfaceDegreeAndSectionalGenus",
     "enriquesSurfaceOfDegree9",
     "enriquesSurfaceOfDegree10",
+    "enriquesSurfaceOfDegree11",
     "k3Surfaces",
     "quinticEllipticScroll",
     "horrocksMumfordSurface",
@@ -49,7 +63,8 @@ export {
     "knownExamples",
     "schreyerSurfaces",
     "aboRanestadSurfaces",
-    "tateResolutionOfSurface"
+    "tateResolutionOfSurface",
+    "outputOfTheAdjunctionProcessCommand"
 }
 
 
@@ -216,7 +231,7 @@ degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
 
 popescuSurface=method()
 
-popescuSurface(Ring,Ring,Number):= (P4,E,s) -> (
+popescuSurface(PolynomialRing,Ring,Number):= (P4,E,s) -> (
     kk:= coefficientRing P4;
     if not member(s,{0,1,2}) then error "expect s in {0,1,2}";
 	aa:=null;
@@ -356,6 +371,332 @@ Description
     minimalBetti X
 ///
 
+doc ///
+Key
+ bordigaSurface
+ (bordigaSurface, PolynomialRing)
+Headline
+ construct a Bordiga surface
+Usage
+ X= bordigaSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of the Bordiga surface in P4
+Description
+  Text
+    Constructs a Bordiga surface via its Hilbert-Burch matrix
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=bordigaSurface P4)
+///
+
+doc ///
+Key
+ veroneseSurface
+ (veroneseSurface, PolynomialRing, PolynomialRing)
+Headline
+ construct the Veronese surface
+Usage
+ X= veroneseSurface(P4,P2)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of the Veronese surface in P4
+Description
+  Text
+    We compute the image from the parametization.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    P2=kk[y_0..y_2]
+    minimalBetti(X=veroneseSurface(P4,P2))
+///
+
+doc ///
+Key
+ delPezzoSurface
+ (delPezzoSurface, PolynomialRing)
+Headline
+ construct the del Pezzo surface
+Usage
+ X= delPezzoSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of the cubic scroll in P4
+Description
+  Text
+    We choose randomly two quadrics.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=delPezzoSurface P4)
+///
+
+doc ///
+Key
+ castelnuovoSurface
+ (castelnuovoSurface, PolynomialRing)
+Headline
+ construct the castelnuovo surface
+Usage
+ X= castelnuovoSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of the del Pezzo in P4
+Description
+  Text
+    We construct a Castelnuove surface from its Hilbert-Burch matrix
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=castelnuovoSurface P4)
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(5,2,1)
+  Text
+    X is a conic bundle. We compute the number of singular fibers.
+  Example
+    P1=kk[z_0,z_1]
+    P4xP1=P4**P1
+    fibration=ideal(sub(syz gens X,P4xP1) * transpose sub(vars P1,P4xP1));
+    singFibration= fibration+minors(3,diff(transpose sub(vars P4,P4xP1), gens fibration));
+    singularFibers=trim sub(saturate(singFibration,ideal sub(vars P4,P4xP1)),P1)
+    degree singularFibers
+  Text
+    The are 7 singular fibers,
+    which fits with Ksquare=1==8-7
+///
+
+doc ///
+Key
+ degree8OkonekSurface
+ (degree8OkonekSurface, PolynomialRing, Ring)
+Headline
+ construct a degree 8 Okonek surface
+Usage
+ X= degree8OkonekSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of the cubic scroll in P4
+Description
+  Text
+    We construct the surface from a randomly choosen differential T.dd_3
+    of the Tate resolution of the desired ideal.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    minimalBetti(X=degree8OkonekSurface(P4,E))
+    degree X, sectionalGenus X
+    betti(T=tateResolutionOfSurface X)
+    betti T.dd_3
+///
+
+doc ///
+Key
+ ionescuOkonekSurface
+ (ionescuOkonekSurface, PolynomialRing,PolynomialRing)
+Headline
+ construct a Ionescu-Okonek surface
+Usage
+ X= ionescuOkonekSurface(P4,P2)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ P2:PolynomialRing
+  coordinate ring of P2
+Outputs
+ X:Ideal
+  of a Ionescu-Okonek surface in P4
+Description
+  Text
+    We construct a Ionescu-Okonek surface from its rational parametrization.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    P2=kk[y_0..y_2];
+    minimalBetti(X=ionescuOkonekSurface(P4,P2))
+    degree X, sectionalGenus X
+///
+
+doc ///
+Key
+ degree10DESSurface
+ (degree10DESSurface,PolynomialRing,Ring)
+Headline
+ construct the degree 10 Decker-Ein-Schreyer surface
+Usage
+ X=degree10DESSurface(P4,E)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ E:Ring
+  dual exterior algebra
+Outputs
+ X:Ideal
+  of a degree 10 Decker-Ein-Schreyer surface in P4
+Description
+  Text
+    We construct the surface from a randomly choosen differential T.dd_4
+    of the Tate resolution of the desired ideal.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    minimalBetti(X=degree10DESSurface(P4,E))
+    degree X, sectionalGenus X
+    betti(T=tateResolutionOfSurface X)
+    betti(T.dd_4)
+///
+
+doc ///
+Key
+ degree10pi8RanestadSurface
+ (degree10pi8RanestadSurface, PolynomialRing)
+Headline
+ construct a degree 10 sectional genus 8 Ranestad surface
+Usage
+ X= degree10pi8RanestadSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of the cubic scroll in P4
+Description
+  Text
+    We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
+    with Hilbert function (2,5,3).
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=degree10pi8RanestadSurface P4)
+    betti(T=tateResolutionOfSurface X)
+///
+
+doc ///
+Key
+ degree10pi9RanestadSurface
+ (degree10pi9RanestadSurface, PolynomialRing,Ring)
+Headline
+ construct a degree 10 sectional genus 9 Ranestad surface
+Usage
+ X= degree10pi8RanestadSurface(P4,E)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ E:Ring
+   dual exterior algebra
+Outputs
+ X:Ideal
+  of a degree 10 sectional genus 9 Ranestad surface in P4
+Description
+  Text
+    We construct the surface from a carefully choosen differential T.dd_4
+    of the Tate resolution.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    minimalBetti(X=degree10pi9RanestadSurface(P4,E))
+    betti(T=tateResolutionOfSurface X)
+    betti(T.dd_4)
+    degree X, sectionalGenus X
+///
+
+doc ///
+Key
+ nonspecialAlexanderSurface
+ (nonspecialAlexanderSurface, PolynomialRing)
+ (nonspecialAlexanderSurface, PolynomialRing,PolynomialRing)
+Headline
+ construct a nonspecial Alexander surface of degree 9
+Usage
+ X= nonspecialAlexanderSurface P4
+ X= nonspecialAlexanderSurface(P4,P2)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ P2:PolynomialRing
+  coordinate ring of P2 
+Outputs
+ X:Ideal
+  of a a nonspecial Alexander surface of degree 9 in P4
+Description
+  Text
+    We construct a nonspecial Alexander surface of degree 9 from its rational parametrization,
+    or what is faster from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module has
+    a special presentation which gives rize to a six sectant line
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4))
+    X5=ideal (gens X)_{0..14};
+    L=X5:X -- L is the six secant line
+    degree(L+X)==6
+    P2=kk[y_0..y_2];
+    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
+    degree X, sectionalGenus X
+    betti(T=tateResolutionOfSurface X)
+    X5=ideal (gens X)_{0..14};
+    L=X5:X -- L is the six secant line
+    degree(L+X)==6
+
+SeeAlso
+   enriquesSurfaceOfDegree9
+///
+
+doc ///
+Key
+ specialityOneAlexanderSurface
+ (specialityOneAlexanderSurface, PolynomialRing,Ring)
+Headline
+ construct a speciality One AlexanderSurface Alexander surface of degree 9
+Usage
+ X= specialityOneAlexanderSurface(P4,E)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ P2:PolynomialRing
+  coordinate ring of P2 
+Outputs
+ X:Ideal
+  of a a nonspecial Alexander surface of degree 9 in P4
+Description
+  Text
+    We construct a speciality 1 Alexander Surfac of degree 9 from its differential
+    T.dd_4 of the Tate resolution.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    elapsedTime minimalBetti(X=specialityOneAlexanderSurface(P4,E))
+    degree X, sectionalGenus X
+    betti(T=tateResolutionOfSurface X)
+    betti(T.dd_4)
+    betti res(coker random(target T.dd_4,source T.dd_4),LengthLimit=>4)
+    betti res(coker transpose random(target T.dd_4,source T.dd_4),LengthLimit=>5)
+  Text
+    Thus a random choice of the differential T.dd_4 leads to a surface and the component of the Hilbert scheme is unirational
+    
+///
+
+
+ 
 
 doc ///
 Key
@@ -418,4 +759,81 @@ check "NongeneralTypeSurfaceInP4"
 path
 viewHelp 
 
+-* 
+doc ///
+Key
+ popescuSurface
+ (popescuSurface, PolynomialRing,Ring,Number)
+Headline
+ construct a Popescu surface 
+Usage
+ X= popescuSurface(P4,E,0)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ E:Ring
+  dual exterior algebra
+ s: Number
+  the number of desired 6-secants
+Outputs
+ X:Ideal
+  of a Popescu surface in P4
+Description
+  Text
+    The Popescu surfaces come in three families, distinguished by their number of 6-secant lines.
+    One has to choose the differential T.dd_4 suitable.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    minimalBetti(X=popescuSurface(P4,E,0))
+    (d,sg)=(degree X, sectionalGenus X)
+  Text
+    Since the ideal of X is generated by quintics, there is no 6-secant line.
+  Example  
+    betti(T=tateResolutionOfSurface X)
+    elapsedTime minimalBetti(X=popescuSurface(P4,E,1))
+    X5=ideal (gens X)_{0..9};
+    L=X5:X, degree(L+X)
+  
+    elapsedTime minimalBetti(X=popescuSurface(P4,E,2))
+    X5=ideal (gens X)_{0..9};
+    R=X5:X -- a plane
+    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
+  Text
+    Every line in the plane through the point is a 6-secant line, since the plane intersects the surface in a plane quintic curve.
+  
+SeeAlso
+  outputOfTheAdjunctionProcessCommand
+///
 
+
+
+-- Leftover from popesuSurface
+  Text
+    So there is one 6-secant line.
+  Example
+    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
+    numList
+    numList_1
+  Text
+    The entry numList_1 is the number of (-1) lines on X. Thus we must have
+  Example
+    LeBarzN6(d,sg,1)==6+1
+  Text
+    Since the number of (-1) lines + the number of 6-secant lines is computed by Le Barz formula.
+  Example
+Example
+    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
+    numList_1 > LeBarzN6(d,sg,1)
+  Text
+    Since the number of (-1) lines is larger than the quantity computed by Le Barz formula, there cannot be only finitely many 6-secants.
+
+  Example
+    numList, minimalBetti J
+    Ksquare(d,sg,1)==8-7-9-3
+  Text
+    In this case the last adjoint surface is a Castelnuovo surface in P4 which is a Hirzebruch surface
+    blown up in 7 points. The adjunction process blows-down 9 (-1) lines and 3 (-1) conics.
+    Thus altogether there are 9+3+7 points blown-up.
+*-

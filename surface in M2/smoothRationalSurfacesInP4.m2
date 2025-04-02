@@ -319,7 +319,7 @@ smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     while (
 	elapsedTime (X,m4x2)=AboRanestadSurface(P4,n,b);
 	singX=X+minors(2,jacobian X);
-xx	dim singX !=0 ) do (countSmooth=countSmooth+1);
+	dim singX !=0 ) do (countSmooth=countSmooth+1);
     <<countSmooth;
     (X,m4x2))
 
@@ -1492,8 +1492,13 @@ getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
 	X)
 
 ///
-P4=ZZ/nextPrime 10^3[x_0..x_4]
+restart
+needsPackage"BGG"
+loadPackage "AdjunctionForSurfaces"
+--viewHelp AdjunctionForSurfaces    
+load"smoothRationalSurfacesInP4.m2"
 
+P4=ZZ/nextPrime 10^3[x_0..x_4]
 elapsedTime minimalBetti (X=getSpecialARSurf(P4,114))
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
 numList -- {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
@@ -1542,9 +1547,9 @@ o24 = Tally{(2, 2, 11, total: 1 3 3 1) => 1  }
                            1: . 4 8 5 1
 *-
 
-P4=ZZ/11[x_0..x_4]
+P4=ZZ/nextPrime 101[x_0..x_4]
 setRandomSeed("fast example")
-elapsedTime minimalBetti (X=getSpecialARSurf(P4,113))  -- 28.9023 seconds elapsed
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,113))   -- 8.20053 seconds elapsed
 elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4); 
 numList --  {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
 minimalBetti J, degree J
@@ -1565,6 +1570,42 @@ o33 = Tally{(2, 2, 11, total: 1 3 3 1) => 1}
                            0: 1 2 1 .
                            1: . 1 2 1
 *-
+-- study the linked surfaces
+P4=ZZ/nextPrime 10^3[x_0..x_4]
+elapsedTime minimalBetti (X=getSpecialARSurf(P4,114))
+ci=ideal (gens X*random(source gens X,P4^{2:-5}));
+Y=ci:X;
+minimalBetti Y
+singY=Y + minors(2,jacobian Y);
+dim singY==0
+genera Y
+betti(T=tateResolutionOfSurface Y)
+betti(tateResolutionOfSurface X)
+betti(omegaY=Ext^1(Y,P4^{-5}))
+betti(presOmegaY=presentation omegaY)
+betti(som=syz(presOmegaY^{3..6}))
+betti(phi1=presOmegaY^{0..2}*som)
+betti(fib=trim ideal(random(P4^1,P4^3)*phi1))
+dim fib, degree fib
+betti radical fib
+-- Y -> P2 is generically 3:1 => Y is of general type
+--elapsedTime (numList,L1,L2,J)=adjunctionProcess(Y,1);
+X5=ideal (gens X)_{0..4};
+R=X5:X;minimalBetti R, degree R
+tally apply(cR=decompose R,c->(dim c, degree c, degree (c+X),minimalBetti c))
+apply(cR,c->c+Y==c)
+apply(cR,c->(c2=saturate(c^2+Y);(degree c,dim c2, degree c2, minimalBetti c2, degree c2,
+	    genera c, genera c2, genus c2-genus c)))
+--Oc2=L+Oc
+--chiL=deg L +1, chiL=-(genus c2-genus c)==2 => deg L=-1
+conic=first cR
+line= last cR
+betti(phiLine=trim coker (phi1%line))
+kk=coefficientRing P4
+P2=kk[z_0..z_2]
+P2xP4=P2**P4
+LP2=map(P2^4,,sub(contract(sub(basis(2,P4),P2xP4),transpose(sub(vars P2,P2xP4)*sub((presentation phiLine)_{0..3},P2xP4))),P2))
+ann coker LP2
 ///
 end
 
