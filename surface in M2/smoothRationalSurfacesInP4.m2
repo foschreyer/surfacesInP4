@@ -225,7 +225,7 @@ AboRanestadSurface(Ring,Number) := (P4,n) -> (
     -- Input: P4 ring of P4
     --        n number of desired generators of the ideal I below, 
     -- Output: X an ideal of an AR surface,
-    --         m4x2, m2x3 linear Matrices over the exterior algebra    
+    --         m4x2 linear matrix over the exterior algebra    
     assert(member(n,toList(112..117)));
     k:=min(4,120-n);
     kk:= coefficientRing P4;
@@ -263,7 +263,7 @@ AboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
     --        n number of desired generators of the ideal I below, 
     --        b number of generators of the desired surface (b=9 or 10 in the examples)
     -- Output: X an ideal of an AR surface,
-    --         m4x2,m2x3 linear Matrices over the exterior algebra     
+    --         m4x2 a linear matrix over the exterior algebra     
     assert(member(n,toList(112..117)));
     k:=min(4,120-n);
     kk:= coefficientRing P4;
@@ -2144,3 +2144,23 @@ elapsedTime tally apply(Ms_{4}, M -> (
 	<<numList <<endl;
 	<<minimalBetti J <<endl;
 	numList))
+---- schreyer surface modules attempt
+
+kk=ZZ/nextPrime 10
+P4=kk[x_0..x_4]
+k3=koszul(3,vars P4)
+betti(m10x45=matrix basis(-1,coker transpose koszul(2,vars P4)))
+B=kk[a_0..b_44]
+m45x2=genericMatrix(B,a_0,45,2)
+P4xB=P4**B
+m10x2=sub(transpose k3,P4xB)*sub(m10x45,P4xB)*sub(m45x2,P4xB)
+x2=sub(basis(2,P4),P4xB)
+tally apply(100,c->(	 
+	out=random(P4^1,P4^{5:-1});
+	out1=sub(out,P4xB)|sub(vars B,P4xB);
+	rels=trim sub(ideal contract(x2,m10x2_{0}-sub(m10x2_{1},out1)),B);
+	subs1=vars B%rels;
+	subs2=sub(sub(vars B, subs1),random(kk^1,kk^90));
+	m=ideal sub(m10x2_{0},vars P4|subs2);
+	(minimalBetti m, betti rels)
+	))

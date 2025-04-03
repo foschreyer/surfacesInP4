@@ -178,6 +178,13 @@ nonspecialAlexanderSurface(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==9 and sectionalGenus X==6);
     X)
 
+enriquesSurfaceOfDegree9=method()
+enriquesSurfaceOfDegree9(PolynomialRing) := P4 -> (
+    N:=random(P4^1,P4^{12:-2});
+    betti (fN:=res coker N);
+    X:=trim ideal (fN.dd_4*syz fN.dd_4^{15..20});
+    assert(dim X==3 and degree X==9 and sectionalGenus X==6);
+    X)
 
 nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     --tenPts = minors(4,random(P4^5,P4^{4:-1}));
@@ -206,6 +213,18 @@ degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
     aa:=map(P4^2,,a1|a2);
     faa:=res(coker aa,LengthLimit=>4);
     b1:=faa.dd_3^{0..14}_{0..13};
+    m15x5:=syz transpose syz (transpose (b1*random(source b1,P4^{1:-4})),DegreeLimit=>-3);
+    X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
+    assert(dim X==3 and degree X==10 and sectionalGenus X==8);
+    X)
+
+enriquesSurfaceOfDegree10=method()
+enriquesSurfaceOfDegree10(PolynomialRing) := P4 -> (
+    a1:=transpose matrix apply (5,i->{P4_i,random(0,P4)*P4_i});
+    a2:=map(P4^1,P4^{2:-2},0)||matrix{{sum(3,i->random(0,P4)*P4_i^2),sum(3,i->random(0,P4)*P4_(i+2)^2)}};
+    aa:=map(P4^2,,a1|a2);
+    faa:=res(coker aa,LengthLimit=>4);
+    b1:=faa.dd_3^{0..14}_{0..12};
     m15x5:=syz transpose syz (transpose (b1*random(source b1,P4^{1:-4})),DegreeLimit=>-3);
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
     assert(dim X==3 and degree X==10 and sectionalGenus X==8);
@@ -576,7 +595,7 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of the cubic scroll in P4
+  of a degree 10 sectional genus 8 Ranestad surface in P4
 Description
   Text
     We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
@@ -586,7 +605,61 @@ Description
     P4=kk[x_0..x_4];
     minimalBetti(X=degree10pi8RanestadSurface P4)
     betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    LeBarzN6(d,sg,1)==6
+    Ksquare(d,sg,1)==-4
+
+SeeAlso
+   enriquesSurfaceOfDegree10
+   outputOfTheAdjunctionProcessCommand
 ///
+
+
+doc ///
+Key
+ enriquesSurfaceOfDegree10
+ (enriquesSurfaceOfDegree10, PolynomialRing)
+Headline
+ construct an Enriques surface of degree 10 
+Usage
+ X= enriquesSurfaceOfDegree10 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an Enriques surface of degree 10 in P4
+Description
+  Text
+    We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
+    with Hilbert function (2,5,3).
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=enriquesSurfaceOfDegree10 P4)
+    betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    LeBarzN6(d,sg,1)==6
+    Ksquare(d,sg,1)==-4
+    X5=ideal (gens X)_{0..9};
+    R=X5:X;
+    dim R,degree R
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+    numList
+    minimalBetti Y
+    2*sectionalGenus Y- 2== degree Y
+    fourPoints=saturate L2_0;
+    dim fourPoints,degree fourPoints
+  Text
+    The first adjunction maps blows down 4 (-1) lines. Hence the self-intersection number of the
+    canonical divisor on Y is K_Y^2=K_X^2+4=0. Moreover H_Y.K_Y=0. So K_Y is numerically
+    trivial and Y is a minimal Enriques surface.
+    
+SeeAlso
+    degree10pi8RanestadSurface
+    outputOfTheAdjunctionProcessCommand
+///
+
 
 doc ///
 Key
@@ -635,7 +708,7 @@ Inputs
   coordinate ring of P2 
 Outputs
  X:Ideal
-  of a a nonspecial Alexander surface of degree 9 in P4
+  of a nonspecial Alexander surface of degree 9 in P4
 Description
   Text
     We construct a nonspecial Alexander surface of degree 9 from its rational parametrization,
@@ -662,6 +735,57 @@ SeeAlso
 
 doc ///
 Key
+ enriquesSurfaceOfDegree9
+ (enriquesSurfaceOfDegree9, PolynomialRing)
+ 
+Headline
+ construct a Enriques surface  of degree 9
+Usage
+ X=  enriquesSurfaceOfDegree9 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an Enriques surface of degree 9 in P4
+Description
+  Text
+    We construct the Enriques surface from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module
+    is defined by 12 quadrics and completely determines X. In the dual projective space P4^*
+    this corresponds to a canonical curve of genus 5 defined by 3=15-12 quadrics.
+    The Enriques surface is non-minimal. It is the projection of a Fano polarized minimal
+    Enriques surface in P5. Thus the unversal family of the Hilbert scheme of Fano polarized
+    Enriques surfaces is birational to the Hilbert scheme of canonical curves of genus 5 in P5.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    elapsedTime minimalBetti(X=enriquesSurfaceOfDegree9(P4))
+    betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,1)==-1
+    LeBarzN6(d,sg,1)
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+    numList
+    minimalBetti Y
+    2*sectionalGenus Y -2== degree Y
+    point=saturate L2_0
+    dim point
+  Text
+    The self-intersection number of the canonical divisor on the first adjoint surface Y
+    is K_Y^2=K_X^2+1=0. Moreover H_Y.K_Y =0. Hence K_Y is numerically trivial
+    and Y is a minimal Enriques surface. 
+SeeAlso
+   nonspecialAlexanderSurface
+   outputOfTheAdjunctionProcessCommand
+///
+
+
+
+
+
+
+doc ///
+Key
  specialityOneAlexanderSurface
  (specialityOneAlexanderSurface, PolynomialRing,Ring)
 Headline
@@ -675,7 +799,7 @@ Inputs
   coordinate ring of P2 
 Outputs
  X:Ideal
-  of a a nonspecial Alexander surface of degree 9 in P4
+  of a speciality one Alexander surface of degree 9 in P4
 Description
   Text
     We construct a speciality 1 Alexander Surfac of degree 9 from its differential
