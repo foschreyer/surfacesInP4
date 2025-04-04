@@ -1219,7 +1219,16 @@ tangentDimension(Ideal) := (M) -> (
 exampleOfSchreyerSurfaces=method()
 exampleOfSchreyerSurfaces(Ring) := P4 -> (
     if char P4 !=3 then error "expected coordinate ring of P4 in caharcteristic 3";
-    Ms:={ideal(-x_2*x_3+x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+x_2^2+x_0*x_3-x_
+    Ms:={ideal(-x_0*x_2+x_1*x_2+x_0*x_3+x_2*x_3-x_0*x_4+x_1*x_4+x_2*x_4-x_3*x_4,x_1*x
+      _2-x_1*x_3+x_2*x_3-x_3^2+x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4,x_0*x_2-x_1*x_2+x_0
+      *x_3-x_1*x_3-x_0*x_4-x_2*x_4+x_4^2,-x_1*x_2+x_2^2-x_0*x_3+x_1*x_3+x_2*x_3+x_
+      1*x_4-x_2*x_4+x_3*x_4-x_4^2,-x_1^2+x_0*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4+x_3
+      *x_4,-x_0*x_1+x_1^2-x_0*x_3-x_1*x_3+x_3^2+x_3*x_4,x_1^2-x_1*x_2-x_0*x_3-x_1*
+      x_3+x_2*x_3+x_3^2-x_3*x_4+x_4^2,x_0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_
+      4+x_3*x_4+x_4^2,x_0^2-x_0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_4+x_2*x_4-
+      x_3*x_4-x_4^2,-x_0*x_1+x_0*x_2-x_0*x_3-x_2*x_3-x_0*x_4+x_2*x_4-x_3*x_4+x_4^2
+      ), 
+      ideal(-x_2*x_3+x_3^2-x_2*x_4-x_3*x_4+x_4^2,x_0*x_2+x_1*x_2+x_2^2+x_0*x_3-x_
       1*x_3+x_3^2+x_0*x_4+x_1*x_4-x_2*x_4-x_4^2,x_0*x_2-x_1*x_2+x_2^2-x_2*x_3+x_3^
       2+x_0*x_4-x_1*x_4-x_3*x_4-x_4^2,x_2^2+x_0*x_3+x_1*x_3-x_3^2+x_0*x_4+x_1*x_4+
       x_2*x_4+x_3*x_4-x_4^2,-x_0*x_1-x_1^2-x_1*x_2+x_0*x_3+x_2*x_3+x_3^2+x_2*x_4+x
@@ -1228,15 +1237,7 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
       _0^2+x_0*x_1+x_0*x_2-x_0*x_3-x_1*x_3-x_2*x_3-x_3^2-x_1*x_4+x_2*x_4-x_3*x_4-x
       _4^2,x_0^2-x_0*x_1+x_0*x_2-x_0*x_3+x_2*x_3+x_3^2+x_0*x_4,x_0*x_2+x_0*x_3-x_1
       *x_3+x_2*x_3-x_3^2+x_0*x_4+x_1*x_4-x_2*x_4+x_3*x_4+x_4^2),
-      ideal(-x_0*x_2+x_1*x_2+x_0*x_3+x_2*x_3-x_0*x_4+x_1*x_4+x_2*x_4-x_3*x_4,x_1*x
-      _2-x_1*x_3+x_2*x_3-x_3^2+x_0*x_4-x_1*x_4+x_2*x_4-x_3*x_4,x_0*x_2-x_1*x_2+x_0
-      *x_3-x_1*x_3-x_0*x_4-x_2*x_4+x_4^2,-x_1*x_2+x_2^2-x_0*x_3+x_1*x_3+x_2*x_3+x_
-      1*x_4-x_2*x_4+x_3*x_4-x_4^2,-x_1^2+x_0*x_3+x_3^2-x_0*x_4+x_1*x_4-x_2*x_4+x_3
-      *x_4,-x_0*x_1+x_1^2-x_0*x_3-x_1*x_3+x_3^2+x_3*x_4,x_1^2-x_1*x_2-x_0*x_3-x_1*
-      x_3+x_2*x_3+x_3^2-x_3*x_4+x_4^2,x_0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_
-      4+x_3*x_4+x_4^2,x_0^2-x_0*x_1-x_0*x_3-x_2*x_3+x_3^2-x_0*x_4-x_1*x_4+x_2*x_4-
-      x_3*x_4-x_4^2,-x_0*x_1+x_0*x_2-x_0*x_3-x_2*x_3-x_0*x_4+x_2*x_4-x_3*x_4+x_4^2
-      ), ideal(x_1*x_3+x_2*x_3-x_3^2-x_0*x_4+x_1*x_4,-x_0*x_2-x_1*x_2-x_2^2+x_0*x_
+      ideal(x_1*x_3+x_2*x_3-x_3^2-x_0*x_4+x_1*x_4,-x_0*x_2-x_1*x_2-x_2^2+x_0*x_
       3-x_1*x_3-x_2*x_3-x_0*x_4-x_1*x_4+x_2*x_4,x_1*x_2-x_2^2-x_0*x_3+x_2*x_3+x_0*
       x_4+x_2*x_4+x_4^2,-x_1*x_2-x_2^2-x_0*x_3-x_1*x_3+x_2*x_3-x_0*x_4-x_1*x_4-x_3
       *x_4,x_0*x_1+x_1^2+x_1*x_2+x_0*x_3+x_3^2-x_0*x_4+x_3*x_4,-x_1^2+x_1*x_2+x_0*
@@ -1295,8 +1296,9 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
       4+x_3*x_4+x_4^2,x_0^2+x_0*x_3+x_1*x_3+x_3^2+x_0*x_4+x_2*x_4+x_3*x_4-x_4^2,-x
       _0*x_3-x_1*x_3-x_3^2+x_4^2,x_0^2+x_0*x_1+x_0*x_2+x_0*x_3+x_2*x_3+x_0*x_4+x_2
       *x_4-x_4^2)};
-    adjTypes:={{(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)},
+    adjTypes:={
       {(4,11,10), 5, (9,19,11), 1, (10,20,11), 0, (10,20,11), 0, (10,20,11)},
+      {(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)},
       {(4,11,10), 3, (9,19,11), 1, (10,18,9), 2, (8,12,5), 4, (4,4,1)},
       {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0, (8,13,6), 3, (5,6,2)},
       {(4,11,10), 2, (9,19,11), 3, (10,17,8), 2, (7,10,4), 2, (3,3,1)},
@@ -1310,6 +1312,8 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
 P4=(ZZ/3)[x_0..x_4]
 (Ms,adjTypes)=exampleOfSchreyerSurfaces(P4);
 netList apply(9,i->(minimalBetti Ms_i,adjTypes_i))
+Xs
+
 -*
        +----------------------------------------------------------------------------------------------------------+
        |        0  1  2  3  4 5                                                                                   |
@@ -2144,23 +2148,4 @@ elapsedTime tally apply(Ms_{4}, M -> (
 	<<numList <<endl;
 	<<minimalBetti J <<endl;
 	numList))
----- schreyer surface modules attempt
 
-kk=ZZ/nextPrime 10
-P4=kk[x_0..x_4]
-k3=koszul(3,vars P4)
-betti(m10x45=matrix basis(-1,coker transpose koszul(2,vars P4)))
-B=kk[a_0..b_44]
-m45x2=genericMatrix(B,a_0,45,2)
-P4xB=P4**B
-m10x2=sub(transpose k3,P4xB)*sub(m10x45,P4xB)*sub(m45x2,P4xB)
-x2=sub(basis(2,P4),P4xB)
-tally apply(100,c->(	 
-	out=random(P4^1,P4^{5:-1});
-	out1=sub(out,P4xB)|sub(vars B,P4xB);
-	rels=trim sub(ideal contract(x2,m10x2_{0}-sub(m10x2_{1},out1)),B);
-	subs1=vars B%rels;
-	subs2=sub(sub(vars B, subs1),random(kk^1,kk^90));
-	m=ideal sub(m10x2_{0},vars P4|subs2);
-	(minimalBetti m, betti rels)
-	))
