@@ -4,12 +4,12 @@ restart
 uninstallPackage "NongeneralTypeSurfacesInP4"
 
 restart
-loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
+loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
 installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
-path
+path 
 help adjunctionProcess
 ///
 

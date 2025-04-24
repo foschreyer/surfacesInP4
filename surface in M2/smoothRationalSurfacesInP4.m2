@@ -2214,6 +2214,7 @@ betti(L=intersect Ls)
 cub=ideal(gens L*random(source gens L,P4^{-3}))
 C=(intersect planes+cub):L;
 betti(fC=res C)
+apply(primaryDecomposition (C+X),c->betti c)
 M=ideal fC.dd_4^{1..10} 
 minimalBetti M
 X=schreyerSurfaceFromModule M;
@@ -2222,9 +2223,17 @@ X5=ideal (gens X)_{0..4};
 R=X5:X;
 dim R, degree R
 dim(R+X), degree (R+X)
-tally apply(decompose(R+X),c->(dim c, degree c, minimalBetti c))
-R
-ps
+tally apply(decompose(R+X),c->(dim c, degree c, minimalBetti radical c))
+tally apply(planes,c->(dim c, degree (c+C), tally apply(decompose(c+C),d->(degree d,dim d,minimalBetti d)))
+)
+tally apply(planes,c->(dim c, degree (c+X), tally apply(decompose(c+X),d->(degree d,dim d,minimalBetti d))))
+saturate(X+sum planes_{0,1})
+conics=decompose C
+p1=saturate(sum conics_{0,1})
+p2=saturate(sum conics_{1,5})
+p3=intersect(decompose(ideal(x_0,x_4)+X))_{1,2,3}
+degree trim(p3+conics_1)
+degree intersect(p1,p2,p3)
 minimalBetti R
 intersect ass R
 decompose R
