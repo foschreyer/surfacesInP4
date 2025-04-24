@@ -1313,7 +1313,7 @@ P4=(ZZ/3)[x_0..x_4]
 (Ms,adjTypes)=exampleOfSchreyerSurfaces(P4);
 netList apply(9,i->(minimalBetti Ms_i,adjTypes_i))
 
-elapsedTime Xs=apply(Ms,M->schreyerSurfaceFromModule M);
+elapsedTime Xs=apply(Ms_{0},M->schreyerSurfaceFromModule M);
 netList apply(Xs,X->minimalBetti X)
 Ts=apply(Xs,X->T=tateResolutionOfSurface X);
 tally apply(Ts,T-> betti T)
@@ -2165,11 +2165,72 @@ numList=={(4, 11, 10), 0, (9, 19, 11), 6, (10, 15, 6), 5, (5, 5, 1)}
 minimalBetti J
 
 
-elapsedTime tally apply(Ms_{4}, M -> (
+elapsedTime tally apply(Ms_{0}, M -> (
 	elapsedTime X=schreyerSurfaceFromModule M;
 	<< minimalBetti X <<endl;
 	elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4); 
 	<<numList <<endl;
 	<<minimalBetti J <<endl;
 	numList))
+restart
 
+restart
+needsPackage"BGG"
+loadPackage "AdjunctionForSurfaces"
+--viewHelp AdjunctionForSurfaces    
+load"smoothRationalSurfacesInP4.m2"
+P4=(ZZ/3)[x_0..x_4]
+(Ms,adjTypes)=exampleOfSchreyerSurfaces(P4);
+netList apply(9,i->(minimalBetti Ms_i,adjTypes_i))
+
+elapsedTime Xs=apply(Ms_{0,1,2,3},M->schreyerSurfaceFromModule M);
+tally  apply(Xs,X->minimalBetti X)
+
+X=Xs_1;
+X5=ideal (gens X)_{0..4};
+R=X5:X;
+dim R, degree R
+minimalBetti R
+degree radical R
+apply(decompose R,c->minimalBetti c)
+apply(primaryDecomposition R,c->(minimalBetti c,minimalBetti radical c))
+genus R
+betti(fR=res R)
+minimalBetti coker transpose  fR.dd_4
+apply(10,i->hilbertFunction(i-10,coker transpose fR.dd_4))
+
+minimalBetti (ideal fR.dd_4+ideal R_0)
+R_0
+
+binomial(4+2,2)
+
+--Kristians construction
+P4=ZZ/nextPrime 10^3[x_0..x_4]
+planes=apply(5,i->ideal(x_i,x_((i+1)%5)))
+
+minimalBetti(ps= intersect planes)
+Ls=apply(planes,i->i+ideal random(1,P4))
+betti(L=intersect Ls)
+cub=ideal(gens L*random(source gens L,P4^{-3}))
+C=(intersect planes+cub):L;
+betti(fC=res C)
+M=ideal fC.dd_4^{1..10} 
+minimalBetti M
+X=schreyerSurfaceFromModule M;
+minimalBetti X
+X5=ideal (gens X)_{0..4};
+R=X5:X;
+dim R, degree R
+dim(R+X), degree (R+X)
+tally apply(decompose(R+X),c->(dim c, degree c, minimalBetti c))
+R
+ps
+minimalBetti R
+intersect ass R
+decompose R
+primaryDecomposition R
+singX =X +minors(2, jacobian X);
+dim singX
+elapsedTime (numList, L1,L2,J)=adjunctionProcess(X,3);
+numList
+minimalBetti J

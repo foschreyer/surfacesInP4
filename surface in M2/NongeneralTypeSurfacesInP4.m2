@@ -2,14 +2,15 @@
 restart
 
 uninstallPackage "NongeneralTypeSurfacesInP4"
+
 restart
-loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
+loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
 installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
 path
-viewHelp 
+help adjunctionProcess
 ///
 
 newPackage(
@@ -64,7 +65,19 @@ export {
     "schreyerSurfaces",
     "aboRanestadSurfaces",
     "tateResolutionOfSurface",
-    "outputOfTheAdjunctionProcessCommand"
+    "outputOfTheAdjunctionProcessCommand",
+    "schreyerSurfaceFromModule",
+    "moduleFromSchreyerSurface",
+    "exampleOfSchreyerSurfaces",
+    "specificSchreyerSurface",
+    "findRandomSchreyerSurface",
+    "singSchreyerSurfacesStatistic",
+    "findRandomSmoothSchreyerSurface",
+    "collectSchreyerSurfaces",
+    "tangentDimension",
+    "unirationalConstructionOfSchreyerSurfaces",
+    "adjunctionProcessData"
+
 }
 
 
@@ -314,6 +327,311 @@ tateResolutionOfSurface(Ideal) := X -> (
     T1:=res(coker m',LengthLimit=>8);
     T:=(dual T1)[-7]**E^{-6})
 
+-* schreyer surfaces *-
+
+moduleFromSchreyerSurface=method()
+moduleFromSchreyerSurface(Ideal) := X -> (
+    betti(fX:=res X);
+    betti (fN:=res(coker transpose fX.dd_4));
+    ideal fN.dd_5)
+
+schreyerSurfaceFromModule=method()
+schreyerSurfaceFromModule(Ideal) := M -> (
+    P4:= ring M;
+    fM:=res(M);
+    kk:=coefficientRing ring M;
+    rows:=positions(degrees fM_3,d->d=={4});
+    columns:=positions(degrees fM_2,d->d=={3});
+    N:=(fM.dd_3)^columns_rows;
+    while(
+	while(
+	    while(n1:=random(kk^(rank source N),kk^2);
+		N2:=map(P4^{15:-3},,N*n1);
+	    not (dim coker transpose N2==0)) do();
+	    m10x10:=(fM.dd_2_{0..14}*syz transpose syz(transpose N2,DegreeLimit=>-3));
+	    betti(sm10x10:=syz transpose m10x10);
+	    betti(X:=trim ideal((transpose sm10x10)*fM.dd_2));
+	not(degree X ==11 and dim X==3)) do ();
+        singX:=X+minors(2,jacobian X);
+    dim singX !=0) do();
+    X)
+
+findRandomSchreyerSurface=method()
+findRandomSchreyerSurface(Ring) := P4 -> (
+    F:=res(ideal vars P4, LengthLimit=>3);
+    kk:=coefficientRing P4;
+    M:=null;fM:=null;N:=null;N1:=null;J1:=null;
+    while(
+    while(
+      while (
+	while (M=ideal (F.dd_3*random(F_3,P4^{-4}));
+          apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
+	fM=res(M,DegreeLimit=>1,LengthLimit=>3);
+	rank fM_3 <2) do ();
+        while (
+	    N1=random(P4^{rank fM_3:-4},P4^{2:-4});
+	  coker transpose N1 !=0) do ();
+      N = coker transpose (fM.dd_3*N1);
+      (dim N , degree N)!=(0,2)) do ();
+    J1=syz transpose (fM.dd_2*syz transpose syz(transpose(fM.dd_3*N1),DegreeLimit=>-3));
+    source J1 != P4^{0,-2}) do ();
+    trim ideal(transpose J1_{1}*syz(fM.dd_1))
+    )
+
+findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
+    F:=res(ideal vars P4, LengthLimit=>3);
+    kk:=coefficientRing P4;
+    M:=null;fM:=null;N:=null;N1:=null;
+    while(
+    while(
+      while (
+	while (M=ideal (F.dd_3*random(F_3,P4^{-4}));
+          apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
+	fM=res(M,DegreeLimit=>1,LengthLimit=>3);
+	rank fM_3 <s) do ();
+        while (
+	    N1=random(P4^{rank fM_3:-4},P4^{2:-4});
+	  coker transpose N1 !=0) do ();
+      N = coker transpose (fM.dd_3*N1);
+      (dim N , degree N)!=(0,2)) do ();
+    J1:=syz transpose (fM.dd_2*syz transpose syz(transpose(fM.dd_3*N1),DegreeLimit=>-3));
+    source J1 != P4^{0,-2}) do ();
+    trim ideal(transpose J1_{1}*syz(fM.dd_1))
+    )
+
+singSchreyerSurfacesStatistic=method()
+
+singSchreyerSurfacesStatistic(Ring,Number) := (P4,N) -> (
+    Ms:={};L:={};X:=null;M:=null;Rdata:=null;R:=null;
+    singX:=null;hypX:=null;X5:=null;
+    count:=0;
+    while (
+	elapsedTime X=findRandomSchreyerSurface(P4);
+	M= moduleFromSchreyerSurface(X);
+	Ms=append(Ms,M);
+	X5=ideal (gens X)_{0..4};
+	R=X5:X;
+	hypX=X+ideal jacobian X;
+	singX=X+minors(2,jacobian X);
+	elapsedTime Rdata=(minimalBetti M, dim R, degree R, minimalBetti R,
+	    dim singX, degree singX, dim (R+singX));
+	<<Rdata<<endl;
+	L=append(L,Rdata);
+	count=count+1;
+	count<N) do ();
+    --<<tally L <<endl;
+    L)
+
+collectSchreyerSurfaces=method()
+
+collectSchreyerSurfaces(List,List,Number) :=(adjTypes,Ms,N) -> (
+    --collect N smooth surfaces
+    -- or discover a new family
+    P4:= ring first Ms;
+    adjTypes1:=adjTypes;Ms1:=Ms;adjTypes2:={};Ms2:={};
+    count:=0;count1:=0;
+    X:= null; numList:=null; adjList:=null; ptsList:=null;M:= null;J:=null;
+    while (
+    elapsedTime X=findRandomSmoothSchreyerSurface(P4,Verbose=>false);
+    <<minimalBetti X << endl;count1=count1+1;
+    <<count1 <<endl;
+    elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
+    <<numList <<endl;
+    adjTypes2=append(adjTypes2,numList);
+    Ms2=append(Ms2,M);
+    if not member(numList,adjTypes1)
+    then (
+	adjTypes1=append(adjTypes1,numList);
+	M=moduleFromSchreyerSurface(X);
+	Ms1=append(Ms1,M);
+	count=count+1;
+	<<count <<endl;
+	<<numList <<endl;
+	<<minimalBetti M <<endl;
+	);
+    count<1 and count1<N) do ();
+    <<tally adjTypes2 <<endl;
+    if count==1 then (adjTypes1,Ms1) else (adjTypes2,Ms2)
+    )
+
+collectSchreyerSurfaces(List,List,Number,Number) :=(adjTypes,Ms,s,N) -> ( 
+    --collect N smooth s>=3 surfaces
+    -- or discover a new family
+    P4:=ring first Ms;
+    adjTypes1:=adjTypes;
+    adjTypes2:={};Ms2:={};
+    Ms1:=Ms;
+    count:=0;count1:=0;
+    X:= null; numList:=null; adjList:=null; ptsList:=null;M:= null;J:=null;
+    while (
+    elapsedTime X=findRandomSmoothSchreyerSurface(P4,s);
+    <<minimalBetti X << endl;count1=count1+1;
+    <<count1 <<endl;
+    elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
+    <<numList <<endl;
+    adjTypes2=append(adjTypes2,numList);
+    Ms2=append(Ms2,M);
+    if not member(numList,adjTypes1)
+    then (
+	adjTypes1=append(adjTypes1,numList);
+	M=moduleFromSchreyerSurface(X);
+	Ms1=append(Ms1,M);
+	count=count+1;
+	<<count <<endl;
+	<<numList <<endl;
+	<<minimalBetti M <<endl;
+	);
+    count<1 and count1<N) do ();
+    if count==1 then (adjTypes1,Ms1) else (adjTypes2,Ms2)
+    )
+
+exampleOfSchreyerSurfaces=method()
+exampleOfSchreyerSurfaces(Ring) := P4 -> (
+    if char P4 !=3 then error "expected coordinate ring of P4 in caharcteristic 3";
+    Ms:={ideal(-P4_0*P4_2+P4_1*P4_2+P4_0*P4_3+P4_2*P4_3-P4_0*P4_4+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4,P4_1*P4
+      _2-P4_1*P4_3+P4_2*P4_3-P4_3^2+P4_0*P4_4-P4_1*P4_4+P4_2*P4_4-P4_3*P4_4,P4_0*P4_2-P4_1*P4_2+P4_0
+      *P4_3-P4_1*P4_3-P4_0*P4_4-P4_2*P4_4+P4_4^2,-P4_1*P4_2+P4_2^2-P4_0*P4_3+P4_1*P4_3+P4_2*P4_3+P4_
+      1*P4_4-P4_2*P4_4+P4_3*P4_4-P4_4^2,-P4_1^2+P4_0*P4_3+P4_3^2-P4_0*P4_4+P4_1*P4_4-P4_2*P4_4+P4_3
+      *P4_4,-P4_0*P4_1+P4_1^2-P4_0*P4_3-P4_1*P4_3+P4_3^2+P4_3*P4_4,P4_1^2-P4_1*P4_2-P4_0*P4_3-P4_1*
+      P4_3+P4_2*P4_3+P4_3^2-P4_3*P4_4+P4_4^2,P4_0*P4_1-P4_0*P4_3-P4_2*P4_3+P4_3^2-P4_0*P4_4-P4_1*P4_
+      4+P4_3*P4_4+P4_4^2,P4_0^2-P4_0*P4_1-P4_0*P4_3-P4_2*P4_3+P4_3^2-P4_0*P4_4-P4_1*P4_4+P4_2*P4_4-
+      P4_3*P4_4-P4_4^2,-P4_0*P4_1+P4_0*P4_2-P4_0*P4_3-P4_2*P4_3-P4_0*P4_4+P4_2*P4_4-P4_3*P4_4+P4_4^2
+      ), 
+      ideal(-P4_2*P4_3+P4_3^2-P4_2*P4_4-P4_3*P4_4+P4_4^2,P4_0*P4_2+P4_1*P4_2+P4_2^2+P4_0*P4_3-P4_
+      1*P4_3+P4_3^2+P4_0*P4_4+P4_1*P4_4-P4_2*P4_4-P4_4^2,P4_0*P4_2-P4_1*P4_2+P4_2^2-P4_2*P4_3+P4_3^
+      2+P4_0*P4_4-P4_1*P4_4-P4_3*P4_4-P4_4^2,P4_2^2+P4_0*P4_3+P4_1*P4_3-P4_3^2+P4_0*P4_4+P4_1*P4_4+
+      P4_2*P4_4+P4_3*P4_4-P4_4^2,-P4_0*P4_1-P4_1^2-P4_1*P4_2+P4_0*P4_3+P4_2*P4_3+P4_3^2+P4_2*P4_4+P4
+      _3*P4_4,-P4_0*P4_1+P4_1^2-P4_1*P4_2+P4_0*P4_3-P4_1*P4_3+P4_2*P4_3+P4_3^2-P4_0*P4_4+P4_2*P4_4-
+      P4_4^2,-P4_1*P4_2-P4_0*P4_3+P4_1*P4_3-P4_2*P4_3+P4_3^2+P4_0*P4_4-P4_1*P4_4+P4_2*P4_4+P4_4^2,P4
+      _0^2+P4_0*P4_1+P4_0*P4_2-P4_0*P4_3-P4_1*P4_3-P4_2*P4_3-P4_3^2-P4_1*P4_4+P4_2*P4_4-P4_3*P4_4-P4
+      _4^2,P4_0^2-P4_0*P4_1+P4_0*P4_2-P4_0*P4_3+P4_2*P4_3+P4_3^2+P4_0*P4_4,P4_0*P4_2+P4_0*P4_3-P4_1
+      *P4_3+P4_2*P4_3-P4_3^2+P4_0*P4_4+P4_1*P4_4-P4_2*P4_4+P4_3*P4_4+P4_4^2),
+      ideal(P4_1*P4_3+P4_2*P4_3-P4_3^2-P4_0*P4_4+P4_1*P4_4,-P4_0*P4_2-P4_1*P4_2-P4_2^2+P4_0*P4_
+      3-P4_1*P4_3-P4_2*P4_3-P4_0*P4_4-P4_1*P4_4+P4_2*P4_4,P4_1*P4_2-P4_2^2-P4_0*P4_3+P4_2*P4_3+P4_0*
+      P4_4+P4_2*P4_4+P4_4^2,-P4_1*P4_2-P4_2^2-P4_0*P4_3-P4_1*P4_3+P4_2*P4_3-P4_0*P4_4-P4_1*P4_4-P4_3
+      *P4_4,P4_0*P4_1+P4_1^2+P4_1*P4_2+P4_0*P4_3+P4_3^2-P4_0*P4_4+P4_3*P4_4,-P4_1^2+P4_1*P4_2+P4_0*
+      P4_3+P4_1*P4_3-P4_3^2+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4+P4_4^2,P4_1^2+P4_1*P4_2+P4_2*P4_3+P4_3^2-
+      P4_0*P4_4-P4_3*P4_4,-P4_0^2-P4_0*P4_1-P4_0*P4_2+P4_0*P4_3-P4_1*P4_3-P4_2*P4_3-P4_3^2+P4_0*P4_4
+      -P4_1*P4_4+P4_4^2,P4_0*P4_1-P4_0*P4_2-P4_1*P4_3-P4_2*P4_3-P4_3^2-P4_1*P4_4+P4_2*P4_4+P4_4^2,-
+      P4_0*P4_1-P4_0*P4_2-P4_0*P4_3+P4_1*P4_3-P4_2*P4_3+P4_3^2-P4_1*P4_4+P4_4^2),
+      ideal(-P4_0*P4_3+P4_1*P4_3-P4_2*P4_3+P4_3^2-P4_0*P4_4+P4_1*P4_4-P4_2*P4_4,-P4_0*P4_2+P4_1*P4_
+      2-P4_0*P4_3-P4_1*P4_3-P4_2*P4_3+P4_3^2-P4_0*P4_4+P4_2*P4_4+P4_3*P4_4+P4_4^2,P4_1*P4_2+P4_1*P4_
+      3-P4_2*P4_3-P4_3*P4_4,P4_0*P4_2-P4_1*P4_2+P4_2^2+P4_0*P4_3-P4_1*P4_3+P4_2*P4_3+P4_3^2+P4_0*P4_
+      4-P4_1*P4_4,P4_0*P4_1-P4_1^2+P4_0*P4_3+P4_1*P4_3+P4_3^2+P4_0*P4_4+P4_1*P4_4+P4_2*P4_4+P4_3*P4_
+      4+P4_4^2,-P4_1^2+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4-P4_4^2,-P4_0*P4_1+P4_1^2-P4_1*P4_2-P4_0*P4_3+
+      P4_2*P4_3+P4_3^2-P4_1*P4_4-P4_2*P4_4+P4_3*P4_4,-P4_0^2+P4_0*P4_1-P4_0*P4_3-P4_2*P4_3+P4_3^2+P4
+      _0*P4_4+P4_1*P4_4-P4_3*P4_4-P4_4^2,P4_0*P4_1+P4_0*P4_3-P4_1*P4_3-P4_2*P4_3-P4_3^2+P4_0*P4_4+P4
+      _1*P4_4+P4_2*P4_4+P4_3*P4_4+P4_4^2,P4_0^2-P4_0*P4_1+P4_0*P4_2-P4_0*P4_3+P4_1*P4_3-P4_2*P4_3-P4
+      _3^2+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4-P4_4^2),
+      ideal(-P4_1*P4_2+P4_2^2+P4_0*P4_3-P4_1*P4_3+P4_2*P4_3+P4_2*P4_4-P4_3*P4_4,-P4_0*P4_2-P4_1*P4_
+      2-P4_1*P4_4+P4_2*P4_4-P4_3*P4_4+P4_4^2,-P4_0*P4_1-P4_1^2-P4_1*P4_2-P4_2*P4_3+P4_3^2+P4_0*P4_4
+      -P4_2*P4_4+P4_3*P4_4,-P4_0*P4_1-P4_1^2-P4_1*P4_3+P4_3^2-P4_0*P4_4+P4_1*P4_4,P4_1^2-P4_1*P4_2-
+      P4_0*P4_3-P4_3^2-P4_0*P4_4-P4_1*P4_4+P4_2*P4_4+P4_3*P4_4,P4_0*P4_1+P4_1^2-P4_0*P4_3-P4_1*P4_3+
+      P4_2*P4_3-P4_3^2+P4_1*P4_4+P4_3*P4_4+P4_4^2,P4_0^2+P4_0*P4_1+P4_0*P4_2-P4_0*P4_4-P4_1*P4_4+P4_
+      2*P4_4-P4_3*P4_4,P4_0^2+P4_0*P4_1+P4_0*P4_3-P4_1*P4_3-P4_3^2-P4_0*P4_4-P4_1*P4_4-P4_2*P4_4-P4_
+      3*P4_4,-P4_0*P4_1+P4_0*P4_2-P4_0*P4_3+P4_1*P4_3+P4_1*P4_4+P4_2*P4_4+P4_3*P4_4+P4_4^2,-P4_0^2-
+      P4_0*P4_1+P4_0*P4_3-P4_3^2-P4_1*P4_4+P4_3*P4_4-P4_4^2),
+      ideal(P4_0*P4_2-P4_1*P4_2+P4_2^2-P4_0*P4_3+P4_2*P4_3-P4_0*P4_4+P4_2*P4_4-P4_3*P4_4,-P4_0*P4_2
+      +P4_1*P4_2-P4_2^2+P4_1*P4_3+P4_3^2-P4_0*P4_4+P4_1*P4_4-P4_2*P4_4+P4_3*P4_4-P4_4^2,P4_0*P4_2+P4
+      _1*P4_2-P4_2*P4_3+P4_0*P4_4+P4_1*P4_4-P4_2*P4_4+P4_4^2,-P4_0*P4_2-P4_1*P4_2-P4_2^2+P4_0*P4_3+
+      P4_0*P4_4+P4_2*P4_4-P4_3*P4_4+P4_4^2,P4_0*P4_1-P4_1^2+P4_1*P4_2+P4_1*P4_3-P4_2*P4_3+P4_3^2+P4_
+      0*P4_4-P4_1*P4_4+P4_2*P4_4+P4_3*P4_4+P4_4^2,-P4_0*P4_1-P4_1^2+P4_0*P4_3+P4_1*P4_3-P4_3^2+P4_0
+      *P4_4-P4_1*P4_4-P4_2*P4_4+P4_4^2,P4_0*P4_1+P4_1^2+P4_1*P4_2+P4_0*P4_3-P4_2*P4_3-P4_1*P4_4+P4_2
+      *P4_4-P4_3*P4_4+P4_4^2,-P4_0^2+P4_0*P4_1-P4_0*P4_2+P4_0*P4_3+P4_1*P4_3+P4_3^2+P4_0*P4_4+P4_4^
+      2,P4_0^2+P4_0*P4_1+P4_3^2-P4_2*P4_4+P4_3*P4_4,-P4_0^2-P4_0*P4_1-P4_0*P4_2-P4_0*P4_3+P4_1*P4_3
+      +P4_3^2-P4_0*P4_4+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4-P4_4^2),
+      ideal(-P4_0*P4_2+P4_2^2+P4_1*P4_3+P4_2*P4_3+P4_3^2-P4_1*P4_4+P4_2*P4_4,P4_1*P4_2+P4_2^2+P4_0
+      *P4_3-P4_3^2-P4_0*P4_4-P4_1*P4_4-P4_3*P4_4,P4_0*P4_2-P4_1*P4_2+P4_0*P4_3+P4_1*P4_3-P4_3^2+P4_1
+      *P4_4+P4_2*P4_4+P4_3*P4_4-P4_4^2,-P4_0*P4_2-P4_1*P4_2+P4_2^2-P4_0*P4_3-P4_2*P4_3+P4_0*P4_4+P4_
+      4^2,-P4_1^2-P4_1*P4_2-P4_0*P4_3-P4_1*P4_3-P4_2*P4_3+P4_3^2+P4_2*P4_4,-P4_0*P4_1+P4_1^2+P4_0*
+      P4_3-P4_1*P4_3-P4_2*P4_3-P4_3^2-P4_1*P4_4+P4_2*P4_4-P4_4^2,P4_0*P4_1+P4_1^2-P4_1*P4_2+P4_1*P4_
+      3-P4_2*P4_3-P4_3^2+P4_3*P4_4-P4_4^2,P4_0*P4_1+P4_0*P4_2+P4_1*P4_3+P4_2*P4_3+P4_3^2-P4_1*P4_4+
+      P4_2*P4_4-P4_3*P4_4-P4_4^2,P4_0^2-P4_0*P4_1-P4_0*P4_3+P4_2*P4_3-P4_3^2+P4_0*P4_4-P4_1*P4_4+P4_
+      3*P4_4+P4_4^2,-P4_0^2-P4_0*P4_1+P4_0*P4_2+P4_2*P4_3-P4_1*P4_4-P4_2*P4_4+P4_3*P4_4),
+      ideal(P4_0*P4_2+P4_0*P4_3-P4_1*P4_3+P4_3^2+P4_0*P4_4-P4_1*P4_4-P4_3*P4_4,-P4_0*P4_2+P4_1*P4_2
+      -P4_2^2+P4_1*P4_3+P4_0*P4_4+P4_1*P4_4-P4_2*P4_4+P4_3*P4_4-P4_4^2,-P4_2^2-P4_0*P4_3+P4_1*P4_3-
+      P4_2*P4_3-P4_0*P4_4+P4_3*P4_4+P4_4^2,P4_1*P4_2-P4_2^2+P4_0*P4_3-P4_1*P4_3-P4_2*P4_3+P4_3^2+P4_
+      0*P4_4-P4_1*P4_4+P4_2*P4_4-P4_4^2,P4_0*P4_1-P4_1^2+P4_1*P4_2-P4_0*P4_3-P4_1*P4_3-P4_2*P4_3-P4_
+      0*P4_4-P4_1*P4_4+P4_3*P4_4+P4_4^2,P4_1*P4_2-P4_3^2+P4_0*P4_4-P4_1*P4_4,-P4_1^2+P4_1*P4_2-P4_0
+      *P4_3+P4_1*P4_3-P4_2*P4_3+P4_3^2+P4_0*P4_4-P4_1*P4_4-P4_2*P4_4-P4_4^2,-P4_0^2+P4_0*P4_1-P4_0*
+      P4_2+P4_0*P4_3+P4_1*P4_3+P4_2*P4_3-P4_3^2-P4_0*P4_4+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4,-P4_0*P4_2+P4
+      _0*P4_3+P4_2*P4_3-P4_3^2+P4_0*P4_4+P4_1*P4_4,P4_0*P4_1-P4_0*P4_2-P4_0*P4_3+P4_2*P4_3-P4_3^2+P4
+      _1*P4_4), ideal(P4_1*P4_3-P4_2*P4_3-P4_3^2-P4_0*P4_4-P4_3*P4_4,P4_0*P4_2+P4_1*P4_2+P4_2^2+P4
+      _0*P4_3+P4_1*P4_3+P4_2*P4_3+P4_0*P4_4+P4_1*P4_4+P4_3*P4_4-P4_4^2,-P4_0*P4_1+P4_1^2-P4_1*P4_2-
+      P4_0*P4_3+P4_2*P4_3-P4_0*P4_4-P4_2*P4_4-P4_3*P4_4,-P4_0*P4_1-P4_0*P4_3-P4_2*P4_3+P4_0*P4_4-P4_1
+      *P4_4-P4_2*P4_4-P4_3*P4_4,-P4_0*P4_3-P4_1*P4_3+P4_2*P4_3-P4_0*P4_4-P4_1*P4_4+P4_2*P4_4-P4_4^2
+      ,-P4_0*P4_1-P4_1^2-P4_1*P4_2-P4_0*P4_3-P4_1*P4_3+P4_2*P4_3+P4_3^2-P4_0*P4_4-P4_2*P4_4+P4_3*P4_
+      4+P4_4^2,P4_0^2-P4_0*P4_1+P4_0*P4_2+P4_0*P4_3+P4_1*P4_3+P4_2*P4_3-P4_0*P4_4-P4_1*P4_4+P4_2*P4_
+      4+P4_3*P4_4+P4_4^2,P4_0^2+P4_0*P4_3+P4_1*P4_3+P4_3^2+P4_0*P4_4+P4_2*P4_4+P4_3*P4_4-P4_4^2,-P4
+      _0*P4_3-P4_1*P4_3-P4_3^2+P4_4^2,P4_0^2+P4_0*P4_1+P4_0*P4_2+P4_0*P4_3+P4_2*P4_3+P4_0*P4_4+P4_2
+      *P4_4-P4_4^2)};
+    adjTypes:={
+      {(4,11,10), 5, (9,19,11), 1, (10,20,11), 0, (10,20,11), 0, (10,20,11)},
+      {(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)},
+      {(4,11,10), 3, (9,19,11), 1, (10,18,9), 2, (8,12,5), 4, (4,4,1)},
+      {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0, (8,13,6), 3, (5,6,2)},
+      {(4,11,10), 2, (9,19,11), 3, (10,17,8), 2, (7,10,4), 2, (3,3,1)},
+      {(4,11,10), 2, (9,19,11), 3, (10,17,8), 1, (7,10,4), 8, (3,2,0)},
+      {(4,11,10), 2, (9,19,11), 2, (10,17,8), 4, (7,9,3), 7, (2,1,0)}, {(4,11,10),
+      1, (9,19,11), 4, (10,16,7), 4, (6,7,2)}, {(4,11,10), 0, (9,19,11), 6,
+      (10,15,6), 5, (5,5,1)}};
+    (Ms,adjTypes)
+    )
+
+specificSchreyerSurface=method()
+specificSchreyerSurface(Ring,Number) := (P4,k) -> (
+    (Ms,Types):=exampleOfSchreyerSurfaces(P4);
+    X:=schreyerSurfaceFromModule(Ms_k);
+    <<Types_k <<endl;
+    X)
+
+findRandomSmoothSchreyerSurface=method(Options=>{Verbose=>true})
+findRandomSmoothSchreyerSurface(Ring) := opt -> (P4 -> (
+    J:=null;singX:=null;
+	if opt.Verbose==true then (
+    while (
+     elapsedTime while (J=findRandomSchreyerSurface P4;
+	 dim (J+ideal jacobian J)!=0) do ();
+	elapsedTime singX=J+minors(2,jacobian J);<<endl;
+	elapsedTime dim singX !=0) do ();) else (
+    while (
+	while (J=findRandomSchreyerSurface P4; dim (J+ideal jacobian J)!=0) do ();
+	 singX=J+minors(2,jacobian J);
+	 dim singX !=0) do ());
+   J))
+
+findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
+    X:=null;singX:=null;
+    count:=1;
+    while (
+	elapsedTime while (X=findRandomSchreyerSurface(P4,s);
+	    dim (X+ideal jacobian X)!=0) do (count=count+1);
+	<<count <<endl;
+	singX=X+minors(2,jacobian X);
+	 dim singX !=0) do ();
+   X)
+
+tangentDimension=method()
+tangentDimension(Ideal) := (M) -> (
+    -- computes the dimension tangent space at the strata with
+    -- the same syzygies as M of G(5,S_2(V)) at the point M
+    P4:= ring M;
+    kk:=coefficientRing P4;
+    fM:=res M;
+    s:=rank fM_3-26;
+    mons:=flatten entries sub(basis(2,P4/ideal fM.dd_1),P4);
+    def1:=flatten apply(10,i->apply(mons,m->matrix{apply(10,j->
+		if j==i then m else 0_P4)}));
+    t:= symbol t;
+    T:=kk[t_0..t_49];
+    d:=null;d2:=null;d3:=null;
+    m7x2:=sum(50, i-> (d=def1_i;
+	betti (d2=d*fM.dd_2//fM.dd_1);
+	betti (d3=d2*fM.dd_3//fM.dd_2);
+	T_i*sub(d3^{15..19+s}_{0..s-1},T)));
+    50-codim ideal leadTerm mingens trim ideal m7x2)
+
+
 -* Documentation section *-
 
 
@@ -356,12 +674,272 @@ Headline => "Construction of smooth non-general type surfaces in P4",
         },
      SUBSECTION "Existence proofs",
      UL{
+	TO adjunctionProcessData,
 	TO unirationalFamilies,
 	TO constructionsViaFiniteFieldSearches,
 	TO extensionToCharacteristicZero,
 	TO LabBookProtocol
         }     
 }
+
+
+document {
+Key => schreyerSurfaces,
+Headline => "functions concerning Schreyer surfaces",
+   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11, sectional genus pi=10 Via a search over a finite field
+   of which 3 families consists of rational surfaces, the 
+   Repeating such search now, we found altogether 10 families. In the following we give an overview
+   of the functions used in that search.",
+   
+   PARA{},
+     SUBSECTION "from modules to surfaces",
+     UL{
+        TO schreyerSurfaceFromModule,
+	TO moduleFromSchreyerSurface,
+        TO exampleOfSchreyerSurfaces,
+        TO specificSchreyerSurface
+        },
+    
+     SUBSECTION "search for modules",
+     UL{
+	TO findRandomSchreyerSurface,
+        TO singSchreyerSurfacesStatistic,
+        TO findRandomSmoothSchreyerSurface, 
+        TO collectSchreyerSurfaces
+        },
+    
+     SUBSECTION "lift to characteristic zero",
+     UL{
+	TO tangentDimension,
+        TO unirationalConstructionOfSchreyerSurfaces
+        }        
+}
+document {
+Key => adjunctionProcessData,
+Headline => "explains the output of the function adjunctionProcess",
+    "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces",
+help adjunctionProcess,                
+}
+
+doc ///
+Key
+ moduleFromSchreyerSurface
+ (moduleFromSchreyerSurface, Ideal)
+Headline
+ compute the H^1-module of the ideal sheaf of X
+Usage
+ M = moduleFromSchreyerSurface X
+Inputs
+ X:Ideal
+  of a Schreyer surface in P4
+Outputs
+ M:Ideal
+  the ideal defining the H^1-module of the ideal sheaf of X
+Description
+  Text
+    The H^1-module of a Schreyer surface is a finite length module
+    with Hilbert function (1,5,5) with at least two extra syzygies.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    (Ms,Types)=exampleOfSchreyerSurfaces P4;
+    tally apply(Ms,M->minimalBetti M)
+    X=schreyerSurfaceFromModule Ms_1;
+    minimalBetti X
+    X=schreyerSurfaceFromModule Ms_4;
+    minimalBetti X
+///
+
+
+doc ///
+Key
+ schreyerSurfaceFromModule
+ (schreyerSurfaceFromModule, Ideal)
+Headline
+ compute a smooth Schreyer surface with H^1-module defined by M
+Usage
+ X = schreyerSurfaceFromModule M
+Inputs
+ M:Ideal
+  defining the module with Hilbert function (1,5,5) and at least 2 extra syzygies
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The H^1-module of a Schreyer surface is a finite length module
+    with Hilbert function (1,5,5) with at least two extra syzygies.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    X=specificSchreyerSurface(P4,1);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+///
+
+doc ///
+Key
+ specificSchreyerSurface
+ (specificSchreyerSurface, Ring, Number)
+Headline
+ compute a smooth Schreyer surface with given H^1-module
+Usage
+ X = schreyerSurfaceFromModule(P4,k)
+Inputs
+ P4:Ideal
+  coordinate ring of P4 over a ground field of characteristic 3
+ k: Number
+  a number between 0 and 9 specifying the specific H^1-module to use. 
+Outputs
+ X:Ideal
+  ideal of a Schreyer surface
+Description
+  Text
+    The function returns one of ten specific smooth schreyer surfaces.
+    It prints the corresponding adjunction process data.
+    The corresponding H^1-module are precomputed and stored in the function exampleOfSchreyerSurfaces.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    X=specificSchreyerSurface(P4,1);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+SeeAlso
+   exampleOfSchreyerSurfaces
+///
+
+doc ///
+Key
+ exampleOfSchreyerSurfaces
+ (exampleOfSchreyerSurfaces, Ring)
+Headline
+ read the list of precomputed H^1-modules of Schreyer surfaces
+Usage
+ (Ms,types)= exampleOfSchreyerSurfaces P4
+Inputs
+ P4:Ideal
+  coordinate ring of P4 over a ground field of characteristic 3
+Outputs
+ Ms:List
+  of H^1-modules of Schreyer surfaces
+ types:List
+  of precomputed adjunction type data of the corresponding surfaces 
+Description
+  Text
+    The function reads lists of precomputed H^1-modules and adjunction types
+  Example
+    P4=ZZ/3[x_0..x_4];
+    (Ms,types)=exampleOfSchreyerSurfaces P4;
+    tally apply(Ms,M->minimalBetti M)
+    netList apply(#Ms,i->(minimalBetti Ms_i, types_i))
+///
+
+doc ///
+Key
+ findRandomSchreyerSurface
+ (findRandomSchreyerSurface, Ring)
+ (findRandomSchreyerSurface, Ring, Number)
+Headline
+ find a random Schreyer surface
+Usage
+ X = findRandomSchreyerSurface P4
+ X = findRandomSchreyerSurface(P4,s)
+Inputs
+ P4:Ideal
+  coordinate ring of P4 over a ground field of characteristic 3
+ s:Number
+  the number of desired extra syzygies
+Outputs
+ X:Ideal
+  the ideal of a possibly singular Schreyer surface 
+Description
+  Text
+    It searches for a suitable H^1-module with Hilbert function (1,5,5) and two extra syzygies by searching in the
+    codimension 6 subspace of modules with one extra syzygy, and computes the corresponding surface.
+    To find an example one has to check about 3^6 examples of modules.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    setRandomSeed("find one fairly fast");
+    elapsedTime X=findRandomSchreyerSurface P4;  
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+
+    setRandomSeed("also fairly fast");
+    elapsedTime X=findRandomSchreyerSurface(P4,3);  
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+SeeAlso
+   findRandomSmoothSchreyerSurface
+///
+
+doc ///
+Key
+ findRandomSmoothSchreyerSurface
+ (findRandomSmoothSchreyerSurface, Ring)
+ (findRandomSmoothSchreyerSurface, Ring, Number)
+Headline
+ find a random smooth Schreyer surface
+Usage
+ X = findRandomSmoothSchreyerSurface P4
+ X = findRandomSmoothSchreyerSurface(P4,s)
+Inputs
+ P4:Ring
+  the coordinate ring of P4 over a ground field of characteristic 3 (or other small prime fields)
+ s:Number
+  the number of desired extra syzygies
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    It searches for a suitable H^1-module with Hilbert function (1,5,5) and min(2,s) extra syzygies by searching in the
+    codimension 6 subspace of modules with one extra syzygy, and computes the corresponding surface
+    and checks it smoothness. Since many H^1-modules lead to singular surfaces one has to check
+    more then 3^6 examples of modules.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    setRandomSeed("carefully choosen good randomSeed ");
+    elapsedTime X=findRandomSmoothSchreyerSurface(P4,Verbose=>false);  
+    minimalBetti X
+    singX=X+minors(2,jacobian X);
+    dim saturate singX==-1
+SeeAlso
+   findRandomSchreyerSurface
+///
+
+doc ///
+Key
+ tangentDimension
+ (tangentDimension, Ideal)
+Headline
+ compute the dimension of the tangent space of the strata with s extra syzygies at the point M
+Usage
+ d=tangentDimension M
+
+Inputs
+ M:Ideal
+  ideal defining a H^1-module with Hilbert function (1,5,5) with s extra syzygies
+Outputs
+ d:Number
+  dimension of the tangent space of the correponding strata at the given point M
+Description
+  Text
+    To prove the existence of a lift of the corresponding surface to characteristic 0,
+    it suffices to prove that the tangent space
+    has dimension d=36-dim G(2,s)=36-2*(s-2).
+  Example
+    P4=ZZ/3[x_0..x_4];
+    (Ms,types)=exampleOfSchreyerSurfaces P4;
+    --tally apply(Ms,M->minimalBetti M)
+    --tally apply(Ms, M->tangentDimension M)
+    elapsedTime netList apply(Ms,M->(minimalBetti M, tangentDimension M))
+    --elapsedTime Xs=apply(Ms,M->schreyerSurfaceFromModule M);
+    --tally apply(Xs,X -> (singX=X+minors(2,jacobian X); dim saturate sing X)
+  Text
+    This proves that the surfaces precomputed Via exampleOfSchreyerSurfaces
+    all lift to smooth surfaces over some algebraic number field (of characteristic 0).
+///
 
 
 doc ///
