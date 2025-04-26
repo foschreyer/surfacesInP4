@@ -65,7 +65,6 @@ export {
     "schreyerSurfaces",
     "aboRanestadSurfaces",
     "tateResolutionOfSurface",
-    "outputOfTheAdjunctionProcessCommand",
     "schreyerSurfaceFromModule",
     "moduleFromSchreyerSurface",
     "exampleOfSchreyerSurfaces",
@@ -79,15 +78,12 @@ export {
     "adjunctionProcessData",
     "prepareAboRanestadSurfaces",
     "aboRanestadSurface",
-    "smoothAboRanestadSurface",
     "collectSmoothAboRanestadSurfaces",
-    "smoothAboRanestadSurfaceFromMatrix",
-    "getSpecialARSurf",
     "singAboRanestadSurfacesStatistic",
     "aboRanestadSurfaceFromMatrix",
     "matrixFromAboRanestadSurface",
     "tangentComputation",
-    "findRandomSmoothAboRanestadSurface",
+    "get4x2Matrix",
     "Smooth",
     "Special"
 }
@@ -662,34 +658,53 @@ prepareAboRanestadSurfaces(Ring) := P4 -> (
     E3:=sub(basis(3,E),ExB);
 (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3))
 
-get4x2Matrix = method(Options=>{Special=>false})
+get4x2Matrix = method(Options=>{Special=>0})
 get4x2Matrix(Matrix,Number) := opt -> (m2x3,n) -> (
+    -- n desired number of intersection points in G(2,5)
     E:= ring m2x3;
     kk:= coefficientRing E;
-    if opt.Special then ( 
-	E':= coefficientRing E[(gens E)_{0..2}];
-	m2x2:=sub(random(E'^2,E'^{2:-1}),E);
-	m:=min(2,max(0,n-4));
-	m2:=null;
-	scan(m,cc-> (
-	    while (m2=random(kk^2,kk^2); det m2==0) do ();
-	    m2x2=m2x2|map(E^2,,m2*m2x3*random(kk^3,kk^1))));
-	m2x4:=m2x2|random(E^2,E^{4-rank source m2x2:-1});
-    return transpose m2x4);
-    m=min(n,4);
-    m2x2=map(E^2,E^0,0);
+    s:=opt.Special; 
+    E':= coefficientRing E[(gens E)_{0..2}];
+    m2x2:=map(E^2,E^0,0);
+    m2:=null;
+    scan(s,cc->(while (m2=random(kk^2,kk^2); det m2==0) do ();
+	 m2x2=m2x2|map(E^2,,m2*m2x3_{0,1}*random(kk^2,kk^1))));
+    if s==2 then m:=min(4-s,max(0,n-4));
+    if s==1 then m=min(4-s,n-1);
+    if s==0 then m=min(4,n);    
     scan(m,cc-> (
-	    while (m2=random(kk^2,kk^2); det m2==0) do ();
-	    m2x2=m2x2|map(E^2,,m2*m2x3*random(kk^3,kk^1))));
-    m2x4=m2x2|random(E^2,E^{4-rank source m2x2:-1});
-    return transpose m2x4)
+	 while (m2=random(kk^2,kk^2); det m2==0) do ();
+	 m2x2=m2x2|map(E^2,,m2*m2x3*random(kk^3,kk^1))));
+    m2x4:=m2x2|random(E^2,E^{4-rank source m2x2:-1});
+    transpose m2x4);
+    
     
 
 ///
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
 (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3)=prepareAboRanestadSurfaces(P4);
 n=4
+m4x2=get4x2Matrix(m2x3,n,Special=>2)
+c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+I=trim ideal sub(contract(E3,flatten c),B);
+numgens I==120-n
+
+n=4
+m4x2=get4x2Matrix(m2x3,n,Special=>1)
+c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+I=trim ideal sub(contract(E3,flatten c),B);
+numgens I==120-n
+
+n=4
+m4x2=get4x2Matrix(m2x3,n,Special=>0)
+c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+I=trim ideal sub(contract(E3,flatten c),B);
+numgens I==120-n
+
 ///    
-aboRanestadSurface=method(Options=>{Verbose=>false,Smooth=>true,Special=>false})
+
+aboRanestadSurface=method(Options=>{Verbose=>false,Smooth=>true,Special=>0})
 aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     -- Input: P4 ring of P4
     --        n number of -1 lines
@@ -708,7 +723,7 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     while( -- dim X and degree X
 	while( -- syz bb and syz transpose bb has the correct number of generators
 	    while( -- numgens I correct
-		m4x2=get4x2Matrix(m2x3,n-1,Special=>false);
+		m4x2=get4x2Matrix(m2x3,n-1,Special=>opt.Special);
 		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
 		I=trim ideal sub(contract(E3,flatten c),B);
 		numgens I =!= 121-n
@@ -719,20 +734,21 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
 	    betti(bb=map(E^4,,m4x2|b4x2r));
 	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
 	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
-	    not(test1 and test2) ) do (test=test+1;count=count+1);
+	    not(test1 and test2)
+	    ) do (test=test+1;count=count+1);
 	if opt.Verbose then (<<"trials so far to get a surface = " <<count <<endl);
 	betti(T=res(coker bb, LengthLimit=>4));
 	X=saturate ideal syz symExt(T.dd_4,P4);
-	not (dim X ==3 and degree X==12) ) do ();
+	not (dim X ==3 and degree X==12)  ) do ();
     if not opt.Smooth then return (X,m4x2);
     singX=X+minors(2,jacobian X);
-    dim singX !=0 ) do (countSmooth=countSmooth+1);
+    dim singX !=0) do (countSmooth=countSmooth+1);
     if opt.Verbose then (<<"trials to get a smooth surface = "<<countSmooth <<endl);
     (X,m4x2))
 ///
 kk=ZZ/11
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>true,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
 L0
@@ -741,7 +757,7 @@ X5=ideal (gens X)_{0..4};
 R=X5:X;
 dim R, degree R, minimalBetti R, degree (R+X)
 
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>false,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
 assert(L0_1==6)
@@ -750,25 +766,38 @@ X5=ideal (gens X)_{0..4};
 R=X5:X;
 dim R, degree R, minimalBetti R, degree (R+X)
 
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+E=ring m4x2
+m42=m4x2%ideal(vars E)_{0,1,2}
+betti syz (transpose m42,DegreeLimit=>2)
+
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,4,Special=>1,Verbose=>true);
+E=ring m4x2
+m42=m4x2%ideal(vars E)_{0,1,2}
+betti syz (transpose m42,DegreeLimit=>2)
+
 kk=ZZ/11
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Verbose=>true);
-E=ring m4x2
-m42=m4x2%ideal(vars E)_{0,1,2}
-betti syz (transpose m42,DegreeLimit=>-1)
+setRandomSeed("repeat again 6")
+count=0
+elapsedTime while(elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>1,Verbose=>true);
+    <<minimalBetti X <<endl;
+	E=ring m4x2;
+	m42=m4x2%ideal(vars E)_{0,1,2};
+	sm24=syz(transpose m42,DegreeLimit=>2);
+	<< betti sm24 << endl;
+	rank source sm24=!=5 or numgens X==10) do (count=count+1); count
+
+betti syz transpose m42
 minimalBetti X
+singX=X+minors(2,jacobian X);
+dim singX
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0
-minimalBetti J
-E=ring m4x2
-m42=m4x2%ideal(vars E)_{0,1,2}
-betti syz (transpose m42,DegreeLimit=>-1)
-
-kk=ZZ/7
-P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>true,Verbose=>true);
-minimalBetti X
-elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
 minimalBetti J
 
@@ -779,41 +808,73 @@ minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0
 minimalBetti J
+
+kk=ZZ/11
+P4=kk[x_0..x_4]
+setRandomSeed("search")
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Verbose=>true);
+minimalBetti X
+elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
+L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
 ///
 
+aboRanestadSurfaceFromMatrix=method(Options=>{Verbose=>false,Smooth=>true})
+aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
+    kk:= coefficientRing P4;
+    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
+    m4x2':=sub(m4x2,vars E);
+    count:=1;test:=1;
+    I:=null;sol:=null;randSol:=null;
+    b4x2r:=null;bb:=null;test1:=null;test2:=null;T:=null;X:=null;c:=null;
+    countSmooth:=1;singX:=null;
+    while( --smooth
+    while( -- dim X and degree X
+	while( -- syz bb and syz transpose bb has the correct number of generators
+	    c=b4x2*sub(m2x3,ExB)+sub(m4x2',ExB)*a2x3;
+	    I=trim ideal sub(contract(E3,flatten c),B);
+	    sol=vars B%I;
+	    randSol=sub(sol,random(kk^1,kk^140));
+	    b4x2r=sub(b4x2,vars E|randSol);
+	    betti(bb=map(E^4,,m4x2'|b4x2r));
+	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
+	    not(test1 and test2)
+	    ) do (test=test+1;count=count+1);
+	if opt.Verbose then (<<"trials so far to get a surface = " <<count <<endl);
+	betti(T=res(coker bb, LengthLimit=>4));
+	X=saturate ideal syz symExt(T.dd_4,P4);
+	not (dim X ==3 and degree X==12)  ) do ();
+    if not opt.Smooth then return X;
+    singX=X+minors(2,jacobian X);
+    dim singX !=0) do (countSmooth=countSmooth+1);
+    if opt.Verbose then (<<"trials to get a smooth surface = "<<countSmooth <<endl);
+    X)
+///
+kk=ZZ/19
+P4=kk[x_0..x_4]
+setRandomSeed("fairly fast search")
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+m4x2'=matrixFromAboRanestadSurface X
+m4x2
+assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
+///
+matrixFromAboRanestadSurface=method()
+matrixFromAboRanestadSurface(Ideal) := X -> (
+    T:=tateResolutionOfSurface X;
+    E:= ring T;
+    m4x2:=(T.dd_4_{2,3}**E^{2});
+    m4x2)
+  
 
-
-
-
-smoothAboRanestadSurface=method()
-smoothAboRanestadSurface(Ring,Number) := (P4,n) -> (
-    assert(member(n,toList(112..117)));
-    countSmooth:=1;singX:=null;X:=null;m4x2:=null;m2x3:=null;
-    while (
-	elapsedTime (X,m4x2)=aboRanestadSurface(P4,n);
-	singX=X+minors(2,jacobian X);
-	dim singX !=0 ) do (countSmooth=countSmooth+1);
-    <<countSmooth;
-    (X,m4x2))
-
-smoothAboRanestadSurface(Ring,Number,Number) := (P4,n,b) -> (
-    assert(member(n,toList(112..117)));
-    countSmooth:=1;singX:=null;X:=null;m4x2:=null;
-    while (
-	elapsedTime (X,m4x2)=aboRanestadSurface(P4,n,b);
-	singX=X+minors(2,jacobian X);
-	dim singX !=0 ) do (countSmooth=countSmooth+1);
-    <<countSmooth;
-    (X,m4x2))
-
-
+    
 collectSmoothAboRanestadSurfaces=method()
 collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
     m4x2s:={};Xs:={};adjTypes:={};
     X:=null;m4x2:=null;m2x3:=null;numList:=null;L1:=null;L2:=null;J:=null;
     count:=0;
     scan(N, i-> (
-	    elapsedTime (X,m4x2)=smoothAboRanestadSurface(P4,n);
+	    elapsedTime (X,m4x2)=aboRanestadSurface(P4,n);
 	    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,4);
 	    Xs=append(Xs,X);
 	    adjTypes=append(adjTypes,numList);
@@ -821,91 +882,6 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
     return (Xs,adjTypes,m4x2s))
 
 
-smoothAboRanestadSurfaceFromMatrix=method()
-smoothAboRanestadSurfaceFromMatrix(Matrix) := m4x2 -> (
-    E:=ring m4x2;
-    kk:=coefficientRing E;
-    x:= symbol x;a:=symbol a; b:= symbol b;
-    P4:=kk[x_0..x_4];
-    m2x3:=matrix{{E_0,E_1,E_3},{E_1,E_2,E_4}};-- random(E^2,E^{3:-1})
-    bs:=flatten apply(4,i->flatten apply(2,j->apply(10,k->b_(i,j,k))));
-    as:=flatten apply(2,i->flatten apply(3,j->apply(10,k->a_(i,j,k))));
-    B:=kk[bs,as];
-    ExB:=E**B;
-    E2:=sub(basis(2,E),ExB);
-    b4x2:=matrix apply(4,i->apply(2,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
-    a2x3:=matrix apply(2,i->apply(3,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
-    E3:=sub(basis(3,E),ExB);
-    c:=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
-    I:=trim ideal sub(contract(E3,flatten c),B);
-    <<numgens I<<endl;
-    sol:=vars B%I;
-    test1:=null;test2:=null;b4x2r:=null;bb:=null;T:=null;X:=null;singX:=null;
-    test:=1;count:=1;randSol:=null;
-    elapsedTime while (
-	while (randSol=sub(sol,random(kk^1,kk^140));
-	    b4x2r=sub(b4x2,vars E|randSol);
-	    betti(bb=map(E^4,,m4x2|b4x2r));
-	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
-	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
-	not(test1 and test2) ) do (test=test+1;count=count+1);
-        betti(T=res(coker bb, LengthLimit=>4));
-	X=saturate ideal syz symExt(T.dd_4,P4);
-	singX=X+minors(2,jacobian X);
-    not (dim singX == 0 and dim X ==3 and degree X==12) ) do ();
-    X)
-
-getSpecialARSurf
-getSpecialARSurf=method()
---conjecture: these surfaces should end up in a conic bundle.
---n=115, P4=ZZ/7[x_0..x_4], kk=coefficientRing P4
-getSpecialARSurf(PolynomialRing,Number) := (P4,n) -> (
-    if not member(n,toList(113..115)) then error " expect n in {113..115}";
-    kk:=coefficientRing P4;
-    (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
-    E':=kk[(gens E)_{0..2}];
-    m4x2:=null;c:=null;I:=null;sol:=null;
-    test:=0; count:=0;bb:=null;
-    randSol:=null;b4x2r:=null;test1:=null;test2:=null;X:=null;singX:=null;
-    count2:=0;T:=null;Ts:=null;test3:=null;count1:=null;sbb:=null;
-    n1:=min(116-n,2);m2x2:=null;
-    m2xk:=map(kk^2,kk^0,0);
-    scan(n1,c-> (
-	    while (m2x2=random(kk^2,kk^2); det m2x2==0) do ();
-	    m2xk=m2xk|m2x2*m2x3*random(kk^3,kk^1)));
-    m2xk=m2xk|random(E^2,E^{2-n1:-1});
-     while (
-     while (
-	test=0;
- 	while (
-    	count1=1;
-	    while (	
---		m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|random(E^2,E^{2:-1})));
-                m4x2=map(E^4,,transpose(sub(random(E'^2,E'^{2:-1}),E)|m2xk));
-                c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
-		I=trim ideal sub(contract(E3,flatten c),B);
-	    not numgens I== n) do (count1=count1+1;);
-	    <<"count1="<<count1<<endl;
-	    --<<numgens I<<endl;
-	    sol=vars B%I;
-	    randSol=sub(sol,random(kk^1,kk^140));
-	    b4x2r=sub(b4x2,vars E|randSol);
-	    betti(bb=map(E^4,,m4x2|b4x2r));
-	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
-	    sbb=syz transpose bb;
-	    test2=degrees source sbb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
-	    betti (Ts=res(coker sbb,LengthLimit=>3));
-	    test3= (rank Ts_3==73); 
-	    not(test1 and test2 and test3)) do (test=test+1;);
-	<<"test="<<test<<endl;
-        betti(T=res(coker bb, LengthLimit=>4));
-	X=saturate ideal syz symExt(T.dd_4,P4);
-	not(dim X==3 and degree X==12)) do (count2=count2+1;);
-	<<"count2="<<count2<<endl;
-	singX=X+minors(2,jacobian X);
-	not dim singX == 0) do ();
-        <<"non smooth examples="<<count2<<endl;
-	X)
 
 
 
@@ -1012,7 +988,6 @@ Headline => "functions concerning Abo-Ranestad surfaces",
      UL{
 	TO aboRanestadSurface,
         TO singAboRanestadSurfacesStatistic,
-        TO smoothAboRanestadSurface
         },
     
      SUBSECTION "lift to characteristic zero",
@@ -1054,8 +1029,8 @@ Description
     tally apply(Ms,M->minimalBetti M)
     X=schreyerSurfaceFromModule Ms_1;
     minimalBetti X
-    X=schreyerSurfaceFromModule Ms_4;
-    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
 ///
 
 
@@ -1285,35 +1260,112 @@ Description
     One can easily force 3 or 4 intersection points. To find more we perform a random search over
     a finite ground field FF_q. Since an extra intersection point is a codimension 1 condition we can find
     examples with c additional intersection points with about q^c trials.
-
+  Example
+    P4=ZZ/nextPrime 10^3[x_0..x_4];
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,5);  
+    minimalBetti X
+    singX=X+minors(2,jacobian X);
+    dim saturate singX==-1
+    elapsedTime betti (T=tateResolutionOfSurface X)
+    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
+    "numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}";
+  Text
     A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well.
     In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four intersction points in the Grassmannian G(2,5).
     We can fource 2 more intersection points easily and can get a 7-th intersection point by a
     codimension 1 random search.
   Example
-    P4=ZZ/nextPrime 10^3[x_0..x_4];
-    setRandomSeed("fast");
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
-    minimalBetti X
-    singX=X+minors(2,jacobian X);
-    dim saturate singX==-1
-    betti (T=tateResolutionOfSurface X)
-    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
-    "numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}";
-    setRandomSeed("fast");
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>true);  
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
     minimalBetti X
     "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
     "numList=={(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}";
     kk=ZZ/19;P4=kk[x_0..x_4];
-    setRandomSeed("fairly fast search");
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>true,Verbose=>true); 
+    setRandomSeed("fast search");
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
+    minimalBetti X
+    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
+    "numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}";
+    setRandomSeed("another fast search");
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true); 
     minimalBetti X
     "elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);";
     "L0=={(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}";
 SeeAlso
    adjunctionProcessData
 ///
+
+doc ///
+Key
+ matrixFromAboRanestadSurface
+ (matrixFromAboRanestadSurface, Ideal)
+Headline
+ get the 4x2 matix of an Abo-Ranestad surface
+Usage
+  m4x2 = matrixFromAboRanestadSurface X
+Inputs
+ X:Ideal
+  the ideal of a Abo-Ranestad surface
+Outputs
+ m4x2:Matrix
+  a 4x2 matrix with linear entries over the exterior algebra
+Description
+  Text
+    It the Tate resolution of an Abo-Ranestad surface their are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
+    with linear entries over the exterior algbra. The 2x3 matrix is normalized. The function returns the
+    4x2 matix.
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4]
+    setRandomSeed("fairly fast search")
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    betti tateResolutionOfSurface X
+    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    m4x2'=matrixFromAboRanestadSurface X
+    m4x2
+    assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
+SeeAlso
+   aboRanestadSurface
+   aboRanestadSurfaceFromMatrix
+///
+
+doc ///
+Key
+ aboRanestadSurfaceFromMatrix
+ (aboRanestadSurfaceFromMatrix, Ring, Matrix)
+Headline
+ get an Abo-Ranestad surface with given 4x2 matrix.
+Usage
+ X = aboRanestadSurfaceFromMatrix(P4,m4x2)
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+ m4x2:Matrix
+  a 4x2 matrix with linear entries over the exterior algebra
+Outputs
+ X:Ideal
+  the ideal of a Abo-Ranestad surface
+Description
+  Text
+    It the Tate resolution of an Abo-Ranestad surface their are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
+    with linear entries over the exterior algbra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
+    and the type of the surface depends on how these images intersect in the Grassmannin G(2,5). It turns out that the number of
+    (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
+    The function returns a corresponding surface X.
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4]
+    setRandomSeed("fairly fast search")
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    betti tateResolutionOfSurface X
+    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    m4x2'=matrixFromAboRanestadSurface X
+    m4x2
+    assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
+SeeAlso
+   aboRanestadSurface
+   matrixFromAboRanestadSurface
+///
+
 
 doc ///
 Key
