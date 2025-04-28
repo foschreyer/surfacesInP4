@@ -1,6 +1,6 @@
 ///
 restart
-
+s=2
 uninstallPackage "NongeneralTypeSurfacesInP4"
 
 restart
@@ -63,6 +63,7 @@ export {
     "LabBookProtocol",
     "knownExamples",
     "schreyerSurfaces",
+    "schreyerSurface",
     "aboRanestadSurfaces",
     "tateResolutionOfSurface",
     "schreyerSurfaceFromModule",
@@ -74,7 +75,8 @@ export {
     "findRandomSmoothSchreyerSurface",
     "collectSchreyerSurfaces",
     "tangentDimension",
-    "unirationalConstructionOfSchreyerSurfaces",
+    "unirationalConstructionOfSchreyerSurface",
+    "specialEnriquesSchreyerSurface",
     "adjunctionProcessData",
     "prepareAboRanestadSurfaces",
     "aboRanestadSurface",
@@ -85,7 +87,8 @@ export {
     "tangentComputation",
     "get4x2Matrix",
     "Smooth",
-    "Special"
+    "Special",
+    "KodairaDimension"
 }
 
 
@@ -364,6 +367,48 @@ schreyerSurfaceFromModule(Ideal) := M -> (
     dim singX !=0) do();
     X)
 
+schreyerSurface=method(Options=>{Smooth=>true,Verbose=>false})
+schreyerSurface(Ring,Number) := opt -> (P4,s) -> (
+    F:=res(ideal vars P4, LengthLimit=>3);
+    kk:=coefficientRing P4;
+    M:=null;fM:=null;N:=null;N1:=null; X:=null; singX:=null;
+    trials:=1; 
+    countSmooth:=1; count:=1; countMonad := 1; countModule := 1; 
+    while( --smooth
+	while( -- monad ok
+	    while( -- module ok
+		while ( -- module tested
+		    while (-- hilbertFunction ok
+			M=ideal (F.dd_3*random(F_3,P4^{-4}));
+			apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
+		    fM=res(M,DegreeLimit=>1,LengthLimit=>3);
+		    rank fM_3 =!= s) do (countModule=countModule+1);
+		while (
+		    N1=random(P4^{rank fM_3:-4},P4^{2:-4});
+		    coker transpose N1 !=0) do ();
+		N = coker transpose (fM.dd_3*N1);
+		(dim N , degree N)!=(0,2)) do (countModule=countModule+1);
+	    if opt.Verbose then (<<"modules tested = "<<countModule <<endl);
+	J1:=syz transpose (fM.dd_2*syz transpose syz(transpose(fM.dd_3*N1),DegreeLimit=>-3));
+	source J1 != P4^{0,-2}) do (countMonad=countMonad+1);
+	if opt.Verbose then ( <<"monads tested = " << countMonad <<endl);
+        X=trim ideal(transpose J1_{1}*syz(fM.dd_1));
+	if not opt.Smooth then return X;
+	singX= X+minors(2,jacobian X);
+	dim saturate singX=!=-1) do (countSmooth=countSmooth+1);
+    if opt.Verbose then ( <<"number of surface tested to get a smooth one = " << countSmooth <<endl);
+    return X)
+///
+P4=ZZ/3[x_0..x_4]
+2^6,3^6, 5^6
+setRandomSeed("repeat")
+elapsedTime X=schreyerSurface(P4,3,Verbose=>true);
+minimalBetti X
+singX=X+minors(2,jacobian X);
+dim saturate singX
+
+///
+
 findRandomSchreyerSurface=method()
 findRandomSchreyerSurface(Ring) := P4 -> (
     F:=res(ideal vars P4, LengthLimit=>3);
@@ -618,6 +663,61 @@ findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
 	singX=X+minors(2,jacobian X);
 	 dim singX !=0) do ();
    X)
+///
+kk=ZZ/nextPrime(10^3)
+P4=kk[x_0..x_4]
+elapsedTime X=unirationalConstructionOfSchreyerSurfaces(P4,KodairaDimension=>-1);
+minimalBetti X
+M=moduleFromSchreyerSurface X;
+minimalBetti M
+tangentDimension M
+///
+
+unirationalConstructionOfSchreyerSurface=method()
+unirationalConstructionOfSchreyerSurface(Ring) := P4 -> (
+	planes:=apply(5,i->ideal(P4_i,P4_((i+1)%5)));
+	ps := intersect planes;
+	Ls:=apply(planes,i->i+ideal random(1,P4));
+	L:= intersect Ls;
+	cub:=ideal(gens L*random(source gens L,P4^{-3}));
+	C:=(intersect planes+cub):L;
+	betti(fC:=res C);
+	M:=ideal fC.dd_4^{1..10}; 
+	X:=schreyerSurfaceFromModule M;
+	return X )
+
+specialEnriquesSchreyerSurface=method()
+specialEnriquesSchreyerSurface(Ring) := P4 -> (
+    kk:=coefficientRing P4;
+    t:= symbol t;
+    P1:=kk[t_0,t_1];
+    parametrisierungConic:=matrix{{2*t_0*t_1,-t_0^2,t_1^2}};
+    P2:=kk[(gens P4)_{0..2}];
+    conic:=ideal(P2_0^2+4*P2_1*P2_2);
+    BringCurve:=ideal(P2_0^4*P2_1*P2_2-P2_0^2*P2_1^2*P2_2^2-
+	    P2_0*(P2_1^5+P2_2^5)+2*P2_1^3*P2_2^3);
+    randomLine:=null;cp:=null;polarLine:=null;cpts:=null;randomPointOnB:=null;
+    while (
+	while (
+	    randomLine=ideal random(P2^1,P2^{-1});
+	    cp=decompose(randomLine+BringCurve);
+	not(degree first cp==1 and dim first cp ==1)) do ();
+        randomPointOnB=transpose syz transpose jacobian first cp;
+	polarLine=ideal(randomPointOnB*jacobian conic);
+	cpts=decompose sub(polarLine,parametrisierungConic);
+	#cpts=!=2 ) do ( );
+    --sub(BringCurve,randomPointOnB)
+    pts:=apply(cpts, c-> transpose syz transpose jacobian c);
+    sigma:= matrix{{P4_4,P4_0,P4_1,P4_2,P4_3}};
+    Qs:=apply(pts,c->(sub(c_(0,1),kk))^2*P4_2*P4_3+sub(c_(0,0),kk)*sub(c_(0,1),kk)*P4_0^2-(sub(c_(0,0),kk))^2*P4_1*P4_4);
+    q1:=null;
+    Es:=apply(Qs,q->(q1=q;ideal apply(5,i->(q1=sub(q1,sigma);q1))));
+    --apply(Es,E->minimalBetti E)
+    --minimalBetti intersect Es
+    M:=sum Es;
+    --minimalBetti M
+    X:=schreyerSurfaceFromModule M;
+    return X)
 
 tangentDimension=method()
 tangentDimension(Ideal) := (M) -> (
@@ -964,7 +1064,8 @@ Headline => "functions concerning Schreyer surfaces",
      SUBSECTION "lift to characteristic zero",
      UL{
 	TO tangentDimension,
-        TO unirationalConstructionOfSchreyerSurfaces
+        TO unirationalConstructionOfSchreyerSurface,
+	TO specialEnriquesSchreyerSurface
         }        
 }
 
@@ -1036,29 +1137,73 @@ Description
 
 doc ///
 Key
- schreyerSurfaceFromModule
- (schreyerSurfaceFromModule, Ideal)
+ unirationalConstructionOfSchreyerSurface
+ (unirationalConstructionOfSchreyerSurface, Ring)
 Headline
- compute a smooth Schreyer surface with H^1-module defined by M
+ compute a rational Schreyer surface whose H^1-module has 5 extra syzyzgies
 Usage
- X = schreyerSurfaceFromModule M
+ X = unirationalConstructionOfSchreyerSurface P4
 Inputs
- M:Ideal
-  defining the module with Hilbert function (1,5,5) and at least 2 extra syzygies
+ P4:Ring
+  the coordinate ring of P4
 Outputs
  X:Ideal
   the ideal of a smooth Schreyer surface
 Description
   Text
-    The H^1-module of a Schreyer surface is a finite length module
-    with Hilbert function (1,5,5) with at least two extra syzygies.
+    The desired surface has a residual scheme R=X5:X consisting on union of 5 planes.
   Example
-    P4=ZZ/3[x_0..x_4];
-    X=specificSchreyerSurface(P4,1);
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    X=unirationalConstructionOfSchreyerSurface(P4);
     minimalBetti X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti R
+    decompose R
+    tangentDimension M
 ///
+
+doc ///
+Key
+ specialEnriquesSchreyerSurface
+ (specialEnriquesSchreyerSurface, Ring)
+Headline
+ compute a Enriques Schreyer surface whose H^1-module has 5 extra syzyzgies
+Usage
+ X = specialEnriquesSchreyerSurface P4
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The desired surface has a residual scheme R=X5:X which is a quintic elliptic scroll.
+    The H^1-module is defined by the sum of the ideals of two elliptic curves on the scroll.
+    Thus construction needs a point p on the Bring curve and the two point on the conic of
+    elliptic normal curves of degree 5. Over a finite field such data are easily found by a random search, whose running time
+    is independent of the dinite ground field
+    The two points on the conic are the intersection of the conic with the polar line to the point p of the conic, [Hulek,199x].
+    The rest of the construction is unirational.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    X=specialEnriquesSchreyerSurface(P4);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti R
+    tangentDimension M==25
+  Text
+    "=> these surfaces do not form a complete family"
+///
+
 
 doc ///
 Key
@@ -1091,6 +1236,8 @@ SeeAlso
    exampleOfSchreyerSurfaces
 ///
 
+
+
 doc ///
 Key
  exampleOfSchreyerSurfaces
@@ -1116,6 +1263,45 @@ Description
     tally apply(Ms,M->minimalBetti M)
     netList apply(#Ms,i->(minimalBetti Ms_i, types_i))
 ///
+
+doc ///
+Key
+ schreyerSurface
+ (schreyerSurface, Ring, Number)
+Headline
+ find a random Schreyer surface
+Usage
+ X = schreyerSurface(P4,s)
+Inputs
+ P4:Ideal
+  coordinate ring of P4 over a ground field of characteristic 3
+ s:Number
+  the number of desired extra syzygies
+Outputs
+ X:Ideal
+  the ideal of a  Schreyer surface 
+Description
+  Text
+    It searches for a suitable H^1-module with Hilbert function (1,5,5) and s >1 extra syzygies by searching in the
+    codimension 6+2(s-2) subspace of modules with one extra syzygy, and computes the corresponding surface.
+    To find an example one has to check about 3^6 examples of modules.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    setRandomSeed("find one fairly fast");
+    elapsedTime X=schreyerSurface(P4,2,Smooth=>false,Verbose=>true);  
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+
+    setRandomSeed("also fairly fast");
+    elapsedTime X=schreyerSurface(P4,3,Smooth=>false);  
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+SeeAlso
+   findRandomSmoothSchreyerSurface
+///
+
 
 doc ///
 Key
