@@ -1162,9 +1162,49 @@ Description
     X5=ideal (gens X)_{0..4};
     R=X5:X;
     minimalBetti R
-    decompose R
+    planes=decompose R
     tangentDimension M
+    tally apply(planes,p->tally apply(decompose(p+X),c->(dim c, degree c, betti c)))
+    sixSecants1=apply(planes,p-> ideal (gens intersect drop(select(decompose(p+X),c->dim c==1),1))_{0,1,2});
+    sixSecants2=apply(5,i->trim (planes_i+planes_((i+1)%5)));
+    sixSecants=sixSecants1|sixSecants2
+    tally apply(sixSecants, l-> (betti l,dim l, degree (l+X)))
+    --netList apply(sixSecants,l->tally apply(decompose (l+X),c->degree c))
+    LeBarzN6(11,10,1)==10
+  Text
+    Each of the five planes intersects X in a plane quartic curve and three points.
+    The sixSecants are the five intersection lines of the planes and the five lines spanned by two of
+    the special points in each plane.
 ///
+
+
+///
+LeBarzN6(11,10,1)
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    planes:=apply(5,i->ideal(P4_i,P4_((i+1)%5)));
+    ps := intersect planes;
+    Ls:=apply(planes,i->i+ideal random(1,P4));
+    L:= intersect Ls;
+    cub:=ideal(gens L*random(source gens L,P4^{-3}));
+    C:=(intersect planes+cub):L;
+    betti(fC:=res C)
+    M:=ideal fC.dd_4^{1..10}; 
+    X=schreyerSurfaceFromModule M;
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti R
+    cR=decompose R
+    tally apply(cR,p->tally apply(decompose(p+X),c->(dim c, degree c)))
+    netList apply(planes,p->(p,select(decompose(p+X),c->dim c==1)))
+    netList (sixSecants1=apply(planes,p-> ideal (gens intersect drop(select(decompose(p+X),c->dim c==1),1))_{0,1,2}))
+    sixSecants2=apply(5,i->trim (planes_i+planes_((i+1)%5)))
+    sixSecants=sixSecants1|sixSecants2
+    tally apply(sixSecants, l-> (dim l, degree (l+X)))
+    
+///
+
+
 
 doc ///
 Key
@@ -1201,9 +1241,43 @@ Description
     minimalBetti R
     tangentDimension M==25
   Text
-    "=> these surfaces do not form a complete family"
+    => these surfaces do not form a complete family
 ///
 
+///
+kk=ZZ/nextPrime 10^3;
+P4=kk[x_0..x_4]
+elapsedTime X=specialEnriquesSchreyerSurface(P4);
+betti(fX=res(X,LengthLimit=>2))
+elapsedTime betti(N=Hom(module X,P4^1/X)) -- 362.604 seconds elapsed
+
+--phis={homomorphism (N_{4})};
+phis=apply(toList(5..16),i->homomorphism N_{i});
+As=apply(phis,phi->matrix{apply(15,i->lift(phi_(0,i),P4))});
+Bs1=apply(As,A->A*fX.dd_2//fX.dd_1);
+betti Bs_1
+Bs=apply(Bs1,B->B^{5..14}_{0..2})
+T=kk[t_0..t_(#Bs-1)]
+m10x3=sum(#Bs,i->t_i*sub(Bs_i,kk))
+betti(J2=minors(2,m10x3))
+betti(saturate J2)
+betti(J=minors(3,m10x3))
+codim J ==10-3+1
+dim J
+
+P4xT=P4**T
+betti(A=sum(#As,i->P4xT_(5+i)*sub(As_i,P4xT)))
+betti(B=sum(#Bs1,i->P4xT_(5+i)*sub(Bs1_i,P4xT)))
+betti(I=ideal(A*B))
+b6=sub(basis(6,P4),P4xT)
+betti (I1 =trim ideal sub(contract(b6,gens I),T))
+b7=sub(basis(7,P4),P4xT)
+betti (I2 =trim ideal sub(contract(b7,gens I),T))
+betti trim (I1+I2)
+dim I1
+betti basis(2,T)
+binomial(13,2)
+///
 
 doc ///
 Key
