@@ -1183,18 +1183,21 @@ LeBarzN6(11,10,1)
     P4=kk[x_0..x_4];
     planes:=apply(5,i->ideal(P4_i,P4_((i+1)%5)));
     ps := intersect planes;
-    Ls:=apply(planes,i->i+ideal random(1,P4));
-    L:= intersect Ls;
-    cub:=ideal(gens L*random(source gens L,P4^{-3}));
+    Ls:=apply(planes,i->i+ideal random(1,P4)); --10 param = P2^5
+    L:= intersect Ls;minimalBetti L
+    cub:=ideal(gens L*random(source gens L,P4^{-3}));-- P9 of choices for cub
     C:=(intersect planes+cub):L;
+    netList (cC=decompose C)
     betti(fC:=res C)
-    M:=ideal fC.dd_4^{1..10}; 
-    X=schreyerSurfaceFromModule M;
+    M:=ideal fC.dd_4^{1..10};
+    tangentDimension M, 19+25-5
+    X=schreyerSurfaceFromModule M;  9+24-4+2*3 
     X5=ideal (gens X)_{0..4};
     R=X5:X;
     minimalBetti R
     cR=decompose R
     tally apply(cR,p->tally apply(decompose(p+X),c->(dim c, degree c)))
+    netList cC
     netList apply(planes,p->(p,select(decompose(p+X),c->dim c==1)))
     netList (sixSecants1=apply(planes,p-> ideal (gens intersect drop(select(decompose(p+X),c->dim c==1),1))_{0,1,2}))
     netList (sixSecants2=apply(planes,p-> ideal (gens intersect(select(decompose(p+X),c->dim c==1))_{0,1})_{0,1,2}))
