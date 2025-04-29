@@ -1169,7 +1169,6 @@ Description
     sixSecants2=apply(5,i->trim (planes_i+planes_((i+1)%5)));
     sixSecants=sixSecants1|sixSecants2
     tally apply(sixSecants, l-> (betti l,dim l, degree (l+X)))
-    --netList apply(sixSecants,l->tally apply(decompose (l+X),c->degree c))
     LeBarzN6(11,10,1)==10
   Text
     Each of the five planes intersects X in a plane quartic curve and three points.
@@ -1198,10 +1197,10 @@ LeBarzN6(11,10,1)
     tally apply(cR,p->tally apply(decompose(p+X),c->(dim c, degree c)))
     netList apply(planes,p->(p,select(decompose(p+X),c->dim c==1)))
     netList (sixSecants1=apply(planes,p-> ideal (gens intersect drop(select(decompose(p+X),c->dim c==1),1))_{0,1,2}))
-    sixSecants2=apply(5,i->trim (planes_i+planes_((i+1)%5)))
+    netList (sixSecants2=apply(planes,p-> ideal (gens intersect(select(decompose(p+X),c->dim c==1))_{0,1})_{0,1,2}))
+    sixSecants3=apply(5,i->trim (planes_i+planes_((i+1)%5)))
     sixSecants=sixSecants1|sixSecants2
     tally apply(sixSecants, l-> (dim l, degree (l+X)))
-    
 ///
 
 
