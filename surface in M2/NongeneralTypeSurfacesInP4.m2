@@ -88,7 +88,8 @@ export {
     "get4x2Matrix",
     "Smooth",
     "Special",
-    "KodairaDimension"
+    "KodairaDimension",
+    "veroneseImagesInG25"
 }
 
 
@@ -918,6 +919,31 @@ elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
 ///
 
+veroneseImagesInG25=method()
+veroneseImagesInG25(Matrix) := m4x2 -> (
+    E:=ring m4x2;
+    m2x3 := matrix{{E_0,E_1,E_3},{E_1,E_2,E_4}};
+    kk:=coefficientRing E;
+    y:= symbol y;
+    P3:=kk[y_0..y_3];
+    ExP3:=E**P3;
+    ef:=sub(basis(2,E),ExP3);
+    a3:=(vars P3)_{0..2};
+    a4:=vars P3;
+    a3':=sub(a3,ExP3)*sub(transpose m2x3,ExP3);
+    paraP2:=sub(contract(ef,a3'_(0,0)*a3'_(0,1)),P3);
+    a4':=sub(a4,ExP3)*sub(m4x2,ExP3);
+    paraP3:=sub(contract(ef,a4'_(0,0)*a4'_(0,1)),P3);
+    p:=symbol p;
+    P9:=kk[p_0..p_9];
+    g25:=pfaffians(4,genericSkewMatrix(P9,p_0,5));
+    veroP2:=ker map(P3,P9,paraP2);
+    veroP3:=ker map(P3,P9,paraP3);
+    assert(veroP2+g25==veroP2 and veroP3+g25==veroP3);
+    pts:=trim(veroP2+veroP3);
+    (pts,veroP2,veroP3,g25))
+    
+
 aboRanestadSurfaceFromMatrix=method(Options=>{Verbose=>false,Smooth=>true})
 aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
     kk:= coefficientRing P4;
@@ -1093,7 +1119,8 @@ Headline => "functions concerning Abo-Ranestad surfaces",
     
      SUBSECTION "lift to characteristic zero",
      UL{
-	TO tangentComputation
+	TO tangentComputation,
+	TO veroneseImagesInG25
         }        
 }
 
@@ -1211,9 +1238,10 @@ LeBarzN6(11,10,1)
     planes:=apply(5,i->ideal(P4_i,P4_((i+1)%5)));
     ps := intersect planes;
     Ls:=apply(planes,i->i+ideal random(1,P4)); --10 param = P2^5
-    L:= intersect Ls;minimalBetti L
+    L:= intersect Ls;minimalBetti L, dim L, degree L, genus L
     cub:=ideal(gens L*random(source gens L,P4^{-3}));-- P9 of choices for cub
     C:=(intersect planes+cub):L;
+    minimalBetti C,dim C, degree C, genus C
     netList (cC=decompose C)
     betti(fC:=res C)
     M:=ideal fC.dd_4^{1..10};
@@ -1288,10 +1316,29 @@ Description
 kk=ZZ/nextPrime 10^3;
 P4=kk[x_0..x_4]
 elapsedTime X=specialEnriquesSchreyerSurface(P4);
-X5=ideal (gens X)_{0..4}
+X5=ideal (gens X)_{0..4};
 R=X5:X;
 minimalBetti R
-M=moduleFromSchreyerSurface;minimalBetti M
+M=moduleFromSchreyerSurface X;minimalBetti M
+fM=res M
+m5x15=(transpose fM.dd_3_{0..4}^{0..14})**P4^{-5};
+fm5x15=res coker m5x15
+betti fm5x15
+isIsomorphic(coker m5x15,coker transpose fm5x15.dd_3)
+-- => m5x15 is the presentation matrix of the module of global sections of a 2-torsion bundle in E3
+E3=ann coker m5x15;
+minimalBetti E3
+minimalBetti E3
+
+E3+R==E3
+cub=ideal(gens E3*random(source gens E3,P4^{-3}));
+betti(A=R+cub:E3); dim A, degree A, genus A
+betti saturate A
+singA=A+minors(3,jacobian A);
+saturate singA
+
+elapsedTime cA=decompose A;
+apply(decompose(R+quad),c->(dim c, degree c ,genus c))
 elapsedTime X=specialEnriquesSchreyerSurface(P4);
 betti(fX=res(X,LengthLimit=>2))
 elapsedTime betti(N=Hom(module X,P4^1/X)) -- 362.604 seconds elapsed
@@ -1528,6 +1575,49 @@ Description
   Text
     This proves that the surfaces precomputed Via exampleOfSchreyerSurfaces
     all lift to smooth surfaces over some algebraic number field (of characteristic 0).
+///
+
+doc ///
+Key
+ veroneseImagesInG25
+ (veroneseImagesInG25, Matrix)
+Headline
+ compute the Veronese images of P2 and P3 in the Grassamnnain G25 and their intersection 
+Usage
+ (pts,vP2,vP3,g25) = veroneseImagesInG25(m4x2)
+Inputs
+ m4x2: Matrix
+  the 4x2 matrix of linear forms over the exterior algebra
+Outputs
+ pts:Ideal
+  the intersection points of the two Veronese images
+ vP2:Ideal
+  the ideal of the veronese surface
+ vP3:Ideal
+  the ideal of the veronese 3-fold
+ g25:Ideal
+  the ideal of the Grassmannian G(2,5) in P9.
+Description
+  Text
+    It the Tate resolution of an Abo-Ranestad surface their are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
+    with linear entries over the exterior algbra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
+    and the type of the surface depends on how these images intersect in the Grassmannin G(2,5). It turns out that the number of
+    (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
+    This function verifies this assertion in an example.
+  Example
+    kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    n=7;
+    elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+    (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    (degree pts,degree vP2,degree vP3,degree g25)
+    degree pts==n-1
+    "(L0,L1,L2,J)=adjunctionProcess(X,1);";
+    "L0_1==n and degree pts==n-1";
+    
+  
+SeeAlso
+   adjunctionProcessData
+   aboRanestadSurface
 ///
 
 
