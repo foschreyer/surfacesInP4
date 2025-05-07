@@ -1134,6 +1134,33 @@ Description
     minimalBetti M
 ///
 
+doc ///
+Key
+ schreyerSurfaceFromModule
+ (schreyerSurfaceFromModule, Ideal)
+Headline
+ compute the H^1-module of the ideal sheaf of X
+Usage
+ X = schreyerSurfaceFromModule X
+Inputs
+ M:Ideal
+  the ideal defining the H^1-module of the ideal sheaf of X
+Outputs
+ X:Ideal
+  the ideal of a Schreyer surface
+Description
+  Text
+    The H^1-module of a Schreyer surface is a finite length module
+    with Hilbert function (1,5,5) with at least two extra syzygies.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    (Ms,Types)=exampleOfSchreyerSurfaces P4;
+    tally apply(Ms,M->minimalBetti M)
+    X=schreyerSurfaceFromModule Ms_1;
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+///
 
 doc ///
 Key
@@ -1190,8 +1217,18 @@ LeBarzN6(11,10,1)
     netList (cC=decompose C)
     betti(fC:=res C)
     M:=ideal fC.dd_4^{1..10};
-    tangentDimension M, 19+25-5
-    X=schreyerSurfaceFromModule M;  9+24-4+2*3 
+    cub1:=ideal(gens L*random(source gens L,P4^{-3}));-- P9 of choices for cub
+    C1:=(intersect planes+cub1):L;
+    minimalBetti (intersect planes+cub)
+    betti(fC1:=res C1)
+    M1:=ideal fC1.dd_4^{1..10};
+    M==M1 -- => M does not depend on the choice of cub
+    betti (A=saturate ann(coker fC.dd_2^{6..10}_{5..19}))
+    minimalBetti A
+    minimalBetti coker fC.dd_2^{6..10}_{5..19} -- direct sum of 5 lines
+    tangentDimension M, 10+25-5
+    X=schreyerSurfaceFromModule M;  10+24-4+2*3
+    minimalBetti X
     X5=ideal (gens X)_{0..4};
     R=X5:X;
     minimalBetti R
@@ -1200,6 +1237,7 @@ LeBarzN6(11,10,1)
     netList cC
     netList apply(planes,p->(p,select(decompose(p+X),c->dim c==1)))
     netList (sixSecants1=apply(planes,p-> ideal (gens intersect drop(select(decompose(p+X),c->dim c==1),1))_{0,1,2}))
+    netList unique (apply(Ls,L->trim L)|decompose A)
     netList (sixSecants2=apply(planes,p-> ideal (gens intersect(select(decompose(p+X),c->dim c==1))_{0,1})_{0,1,2}))
     sixSecants3=apply(5,i->trim (planes_i+planes_((i+1)%5)))
     sixSecants=sixSecants1|sixSecants2
@@ -1249,6 +1287,11 @@ Description
 ///
 kk=ZZ/nextPrime 10^3;
 P4=kk[x_0..x_4]
+elapsedTime X=specialEnriquesSchreyerSurface(P4);
+X5=ideal (gens X)_{0..4}
+R=X5:X;
+minimalBetti R
+M=moduleFromSchreyerSurface;minimalBetti M
 elapsedTime X=specialEnriquesSchreyerSurface(P4);
 betti(fX=res(X,LengthLimit=>2))
 elapsedTime betti(N=Hom(module X,P4^1/X)) -- 362.604 seconds elapsed
