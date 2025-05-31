@@ -97,4 +97,19 @@ K3surfaceD9(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==9 and sectionalGenus X==8);
     X)
     
-   
+-- Elliptic surface of degree 7 and sectional genus 6
+
+ellipticSurfaceD7=method()
+ellipticSurfaceD7(PolynomialRing) := P4 -> (
+    X:=minors(2,random(P4^{1:1,2:-1},P4^{2:-2}));
+    assert(dim X==3 and degree X==7 and sectionalGenus X==6);
+    X)
+
+-- Elliptic surface of degree 8 and sectional genus 7
+
+ellipticSurfaceD8=method()
+ellipticSurfaceD8(PolynomialRing) := P4 -> (
+    X:=minors(2,random(P4^{2:1,1:0},P4^{2:-1}));
+    assert(dim X==3 and degree X==8 and sectionalGenus X==7);
+    X)
+
