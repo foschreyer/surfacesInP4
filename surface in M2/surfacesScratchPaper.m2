@@ -4,7 +4,7 @@ quinticEllipticScroll=method()
 quinticEllipticScroll(PolynomialRing) := P4 -> (
     kos:=res coker vars P4;
     X:=trim ideal syz transpose (kos.dd_4 | random(source kos.dd_3,R^{5:-3}));
-    assert(dim X==3 and degree X== 5 and sectionalGenus X==1);
+    assert(dim X==3 and degree X==5 and sectionalGenus X==1);
     X)
 
 -- Elliptic conic bundle which was missing in Okenek's paper
@@ -15,7 +15,7 @@ ellipticConicBundle(PolynomialRing) := P4 -> (
     f:=map(P4^{1:-1},target kos.dd_3,{{1,3:0,2:1,4:0}})*kos.dd_3;
     K:=prune homology(f,kos.dd_4);
     X:=trim ideal syz transpose (presentation K | random(source gens K,P4^{4:-4}));
-    assert(dim X==3 and degree X== 8 and sectionalGenus X==5);
+    assert(dim X==3 and degree X==8 and sectionalGenus X==5);
     X)
 
 -- Irregular elliptic surface of degree 12 and sectional genus 13 obtained as the dependency locus of two global sections of a rank three vector bundle
@@ -70,4 +70,31 @@ abelianSurfaceD15(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==15 and sectionalGenus X==21);
     X)
 
+-- K3 surface of degree 7 and sectional genus 5
 
+K3surfaceD7=method()
+K3surfaceD7(PolynomialRing) := P4 -> (
+    X:=minors(2,random(P4^{3:0},P4^{-1,-2}));
+    assert(dim X==3 and degree X==7 and sectionalGenus X==5);
+    X)
+
+-- K3 surface of degree 8 and sectional genus 6
+
+K3surfaceD8=method()
+K3surfaceD8(PolynomialRing) := P4 -> (
+    kos:=res coker vars P4;
+    X:=ideal syz transpose (kos.dd_3 | random(target kos.dd_3,P4^{2:-2,-3}));
+    assert(dim X==3 and degree X==8 and sectionalGenus X==6);
+    X)
+
+-- K3 surface of degree 9 and sectional genus 8
+
+K3surfaceD9=method()
+K3surfaceD9(PolynomialRing) := P4 -> (
+    kos:=res coker vars P4;
+    f:=kos.dd_4 ++ map(P4^{-4},P4^{-4},1);
+    X:=ideal syz transpose (random(P4^{6:-3},target f)*f);
+    assert(dim X==3 and degree X==9 and sectionalGenus X==8);
+    X)
+    
+   
