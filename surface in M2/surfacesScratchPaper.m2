@@ -1,3 +1,12 @@
+-- Quintic elliptic scroll
+
+quinticEllipticScroll=method()
+quinticEllipticScroll(PolynomialRing) := P4 -> (
+    kos:=res coker vars P4;
+    X:=trim ideal syz transpose (kos.dd_4 | random(source kos.dd_3,R^{5:-3}));
+    assert(dim X==3 and degree X== 5 and sectionalGenus X==1);
+    X)
+
 
 -- Elliptic conic bundle which was missing in Okenek's paper
 
@@ -61,4 +70,12 @@ abelianSurfaceD15(PolynomialRing) := P4 -> (
     X:=V:Y;
     assert(dim X==3 and degree X==15 and sectionalGenus X==21);
     X)
+
+
+
+KK = QQ
+R = KK[x_0..x_4]
+kos = res coker vars R
+X = trim ideal syz transpose (kos.dd_4 | random(source kos.dd_3,R^{5:-3}));
+hilbertPolynomial X
 
