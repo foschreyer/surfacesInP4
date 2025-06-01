@@ -159,5 +159,16 @@ ellipticSurfaceD11(PolynomialRing) := P4 -> (
     X:=prune ideal syz transpose (syzf | g);
     assert(dim X==3 and degree X==11 and sectionalGenus X==12);
     X)
-    
-    
+
+-- Elliptic surface of degree 12 and sectional genus 14
+
+ellipticSurfaceD12S14=method()
+ellipticSurfaceD12S14(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    E:=KK[e_0..e_4,SkewCommutative => true];
+    f:=random(E^{1:0},E^{1:-1,2:-2});
+    g:=(syz f)*random(source syz f,E^{3:-3,2:-4});
+    I:=prune homology(beilinson(f,P4),beilinson(g,P4));
+    X:=prune ideal syz transpose presentation I;
+    assert(dim X==3 and degree X==12 and sectionalGenus X==14);
+    X)
