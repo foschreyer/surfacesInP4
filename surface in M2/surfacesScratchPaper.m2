@@ -33,6 +33,7 @@ irregularEllipticSurfaceD12(PolynomialRing) := P4 -> (
 
 regularEllipticSurfaceD12=method()
 regularEllipticSurfaceD12(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
     E:=KK[e_0..e_4,SkewCommutative=>true];
     beta:=map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
     alpha:=syz beta;
@@ -112,4 +113,21 @@ ellipticSurfaceD8(PolynomialRing) := P4 -> (
     X:=minors(2,random(P4^{2:1,1:0},P4^{2:-1}));
     assert(dim X==3 and degree X==8 and sectionalGenus X==7);
     X)
+
+-- Elliptic surface of degree 9 and sectional genus 7
+
+ellipticSurfaceD9=method()
+ellipticSurfaceD9(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    kos:=res coker vars P4;
+    f:=map(P4^{2:-1},P4^{2:-1},1)++map(P4^{15:-1},,kos.dd_2++kos.dd_2++kos.dd_2);
+    symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    syzf:=syz f;
+    g:=map(target syzf,,beilinson(random(E^{2:0,3:-1},E^{2:-2,-4}),P4));
+    << betti g << endl;
+    X:=prune ideal syz transpose (syzf | g);
+    assert(dim X==3 and degree X==9 and sectionalGenus X==7);
+    X)
+
 
