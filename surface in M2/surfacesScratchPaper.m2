@@ -125,9 +125,39 @@ ellipticSurfaceD9(PolynomialRing) := P4 -> (
     E:=KK[e_0..e_4,SkewCommutative=>true];
     syzf:=syz f;
     g:=map(target syzf,,beilinson(random(E^{2:0,3:-1},E^{2:-2,-4}),P4));
-    << betti g << endl;
     X:=prune ideal syz transpose (syzf | g);
     assert(dim X==3 and degree X==9 and sectionalGenus X==7);
     X)
 
+-- Elliptic surface of degree 10 and sectional genus 10
 
+ellipticSurfaceD10S10=method()
+ellipticSurfaceD10S10(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    kos:=res coker vars P4;
+    f:=map(P4^{3:-1},P4^{3:-1},1)++map(P4^{5:-1},,kos.dd_2);
+    syzf:=syz f;
+    symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{3:0,1:-1},E^{1:-3,2:-4}),P4));
+    X:=prune ideal syz transpose (syzf | g);
+    assert(dim X==3 and degree X==10 and sectionalGenus X==10);
+    X)
+
+
+-- Elliptic surface of degree 11 and sectional genus 12
+
+ellipticSurfaceD11=method()
+ellipticSurfaceD11(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    kos:=res coker vars P4;
+    f:=map(P4^{-1},P4^{-1},1)++map(P4^{15:-1},,kos.dd_2++kos.dd_3);
+    syzf:=syz f;
+    symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{0,-1,-2},E^{2:-3,2:-4}),P4));
+    X:=prune ideal syz transpose (syzf | g);
+    assert(dim X==3 and degree X==11 and sectionalGenus X==12);
+    X)
+    
+    
