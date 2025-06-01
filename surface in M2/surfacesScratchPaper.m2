@@ -97,7 +97,23 @@ K3surfaceD9(PolynomialRing) := P4 -> (
     X:=ideal syz transpose (random(P4^{6:-3},target f)*f);
     assert(dim X==3 and degree X==9 and sectionalGenus X==8);
     X)
-    
+
+-- K3 surface of degree 11 and sectional genus 11
+
+K3surfaceD9=method()
+K3surfaceD9(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    symbol e;
+    E:=KK[e_0..e_4,SkewCommutative => true];
+    f:=random(E^{2:0},E^{3:-1});
+    g:=(syz f)*random(source syz f,E^{2:-3,-4});
+    beta:=beilinson(f,P4);
+    alpha:=beilinson(g,P4);
+    I:=prune homology(beta,alpha);
+    X:=prune ideal syz transpose presentation I;
+    assert(dim X==3 and degree X==11 and sectionalGenus X==11);
+    X)
+
 -- Elliptic surface of degree 7 and sectional genus 6
 
 ellipticSurfaceD7=method()
@@ -187,5 +203,4 @@ ellipticSurfaceD12S14(PolynomialRing) := P4 -> (
     X:=prune ideal syz transpose presentation I;
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
-
 
