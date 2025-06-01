@@ -104,7 +104,7 @@ K3surfaceD10=method()
 K3surfaceD10(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
     E:=KK[e_0..e_4,SkewCommutative=>true];
-    f:=map(E^{1:0},E^{1:-1},0) | random(E^{1:0},E^{2:-1}) | map(E^{1:0},E^{1:0},0);
+    f:=map(E^{1:0},E^{1:-1},0) | map(E^{1:0},E^{2:-1},{{e_0,e_1}}) | map(E^{1:0},E^{1:0},0);
     g:=(syz f)*random(source syz f,E^{-2,-3,-4});
     beta:=beilinson(f,P4);
     alpha:=beilinson(g,P4);
@@ -166,7 +166,7 @@ ellipticSurfaceD10S9=method()
 ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
     E:=KK[e_0..e_4,SkewCommutative => true];
-    f:=random(E^{1:0},E^{3:-1}) | map(E^{1:0},E^{1:0},0);
+    f:=map(E^{1:0},E^{3:-1},{{e_0..e_2}}) | map(E^{1:0},E^{1:0},0);
     g:=(syz f)*random(source syz f,E^{-2,-3,-4});
     beta:=beilinson(f,P4);
     alpha:=beilinson(g,P4);
@@ -218,5 +218,4 @@ ellipticSurfaceD12S14(PolynomialRing) := P4 -> (
     X:=prune ideal syz transpose presentation I;
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
-
 
