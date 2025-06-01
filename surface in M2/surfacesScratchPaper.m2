@@ -113,10 +113,10 @@ K3surfaceD10(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==10 and sectionalGenus X==9);
     X)
 
--- K3 surface of degree 11 and sectional genus 11
+-- K3 surface of degree 11 and sectional genus 11 with no 6-secant lines
 
-K3surfaceD9=method()
-K3surfaceD9(PolynomialRing) := P4 -> (
+K3surfaceD11S11=method()
+K3surfaceD11S11(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
     symbol e;
     E:=KK[e_0..e_4,SkewCommutative => true];
@@ -127,6 +127,36 @@ K3surfaceD9(PolynomialRing) := P4 -> (
     I:=prune homology(beta,alpha);
     X:=trim ideal syz transpose presentation I;
     assert(dim X==3 and degree X==11 and sectionalGenus X==11);
+    X)
+
+-- K3 surface of degree 11 and sectional genus 12 (B4.12)
+
+K3surfaceD11S12=method()
+K3surfaceD11S12(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    kos:=res coker vars P4;
+    f:=map(P4^{2:-1},P4^{2:-1},1)++map(P4^{20:-1},,kos.dd_3++kos.dd_3);
+    syzf:=syz f;
+    symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{2:0,2:-2},E^{3:-3,-4}),P4));
+    X:=trim ideal syz transpose (syzf | g);
+    assert(dim X==3 and degree X==11 and sectionalGenus X==12);
+    X)
+
+-- K3 surface of degree 12 and sectional genus 14 (B4.13)
+
+K3surfaceD12=method()
+K3surfaceD12(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    kos:=res coker vars P4;
+    f:=map(P4^{30:-1},,kos.dd_3++kos.dd_3++kos.dd_3);
+    syzf:=syz f;
+    symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{3:-2},E^{4:-3,-4}),P4));
+    X:=trim ideal syz transpose (syzf | g);
+    assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
 
 -- Elliptic surface of degree 7 and sectional genus 6
