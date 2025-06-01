@@ -144,7 +144,6 @@ ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==10 and sectionalGenus X==9);
     X)
     
-
 -- Elliptic surface of degree 10 and sectional genus 10
 
 ellipticSurfaceD10S10=method()
@@ -180,6 +179,7 @@ ellipticSurfaceD11(PolynomialRing) := P4 -> (
 ellipticSurfaceD12S14=method()
 ellipticSurfaceD12S14(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
+    symbol e;
     E:=KK[e_0..e_4,SkewCommutative => true];
     f:=random(E^{1:0},E^{1:-1,2:-2});
     g:=(syz f)*random(source syz f,E^{3:-3,2:-4});
