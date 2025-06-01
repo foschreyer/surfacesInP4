@@ -109,7 +109,7 @@ K3surfaceD10(PolynomialRing) := P4 -> (
     beta:=beilinson(f,P4);
     alpha:=beilinson(g,P4);
     I:=prune homology(beta,alpha);
-    X:=prune ideal syz transpose presentation I;
+    X:=trim ideal syz transpose presentation I;
     assert(dim X==3 and degree X==10 and sectionalGenus X==9);
     X)
 
@@ -125,7 +125,7 @@ K3surfaceD9(PolynomialRing) := P4 -> (
     beta:=beilinson(f,P4);
     alpha:=beilinson(g,P4);
     I:=prune homology(beta,alpha);
-    X:=prune ideal syz transpose presentation I;
+    X:=trim ideal syz transpose presentation I;
     assert(dim X==3 and degree X==11 and sectionalGenus X==11);
     X)
 
@@ -156,7 +156,7 @@ ellipticSurfaceD9(PolynomialRing) := P4 -> (
     E:=KK[e_0..e_4,SkewCommutative=>true];
     syzf:=syz f;
     g:=map(target syzf,,beilinson(random(E^{2:0,3:-1},E^{2:-2,-4}),P4));
-    X:=prune ideal syz transpose (syzf | g);
+    X:=trim ideal syz transpose (syzf | g);
     assert(dim X==3 and degree X==9 and sectionalGenus X==7);
     X)
 
@@ -171,7 +171,7 @@ ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
     beta:=beilinson(f,P4);
     alpha:=beilinson(g,P4);
     I:=prune homology(beta,alpha);
-    X:=prune ideal syz transpose presentation I;
+    X:=trim ideal syz transpose presentation I;
     assert(dim X==3 and degree X==10 and sectionalGenus X==9);
     X)
     
@@ -186,7 +186,7 @@ ellipticSurfaceD10S10(PolynomialRing) := P4 -> (
     symbol e;
     E:=KK[e_0..e_4,SkewCommutative=>true];
     g:=map(target syzf,,beilinson(random(E^{3:0,1:-1},E^{1:-3,2:-4}),P4));
-    X:=prune ideal syz transpose (syzf | g);
+    X:=trim ideal syz transpose (syzf | g);
     assert(dim X==3 and degree X==10 and sectionalGenus X==10);
     X)
 
@@ -201,7 +201,7 @@ ellipticSurfaceD11(PolynomialRing) := P4 -> (
     symbol e;
     E:=KK[e_0..e_4,SkewCommutative=>true];
     g:=map(target syzf,,beilinson(random(E^{0,-1,-2},E^{2:-3,2:-4}),P4));
-    X:=prune ideal syz transpose (syzf | g);
+    X:=trim ideal syz transpose (syzf | g);
     assert(dim X==3 and degree X==11 and sectionalGenus X==12);
     X)
 
@@ -215,7 +215,122 @@ ellipticSurfaceD12S14(PolynomialRing) := P4 -> (
     f:=random(E^{1:0},E^{1:-1,2:-2});
     g:=(syz f)*random(source syz f,E^{3:-3,2:-4});
     I:=prune homology(beilinson(f,P4),beilinson(g,P4));
-    X:=prune ideal syz transpose presentation I;
+    X:=trim ideal syz transpose presentation I;
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
+
+
+
+
+KK = ZZ/31991
+R = KK[x_0..x_4]
+elapsedTime X = K3surfaceD10(R);
+betti res X
+degree X
+genera X
+codim singularLocus X
+X = abelianSurfaceD10(R);
+fX = res X
+betti fX
+kos = res coker vars R
+f=map(R^{20:-1},,kos.dd_3++kos.dd_3) ++ map(R^{-2},R^{-2},1);
+betti f
+g=kos.dd_2++kos.dd_2++kos.dd_2++map(R^{2:-1},R^{2:-1},1);
+h=random(target g,target f)
+alpha = h*f // g
+g*alpha == f
+beta = (syz g) | alpha;
+fbeta = res prune coker beta 
+bettifbeta
+betti beta
+betti res coker transpose beta
+alpha
+betti alpha
+betti syz g
+
+KK = ZZ/101
+R = KK[x_0..x_4]
+kos = res coker vars R
+E = KK[e_0..e_4,SkewCommutative=>true]
+alpha = random(E^{2:0,3:-1},E^{2:-2,-4})
+f = map(R^{20:-1},,kos.dd_3++kos.dd_3) ++ map(R^{-1},R^{-1},1);
+alpha = beilinson(alpha,R)
+beta = map(R^{2:-1},R^{2:-1},1)++map(R^{15:-1},,kos.dd_2++kos.dd_2++kos.dd_2);
+gamma = map(target syz beta,,alpha);
+delta = syz beta | gamma;
+X = prune ideal syz transpose delta;
+
+
+KK = ZZ/101
+R = KK
+E = KK[e_0..e_4,SkewCommutative => true]
+f = random(E^{1:0},E^{1:-1,2:-2});
+g = (syz f)*random(source syz f,E^{3:-3,2:-4});
+R = KK[x_0..x_4]
+beta = beilinson(f,R);
+alpha = beilinson(g,R);
+X = prune homology(beta,alpha);
+betti X
+fX = res X
+betti fX
+betti syz transpose presentation X
+
+KK = ZZ/101
+R = KK
+E = KK[e_0..e_4,SkewCommutative => true]
+f = random(E^{1:0},E^{3:-1}) | map(E^{1:0},E^{2:0},0);
+betti syz f
+g = (syz f)*random(source syz f,E^{-2,-3,-4});
+R = KK[x_0..x_4]
+beta = beilinson(f,R);
+alpha = beilinson(g,R);
+X = prune homology(beta,alpha);
+betti X
+fX = res X
+betti fX
+betti syz transpose presentation X
+
+
+
+KK = ZZ/101
+R = KK
+E = KK[e_0..e_4,SkewCommutative => true]
+f = random(E^{2:0},E^{3:-1})
+betti syz f
+g = (syz f)*random(source syz f,E^{2:-3,-4});
+R = KK[x_0..x_4]
+beta = beilinson(f,R);
+alpha = beilinson(g,R);
+X = prune homology(beta,alpha);
+fX = res X
+betti fX
+
+
+KK = ZZ/101
+R = KK[x_0..x_4]
+kos = res coker vars R;
+f = map(R^{10:0},,kos.dd_4)++map(R^{-1},R^{-1},1)
+g = random(R^{5},R^{3:4,7:3}) || (map(R^{4},R^{3:4},0) | random(R^{4},R^{7:3}))
+fg = res coker g
+syztg = syz transpose fg.dd_5
+h = random(target syztg,target f)*f
+X = prune coker (syz syztg | (h // syztg))
+betti X
+fX = res X
+betti fX
+E = KK[e_0..e_4,SkewCommutative=>true]
+T = tateResolution(presentation X,E,-2,4);
+betti T
+
+
+E = KK[e_0..e_4,SkewCommutative=>true]
+f = map(E^{1:0},E^{1:-1},0) | map(E^{1:0},E^{2:-1},{{e_0,e_1}}) | map(E^{1:0},E^{1:0},0);
+g = (syz f)*random(source syz f,E^{-2,-3,-4});
+beta = beilinson(f,R);
+alpha = beilinson(g,R);
+I = prune homology(beta,alpha);
+X = prune ideal syz transpose presentation I;
+betti X
+fX = res X
+betti fX
 
