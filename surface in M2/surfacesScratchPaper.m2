@@ -98,7 +98,7 @@ K3surfaceD9(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==9 and sectionalGenus X==8);
     X)
 
--- K3 surface of degree 10 and sectional genus 9 with one 6-secant line (this script is a little cheating and takes too much time over Q)
+-- K3 surface of degree 10 and sectional genus 9 with one 6-secant line (this script is a little cheating)
 
 K3surfaceD10=method()
 K3surfaceD10(PolynomialRing) := P4 -> (
