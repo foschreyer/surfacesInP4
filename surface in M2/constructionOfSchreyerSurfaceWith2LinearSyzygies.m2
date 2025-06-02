@@ -39,8 +39,7 @@ ci=ideal(gens Y')_{0,1};
 X=ci:Y';
 minimalBetti X
 (dim X, degree X, (genera X)_1) == (3,11,10)
-singX=saturate(X+minors(2,jacobian X));
-dim singX==-1
+  
 
 restart
 setRandomSeed("ran through smoothly")

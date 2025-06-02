@@ -5,7 +5,7 @@ uninstallPackage "NongeneralTypeSurfacesInP4"
 
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
-installPackage "NongeneralTypeSurfacesInP4"
+installPackage("NongeneralTypeSurfacesInP4",DebuggingMode=>true)
 
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
@@ -75,6 +75,7 @@ export {
     "findRandomSmoothSchreyerSurface",
     "collectSchreyerSurfaces",
     "tangentDimension",
+    "constructionOfSchreyerSurfaceWith2LinearSyzygies",
     "unirationalConstructionOfSchreyerSurface",
     "specialEnriquesSchreyerSurface",
     "adjunctionProcessData",
@@ -706,6 +707,64 @@ minimalBetti M
 tangentDimension M
 ///
 
+constructionOfSchreyerSurfaceWith2LinearSyzygies=method(Options=>{Smooth=>true})
+constructionOfSchreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
+    m2x3:=matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}};
+    scroll:=minors(2,m2x3);
+    hypPlane:=ideal P4_1;
+    lines1:=decompose(hypPlane+scroll);
+    q2x2 := matrix{{P4_0,P4_2}}||random(P4^1,P4^{2:-1})%hypPlane;
+    quadric := hypPlane+minors(2,q2x2);
+    Z:=intersect(scroll,quadric);
+    twoPointsa:=(decompose(quadric+scroll))_{1,2};
+    if twoPointsa_0+lines1_0==twoPointsa_0 then twoPointsa=twoPointsa_{1,0};
+    twoPointsb:=apply(lines1_{0,1},l->trim(l+lines1_2));
+    twoLines:=apply(2,i->ideal (gens intersect(twoPointsa_i,twoPointsb_i))_{0..2});
+    vertex:=ideal random(P4^1,P4^{4:-1});
+    twoPlanes:=apply(twoLines,l->ideal (gens intersect(l,vertex))_{0,1});
+    while( --get four points defined over kk
+	middlePlane:=trim sum apply(twoPlanes,p->ideal (gens p*random(source gens p,P4^{-1})));
+	betti(conic:=ideal (gens saturate( middlePlane+Z))_{0..2});
+	betti(threePoints:=saturate(middlePlane+scroll));
+	twoPoints:=apply(2,i->decompose(twoPlanes_i+conic));
+    not all(twoPoints,a->#a==2)) do ();
+    twoPoints=apply(twoPoints,a->first a);
+    -- apply(2,i->degree(twoPlanes_i+Z)==6)
+    -- degree(conic+Z)==5
+    --betti intersect({conic+Z}|twoPoints)
+    planeCubics:=apply(2,i->(p7:=saturate intersect(twoPlanes_i+Z,twoPoints_i);
+	    twoPlanes_i+ideal(gens p7*random(source gens p7,P4^{-3}))));
+    genus2Curve:=intersect(planeCubics|{conic});
+    -- dim genus2Curve, degree genus2Curve, genus genus2Curve
+    betti(p17:=saturate(Z+genus2Curve));
+    --degree p17, dim p17 -- 17 point
+    betti (Z':=intersect(Z,genus2Curve));
+    ci2:=ideal(gens Z'*random(source gens Z',P4^{2:-4}));
+    Y:=ci2:Z; --betti Y
+    unionOfPlanes:=intersect(twoPlanes|{middlePlane});
+    -- minimalBetti unionOfPlanes
+    betti(Y':=intersect(Y,unionOfPlanes));
+    ci:=ideal(gens Y')_{0,1};
+    X:=ci:Y';
+    assert((dim X, degree X, (genera X)_1) == (3,11,10));
+    if opt.Smooth==true then (
+	singX:=saturate(X+minors(2,jacobian X));
+	<<"dim singX=" <<dim singX << endl;);
+    return X;
+    )
+
+
+///
+restart
+loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
+kk=ZZ/nextPrime 10^3;
+P4=kk[x_0..x_4]
+elapsedTime X=constructionOfSchreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true);
+minimalBetti X
+elapsedTime X=constructionOfSchreyerSurfaceWith2LinearSyzygies(P4);
+minimalBetti X
+///
+
 unirationalConstructionOfSchreyerSurface=method()
 unirationalConstructionOfSchreyerSurface(Ring) := P4 -> (
 	planes:=apply(5,i->ideal(P4_i,P4_((i+1)%5)));
@@ -1123,7 +1182,8 @@ Headline => "functions concerning Schreyer surfaces",
      UL{
 	TO tangentDimension,
         TO unirationalConstructionOfSchreyerSurface,
-	TO specialEnriquesSchreyerSurface
+	TO specialEnriquesSchreyerSurface,
+	TO constructionOfSchreyerSurfaceWith2LinearSyzygies
         }        
 }
 
@@ -1219,6 +1279,34 @@ Description
     minimalBetti X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
+///
+
+
+
+
+
+doc ///
+Key
+ constructionOfSchreyerSurfaceWith2LinearSyzygies
+ (constructionOfSchreyerSurfaceWith2LinearSyzygies, Ring)
+Headline
+ compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
+Usage
+ X = constructionOfSchreyerSurfaceWith2LinearSyzygies P4
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The construction is a 2 step liaison construction.
+    The desired surface has a residual scheme R=X5:X consisting on union of 3 planes.
+    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
+    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
+    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
+    which intersect along the directrix of the scroll and two non-CM points of Z.
 ///
 
 doc ///
@@ -1410,7 +1498,7 @@ Key
 Headline
  compute a smooth Schreyer surface with given H^1-module
 Usage
- X = schreyerSurfaceFromModule(P4,k)
+ X = specificSchreyerSurface(P4,k)
 Inputs
  P4:Ideal
   coordinate ring of P4 over a ground field of characteristic 3
@@ -2184,7 +2272,7 @@ Description
     is defined by 12 quadrics and completely determines X. In the dual projective space P4^*
     this corresponds to a canonical curve of genus 5 defined by 3=15-12 quadrics.
     The Enriques surface is non-minimal. It is the projection of a Fano polarized minimal
-    Enriques surface in P5. Thus the unversal family of the Hilbert scheme of Fano polarized
+    Enriques surface in P5. Thus the universal family of the Hilbert scheme of Fano polarized
     Enriques surfaces is birational to the Hilbert scheme of canonical curves of genus 5 in P5.
   Example
     kk=ZZ/nextPrime 10^3;
@@ -2541,3 +2629,64 @@ pt=saturate(curve+scroll)
 dim pt, degree pt
 minimalBetti scroll, minimalBetti curve
 ///
+
+
+doc ///
+Key
+ constructionOfSchreyerSurfaceWith2LinearSyzygies
+ (constructionOfSchreyerSurfaceWith2LinearSyzygies, Ring)
+Headline
+ compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
+Usage
+ X = constructionOfSchreyerSurfaceWith2LinearSyzygies P4
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The construction is a 2 step liaison construction.
+    The desired surface has a residual scheme R=X5:X consisting on union of 3 planes.
+    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
+    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
+    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
+    which intersect along the directrix of the scroll and two non-CM points of Z.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    elapsedTime X=constructionOfSchreyerSurfaceWith2LinearSyzygies(P4);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti radical R
+    apply(decompose R,c->(dim c, degree c, minimalBetti c))
+    ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+    Y=(ci:X):R;
+    degree Y,betti(fY=res Y)
+    nCM=decompose ann coker transpose fY.dd_3
+    ci2=ideal (gens Y)_{0,1};
+    Z=ci2:Y;
+    minimalBetti Z
+    cZ=decompose Z;
+    tally apply(cZ,c->(dim c, degree c, minimalBetti c))
+  Text
+    The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
+    in two (common) points.     
+  Example    
+    intersectionOftheTwoComponentsOfZ=sum(cZ);
+    apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
+    cI, cI_{1,2}==nCM
+    planes=decompose R
+    matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
+    matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
+    dim(radical R+Z),degree(radical R+Z)
+    matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
+    m3x2=(res cZ_1).dd_2
+    syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
+///
+
+
