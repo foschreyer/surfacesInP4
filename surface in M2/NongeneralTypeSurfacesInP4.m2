@@ -5,7 +5,7 @@ uninstallPackage "NongeneralTypeSurfacesInP4"
 
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
-installPackage("NongeneralTypeSurfacesInP4",DebuggingMode=>true)
+installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)
 
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
@@ -75,7 +75,7 @@ export {
     "findRandomSmoothSchreyerSurface",
     "collectSchreyerSurfaces",
     "tangentDimension",
-    "constructionOfSchreyerSurfaceWith2LinearSyzygies",
+    "schreyerSurfaceWith2LinearSyzygies",
     "unirationalConstructionOfSchreyerSurface",
     "specialEnriquesSchreyerSurface",
     "adjunctionProcessData",
@@ -90,7 +90,8 @@ export {
     "Smooth",
     "Special",
     "KodairaDimension",
-    "veroneseImagesInG25"
+    "veroneseImagesInG25",
+    "vBELSurface"
 }
 
 
@@ -707,8 +708,8 @@ minimalBetti M
 tangentDimension M
 ///
 
-constructionOfSchreyerSurfaceWith2LinearSyzygies=method(Options=>{Smooth=>true})
-constructionOfSchreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
+schreyerSurfaceWith2LinearSyzygies=method(Options=>{Smooth=>true})
+schreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
     m2x3:=matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}};
     scroll:=minors(2,m2x3);
     hypPlane:=ideal P4_1;
@@ -759,9 +760,9 @@ restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
 kk=ZZ/nextPrime 10^3;
 P4=kk[x_0..x_4]
-elapsedTime X=constructionOfSchreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true);
+elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true);
 minimalBetti X
-elapsedTime X=constructionOfSchreyerSurfaceWith2LinearSyzygies(P4);
+elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
 minimalBetti X
 ///
 
@@ -1183,7 +1184,7 @@ Headline => "functions concerning Schreyer surfaces",
 	TO tangentDimension,
         TO unirationalConstructionOfSchreyerSurface,
 	TO specialEnriquesSchreyerSurface,
-	TO constructionOfSchreyerSurfaceWith2LinearSyzygies
+	TO schreyerSurfaceWith2LinearSyzygies
         }        
 }
 
@@ -1284,15 +1285,14 @@ Description
 
 
 
-
 doc ///
 Key
- constructionOfSchreyerSurfaceWith2LinearSyzygies
- (constructionOfSchreyerSurfaceWith2LinearSyzygies, Ring)
+ schreyerSurfaceWith2LinearSyzygies
+ (schreyerSurfaceWith2LinearSyzygies, Ring)
 Headline
  compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
 Usage
- X = constructionOfSchreyerSurfaceWith2LinearSyzygies P4
+ X = schreyerSurfaceWith2LinearSyzygies(P4)
 Inputs
  P4:Ring
   the coordinate ring of P4
@@ -1307,6 +1307,40 @@ Description
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
     ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
     which intersect along the directrix of the scroll and two non-CM points of Z.
+  Example
+    kk=ZZ/nextPrime(2*10^3);P4=kk[x_0..x_4];
+    X=schreyerSurfaceWith2LinearSyzygies(P4);
+    elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti radical R
+    tally apply(decompose R,c->(dim c, degree c, minimalBetti c))
+    ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+    Y=(ci:X):R;
+    degree Y,betti(fY=res Y)
+    nCM=decompose ann coker transpose fY.dd_3
+    ci2=ideal (gens Y)_{0,1};
+    Z=ci2:Y;
+    minimalBetti Z
+    cZ=decompose Z;
+    tally apply(cZ,c->(dim c, degree c, minimalBetti c))
+  Text
+    The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
+    in two (common) points.     
+  Example    
+    intersectionOftheTwoComponentsOfZ=sum(cZ);
+    apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
+    cI, cI_{1,2}==nCM
+    planes=decompose R
+    matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
+    matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
+    dim(radical R+Z),degree(radical R+Z)
+    matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
+    m3x2=(res cZ_1).dd_2
+    syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
 ///
 
 doc ///
@@ -2633,12 +2667,12 @@ minimalBetti scroll, minimalBetti curve
 
 doc ///
 Key
- constructionOfSchreyerSurfaceWith2LinearSyzygies
- (constructionOfSchreyerSurfaceWith2LinearSyzygies, Ring)
+ schreyerSurfaceWith2LinearSyzygies
+ (schreyerSurfaceWith2LinearSyzygies, Ring)
 Headline
  compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
 Usage
- X = constructionOfSchreyerSurfaceWith2LinearSyzygies P4
+ X = schreyerSurfaceWith2LinearSyzygies P4
 Inputs
  P4:Ring
   the coordinate ring of P4
@@ -2656,7 +2690,7 @@ Description
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
-    elapsedTime X=constructionOfSchreyerSurfaceWith2LinearSyzygies(P4);
+    elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
     minimalBetti X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
@@ -2690,3 +2724,20 @@ Description
 ///
 
 
+kk=ZZ/2
+P4=kk[x_0..x_4]
+P2=kk[t_0..t_2]
+X=vBELSurface(P4,P2);
+minimalBetti X
+X5=ideal(gens X)_{0..5};
+R=X5:X;
+dim R, degree R, minimalBetti R
+ci=ideal(gens X*random(source gens X,P4^{-4,-5}));
+minimalBetti (Y=ci:X)
+degree Y, genera Y
+singY=saturate(Y+minors(2,jacobian Y));
+decompose singY
+cY=decompose Y
+tally apply(cY,c->(dim c, degree c, minimalBetti c))
+matrix apply(cY,c->apply(cY,d->degree(c+d)))
+matrix apply(cY,c->apply(decompose R,d->dim(c+d)))
