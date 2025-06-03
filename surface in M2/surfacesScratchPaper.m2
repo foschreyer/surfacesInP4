@@ -250,3 +250,4 @@ ellipticSurfaceD12S14(PolynomialRing) := P4 -> (
     X)
 
 
+
