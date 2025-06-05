@@ -2621,108 +2621,14 @@ elapsedTime LL8=apply(6,i->(
 	));
 tally LL8
 
-restart
-loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
-kk=ZZ/19
-P4=kk[x_0..x_4]
-scroll = minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
-elapsedTime LL7=apply(4,i->(
-	elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Verbose=>true,Smooth=>true);
-	<<minimalBetti X<<endl;
-	curve=minors(2,sub(m4x2,vars P4));
-	--<<(dim curve, degree curve) <<endl;
-	pt=saturate(curve+scroll);
-	<<(dim pt,degree pt,betti pt,pt)<<endl; 
-	(pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-	elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
-	<< minimalBetti J <<endl;
-	<<"number of exceptional lines = " <<L0_1 <<endl;
-	<<(L0_1, (dim pts,degree pts), (dim pt, degree pt))<<endl;
-	(minimalBetti X ,L0, (dim pts,degree pts), (dim pt, degree pt))
-	));
-tally LL7
-
-
-
-
-scroll = minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
-elapsedTime L=apply(2,i->(
-	elapsedTime (X,m4x2)=aboRanestadSurface(P4,4,Verbose=>true,Smooth=>true);
-	curve=minors(2,sub(m4x2,vars P4));
-	--<<(dim curve, degree curve) <<endl;
-	pt=saturate(curve+scroll);
-	<<betti pt<<endl; <<pt <<endl;
-	(pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-	elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,1);
-	<<"number of exceptional lines = " <<L0_1 <<endl;
-	<<(minimalBetti X, L0_1, (dim pts,degree pts), (dim pt, degree pt))<<endl;
-	(X,m4x2)));
 
 
 pt=saturate(curve+scroll)
 dim pt, degree pt
 minimalBetti scroll, minimalBetti curve
-///
 
 
-doc ///
-Key
- schreyerSurfaceWith2LinearSyzygies
- (schreyerSurfaceWith2LinearSyzygies, Ring)
-Headline
- compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
-Usage
- X = schreyerSurfaceWith2LinearSyzygies P4
-Inputs
- P4:Ring
-  the coordinate ring of P4
-Outputs
- X:Ideal
-  the ideal of a smooth Schreyer surface
-Description
-  Text
-    The construction is a 2 step liaison construction.
-    The desired surface has a residual scheme R=X5:X consisting on union of 3 planes.
-    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
-    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
-    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
-    which intersect along the directrix of the scroll and two non-CM points of Z.
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
-    minimalBetti X
-    M=moduleFromSchreyerSurface X;
-    minimalBetti M
-    X5=ideal (gens X)_{0..4};
-    R=X5:X;
-    minimalBetti radical R
-    apply(decompose R,c->(dim c, degree c, minimalBetti c))
-    ci=ideal( gens X*random(source gens X,P4^{2:-5}));
-    Y=(ci:X):R;
-    degree Y,betti(fY=res Y)
-    nCM=decompose ann coker transpose fY.dd_3
-    ci2=ideal (gens Y)_{0,1};
-    Z=ci2:Y;
-    minimalBetti Z
-    cZ=decompose Z;
-    tally apply(cZ,c->(dim c, degree c, minimalBetti c))
-  Text
-    The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
-    in two (common) points.     
-  Example    
-    intersectionOftheTwoComponentsOfZ=sum(cZ);
-    apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
-    cI, cI_{1,2}==nCM
-    planes=decompose R
-    matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
-    matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
-    dim(radical R+Z),degree(radical R+Z)
-    matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
-    m3x2=(res cZ_1).dd_2
-    syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
-///
-
+-- vBEKsurface
 
 kk=ZZ/2
 P4=kk[x_0..x_4]
