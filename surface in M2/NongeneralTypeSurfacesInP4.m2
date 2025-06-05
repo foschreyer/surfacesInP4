@@ -62,6 +62,7 @@ export {
     "extensionToCharacteristicZero",
     "LabBookProtocol",
     "knownExamples",
+    "unirationalFamiliesOfRationalSurfaces",
     "schreyerSurfaces",
     "schreyerSurface",
     "aboRanestadSurfaces",
@@ -292,7 +293,7 @@ popescuSurface(PolynomialRing,Ring,Number):= (P4,E,s) -> (
     X)
 
 vBELSurface=method()
-vBELSurface(Ring,Ring) := (P4,P2) -> (
+vBELSurface(Ring,Ring) := (P4,P2) -> ( -- the specific surface from the vBEL paper
     if char P4 !=2 then error "expect a ground field of caharcteristic 2";
     if char P2 =!= char P4 then error "P2 and P4 should have the same characteristic 2";
     t:= symbol t;
@@ -310,6 +311,61 @@ vBELSurface(Ring,Ring) := (P4,P2) -> (
     assert(dim(X+minors(2, jacobian X))==0);
     X)
 
+
+vBELSurface(PolynomialRing) := P4 -> (
+    kk:= coefficientRing P4;
+    u := symbol u;
+    P2:=kk[u_0..u_2];
+    p123:=ideal(u_0*u_1,u_0*u_2,u_1*u_2);
+    p5:=minors(2,random(P2^2,P2^{2:-1,-2}));-- five general points
+    p8:=saturate intersect(p123^2,p5);-- double points at p123, simple at p5
+-- betti p8-- a unique quartic (gens p8)_{0} in p8
+   p122:=ideal(u_1+u_2)+ideal (gens p8)_{0};
+   p2:=p122:p123^2;-- two points in line through (1:0:0)
+   p10:=saturate(intersect(p2,p123,p5)); --ideal of 10 points (for Bordiga)
+   assert(betti res p10==new BettiTally from {(0,{0},0) => 1, (1,{4},4) => 5, (2,{5},5) => 4});
+   xx:= ideal gens P4;
+   F:=map(P2,P4,gens p10);
+   s6:=kernel F;--Bordiga surface
+   s60:=preimage (F,ideal(u_1+u_2));--a (-2)-line in s6
+   s622:=preimage (F,ideal (gens p8)_{0});--a twisted cubic curve in s6
+   s6h:=ideal(gens s622)_{0}+s6;--the hyperplane section of s6 containing s622
+   s612:=s6h:s622;--three (-1)-lines residual to s622 in s6h
+   s61200:=saturate(s60+s612);--the point of intersection between s60 and a line in s612
+   --betti s61200
+   s620x:=preimage (F,ideal (u_1^2,u_2*u_1,u_2^2));
+   s6201:=ideal (gens s620x)_{0..2};--the (-1)-line in s6 over (1:0:0) 
+   --betti s620x
+   ts61200:=gens xx* gens kernel(diff(gens xx,transpose gens s61200));
+   ts62h:=ideal(gens s612)_{0..1}+ideal flatten diff( ts61200, (gens s612)_{1});
+   s601:=ts62h:s6201;-- the line in s6 through s61200, different from s6201
+--betti s601
+--degree(s601+s612)--the line s601 intersect all three lines in s612
+   s602:=saturate intersect(s60,s601);--the union of the lines s60 and s601
+--betti s602
+   s1:=ideal(gens s602)_{0..1}; --the plane spanned by the lines s60 and s601
+   s2:=ideal(gens s612)_{0..1};-- the quadric surface containing the three lines in s612
+   s9:=saturate intersect (s1,s2,s6);--a surface of degree 9
+   assert(minimalBetti s9== new BettiTally from {(0,{0},0) => 1, (1,{4},4) => 1, (1,{5},5) => 12, (2,{6},6) => 23, (3,{7},7) => 14, (4,{8},8) => 3}); -- proceed if it is contained in one quartic
+   s20:=ideal (gens s9 * random(source gens s9, P4^{-4,-5}));
+   X:=s20:s9;-- A surface of degree 11, genus 11
+   assert( (dim X, degree X, (genera X)_1)==(3,11,11));
+   X)
+///
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+X= vBELSurface P4;
+minimalBetti X
+singX=saturate(X+minors(2,jacobian X))
+dim singX==-1
+
+
+r45=ideal (gens X)_{0..5};
+Rest=r45:X;
+degree Rest, dim Rest, genus Rest--two lines
+degree (Rest+X), dim (Rest+X)-- 6-secants
+degree (Rest+s2), dim (Rest+s2)-- lie in the quadric surface s2.
+///
 
 randomSurfaceDegreeAndSectionalGenus=method()
 randomSurfaceDegreeAndSectionalGenus(Function,List) := (F,ringList) -> (
@@ -1124,7 +1180,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
      SUBSECTION "Rational surfaces",
      UL{
 	TO randomRationalSurface,
-	TO knownExamples,
+	TO unirationalFamiliesOfRationalSurfaces,
 	TO schreyerSurfaces,
 	TO aboRanestadSurfaces
         },
@@ -1152,6 +1208,38 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO LabBookProtocol
         }     
 }
+
+document {
+Key => unirationalFamiliesOfRationalSurfaces,
+Headline => "unirational families of rational surfaces",
+   "Most of the families constructed in [DES], [Popecu1] and before are actually unirational. We list the link to the corresponding functions.
+    An exception are certain families of Schreyer and Abo-Ranestad surfaces, where we only know that some of the families are unirational.",
+   
+   PARA{},
+     SUBSECTION "non-degenerate rational surfaces in P4",
+     UL{
+        TO cubicScroll,
+	TO delPezzoSurface,
+	TO bordigaSurface,
+        TO castelnuovoSurface,
+        TO ionescuOkonekSurface,
+	TO degree8OkonekSurface,
+	TO nonspecialAlexanderSurface,
+	TO specialityOneAlexanderSurface,
+	TO degree10DESSurface,
+	TO degree10pi9RanestadSurface,
+	TO degree10pi8RanestadSurface,
+	TO popescuSurface,
+	TO vBELSurface
+        },
+    PARA{},
+     SUBSECTION "further families",
+     UL{
+        TO schreyerSurfaces,
+	TO aboRanestadSurfaces
+	}
+}
+
 
 
 document {
@@ -2429,7 +2517,61 @@ SeeAlso
   adjunctionProcessData
 
 ///
- 
+
+doc ///
+Key
+ vBELSurface
+ (vBELSurface, PolynomialRing)
+ (vBELSurface, Ring,Ring)
+Headline
+ construct a von Bothmer-Erdenberger-Ludwig surface 
+Usage
+ X= vBElSurface(P4,P2)
+ X= vBELSurface(P4) 
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ P2:PolynomialRing
+  coordinate ring of P2
+Outputs
+ X:Ideal
+  of a vBEL surface in P4
+Description
+  Text
+   The first version gives the oringinal vBEL surface defined over a field of characteristic 2.
+   The second version gives gives a construction of a vBEL surface building on a unirational liaison
+   construction.
+  Example
+   P4=ZZ/2[x_0..x_4]; P2=ZZ/2[u_0..u_2];
+   minimalBetti(X=vBELSurface(P4,P2))
+   ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
+   Y=ci:X;
+   cY=decompose Y;
+   tally apply(decompose Y, c-> (dim c, degree c, minimalBetti c))
+   betti(T=tateResolutionOfSurface X)
+  Text
+   The linked surface consists of a plane, a quadric surface and a Bordiga surface.
+   The unirational construction is a reversal of this linkage.
+  Example
+   kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
+   minimalBetti(X=vBELSurface P4)
+   betti tateResolutionOfSurface X
+   (L0,L1,L2,J)=adjunctionProcess(X);
+   L0
+   X45=ideal (gens X)_{0..5};
+   R=X45:X;
+   dim R, degree R
+   cR=decompose R;
+   tally apply(cR,c->(dim c, degree c, betti c))
+   tally apply(cR,c->degree(c+X))
+   LeBarzN6(11,11,1)
+  Text
+   X has two 6-secant lines and five (-1)-lines.
+SeeAlso
+  adjunctionProcessData
+
+///
+
 
 doc ///
 Key
