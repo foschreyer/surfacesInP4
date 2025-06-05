@@ -1112,12 +1112,12 @@ beginDocumentation()
 document {
 Key => NongeneralTypeSurfacesInP4,
 Headline => "Construction of smooth non-general type surfaces in P4",
-   "In 1989 Elligsrud and Peskine proved a conjecture of Harstshorne and Lichtenbaum about smooth rational surfaces in P4 more general:
+   "In 1989 Elligsrud and Peskine proved a conjecture of Harstshorne and Lichtenbaum about smooth rational surfaces in P4. In fact, more generally:
     There are only finitely many components of the Hilbert scheme of surfaces in P4, whose general point correspond to a smooth 
     surface not of general type.
 
    In that period there was a flurish of activities to construct such surfaces, in part using Computer Algebra. In this package we review
-   those construction, which after 30 years of Macaulay2 have become simpler and faster. Moreover we have discovered a couple of further 
+   those constructions, which after 30 years of Macaulay2 have become simpler and faster. Moreover we have discovered a few further 
    examples",
 
    PARA{},
@@ -1193,7 +1193,7 @@ Headline => "functions concerning Schreyer surfaces",
 document {
 Key => aboRanestadSurfaces,
 Headline => "functions concerning Abo-Ranestad surfaces",
-   "[Abo-Ranestad,199x] discovered 4 families of rational surfaces X in P4 with d=12, sectional genus pi=13 Via a search over a finite field.
+   "[Abo-Ranestad,199x] discovered 4 families of rational surfaces X in P4 with d=12, sectional genus pi=13 via a search over a finite field.
     Reviewing their construction we found altogether 9 families. 
     Most of these components are unirational.",
    
@@ -1302,7 +1302,7 @@ Outputs
 Description
   Text
     The construction is a 2 step liaison construction.
-    The desired surface has a residual scheme R=X5:X consisting on union of 3 planes.
+    The desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
     A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
     ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
@@ -1359,7 +1359,7 @@ Outputs
   the ideal of a smooth Schreyer surface
 Description
   Text
-    The desired surface has a residual scheme R=X5:X consisting on union of 5 planes.
+    The desired surface has a residual scheme R=X5:X consisting of the union of 5 planes.
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -1446,9 +1446,9 @@ Description
   Text
     The desired surface has a residual scheme R=X5:X which is a quintic elliptic scroll.
     The H^1-module is defined by the sum of the ideals of two elliptic curves on the scroll.
-    Thus construction needs a point p on the Bring curve and the two point on the conic of
+    Thus the construction needs a point p on the Bring curve and the two points on the conic of
     elliptic normal curves of degree 5. Over a finite field such data are easily found by a random search, whose running time
-    is independent of the dinite ground field
+    is independent of the finite ground field
     The two points on the conic are the intersection of the conic with the polar line to the point p of the conic, [Hulek,199x].
     The rest of the construction is unirational.
   Example
@@ -1932,7 +1932,7 @@ Outputs
   of the cubic scroll in P4
 Description
   Text
-    The smooth cubic scroll in is uniquely determined up to projectivities.
+    The smooth cubic scroll is uniquely determined up to projectivities.
     It is define by the 2x2 minors a 2x3 matrix.
     The function returns this ideal
   Example
@@ -1981,7 +1981,7 @@ Outputs
   of the Veronese surface in P4
 Description
   Text
-    We compute the image from the parametization.
+    We compute the image from the parameterization.
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -2028,7 +2028,7 @@ Outputs
   of the del Pezzo in P4
 Description
   Text
-    We construct a Castelnuove surface from its Hilbert-Burch matrix
+    We construct a Castelnuovo surface from its Hilbert-Burch matrix
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -2265,7 +2265,7 @@ Description
   Text
     We construct a nonspecial Alexander surface of degree 9 from its rational parametrization,
     or what is faster from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module has
-    a special presentation which gives rize to a six sectant line
+    a special presentation which gives rize to a six secant line
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -2464,7 +2464,7 @@ Description
     Fs1={degree10pi8RanestadSurface,degree10pi9RanestadSurface,degree10DESSurface};
     --apply(Fs1,F->elapsedTime randomSurfaceDegreeAndSectionalGenus(F,ringList))   
   Text
-    The last command should not be executed since it take too much time.
+    The last command should not be executed since it takes too much time.
 
 Caveat
    
@@ -2621,14 +2621,108 @@ elapsedTime LL8=apply(6,i->(
 	));
 tally LL8
 
+restart
+loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
+kk=ZZ/19
+P4=kk[x_0..x_4]
+scroll = minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
+elapsedTime LL7=apply(4,i->(
+	elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Verbose=>true,Smooth=>true);
+	<<minimalBetti X<<endl;
+	curve=minors(2,sub(m4x2,vars P4));
+	--<<(dim curve, degree curve) <<endl;
+	pt=saturate(curve+scroll);
+	<<(dim pt,degree pt,betti pt,pt)<<endl; 
+	(pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+	elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
+	<< minimalBetti J <<endl;
+	<<"number of exceptional lines = " <<L0_1 <<endl;
+	<<(L0_1, (dim pts,degree pts), (dim pt, degree pt))<<endl;
+	(minimalBetti X ,L0, (dim pts,degree pts), (dim pt, degree pt))
+	));
+tally LL7
+
+
+
+
+scroll = minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
+elapsedTime L=apply(2,i->(
+	elapsedTime (X,m4x2)=aboRanestadSurface(P4,4,Verbose=>true,Smooth=>true);
+	curve=minors(2,sub(m4x2,vars P4));
+	--<<(dim curve, degree curve) <<endl;
+	pt=saturate(curve+scroll);
+	<<betti pt<<endl; <<pt <<endl;
+	(pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+	elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,1);
+	<<"number of exceptional lines = " <<L0_1 <<endl;
+	<<(minimalBetti X, L0_1, (dim pts,degree pts), (dim pt, degree pt))<<endl;
+	(X,m4x2)));
 
 
 pt=saturate(curve+scroll)
 dim pt, degree pt
 minimalBetti scroll, minimalBetti curve
+///
 
 
--- vBEKsurface
+doc ///
+Key
+ schreyerSurfaceWith2LinearSyzygies
+ (schreyerSurfaceWith2LinearSyzygies, Ring)
+Headline
+ compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
+Usage
+ X = schreyerSurfaceWith2LinearSyzygies P4
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The construction is a 2 step liaison construction.
+    The desired surface has a residual scheme R=X5:X consisting on union of 3 planes.
+    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
+    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
+    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
+    which intersect along the directrix of the scroll and two non-CM points of Z.
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti radical R
+    apply(decompose R,c->(dim c, degree c, minimalBetti c))
+    ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+    Y=(ci:X):R;
+    degree Y,betti(fY=res Y)
+    nCM=decompose ann coker transpose fY.dd_3
+    ci2=ideal (gens Y)_{0,1};
+    Z=ci2:Y;
+    minimalBetti Z
+    cZ=decompose Z;
+    tally apply(cZ,c->(dim c, degree c, minimalBetti c))
+  Text
+    The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
+    in two (common) points.     
+  Example    
+    intersectionOftheTwoComponentsOfZ=sum(cZ);
+    apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
+    cI, cI_{1,2}==nCM
+    planes=decompose R
+    matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
+    matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
+    dim(radical R+Z),degree(radical R+Z)
+    matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
+    m3x2=(res cZ_1).dd_2
+    syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
+///
+
 
 kk=ZZ/2
 P4=kk[x_0..x_4]
