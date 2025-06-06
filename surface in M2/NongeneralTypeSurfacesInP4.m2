@@ -9,7 +9,8 @@ installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)
 
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
-path 
+path
+peek loadedFiles
 help adjunctionProcess
 ///
 
@@ -1179,7 +1180,6 @@ Headline => "Construction of smooth non-general type surfaces in P4",
    PARA{},
      SUBSECTION "Rational surfaces",
      UL{
-	TO randomRationalSurface,
 	TO unirationalFamiliesOfRationalSurfaces,
 	TO schreyerSurfaces,
 	TO aboRanestadSurfaces
@@ -1220,8 +1220,8 @@ Headline => "unirational families of rational surfaces",
      UL{
         TO cubicScroll,
 	TO delPezzoSurface,
-	TO bordigaSurface,
-        TO castelnuovoSurface,
+	TO castelnuovoSurface,
+	TO bordigaSurface,        
         TO ionescuOkonekSurface,
 	TO degree8OkonekSurface,
 	TO nonspecialAlexanderSurface,
@@ -1245,8 +1245,8 @@ Headline => "unirational families of rational surfaces",
 document {
 Key => schreyerSurfaces,
 Headline => "functions concerning Schreyer surfaces",
-   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11, sectional genus pi=10 Via a search over a finite field
-   of which 3 families consists of rational surfaces, the 
+   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11, sectional genus pi=10 via a search over a finite field
+   of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 10 families. In the following we give an overview
    of the functions used in that search.",
    
@@ -1267,7 +1267,7 @@ Headline => "functions concerning Schreyer surfaces",
         TO collectSchreyerSurfaces
         },
     
-     SUBSECTION "lift to characteristic zero",
+     SUBSECTION "lift to characteristic zero and unirational or nearly unirational families",
      UL{
 	TO tangentDimension,
         TO unirationalConstructionOfSchreyerSurface,
@@ -1347,9 +1347,9 @@ Key
  schreyerSurfaceFromModule
  (schreyerSurfaceFromModule, Ideal)
 Headline
- compute the H^1-module of the ideal sheaf of X
+ compute a Schreyer Surface with given the H^1-module of the ideal sheaf
 Usage
- X = schreyerSurfaceFromModule X
+ X = schreyerSurfaceFromModule M
 Inputs
  M:Ideal
   the ideal defining the H^1-module of the ideal sheaf of X
@@ -2546,8 +2546,9 @@ Description
    minimalBetti(X=vBELSurface(P4,P2))
    ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
    Y=ci:X;
+   setRandomSeed("fast decomposition")
    cY=decompose Y;
-   tally apply(decompose Y, c-> (dim c, degree c, minimalBetti c))
+   tally apply(cY, c-> (dim c, degree c, minimalBetti c))
    betti(T=tateResolutionOfSurface X)
   Text
    The linked surface consists of a plane, a quadric surface and a Bordiga surface.
@@ -2571,8 +2572,22 @@ SeeAlso
   adjunctionProcessData
 
 ///
-
-
+///
+-- the linked surface can be irreducible:
+   kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
+   minimalBetti(X=vBELSurface P4)
+   betti (T=tateResolutionOfSurface X)
+   betti(T.dd_4)_{3}
+   ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
+   Y=ci:X;
+   --setRandomSeed("fast decomposition")
+   cY=decompose Y;
+   tally apply(cY, c-> (dim c, degree c, minimalBetti c))  
+   singY=saturate(Y+minors(2,jacobian Y));
+   dim singY, degree singY
+   csingY=primaryDecomposition singY;
+   tally apply(csingY,c->(dim c, degree c, minimalBetti c))
+   ///
 doc ///
 Key
  randomSurfaceDegreeAndSectionalGenus
@@ -2883,3 +2898,15 @@ cY=decompose Y
 tally apply(cY,c->(dim c, degree c, minimalBetti c))
 matrix apply(cY,c->apply(cY,d->degree(c+d)))
 matrix apply(cY,c->apply(decompose R,d->dim(c+d)))
+
+
+P4=ZZ/nextPrime 10^3[x_0..x_4]
+m2x3=random(P4^{0,-1},P4^{3:-2});
+X=minors(2,m2x3)
+minimalBetti X, degree X, sectionalGenus X
+singX=saturate(X+minors(2,jacobian X))
+(L0,L1,L2,J)=adjunctionProcess(X);
+L0
+minimalBetti J
+LeBarzN6(7,5,2)
+betti(omegaX=Ext^1(module X,P4^{-5}))
