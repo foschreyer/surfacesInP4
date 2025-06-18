@@ -32,7 +32,8 @@ newPackage(
 export {
     --"NongeneralTypeSuracesInP4",
     "sectionalGenus",
-    "chiTable",
+    "chiI",
+    "chiITable",
     "Ksquare",
     "LeBarzN6",
     "cubicScroll",
@@ -2573,21 +2574,57 @@ SeeAlso
 
 ///
 ///
--- the linked surface can be irreducible:
+-- the (4,5) linked surface ov a vBEL surface can be irreducible:
    kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
    minimalBetti(X=vBELSurface P4)
+   singX=saturate(X+minors(2,jacobian X));
+   dim singX
    betti (T=tateResolutionOfSurface X)
    betti(T.dd_4)_{3}
    ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
    Y=ci:X;
    --setRandomSeed("fast decomposition")
-   cY=decompose Y;
+   elapsedTime cY=decompose Y;-- 328.197 seconds elapsed
    tally apply(cY, c-> (dim c, degree c, minimalBetti c))  
    singY=saturate(Y+minors(2,jacobian Y));
+   minimalBetti singY
    dim singY, degree singY
    csingY=primaryDecomposition singY;
    tally apply(csingY,c->(dim c, degree c, minimalBetti c))
-   ///
+   betti(omegaY=Ext^1(module Y,P4^{-5}))
+   betti (m4xx=syz (m6x13=presentation omegaY)^{4,5})
+   betti(m4xr=m6x13^{0..3}*m4xx)
+   minimalBetti coker m4xr
+   P3=kk[y_0..y_3]
+P3xP4=P3**P4
+betti(graph=ideal(sub(vars P3,P3xP4)*sub(m4xr,P3xP4)))
+betti (sg=saturate(graph,sub(ideal gens P4,P3xP4)))
+minimalBetti(inP3=trim sub(sg,P3))
+cinP3=decompose(inP3)
+tally apply(cinP3,c->(dim c, degree c))
+quadric=first cinP3
+while(
+    line=ideal random(P3^1,P3^{2:-1});
+    pts=decompose (line + quadric);
+    #pts<2) do ()
+pt=sub(transpose syz transpose jacobian first pts,kk)
+fib=trim ideal(pt*m4xr)
+fib0=trim ideal(random(kk^1,kk^4)*m4xr)
+m4x4=m4xr_{0..3}
+ ann coker m4x4==ideal Y_0
+singY0=saturate ideal jacobian Y_0;
+dim singY0, degree singY0
+apply(decompose  singY0,c->(dim c, degree c, minimalBetti c))
+line1=(decompose singY0)_1
+line=(decompose singY0)_0
+betti (H=intersect(line,line1))
+cH=primaryDecomposition saturate(Y+ideal H_0);
+tally apply(cH,c->(dim c, degree c , minimalBetti c, minimalBetti radical c, genus c))
+degree(line+X)
+apply(5,i->(dim(line^i+Y),degree(line^i+Y)))
+degree Y,sectionalGenus Y
+intersect
+///
 doc ///
 Key
  randomSurfaceDegreeAndSectionalGenus
@@ -2910,3 +2947,48 @@ L0
 minimalBetti J
 LeBarzN6(7,5,2)
 betti(omegaX=Ext^1(module X,P4^{-5}))
+
+chiITable(12,13)
+chiI(6,12,13)
+ chiITable(13,15)
+ chiI(6,13,15)
+ LeBarzN6(13,15,1)
+ Ksquare(13,15,1)
+d=13,sg=15
+ chiITable(d,sg)
+apply(toList(-5..7),i-> chiI(i,d,sg))
+ LeBarzN6(d,sg,1)
+ Ksquare(d,sg,1)
+
+kk=ZZ/5
+E=kk[e_0..e_4,SkewCommutative=>true]
+E2=basis(2,E)
+E3=basis(3,E)
+m5x3=matrix apply(5,i-> apply(3,j->E_((i+j)%5)+E_((i-j)%5))
+)
+    m5x2=random(E^0,E^{2:-1})
+scan(5,i->(m5x2=m5x2||(m5x3^{i}*random(kk^3,kk^2))))
+m5x2
+AB=kk[a_(0,0,0)..a_(2,4,9),b_(0,0,0)..b_(4,1,9)]
+EAB=E**AB
+A=matrix apply(3,i->apply(5,j->sum(10,k->sub(a_(i,j,k),EAB)*sub(E2_(0,k),EAB))))
+B=matrix apply(5,i->apply(2,j->sum(10,k->sub(b_(i,j,k),EAB)*sub(E2_(0,k),EAB))))
+m2x5=map(E^{2:-2},,transpose m5x2)
+m2x5=random(E^{2:-2},E^{5:-3})
+
+rel:=method()
+rel(Matrix,Matrix) := (m5x3,m2x5) -> trim ideal sub(contract(sub(E3,EAB),sub(m5x3,EAB)*A+B*sub(m2x5,EAB)),AB)
+betti(J=rel(m5x3,m2x5))
+redAB=vars AB%J;
+#support redAB
+
+sol=sub(redAB,random(kk^1,kk^250));
+sol
+Br=map(E^5,E^{2:-2},sub(B,vars E|sol));
+betti res coker (m5x3|Br)
+betti res coker transpose (m5x3|Br)
+Ar=map(E^{3:0},E^{5:-2},sub(A,vars E|sol))
+betti Ar
+	betti (m2x5**E^{1}||Ar)
+betti res coker (m2x5**E^{1}||Ar)
+betti res coker transpose (m2x5**E^{1}||Ar)
