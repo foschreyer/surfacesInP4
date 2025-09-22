@@ -2466,6 +2466,7 @@ Description
     P4=ZZ/3[x_0..x_4];
     X=specificSchreyerSurface(P4,1);
     minimalBetti X
+    betti tateResolutionOfSurface X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
 SeeAlso
@@ -3087,12 +3088,46 @@ Description
     (d,sg)=(degree X, sectionalGenus X)
     LeBarzN6(d,sg,1)==6
     Ksquare(d,sg,1)==-4
-
+    betti(X5=ideal (gens X)_{0..9})
+    residual=X5:X;
+    dim residual, degree residual, betti residual
+    tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
+	    degree (c+X), betti saturate (c+X),
+	    tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
+  Text
+   There are 4 6-secant lines, 3 of them are in the plane which which intersects X
+   in a plane quartic and three points. Hence there X contains two (-1)-lines.
+   The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
+   The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
+References
+  Ranestad, DES
 SeeAlso
    enriquesSurfaceOfDegree10
    adjunctionProcessData
 ///
 
+-* possibly to add to degree10pi8RanestadSurface documentation
+    "elapsedTime (L0,L1,L2,J)=adjunctionProcess(X);" -- 88.4042s elapsed
+    "L0=={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}";
+    "betti (fJ=res J) == new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 3, (1,{3},3) => 3, (2,{3},3) => 2,(2,{4},4) => 6, (3,{5},5) => 3}"
+    new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 3, (1,{3},3) => 3, (2,{3},3) => 2,(2,{4},4) => 6, (3,{5},5) => 3}
+    "(degree J, sectionalGenus J)==(7,3)";
+    "fiber=trim ideal (random(kk^1,kk^3)*transpose fJ.dd_3);";
+    "assert(fiber == ideal gens ring J)";
+   Text
+    It follows that the last adjoint surface X3 -> B is a conic bundle over a kk-rational conic B subset P2
+    with 8+4-2-1=9 singular fibers. The altogether 9+3=12 points blown up from a minimal ruled rational surface Y=X3min->P1
+    have to lie is special position. They satisfy conditions of expected codimension h^0(H)*h^1(H)=10 in the Hilbert scheme
+    of 12 points on Y. Thus up to projectivities we expect a (24-6-10=8)-dimensional family of such surface.
+   Example
+    "betti(N=Hom(X,P4^1/X))";
+    "HH^0(sheaf N) == kk^(8+24)";
+   Text
+     Another count: Up to projectivities and base changes the presentation matrix of the
+     H^1-module of the ideal sheaf of X depends on (5+1+2)-4 parameters and the choice of the
+     Hilbert-Burch homomorphism on dim G(2,4)=4 further parameters.
+     This gives the same number 8 of parameters up to projectivities.
+*-     
 
 doc ///
 Key
@@ -4139,7 +4174,7 @@ Description
    dim plane, degree (plane+X)
    tally apply(primaryDecomposition(plane+X),c->(dim c, degree radical(c+X)))
   Text
-   So the plane intersect X in a plane quartic and 3 points.
+   So the plane intersects X in a plane quartic and 3 points.
    The three 6-secant lines are the lines in the plane joining 2 of the three points.
   Example
    Ksquare(11,11,2)
