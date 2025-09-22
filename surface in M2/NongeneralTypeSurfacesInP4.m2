@@ -1,8 +1,10 @@
 ///
 restart
-s=2
-uninstallPackage "NongeneralTypeSurfacesInP4"
+needsPackage"NongeneralTypeSurfacesInP4"
 
+installPackage "NongeneralTypeSurfacesInP4"
+
+uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
 installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)
@@ -25,7 +27,7 @@ newPackage(
 	        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer"}},
     AuxiliaryFiles => false,
     DebuggingMode => true,
-    PackageExports => {"BGG","AdjunctionForSurfaces"},
+    PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition"},
     Keywords => {"Algebraic Geometry"}
     )
 
@@ -34,6 +36,7 @@ export {
     "sectionalGenus",
     "chiI",
     "chiITable",
+    "HdotK",
     "Ksquare",
     "LeBarzN6",
     "cubicScroll",
@@ -56,7 +59,6 @@ export {
     "enriquesSurfaceOfDegree10",
     "enriquesSurfaceOfDegree11",
     "k3Surfaces",
-    "quinticEllipticScroll",
     "horrocksMumfordSurface",
     "ellipticSurface",
     "unirationalFamilies",
@@ -94,7 +96,36 @@ export {
     "Special",
     "KodairaDimension",
     "veroneseImagesInG25",
-    "vBELSurface"
+    "vBELSurface",
+    "quinticEllipticScroll",
+    "ellipticConicBundle",
+    "irregularEllipticSurfaceD12",
+    "regularEllipticSurfaceD12",
+    "biellipticSurfaceD10",
+    "biellipticSurfaceD15",
+    "abelianSurfaceD10",
+    "abelianSurfaceD15",
+    "abelianSurfaceD15S21Popescu",
+    "K3surfaceD7",
+    "K3surfaceD8",
+    "K3surfaceD9",
+    "K3surfaceD10S9SL1",
+    "K3surfaceD10S9SL3",
+    "H1module",
+    "K3surfaceD11S11SLn",
+    "K3surfaceD11S12",
+    "K3surfaceD12",
+    "K3surfaceD13",
+    "K3surfaceD14",
+    "ellipticSurfaceD7",
+    "ellipticSurfaceD8",
+    "ellipticSurfaceD9",
+    "ellipticSurfaceD10S9",
+    "ellipticSurfaceD10S10",
+    "ellipticSurfaceD12S14L0",
+    "ellipticSurfaceD12S14Linfinite",
+    "K3surfaces",
+    "surfacesOfKodairaDimension1",
 }
 
 
@@ -111,7 +142,9 @@ chiI(Number,Number,Number) := (m,d,sg) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(
 chiITable=method()
 chiITable(Number,Number) := (d,sg) -> apply(toList(-1..5),m->chiI(m,d,sg))
 
-
+HdotK=method()
+HdotK(Number,Number) := (d,sg) -> 2*(sg-1)-d
+   
 Ksquare=method()
 -- H2+HK=2(sg-1)
 -- d^2-10d-5HK-2K2+12x==0
@@ -1157,6 +1190,756 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
 	    m4x2s=append(m4x2s,m4x2)));
     return (Xs,adjTypes,m4x2s))
 
+-* from Hiro *-
+
+
+quinticEllipticScroll=method()
+-- Quintic elliptic scroll (B2.1)
+--     PURPOSE : Construct an quintic elliptic scroll, which is a nonsingular surface of degree 5 and sectional genus 1
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the quintic elliptic scroll
+-- DESCRIPTION : This function constructs an quintic elliptic surface as the degeneracy locus of a map between two vector bundles
+
+quinticEllipticScroll(PolynomialRing):=P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Construct a variety 'X' as the degenerate locus of the map from 5O(-3) to the second Koszul syzygy module 
+    X:=trim ideal syz transpose (kos.dd_4 | random(source kos.dd_3,P4^{5:-3}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus 
+    assert(dim X==3 and degree X==5 and sectionalGenus X==1);
+    X)
+
+ellipticConicBundle=method()
+-- Elliptic conic bundle which was missing in Okonek's paper
+--     PURPOSE : Construct an elliptic conic bundle, which is a nonsingular surface of degree 8 and sectional genus 5
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic conic bundle
+-- DESCRIPTION : This function constructs an quintic elliptic surface as the degeneracy locus of a map between two vector bundles
+
+ellipticConicBundle(PolynomialRing) := P4 -> (
+    -- Compute a koszul complex3
+    kos:=res coker matrix{{P4_0..P4_2,P4_3,P4_4^2}};
+    -- Define a map from the second Koszul syzygy module to O(-1) 
+    f:=map(P4^{1:-1},target kos.dd_3,{{1,3:0,2:1,4:0}})*kos.dd_3;
+    -- Construct the kernel of 'f'
+    K:=prune homology(f,kos.dd_4);
+    -- Define a variety 'X' as the degenerate locus of the map from 4O(-4) to 'K'
+    X:=trim ideal syz transpose (presentation K | random(source gens K,P4^{4:-4}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus 
+    assert(dim X==3 and degree X==8 and sectionalGenus X==5);
+    X)
+
+
+irregularEllipticSurfaceD12=method()
+-- Irregular elliptic surface of degree 12 and sectional genus 13 obtained as the dependency locus of two global sections of a rank three vector bundle
+--     PURPOSE : Construct a nonsingular irregular elliptic surface of degree 12 and sectional genus 13
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface
+-- DESCRIPTION : This function constructs an irregular elliptic surface as the degeneracy locus of a map between two vector bundles
+
+irregularEllipticSurfaceD12(PolynomialRing) := P4 -> (
+    -- Compute a koszul complex
+    kos:=res coker matrix{{P4_0..P4_2,P4_3^2,P4_4^2}};
+    -- Define a map from the second Koszul syzygy module to O(-1) 
+    f:=map(P4^{1:-1},target kos.dd_3,{{1,4:0,-P4_0,2:0,P4_1,0}})*kos.dd_3;
+     -- Construct the kernel of 'f'
+    K:=prune homology(f,kos.dd_4);
+    -- Define a variety 'X' as the degenerate locus of the map from O(-4)++3O(-5) to 'K'
+    X:=trim ideal syz(transpose (presentation K | random(source gens K,P4^{1:-4,3:-5})),DegreeLimit=>0);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus 
+    assert(dim X==3 and degree X==12 and sectionalGenus X==13);
+    X)
+
+regularEllipticSurfaceD12=method()
+-- Regular elliptic surface of degree 12 and sectional genus 13 obtained as the dependency locus of two global sections of an extension of the HM bundle (B7.7)
+--     PURPOSE : Construct a nonsingular regular elliptic surface of degree 12 and sectional genus 13
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface
+-- DESCRIPTION : This function constructs a regular elliptic surface as the dependency locus of two sections of a rank three vector bundle
+--     COMMENT : This function uses the BGG package
+
+regularEllipticSurfaceD12(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    e:=symbol e; 
+    -- Define an exterior algebra
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    -- Define morphisms 'alpha' and 'beta' of modules over 'E'
+    beta:=map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
+    alpha:=syz beta;
+    beta=random(E^{4:0},target beta)*beta;
+    -- Construct a Beilison monad; we use the command 'beilinson' to return the associated maps between direct sums of exterior powers of cotangent bundles
+    alpha=beilinson(alpha,P4);
+    beta=beilinson(beta,P4);
+    -- Compute the homology of the monad, which is a rank three vector bundle (this vector bundle is an extension of the HM bundle by a line bundle) 
+    K:=prune homology(beta,alpha);
+    -- Define a variety 'X' as the dependency locus of two global sections of 'K'
+    X:=trim ideal syz(transpose (presentation K | random(source gens K,P4^{2:-2})),DegreeLimit=>3);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==12 and sectionalGenus X==13);
+    X)
+
+
+
+biellipticSurfaceD10=method()
+-- Bielliptic surface of degree 10 (B5.1)
+--     PURPOSE : Construct a bielliptic surface, which is a nonsingular surface of degree 10 and sectional genus 6
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace over the finite field of characteristic p
+--      OUTPUT : Ideal of the bielliptic surface or 'null' if the function failed to find a surface
+-- DESCRIPTION : This function first forms the Moore matrix, uses it to define a finite module, and a bielliptic surface as the degeneracy locus of a map from a vector bundle to the sheafified first syzygy module
+--     COMMENT : The function could fail to find a surface, and if it fails, it return 'null' (this happens especually if 'p' is small) However, the function seems to find a surface when 'p' is large 
+
+biellipticSurfaceD10(PolynomialRing):=P4->(
+    z:=symbol z;
+    S:=P4[z_0..z_4];
+    -- Form the Moore matrix 'M'
+    M:=matrix table(5,5,(i,j)->P4_((quotientRemainder(3*i+3*j,5))#1)*z_((quotientRemainder(3*i-3*j,5))#1));
+    -- 'p' denotes the characteristic of 'P4'
+    p:=char (coefficientRing P4);
+    -- Define the eigenspace 'Pmin' corresponding to the eigenvalue 1 of the involution
+    Pmin:=ideal(P4_1-P4_4,P4_2-P4_3);
+    -- Define the quadric cone described in [ADHPR, Proposition 4.13] 
+    Q:=ideal (P4_0^2+(P4_1+P4_4)*(P4_2+P4_3));
+    -- Define the octic hypersurface described in [ADHPR, Proposition 4.19 (iii)] 
+    Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4(P4_1*P4_3^2-P4_0^2*P4_2)));
+    mu:=1;
+    isGood:=false;
+    -- Inside the following while loop, find an elliptic curve 'E' containing three ZZ/p-ratiinal nontrivial 2-torsion points and one F_p rational nontrivial 6-torsion point  
+    while not isGood and mu<p do (
+	E:=ideal for i from 0 to 4 list -mu*P4_((quotientRemainder(i,5))#1)^2-mu^2*P4_((quotientRemainder(i+1,5))#1)*P4_((quotientRemainder(i+4,5))#1)+P4_((quotientRemainder(i+2,5))#1)*P4_((quotientRemainder(i+3,5))#1);
+	singE:=singularLocus E;
+	c:=codim singE;
+	if c!=5 then mu=mu+1;
+	-- If E is nonsingular, take the intersection of 'E' with 'Pmin' to
+	-- find nontrivial 2-torsion points
+	Pm:=trim (E+Pmin);
+	-- Remove the 2- and 3-torsion points to obtain the honest 6-torsion points
+	compPm:=primaryDecomposition Pm;
+	--<< "mu=" << mu << endl;
+	P:=saturate(E+Q',E+Q);
+	compP':=primaryDecomposition P;
+	compP:=compP';
+	for j from 0 to #compP-1 do (
+	    if radical (compP'#j) !=compP'#j then (
+		compP=toList (set compP-set {compP'#j});
+		);
+	    );
+	if #compPm!=3 then mu=mu else (
+	    i:=0;
+	    while i<#compP and not isGood do (
+		if degree compP#i!=1 then i=i+1 else (
+		    -- Select the first two 2-torsion point and a 6-torsion point
+		    T:={compPm#0,compPm#1,compP#i};
+		    L:=for i from 0 to #T-1 list transpose syz contract(vars P4,transpose gens T#i);
+		    -- Evaluate the Moore matrix 'M' at the first two 2-torsion points and the 6-torsion point to find three 5x5 matrices with linear entries and form a 5x15 matrix 'sigma'
+		    M1:=sub(M,L#0);
+		    M2:=sub(M,L#1);
+		    M3:=sub(M,L#2);
+		    sigma:=map(P4^{5:6},,sub(M1|M2|M3,P4));
+		    fsigma:=res coker sigma;
+		    -- Check whether 'sigma' has a minimal free resolution of the desired type
+		    if (tally degrees source fsigma.dd_2)_{-4}===10 then (
+			ff:=res coker map(P4^{1:8},,vars P4);
+			p1:=transpose ((random(target transpose ff.dd_5,target transpose fsigma.dd_3)*transpose fsigma.dd_3) // transpose ff.dd_5);
+			p2:=random(target p1,P4^{5:4});
+			phi:=fsigma.dd_3 | (p2 | p1);
+			-- Define 'X' as the quotient of the first syzygy module of the cokernel of 'sigma'
+			X:=trim ideal syz(transpose phi);
+			isGood=true;
+			) else i=i+1
+		    );
+		);
+	    );
+	mu=mu+1;
+	-- If 'mu' becomes bigger than or equal two, then it means the script failed to find a bielliptic surface and returns 'null' 
+	if mu>=p then return null;
+	);
+     -- Check whether 'X' is a surface with the desired degree and sectional genus 
+    assert(dim X==3 and degree X==10 and sectionalGenus X==6);
+    X
+    )
+
+
+
+biellipticSurfaceD15=method()
+-- Bielliptic surface of degree 15 (B5.1)
+--     PURPOSE : Construct a bielliptic surface, which is a nonsingular surface of degree 15 and sectional genus 21
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace over the finite field of characteristic p
+--      OUTPUT : Ideal of the bielliptic surface or 'null' if the function failed to find a surface
+-- DESCRIPTION : This function first forms the Moore matrix, uses it to define a finite module, and a bielliptic surface as the degeneracy locus of a map from a vector bundle to the sheafified first syzygy module
+-- DESCRIPTION : This function first forms the Moore matrix, uses it to define a finite module, and a bielliptic surface as the degeneracy locus of a map from a vector bundle to the sheafified first syzygy module
+--     COMMENT : The function could fail to find a surface, and if it fails, it return 'null' (this happens especually if 'p' is small) However, the function seems to find a surface when 'p' is large 
+
+biellipticSurfaceD15(PolynomialRing):=P4->(
+    z:=symbol z;
+    S:=P4[z_0..z_4];
+    -- Form the Moore matrix 'M'
+    M:=matrix table(5,5,(i,j)->P4_((quotientRemainder(3*i+3*j,5))#1)*z_((quotientRemainder(3*i-3*j,5))#1));
+    -- 'p' denotes the characteristic of 'P4'
+    p:=char (coefficientRing P4);
+    -- Define the eigenspace 'Pmin' corresponding to the eigenvalue 1 of the involution
+    Pmin:=ideal(P4_1-P4_4,P4_2-P4_3);
+    -- Define the quadric cone described in [ADHPR, Proposition 4.13] 
+    Q:=ideal (P4_0^2+(P4_1+P4_4)*(P4_2+P4_3));
+    -- Define the octic hypersurface described in [ADHPR, Proposition 4.19 (iii)] 
+    Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4*(P4_1*P4_3^2-P4_0^2*P4_2)));
+    mu:=1;
+    isGood:=false;
+    -- Inside the following while loop, find an elliptic curve 'E' containing three ZZ/p-ratiinal nontrivial 2-torsion points and one F_p rational nontrivial 6-torsion point  
+    while not isGood and mu<p do (
+	E:=ideal for i from 0 to 4 list -mu*P4_((quotientRemainder(i,5))#1)^2-mu^2*P4_((quotientRemainder(i+1,5))#1)*P4_((quotientRemainder(i+4,5))#1)+P4_((quotientRemainder(i+2,5))#1)*P4_((quotientRemainder(i+3,5))#1);
+	-- Check whether E is singular
+	singE:=singularLocus E;
+	c:=codim singE;
+	if c!=5 then mu=mu+1;
+        -- If E is nonsingular, take the intersection of 'E' with 'Pmin' to find nontrivial 2-torsion points
+	--<< "mu=" << mu << endl;
+	P:=saturate(E+Q',E+Q);
+	compP':=primaryDecomposition P;
+	compP:=compP';
+	-- Remove the 2- and 3-torsion points to obtain the honest 6-torsion points
+	for k from 0 to #compP-1 do (
+	    if degree compP'#k > 1 then (
+		compP=toList (set compP-set {compP'#k});
+		);
+	    );
+	if #compP<3 then mu=mu else (
+	    i:=1;
+	    while i<#compP-1 and not isGood do (
+		j:=i+1;
+		while not isGood and j<#compP do (
+		-- Select the first 6-torsion ppioints and then two 6-torsion point from 'compP'
+		T:={compP#0,compP#i,compP#j};
+		L:=for l from 0 to #T-1 list transpose syz contract(vars P4,transpose gens T#l);
+		-- Evaluate the Moore matrix 'M' at the three 6-torsion points and the 6-torsion point to find three 5x5 matrices with linear entries and form a 5x15 matrix 'sigma'
+		M1:=sub(M,L#0);
+		M2:=sub(M,L#1);
+		M3:=sub(M,L#2);
+		sigma:=map(P4^{5:6},,sub(M1|M2|M3,P4));
+		fsigma:=res coker sigma;
+		-- Check whether 'sigma' has a minimal free resolution of the desired type
+		if (tally degrees target fsigma.dd_3)_{-4}!=10 or (tally degrees target fsigma.dd_3)_{-3}!=1 then j=j+1 else (
+		    X:=trim ideal syz transpose ((transpose (fsigma.dd_2)) | random(target transpose fsigma.dd_2,P4^{20:-2}));
+		    isGood=true;
+		    );
+		    );
+		i=i+1;
+		);
+	    );
+	mu=mu+1;
+	-- If 'mu' becomes bigger than or equal two, then it means the script failed to find a bielliptic surface and returns 'null' 
+	if mu>=p then return null;
+	);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus 
+    assert(dim X==3 and degree X==15 and sectionalGenus X==21);
+    X)
+
+
+
+
+abelianSurfaceD10=method()
+-- Abelian surface of degree 10 obtained as the zero scheme of a global section of the HM bundle (B6.1)
+--     PURPOSE : Construct a nonsingular abelian surface of degree 10 and sectional genus 6
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the abelian surface of degree 10
+-- DESCRIPTION : This function the ideal of an abalian surface as the zero scheme of a global section of the Horrocks-Mumford bundle
+--     COMMENT : This function uses the BGG package
+
+abelianSurfaceD10(PolynomialRing):=P4 -> (
+    KK:=coefficientRing P4;
+    e:=symbol e;
+    -- Define an exterior algebra
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    -- Define morphisms 'alpha' and 'alphad' over 'E'
+    alphad:=map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
+    alpha:=syz alphad;
+    -- Construct a Beilison monad; we use the command 'beilinson' to return the associated maps between direct sums of exterior powers of cotangent bundles
+    alphad=beilinson(alphad,P4);
+    alpha=beilinson(alpha,P4);
+    -- Compute the homology of the monad, which is the Horrock-Mumford bundle 
+    K:=prune homology(alphad,alpha);
+    -- Define a variety 'X' as the dependency locus of two global sections of 'K'
+    X:=trim ideal syz transpose (presentation K | random(source gens K,P4^{1:-3}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==10 and sectionalGenus X==6);    X)
+
+horrocksMumfordSurface=method()
+
+horrocksMumfordSurface(PolynomialRing) := P4 -> abelianSurfaceD10(P4)
+
+
+abelianSurfaceD15=method()
+-- Abelian surface of degree 15, which is linkned to the HM abelian surface (B6.2)
+--     PURPOSE : Construct a nonsingular abelian surface of degree 15 and sectional genus 21
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the abelian surface of degree 15
+-- DESCRIPTION : This function constructs the abelian surface as the surface residual to the abelian surface of degree 10 in the (5,5) complete intersection
+--     COMMENT : This function uses the BGG package and 'abelianSurfaceD10'
+
+abelianSurfaceD15(PolynomialRing):=P4 -> (
+    -- Use 'abelianSurfaceD10' to construct an abelian surface 'Y' of deegree 10
+    Y:=abelianSurfaceD10(P4);
+    -- Choose two quintics containing 'Y' to define a complete intersetion 'V'  
+    V:=ideal (gens Y*random(source gens Y,P4^{2:-5}));
+    -- Define 'X' resitual to 'Y' in 'V'
+    X:=V:Y;
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==15 and sectionalGenus X==21);
+    X)
+
+
+abelianSurfaceD15S21Popescu=method()
+-- Abelian surface of degree 15 and sectional genus 21 (15.B1: Syz_2(N) is incorrect)
+--     PURPOSE : Construct a nonsingular abelian surface of degree 15 and sectional genus 21
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the abelian surface of degree 15
+-- DESCRIPTION : This function constructs the abelian surface as the dependency locus of two sections of a rank three vector bundle
+
+abelianSurfaceD15S21Popescu(PolynomialRing):=P4->(
+    -- Define three Moore matrices 'M1,' 'M2,' and 'M3'
+    z:=symbol z;
+    S:=P4[z_0..z_4];
+    M:=matrix table(5,5,(i,j)->P4_((quotientRemainder(3*i+3*j,5))#1)*z_((quotientRemainder(i-j,5))#1));
+    m1:=random(S^1,S^3)*matrix{{1,0,0,0,0},{0,1,0,0,1},{0,0,1,1,0}};
+    m2:=random(S^1,S^2)*matrix{{0,0,1,-1,0},{0,1,0,0,-1}};
+    m3:=random(S^1,S^2)*matrix{{0,0,1,-1,0},{0,1,0,0,-1}};
+    M1:=sub(M,m1);
+    M2:=sub(M,m2);
+    M3:=sub(M,m3);
+    -- Concatenate 'M1,' 'M2,' and 'M3' horizontally
+    sigma:=map(P4^{5:6},,sub(M1|M2|M3,P4));
+    fsigma:=res coker sigma;
+    ff:=res cokernel transpose fsigma.dd_5;
+    -- Construct 'X' as the degeneracy locus of a generic map from 15O_P4(-2) ++ O_P4(-3) to the sheafified second syzygy module of the dual of 'sigma'
+    X:=trim ideal syz(transpose (ff.dd_4 |random(target ff.dd_4,P4^{15:-2,-3})),DegreeLimit=>2);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==15 and sectionalGenus X==21);
+    X)
+
+
+K3surfaceD7=method()
+-- K3 surface of degree 7 and sectional genus 5 (B4.3)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 7 and sectional genus 5
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 7
+-- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
+
+K3surfaceD7(PolynomialRing):=P4 -> (
+    -- Define a variety 'X' as the degeneracy locus of a generic map from O_PA(-1) ++ O_PA(-2) to 3O_PA 
+    X:=minors(2,random(P4^{3:0},P4^{-1,-2}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==7 and sectionalGenus X==5);
+    X)
+
+
+K3surfaceD8=method()
+-- K3 surface of degree 8 and sectional genus 6 (B4.4)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 8 and sectional genus 6
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 8
+-- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
+
+K3surfaceD8(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Construct 'X' as the degeneracy locus of a generic map from O_P4(-3) ++ 2O_P4(-2) to the cotangent bundle 
+    X:=ideal syz transpose (kos.dd_3 | random(target kos.dd_3,P4^{2:-2,-3}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==8 and sectionalGenus X==6);
+    X)
+
+
+K3surfaceD9=method()
+-- K3 surface of degree 9 and sectional genus 8 (B4.5)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 9 and sectional genus 8
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 9
+-- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
+
+K3surfaceD9(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Define the direct sum 'f' of the fourth exterior power of the cotangent bundle and O_PA(_4)
+    f:=kos.dd_4 ++ map(P4^{-4},P4^{-4},1);
+    -- Define 'X' as the degeneracy locus of a general map from 'f' to 6O_P4(-3)
+    X:=trim ideal syz transpose (random(P4^{6:-3},target f)*f);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==9 and sectionalGenus X==8);
+    X)
+
+
+K3surfaceD10S9SL1=method()
+-- K3 surface of degree 10 and sectional genus 9 with one 6-secant line (this script is a little cheating) (B4.6)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 10 and sectional genus 9 with one 6-secant line
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 10 with one 6-secant line
+-- DESCRIPTION : This function constructs the ideal of the K3 surface as the homology of a Beilinson monad
+--     COMMENT : This function uses the BGG package
+
+K3surfaceD10S9SL1(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    -- Define an exterior algebra
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    -- Define morphisms 'f' and 'g' of modules over 'E'
+    f:=map(E^{1:0},E^{1:-1},0) | map(E^{1:0},E^{2:-1},{{e_0,e_1}}) | map(E^{1:0},E^{1:0},0);
+    g:=(syz f)*random(source syz f,E^{-2,-3,-4});
+    -- Construct a Beilison monad; we use the command 'beilinson' to return the associated maps between direct sums of exterior powers of cotangent bundles
+    beta:=beilinson(f,P4);
+    alpha:=beilinson(g,P4);
+    -- Compute the homology 'I' of the Beilinson monad 
+    I:=prune homology(beta,alpha);
+    -- Define 'X' by 'I'
+    X:=trim ideal syz(transpose presentation I,DegreeLimit=>4);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==10 and sectionalGenus X==9);
+    X)
+
+-- K3 surface of degree 10 and sectional genus 9 with three secant lines (B4.7)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 10 and sectional genus 9 with three 6-secant lines
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 10 with one 6-secant line
+-- DESCRIPTION : This function constructs the ideal of the K3 surface as the degeneracy locus of a map between two vector bundles
+
+K3surfaceD10S9SL3=method()
+K3surfaceD10S9SL3(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Compute the presentation 'omega' of the third exterior power of the cotangent bundle twisted by 3 
+    omega:=map(P4^{5:-1},,kos.dd_5);
+    -- Choose a map 'f' from 2O_P4(1) ++ 4O_P4 t0 2O_P4(2) randomley 
+    f:= random(P4^{1:2},P4^{2:1,4:0});
+    ff:=res coker f;
+    -- Define a map 'r' from O_P4(-1) ++ the first exterior power of the cotangent bundle twisted by 3 to the direct sum of the first syzygy module of 'f' and O_PA randomly
+    p1:=transpose ((random(target transpose omega,target transpose ff.dd_3)*transpose ff.dd_3) // transpose omega);
+    p2:=random(target p1,P4^{1:-1});
+    q1:=random(P4^{1:0},P4^{10:0})*map(P4^{10:0},,kos.dd_4);
+    q2:=random(P4^{1:0},P4^{1:-1});
+    p:=(p2 | p1)||(q2 | q1);
+    q:=ff.dd_2++map(P4^{1:0},P4^{1:0},1);
+    r:=(syz q) | p;
+    -- Define 'X' as the cokernel of 'r'
+    X:=trim ideal syz transpose r;
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==10 and sectionalGenus X==9);
+    X)
+
+
+H1module = method()
+H1module(PolynomialRing,ZZ):= (P4,a)->(
+    -- This function uses Description (3.10) in Sorin Popescu's thesis
+    var:=vars P4;
+    y:=first entries var;
+    phi1:=map(P4^{2:5},,var || matrix {for i from 0 to 4 list random(0,P4)*y#i});
+    pts:=ideal var;
+    if a == 0 then pts=pts else 
+    for i from 1 to a list pts = intersect(pts,ideal toList (set y-{y#(i-1)})); 
+    phi2:=map(P4^{2:5},,matrix{{0,0}}||(gens pts)*random(source gens pts,P4^{2:-1}));
+    phi:=phi1 | phi2 | random(P4^{2:5},P4^{a:3});
+    fphi:=res coker phi;
+    ftphi:=res coker transpose fphi.dd_5;
+    ftphi.dd_3
+    )
+
+K3surfaceD11S11SLn=method()
+-- K3 surface of degree 11 and sectional genus 11 witha 6-secant lines (B4.8-11)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 11 and sectional genus 11 with 'n' 6-secant lines
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace and an integer between 0 and 3 
+--      OUTPUT : Ideal of the K3 surface of degree 10 with 'n' 6-secant lines
+-- DESCRIPTION : This function constructs the ideal of the K3 surface as the degeneracy locus of a map between two vector bundles
+--     COMMENT : This function uses 'H1module,' a command that takes "P4' and an integer between 0 and 3 and returns the H1 module of the ideal sheaf of the surface 
+
+K3surfaceD11S11SLn(PolynomialRing,ZZ):=(P4,n)->(
+    var:=vars P4;
+    -- Calculate the direct sum of two Koszul complexes
+    kos:=res coker (var++var);
+    -- Denote by 'Omega' the third syzygy module sheaf of 'var++var'
+    omega:=map(P4^{10:-1},,kos.dd_5);
+    -- Use 'H1module' to construct the sheafified first syzygy module a module of finite length 
+    f:=H1module(P4,n);
+    ff:=res coker f;
+    -- Choose randomly a map 'p' from the direct sum of O_P4(-1) and the two copies of the third exterior power of the cotangent bundle twisted by 3 to the first syzygy module sheaf of 'coker f'
+    p1:=transpose ((random(target transpose omega,target transpose ff.dd_1)*transpose ff.dd_1) // transpose omega);
+    p2:=random(target p1,P4^{1:-1});
+    p:=ff.dd_1 | (p2 | p1);
+    -- Construct 'X' as the degeneracy locus of 'p'
+    X:=trim ideal syz(transpose p,DegreeLimit=>4);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==11 and sectionalGenus X==11);
+    X)
+
+-- K3 surface of degree 11 and sectional genus 12 (B4.12)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 11 and sectional genus 12 
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 11 and sectional genus 12
+-- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
+
+K3surfaceD11S12=method()
+K3surfaceD11S12(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Construct the presentation 'f' of the direct sum of 2O_P4 and the direct sum of two copies of the second exterior power of the cotangent bundle twisted by 2 
+    f:=map(P4^{2:-1},P4^{2:-1},1)++map(P4^{20:-1},,kos.dd_3++kos.dd_3);
+    syzf:=syz f;
+    -- Define a map 'g' from the direct sum of O_P4(-1) and the direct sum of 3 copies of the third exterior power of the cotangent bundle twisted by 3 via exterior algebra
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{2:0,2:-2},E^{3:-3,-4}),P4));
+    -- Construct 'X' as the cokernel of 'g'
+    X:=trim ideal syz transpose (syzf | g);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==11 and sectionalGenus X==12);
+    X)
+
+-- K3 surface of degree 12 and sectional genus 14 (B4.13)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 12 and sectional genus 14
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 12 
+-- DESCRIPTION : This function constructs the K3 surface as the surface residual to a regular elliptic surface of degree 12 in the (5,5) complete intersection
+--     COMMENT : This function uses 'BGG'
+
+K3surfaceD12=method()
+K3surfaceD12(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Find a set 'f' of generators for the direct sum 'F' of three copies of the second exterior power of the cotangent bundle 
+    f:=map(P4^{30:-1},,kos.dd_3++kos.dd_3++kos.dd_3);
+    syzf:=syz f;
+    -- Define a map 'g' from the direct sum of O_P4(-1) and the four copies of the third exterior power of the cotangent bundle to 'F'
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{3:-2},E^{4:-3,-4}),P4));
+    -- Construct 'X' as the degeneracy locus of 'g'
+    X:=trim ideal syz transpose (syzf | g);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==12 and sectionalGenus X==14);
+    X)
+
+-- K3 surface of degree 13 and sectional genus 16 (B4.14)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 13 and sectional genus 16
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 13 
+-- DESCRIPTION : This function constructs the K3 surface as the surface residual to a regular elliptic surface of degree 12 in the (5,5) complete intersection
+--     COMMENT : This function uses 'regularEllipticSurfaceD12'
+
+K3surfaceD13=method()
+K3surfaceD13(PolynomialRing):=P4->(
+    -- Use 'regularEllipticSurfaceD12'to construct a regular elliptic surface of degree 12
+    Y:=regularEllipticSurfaceD12(P4);
+    -- Choose two quintics containing 'Y' to define a complete intersection 'V' 
+    V:=ideal ((gens Y)*random(source gens Y,P4^{2:-5}));
+    -- Define 'X' resitual to 'Y' in 'V'
+    X:=V:Y;
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==13 and sectionalGenus X==16);
+    X)
+
+-- K3 surface of degree 14 and sectional genus 19 (B4.15)
+--     PURPOSE : Construct a nonsingular K3 surface of degree 14 and sectional genus 19
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the K3 surface of degree 14
+-- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
+
+K3surfaceD14=method()
+K3surfaceD14(PolynomialRing):=P4->(
+    -- Choose four random planes
+    P:=for i from 0 to 3 list random(P4^{1:4},P4^{2:3});
+    -- Define the direct sum of the four Koszul complexes of the generators for 'P#i'  
+    alpha:=P#0;
+    for i from 1 to 3 do alpha = alpha++P#i;
+    -- Use 'alpha' to define a map from 8O_P4(3) ++ 2O_P4(2) to 3O_P4 
+    phi1:=random(P4^{3:4},P4^{4:4})*alpha;
+    phi2:=random(target phi1,P4^{2:2});
+    phi:=phi1|phi2;
+    -- Calculate the dual of 'coker phi' 
+    fphi:=res coker phi;
+    ftphi:=res coker transpose fphi.dd_5;
+    -- Define 'X' as the degeneracy locus of a generic map from the second syzygy bundle of 'ftphi.dd_1' and O_P4(-1) ++ 15O_P4
+    X:=ideal syz transpose (ftphi.dd_4 | random(target ftphi.dd_4,P4^{15:0,1:-1}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==14 and sectionalGenus X==19);
+    X)
+
+-- Elliptic surface of degree 7 and sectional genus 6 (B7.1)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 7 and sectional genus 6
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 7
+-- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
+
+ellipticSurfaceD7=method()
+ellipticSurfaceD7(PolynomialRing) := P4 -> (
+    -- Construct 'X' as the dependency locus of a generic map from 2O_P4(-2) to 2O_P4(-1) ++ O_P4(1)  
+    X:=minors(2,random(P4^{1:1,2:-1},P4^{2:-2}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==7 and sectionalGenus X==6);
+    X)
+
+-- Elliptic surface of degree 8 and sectional genus 7 (B7.2)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 8 and sectional genus 7
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 8
+-- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
+
+ellipticSurfaceD8=method()
+ellipticSurfaceD8(PolynomialRing) := P4 -> (
+    -- Construct 'X' as the dependency locus of a generic map from 2O_P4(-2) to O_P4 ++ 2O_P4(1)  
+    X:=minors(2,random(P4^{2:1,1:0},P4^{2:-1}));
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==8 and sectionalGenus X==7);
+    X)
+
+-- Elliptic surface of degree 9 and sectional genus 7 (B7.3)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 9 and sectional genus 7
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 9
+-- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
+--     COMMENT : This function uses the BGG package
+
+ellipticSurfaceD9=method()
+ellipticSurfaceD9(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Construct a set of generatros for the direct sum of three copies of the cotangent bundle twisted by -1 and two copies of O_P4(-1)
+    f:=map(P4^{2:-1},P4^{2:-1},1)++map(P4^{15:-1},,kos.dd_2++kos.dd_2++kos.dd_2);
+    -- Find the presentation of 'image f' 
+    syzf:=syz f;
+    -- Choose a map from the direct sum of O_P4(-3) and two copies of the second exterior power of the cotangent bundle twisted by -1 to 'image f'
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{2:0,3:-1},E^{2:-2,-4}),P4));
+    -- Construct 'X' as the dependency locus of 'g' 
+    X:=trim ideal syz transpose (syzf | g);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==9 and sectionalGenus X==7);
+    X)
+
+-- Elliptic surface of degree 10 and sectional genus 9 (B7.4)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 10 and sectional genus 9
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 9
+-- DESCRIPTION : This function constructs the elliptic surface as the homology of a Beilinson monad 
+--     COMMENT : This function uses the BGG package
+
+ellipticSurfaceD10S9=method()
+ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    -- Define an exterior algebra
+    E:=KK[e_0..e_4,SkewCommutative => true];
+    -- Define morphisms 'f' and 'g' over 'E'  
+    f:=map(E^{1:0},E^{3:-1},{{e_0..e_2}}) | map(E^{1:0},E^{1:0},0);
+    g:=(syz f)*random(source syz f,E^{-2,-3,-4});
+    -- Construct a Beilison monad; we use the command 'beilinson' to return the associated maps between direct sums of exterior powers of twisted cotangent bundles
+    beta:=beilinson(f,P4);
+    alpha:=beilinson(g,P4);
+    -- Compute the homology 'I' of the Beilinson monad
+    I:=prune homology(beta,alpha);
+    -- Construct 'X' as the scheme of 'I' 
+    X:=trim ideal syz transpose presentation I;
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==10 and sectionalGenus X==9);
+    X)
+    
+-- Elliptic surface of degree 10 and sectional genus 10 (B7.5)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 10 and sectional genus 10
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 10
+-- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
+--     COMMENT : This function uses the BGG package
+
+ellipticSurfaceD10S10=method()
+ellipticSurfaceD10S10(PolynomialRing) := P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Define a map 'f' whose image is the direct sum of three copies of O_P4 and the cotangent bundle
+    f:=map(P4^{3:-1},P4^{3:-1},1)++map(P4^{5:-1},,kos.dd_2);
+    syzf:=syz f;
+    -- Choose a map 'g' from the direct sum of 2O_P4(-2) and the third exterior power of the cotangent bundle  
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{3:0,1:-1},E^{1:-3,2:-4}),P4));
+    -- Construct 'X' as the degeneracy locus of 'g' 
+    X:=trim ideal syz transpose (syzf | g);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==10 and sectionalGenus X==10);
+    X)
+
+-- Elliptic surface of degree 11 and sectional genus 12 (B7.6)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 11 and sectional genus 12
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 10
+-- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
+--     COMMENT : This function uses the BGG package
+
+ellipticSurfaceD11S12=method()
+ellipticSurfaceD11S12(PolynomialRing):=P4 -> (
+    -- Compute the koszul complex of the variables of 'P4'
+    kos:=res coker vars P4;
+    -- Define a map 'f' whose image is the direct sum of O_P4(-1), the cotangent bundle, and its second exterior power
+    f:=map(P4^{-1},P4^{-1},1)++map(P4^{15:-1},,kos.dd_2++kos.dd_3);
+    syzf:=syz f;
+    -- Choose a map 'g' from the direct sum of 2O_P4(-2) and the third exterior power of the cotangent bundle  
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    E:=KK[e_0..e_4,SkewCommutative=>true];
+    g:=map(target syzf,,beilinson(random(E^{0,-1,-2},E^{2:-3,2:-4}),P4));
+    -- Construct 'X' as the degeneracy locus of 'g' 
+    X:=trim ideal syz transpose (syzf | g);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==11 and sectionalGenus X==12);
+    X)
+
+-- Elliptic surface of degree 12 and sectional genus 14 with no 6 secant line (B7.8)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 12 and sectional genus 14
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 12
+-- DESCRIPTION : This function constructs the elliptic surface as the homology of a Beilinson monad 
+--     COMMENT : This function uses the BGG package
+
+ellipticSurfaceD12S14L0=method()
+ellipticSurfaceD12S14L0(PolynomialRing):=P4 -> (
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    -- Define an exterior algebra
+    E:=KK[e_0..e_4,SkewCommutative => true];
+    -- Choose morphisms 'f' and 'g' over 'E' randomly 
+    f:=random(E^{1:0},E^{1:-1,2:-2});
+    g:=(syz f)*random(source syz f,E^{3:-3,2:-4});
+    -- Construct a Beilison monad; we use the command 'beilinson' to return the associated maps between direct sums of exterior powers of twisted cotangent bundles
+    I:=prune homology(beilinson(f,P4),beilinson(g,P4));
+    -- Construct 'X' as the scheme of 'I'
+    X:=trim ideal syz (transpose presentation I,DegreeLimit=>4);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==12 and sectionalGenus X==14);
+    X)
+
+-- Elliptic surface of degree 12 and sectional genus 14 with infinitely many 6 secant line (B7.9)
+--     PURPOSE : Construct a nonsingular elliptic surface of degree 12 and sectional genus 14 with infinitely many 6-secant lines
+--       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--      OUTPUT : Ideal of the elliptic surface of degree 12
+-- DESCRIPTION : This function constructs the elliptic surface as the homology of a Beilinson monad 
+--     COMMENT : This function uses the BGG package
+
+ellipticSurfaceD12S14Linfinite=method()
+ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
+    KK:=coefficientRing P4;
+    e:= symbol e;
+    -- Define an exterior algebra
+    E:=KK[e_0..e_4,SkewCommutative => true];
+    -- Choose a specific morphism 'f' over 'E' 
+    f:=map(E^{1:0},E^{1:-1,2:-2},{{e_2,e_0*e_1,0}});
+    -- Choose a morphism 'g' over E randomly
+    g:=(syz f)*random(source syz f,E^{3:-3,2:-4});
+    -- Construct a Beilison monad; we use the command 'beilinson' to return the associated maps between direct sums of exterior powers of twisted cotangent bundles
+    I:=prune homology(beilinson(f,P4),beilinson(g,P4));
+    -- Construct 'X' as the scheme of 'I'
+    X:=trim ideal syz (transpose presentation I,DegreeLimit=>4);
+    -- Check whether 'X' is a surface with the desired degree and sectional genus
+    assert(dim X==3 and degree X==12 and sectionalGenus X==14);
+    X)
 
 
 
@@ -1189,16 +1972,23 @@ Headline => "Construction of smooth non-general type surfaces in P4",
      UL{
         TO enriquesSurfaceOfDegree9,
 	TO enriquesSurfaceOfDegree10,
-	TO k3Surfaces,
+	TO K3surfaces,
         },
     SUBSECTION "Irregular surface",
      UL{
         TO quinticEllipticScroll,
+	TO ellipticConicBundle,
 	TO horrocksMumfordSurface,
+	TO abelianSurfaceD15,
+	TO abelianSurfaceD15S21Popescu,
+	TO biellipticSurfaceD10,
+	TO biellipticSurfaceD15,
         },
     SUBSECTION "Elliptic surfaces",
      UL{
-        TO quinticEllipticScroll,
+        TO irregularEllipticSurfaceD12,
+	TO regularEllipticSurfaceD12,
+	TO surfacesOfKodairaDimension1,
         },
      SUBSECTION "Existence proofs",
      UL{
@@ -1296,14 +2086,50 @@ Headline => "functions concerning Abo-Ranestad surfaces",
      SUBSECTION "search for modules",
      UL{
 	TO aboRanestadSurface,
-        TO singAboRanestadSurfacesStatistic,
+        --TO singAboRanestadSurfacesStatistic,
         },
     
      SUBSECTION "lift to characteristic zero",
      UL{
-	TO tangentComputation,
+	--TO tangentComputation,
 	TO veroneseImagesInG25
         }        
+}
+
+document {
+Key => K3surfaces,
+Headline => "Known families of K3 surfaces",
+   "Various family of non-minmal K3 surfaces are known.
+    We enumerate the families by the degree D, the sectional genus S and
+    their 6-secant behavious L. Note that a smooth surface in P4 is expected to have 
+    finitely many 6-secants. If this number is finite, then Le Barz 6-secant formula
+    computes sum of the number of 6-secants and the number of  of (-1) lines on the surface.
+    Since every 6-secant line is contained in the zero locus of the the ideal generated by the quintics
+    containg the surface, the number of 6-secant can often be determined from the equation
+    of the surface, hence in that case we get information about the (-1)-Lines, ie. ,
+    the curve contacted by the first adjunction map.",
+    
+   PARA{},
+     SUBSECTION "K3 surfaces",
+     UL{
+        TO K3surfaceD7,
+	TO K3surfaceD8,
+	TO K3surfaceD9,
+	TO K3surfaceD10S9SL1,
+	TO K3surfaceD10S9SL3,
+	-- TO H1module,
+	TO K3surfaceD11S11SLn,
+	TO K3surfaceD11S12,
+	TO K3surfaceD12,
+	TO K3surfaceD13,
+	TO K3surfaceD14,      
+        },
+    PARA{},
+     SUBSECTION "6-secants and adjunction",
+     UL{
+	TO LeBarzN6,
+	TO adjunctionProcessData,
+	},
 }
 
 document {
@@ -1378,6 +2204,7 @@ doc ///
 Key
  schreyerSurfaceWith2LinearSyzygies
  (schreyerSurfaceWith2LinearSyzygies, Ring)
+ [schreyerSurfaceWith2LinearSyzygies,Smooth]
 Headline
  compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
 Usage
@@ -1677,6 +2504,8 @@ doc ///
 Key
  schreyerSurface
  (schreyerSurface, Ring, Number)
+ [schreyerSurface,Smooth]
+ [schreyerSurface,Verbose]
 Headline
  find a random Schreyer surface
 Usage
@@ -1757,6 +2586,7 @@ Key
  findRandomSmoothSchreyerSurface
  (findRandomSmoothSchreyerSurface, Ring)
  (findRandomSmoothSchreyerSurface, Ring, Number)
+ [findRandomSmoothSchreyerSurface,Verbose]
 Headline
  find a random smooth Schreyer surface
 Usage
@@ -1820,6 +2650,8 @@ Description
     all lift to smooth surfaces over some algebraic number field (of characteristic 0).
 ///
 
+-* Abo-Ranestad surfaces *-
+
 doc ///
 Key
  veroneseImagesInG25
@@ -1869,6 +2701,9 @@ doc ///
 Key
  aboRanestadSurface
  (aboRanestadSurface, Ring, Number)
+ [aboRanestadSurface,Special]
+ [aboRanestadSurface,Smooth]
+ [aboRanestadSurface,Verbose]
 Headline
  find a random Abo-Ranestad  surface
 Usage
@@ -1970,6 +2805,8 @@ doc ///
 Key
  aboRanestadSurfaceFromMatrix
  (aboRanestadSurfaceFromMatrix, Ring, Matrix)
+ [aboRanestadSurfaceFromMatrix,Smooth]
+ [aboRanestadSurfaceFromMatrix,Verbose]
 Headline
  get an Abo-Ranestad surface with given 4x2 matrix.
 Usage
@@ -2004,6 +2841,7 @@ SeeAlso
    matrixFromAboRanestadSurface
 ///
 
+-* classical rational surfaces *-
 
 doc ///
 Key
@@ -2573,8 +3411,9 @@ SeeAlso
   adjunctionProcessData
 
 ///
+
 ///
--- the (4,5) linked surface ov a vBEL surface can be irreducible:
+-- the (4,5) linked surface of a vBEL surface can be irreducible:
    kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
    minimalBetti(X=vBELSurface P4)
    singX=saturate(X+minors(2,jacobian X));
@@ -2666,10 +3505,665 @@ SeeAlso
   
 ///
 
+
+doc ///
+Key
+ quinticEllipticScroll
+ (quinticEllipticScroll, PolynomialRing)
+Headline
+ construct a quintic elliptic scroll 
+Usage
+ X=quinticEllipticScroll P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a quintic elliptic scroll
+Description
+  Text
+   We construct an quintic elliptic scroll, which is a nonsingular surface of
+   degree 5 and sectional genus 1. It is linked via two cubics to the Veronese surface
+   of degree 4.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=quinticEllipticScroll P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   ci=ideal(gens X* random(source gens X,P4^{2:-3}));
+   Y=ci:X; -- Y is a Veronese surface
+   minimalBetti Y
+   (degree Y, sectionalGenus Y)==(4,0) 
+SeeAlso
+  veroneseSurface
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ ellipticConicBundle
+ (ellipticConicBundle, PolynomialRing)
+Headline
+ construct a elliptic conic bundle 
+Usage
+ X=ellipticConicBundle P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a elliptic conic bundle
+Description
+  Text
+   We construct an elliptic conic bundle, which is a nonsingular surface of
+   degree 8 and sectional genus 5.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=ellipticConicBundle P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+ Text
+  These surface where overlooked by Okonek and Ionescu respectively in their classification of low
+  degree smooth projective surfaces.
+References
+  Okonek
+  Iounescu
+  Abo et al
+SeeAlso
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ biellipticSurfaceD10
+ (biellipticSurfaceD10,PolynomialRing)
+Headline
+ construct a bielliptic surface of degree 10 
+Usage
+ X=biellipticSurfaceD10 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a bielliptic surface of degree 10 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+  Text
+   The function
+   
+   X=biellipticSurfaceD10 P4;
+
+   failed.
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+ Text
+   The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve .
+   Perhaps the code can be improved.
+References
+  ADHPR
+Caveat
+   The function can fail, in which case it returns null.
+SeeAlso
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ biellipticSurfaceD15
+ (biellipticSurfaceD15,PolynomialRing)
+Headline
+ construct a bielliptic surface of degree 15 
+Usage
+ X=biellipticSurfaceD10 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a bielliptic surface of degree 10 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^4; -- is this a good choice?
+   P4=kk[x_0..x_4];
+  Text
+   The code
+   
+   X=biellipticSurfaceD15 P4;
+
+   fails.
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+
+   fails. Perhape use a setRandomSeed.
+ Text
+   The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve .
+   Perhaps the code can be improved.
+Caveat
+   The function can fail, in which case it returns null.
+References
+  ADHPR
+SeeAlso
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ abelianSurfaceD10
+ horrocksMumfordSurface 
+ (horrocksMumfordSurface,PolynomialRing)
+ (abelianSurfaceD10,PolynomialRing)
+Headline
+ construct a nonsingular abelian surface of degree 10 and sectional genus 6 
+Usage
+ X=abelianSurfaceD10 P4
+ X=horrocksMumfordSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a abelian surface of degree 10, a Horrocks-Mumford surface. 
+Description
+  Text
+   Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
+   Horrocks-Mumford bundle, which is a rank 2 vector bundle with
+   Chern classes c1=-1 and c2=4.
+   Commesati found these surface already in 192x?.
+  Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4];
+   X=abelianSurfaceD10 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   betti(fX=res X)
+   betti(T=tateResolutionOfSurface X)
+ Text
+   The surface X is the zero loci of a vector bundle, whose
+   module of global sections is
+ Example
+  HMBundle=coker transpose (syz transpose fX.dd_3)_{0..18};
+  minimalBetti HMBundle
+ Text
+  In the code we use the Horrocks-Mumford bundle get X. 
+  The constuction of the Horrocks-Mumford bundle uses a monad:
+ Example
+  e=symbol e;
+  E=kk[e_0..e_4,SkewCommutative=>true]; 
+  alphad= map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
+ Text
+  The matrix
+ Example
+  diagonalMatrix{1,-1}*transpose alphad
+ Text
+  is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
+ Example
+  betti (F=res coker alphad);
+  betti (F'=res(coker transpose F.dd_6,LengthLimit=>9)[5])
+ Text
+  The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
+  is the module of global sections of the Horrocks-Mumford bundle.
+ Example
+  HMbundle= prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4))
+  minimalBetti HMbundle
+  minimalBetti X
+ Text
+  The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
+  Tate resolution, cf. [EFS,pp xxx].
+ Example
+  H2cohomology=prune Ext^2(HMbundle,P4^{-5})
+  H1cohomology=prune Ext^1(HMbundle,P4^{-5})
+  apply(toList(3..8),i->hilbertFunction(i,H1cohomology))
+  betti F'
+References
+  Horrocks-Mumford
+  Barth-Hulek-Moore
+  Comessati
+  Decker-Schreyer
+  Eisenbud-Floystad-Schreyer
+SeeAlso
+///
+
+doc ///
+Key
+ abelianSurfaceD15
+ (abelianSurfaceD15, PolynomialRing)
+Headline
+ construct an abelian surface of degree 15
+Usage
+ X=abelianSurfaceD15 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an abelian surface of degree 15
+Description
+  Text
+   These abelian surfaces are linked via two quintics to a Horrocks-Mumford surface.
+   The construction uses this liason
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=abelianSurfaceD15 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   ci=ideal(gens X* random(source gens X,P4^{2:-5}));
+   Y=ci:X;
+  Text
+   Y is a Horrocks-Mumford surface.
+  Example
+   minimalBetti Y
+   (degree Y, sectionalGenus Y) == (10,6)
+  Text
+   The surface is non-mimimal. Adjunction gives
+  Example
+   betti (HplusK=presentation truncate(1,Ext^1(X,P4^{-5})))
+   P19=kk[y_0..y_19];
+   P4xP19=P4**P19;
+   graph=sub(vars P19,P4xP19)*sub(HplusK,P4xP19);
+   betti(presH=map(P19^5,,sub(contract(transpose sub(vars P4,P4xP19),graph),P19)))
+   --elapsedTime betti(X1=ann coker presH)
+  Text
+   X1 is the first adjoint surface.
+
+References
+   Horrocks-Mumford
+   BHM
+   
+SeeAlso
+  horrocksMumfordSurface
+  adjunctionProcessData
+///
+-*
+  Example
+   (dim X1,degree X1,sectionalGenus X1)==(3,40,21)
+  Text
+   The image H1 of a general hyperplane section of X under the adjunction map is a
+   canonical curve, however projected since h^2(\omega_X)=1.
+  Example
+   elapsedTime H1=ann coker(random(P19^4,P19^5)*presH)
+   betti H1
+   (dim H1, degree H1, genus H1)==(2,40,21)
+   elapsedTime pts=sum apply(3,i->ann coker(random(P19^4,P19^5)*presH));
+   (dim pts, degree pts)==(1,25)
+  Text
+   the ideal pts is the ideal of the intersection the of three general hypersurface.
+   Thus this ideal defines the exceptional points of the first adjunction map X -> X1.
+   Indeed their preimage coincides with the 25 Horrocks-Mumford lines, see [HM]
+   The structure sheaf of OX has Euler characteristic O and K^2=-25
+  Example
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X, sectionalGenus X, 0)==-25
+  Text
+   Thus the surface X1 is minimal.
+*-
+
+
+
+
+doc ///
+Key
+ regularEllipticSurfaceD12
+ (regularEllipticSurfaceD12,PolynomialRing)
+Headline
+ construct a regular elliptic surface of degree 12 
+Usage
+ X=regularEllipticSurfaceD12 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a regular elliptic surface of degree 12 
+Description
+  Text
+   We construct a regular elliptic surface of degree 12 and pg=2.
+  Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4]; 
+   X=regularEllipticSurfaceD12 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,3)
+ Text
+   Since K^2=0 this surface is minimal.   
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ irregularEllipticSurfaceD12
+ (irregularEllipticSurfaceD12,PolynomialRing)
+Headline
+ construct a regular elliptic surface of degree 12 
+Usage
+ X=irregularEllipticSurfaceD12 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a irregular elliptic surface of degree 12 
+Description
+  Text
+   We construct a irregular elliptic surface of degree 12 and pg=2.
+  Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4]; 
+   X=irregularEllipticSurfaceD12 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,3)
+   --betti (T=tateResolutionOfSurface X) -- there is a bug in TateReolutionOfSurface
+ Text
+   Since K^2=0 this surface is minimal.   
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ K3surfaceD7
+ (K3surfaceD7, PolynomialRing)
+Headline
+ construct a K3 surface of degree 7
+Usage
+ X=K3surfaceD7 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a elliptic conic bundle
+Description
+  Text
+   We construct an K3 surface of degree 7 and sectional genus 5.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD7 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(7,5,2)
+  Text
+   X is nonminimal with one exceptional line.
+References
+  Okonek
+  Iounescu
+
+SeeAlso
+  
+///
+
+doc ///
+Key
+ K3surfaceD8
+ (K3surfaceD8, PolynomialRing)
+Headline
+ construct a K3 surface of degree 8
+Usage
+ X=K3surfaceD8 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 8
+Description
+  Text
+   We construct an K3 surface of degree 8 and sectional genus 6.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD8 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(8,6,2)
+   HdotK(8,6)
+  Text
+   X is non-minimal with one exceptional curve of degree 2.
+References
+  Okonek
+  Iounescu
+
+SeeAlso
+  
+///
+
+
+doc ///
+Key
+ K3surfaceD9
+ (K3surfaceD9, PolynomialRing)
+Headline
+ construct a K3 surface of degree 8
+Usage
+ X=K3surfaceD9 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 9
+Description
+  Text
+   We construct an K3 surface of degree 9 and sectional genus 8.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD9 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(9,8,2)
+   HdotK(9,8)==5
+  Text
+   X is non-minimal with five exceptional lines.
+References
+  Okonek
+  Iounescu
+
+SeeAlso
+  
+///
+
+
+doc ///
+Key
+ K3surfaceD10S9SL1
+ (K3surfaceD10S9SL1, PolynomialRing)
+Headline
+ construct a K3 surface of degree 10 and sectional genus 9 with 1 six-secant line
+Usage
+ X=K3surfaceD10S9SL1 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 9
+Description
+  Text
+   We construct an K3 surface of degree 10 and sectional genus 9 with one 6-secant line
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD10S9SL1 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+  Text
+   X is non-minimal with two exceptional lines and three exceptional conics.
+References
+  Okonek
+  Iounescu
+
+SeeAlso
+  
+///
+
+doc ///
+Key
+ K3surfaceD10S9SL3
+ (K3surfaceD10S9SL3, PolynomialRing)
+Headline
+ construct a K3 surface of degree 10 and sectional genus 9 with 3 six-secant line
+Usage
+ X=K3surfaceD10S9SL3 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 9
+Description
+  Text
+   We construct an K3 surface of degree 10 and sectional genus 9
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD10S9SL3 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+  Text
+   X is non-minimal with no exceptional line and three exceptional conics.
+   The three 6-secant lines arize as follows:
+  Example
+   betti(X5=ideal (gens X)_{0..5})
+   betti(plane=X5:X)
+   dim plane == 3
+   dim  (plane+X), degree radical (plane+X)
+   tally apply(primaryDecomposition (plane+X),c->(dim c, degree radical c))
+  Text
+   The plane intersects X in a quartic curve and three points. The three lines through
+   two of these points are the thee 6-secant lines.
+
+  
+References
+
+SeeAlso
+  
+///
+
+doc ///
+Key
+ K3surfaceD11S11SLn
+ (K3surfaceD11S11SLn, PolynomialRing,ZZ)
+Headline
+ construct a K3 surface of degree 11, sectional genus 11 and precisely n six-secants lines
+Usage
+ X=K3surfaceD11S11SLn(P4,n)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ n: ZZ
+   the number of desired six secant lines
+Outputs
+ X:Ideal
+  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' six-secants lines
+Description
+  Text
+   We construct an K3 surfaces of degree 11, sectional genus 11 and n six-secants lines
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD11S11SLn(P4,0);
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   --OX=sheaf(P4^1/X);
+   --apply(3,i->HH^i(OX))
+  Text
+   X has no 6-secant line, since the ideal is generated by quintics.
+  Example
+   X=K3surfaceD11S11SLn(P4,1);
+   minimalBetti X
+  Text
+   In case n=1 there is precisely one 6-secant line:
+  Example
+   betti(X5=ideal (gens X)_{0..8})
+   betti(line=X5:X)
+   dim line, degree line, degree (line+X)
+  Text
+   In case n=2 there are 2 six secant lines:
+  Example
+   X=K3surfaceD11S11SLn(P4,2);
+   minimalBetti X
+   betti(X5=ideal (gens X)_{0..8})
+   betti(residual=X5:X)
+   dim residual, degree residual, degree (residual+X)
+  Text
+   In case n=3 there are 3 six secant lines:
+  Example
+   X=K3surfaceD11S11SLn(P4,3);
+   minimalBetti X
+   betti(X5=ideal (gens X)_{0..8})
+   betti(plane=X5:X)
+   dim plane, degree (plane+X)
+   tally apply(primaryDecomposition(plane+X),c->(dim c, degree radical(c+X)))
+  Text
+   So the plane intersect X in a plane quartic and 3 points.
+   The three 6-secant lines are the lines in the plane joining 2 of the three points.
+  Example
+   Ksquare(11,11,2)
+   LeBarzN6(11,11,2)
+   HdotK(11,11)
+  Text
+   Summary: X is a K3 surface with precisely e1=(4-n) exceptional lines and further exceptional curves
+   of larger degree as in the following pattern (e1,e2,e3,..)
+   (4,0,0,0,1), (3,0,2), (2,2,1), (1,4)
+References
+  Popescu
+  
+SeeAlso
+  
+///
+
 -* Test section *-
 TEST///
 
 ///
+
+
+
+
 
 end--
 
