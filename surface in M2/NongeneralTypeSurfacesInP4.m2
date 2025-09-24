@@ -59,7 +59,7 @@ export {
     "randomSurfaceDegreeAndSectionalGenus",
     "enriquesSurfaceOfDegree9",
     "enriquesSurfaceOfDegree10",
-    "enriquesSurfaceOfDegree11",
+    "enriquesSurfaceD11S10",
     "k3Surfaces",
     "horrocksMumfordSurface",
     "ellipticSurface",
@@ -734,9 +734,16 @@ specificSchreyerSurface(Ring,Number) := (P4,k) -> (
     <<Types_k <<endl;
     X)
 
+enriquesSurfaceD11S10 = method()
+enriquesSurfaceD11S10(PolynomialRing) := P4 -> (
+    if char P4 != 3 then error "Need a ground field of characteristic 3";
+    X:=specificSchreyerSurface(P4,0)
+    )
+
 ///
 kk=ZZ/3
 P4=kk[x_0..x_4]
+minimalBetti (X=enriquesSurfaceD11S10(P4))
 setRandomSeed("repeat and good2") --  1096.85 seconds elapsed
 setRandomSeed("repeat and good3")  -- 25.7218 seconds elapsed
 setRandomSeed("repeat and good4")  -- 13.3464 seconds elapsed
@@ -1976,6 +1983,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
      UL{
         TO enriquesSurfaceOfDegree9,
 	TO enriquesSurfaceOfDegree10,
+	TO enriquesSurfaceD11S10,
 	TO K3surfaces,
         },
     SUBSECTION "Irregular surface",
@@ -2090,6 +2098,7 @@ Headline => "functions concerning Abo-Ranestad surfaces ( 9 families)",
      SUBSECTION "search for modules",
      UL{
 	TO aboRanestadSurface,
+	TO get4x2Matrix,
         --TO singAboRanestadSurfacesStatistic,
         },
     
@@ -2882,6 +2891,47 @@ SeeAlso
    matrixFromAboRanestadSurface
 ///
 
+doc ///
+Key
+ get4x2Matrix
+ (get4x2Matrix, Matrix, Number)
+ [get4x2Matrix,Special]
+Headline
+ get a 4x2 matrix for an Abo Ranestad surface construction
+Usage
+ m4x2 = get4x2Matrix(m2x3,n)
+Inputs
+ m2x3:Matrix
+  the 2x3 matrix in the Tate resolution of the desired Abo-Ranestad surface
+ n:Number
+  the desired number of intersection points in G(2,5)
+Outputs
+ m4x2:Matrix
+  the 4x2 matrix of the Tate resolution of the desired Abo-Ranestad surface
+Description
+  Text
+    In the Tate resolution of an Abo-Ranestad surface there is a 4x2 matrix m4x2 and a 2x3 matrix m2x3
+    with linear entries over the exterior algbra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
+    and the type of the surface depends on how these images intersect in the Grassmannin G(2,5). It turns out that the number of
+    (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
+    The function returns for the normalized 2x3 matrix the desired 4x2 matrix.
+  Example
+    kk=ZZ/nextPrime 10^3
+    P4=kk[x_0..x_4]
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
+    m4x2=get4x2Matrix(m2x3,4)
+    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    elapsedTime betti(T=tateResolutionOfSurface X)
+    "elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;";
+    "numList=={(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}";
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
+    "minimalBetti J == B";    
+SeeAlso
+   aboRanestadSurfaceFromMatrix
+   adjunctionProcess
+   tateResolutionOfSurface
+///
 -* classical rational surfaces *-
 
 doc ///
@@ -3213,6 +3263,61 @@ SeeAlso
     degree10pi8RanestadSurface
     adjunctionProcessData
 ///
+
+doc ///
+Key
+ enriquesSurfaceD11S10
+ (enriquesSurfaceD11S10, PolynomialRing)
+Headline
+ get an Enriques surface of degree 11 and sectional genus 10 
+Usage
+ X= enriquesSurfaceD11S10 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4 over the field ZZ/3
+Outputs
+ X:Ideal
+  of an Enriques surface of degree 11 in P4
+Description
+  Text
+    One family of the surface found as "schreyerSurface"  is actually
+    an Enriques surface. An example is the first surface in the list of precomputed
+    schreyer surfaces.
+  Example
+    kk=ZZ/3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=enriquesSurfaceD11S10(P4))
+    betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    LeBarzN6(d,sg,1)==10
+    Ksquare(d,sg,1)==-6
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    dim R,degree R,degree(R+X)
+  Text
+    There are 5 six-secant lines, hence by Le Barz formula five (-1) lines. Indeed:
+  Example
+    "elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,4); -- 48.7283s elapsed;";
+    "numList=={(4, 11, 10), 5, (9, 19, 11), 1, (10, 20, 11), 0, (10, 20, 11), 0, (10, 20, 11)}";
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 25, (2,{3},3) => 80,
+      (2,{4},4) => 10, (3,{4},4) => 80, (3,{5},5) => 112, (4,{6},6) => 350,
+      (5,{7},7) => 400, (6,{8},8) => 245, (7,{9},9) => 80, (8,{10},10) => 11}
+    "degree Y==20";
+    "minimalBetti Y == B";
+    "2*sectionalGenus Y- 2== degree Y";
+  Text
+    The first adjunction maps blows down 5 (-1) lines. The second a (-1) conic.
+    The second adjoint surface X2 is a minimal Enriques surface of degree 20
+    in a P10.    
+SeeAlso
+    specialEnriquesSchreyerSurface
+    specificSchreyerSurface
+    adjunctionProcessData
+    tateResolutionOfSurface
+    LeBarzN6
+    Ksquare
+///
+
 
 
 doc ///
