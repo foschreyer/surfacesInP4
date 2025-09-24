@@ -14,6 +14,11 @@ check "NongeneralTypeSurfaceInP4"
 path
 peek loadedFiles
 help adjunctionProcess
+
+
+ Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4*(P4_1*P4_3^2-P4_0^2*P4_2)));
+
+
 ///
 
 newPackage(
@@ -1300,7 +1305,8 @@ biellipticSurfaceD10(PolynomialRing):=P4->(
     -- Define the quadric cone described in [ADHPR, Proposition 4.13] 
     Q:=ideal (P4_0^2+(P4_1+P4_4)*(P4_2+P4_3));
     -- Define the octic hypersurface described in [ADHPR, Proposition 4.19 (iii)] 
-    Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4(P4_1*P4_3^2-P4_0^2*P4_2)));
+    --  Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4(P4_1*P4_3^2-P4_0^2*P4_2)));
+    Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4*(P4_1*P4_3^2-P4_0^2*P4_2)));
     mu:=1;
     isGood:=false;
     -- Inside the following while loop, find an elliptic curve 'E' containing three ZZ/p-ratiinal nontrivial 2-torsion points and one F_p rational nontrivial 6-torsion point  
@@ -1381,6 +1387,7 @@ biellipticSurfaceD15(PolynomialRing):=P4->(
     -- Define the quadric cone described in [ADHPR, Proposition 4.13] 
     Q:=ideal (P4_0^2+(P4_1+P4_4)*(P4_2+P4_3));
     -- Define the octic hypersurface described in [ADHPR, Proposition 4.19 (iii)] 
+    --Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4*(P4_1*P4_3^2-P4_0^2*P4_2)));
     Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4*(P4_1*P4_3^2-P4_0^2*P4_2)));
     mu:=1;
     isGood:=false;
@@ -2003,7 +2010,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 document {
 Key => unirationalFamiliesOfRationalSurfaces,
 Headline => "unirational families of rational surfaces",
-   "Most of the families constructed in [DES], [Popecu1] and before are actually unirational. We list the link to the corresponding functions.
+   "Most of the families constructed in [DES], [Popescu1] and before are actually unirational. We list the link to the corresponding functions.
     An exception are certain families of Schreyer and Abo-Ranestad surfaces, where we only know that some of the families are unirational.",
    
    PARA{},
@@ -2465,11 +2472,39 @@ Description
   Example
     P4=ZZ/3[x_0..x_4];
     X=specificSchreyerSurface(P4,1);
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,1)==-6   
+    LeBarzN6(d,sg,1)==10
     minimalBetti X
+    betti(X5=ideal (gens X)_{0..4})
+    betti(residual=X5:X)
+    dim residual,degree residual
+    tally apply(primaryDecomposition residual,c-> (
+	(dim c, degree c, degree (c+X))))
+  Text
+    There are 6 six-secant lines grouped in Frobenius orbis.
+    So there should be 4 (-1) lines. Indeed, the adjunction data say this.
+    The last surface in the adjunction process is a conic bundle with
+    6+8-5=9 singular fibers.
+
+    The construction of X uses a special Hartshorne-Rao module M.   
+  Example
     betti tateResolutionOfSurface X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
+    tangentDimension M==36
+  Text
+    Thus the space of good modules in the Grassmannian G(5,15) of dimension 50 is smooth of
+    the expected codimension 14 at our point M.
+    Hence X lifts to a surface defined over some number field, which gives a surface over
+    CC.
 SeeAlso
+   adjunctionProcessData
+   LeBarzN6
+   Ksquare
+   tateResolutionOfSurface
+   moduleFromSchreyerSurface
+   tangentDimension
    exampleOfSchreyerSurfaces
 ///
 
@@ -2736,13 +2771,21 @@ Description
     examples with c additional intersection points with about q^c trials.
   Example
     P4=ZZ/nextPrime 10^3[x_0..x_4];
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,5);  
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
     minimalBetti X
     singX=X+minors(2,jacobian X);
     dim saturate singX==-1
+    (d,s)=(degree X, sectionalGenus X)
+    LeBarzN6(d,s,1)==8
+    Ksquare(d,s,1)==-12
     elapsedTime betti (T=tateResolutionOfSurface X)
-    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
+    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3)";
     "numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}";
+  Text
+     The last adjoint surface is a Del Pezzo surface of degree 4 in P4. Thus
+     X is the blow-up in 12+9 points embedded by a linear system of class
+     (12;4^5,2^12,1^4).
+  
   Text
     A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well.
     In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four intersction points in the Grassmannian G(2,5).
@@ -3232,19 +3275,47 @@ Description
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4))
+    (L0,adjList,ptsList, J)=adjunctionProcess X;
+    betti(T=tateResolutionOfSurface X)
+  Text
+    Lebarz formula computes the number of 6-secant lines + the number of (-1) lines.
+  Example 
+    LeBarzN6(degree X, sectionalGenus X,1)
     X5=ideal (gens X)_{0..14};
     L=X5:X -- L is the six secant line
     degree(L+X)==6
+  Text
+    We can obtain information about this surface
+    from the adjunctionProcess.
+  Example 
+    (L0,adjList,ptsList,J)=adjunctionProcess(X);
+    ring J
+    betti(H=parametrization(ring J,adjList))
+    cH=primaryDecomposition ideal H;
+    tally apply(cH,c->(dim c, degree radical c, degree c))
+  Text
+    H is a linear system of forms of degree which vanish in 10 points with
+    multiplicity 4. However over the field the 10 point spit into orbits
+    under Frobenius.
+    In the second version of the function we start with
+    a rational P2 - -> P4 defined by forms
+    of degree 13 which vanishes on 10 randomly choosen
+    points with multiplicity 4.
+  Example
     P2=kk[y_0..y_2];
     elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
-    degree X, sectionalGenus X
-    betti(T=tateResolutionOfSurface X)
-    X5=ideal (gens X)_{0..14};
-    L=X5:X -- L is the six secant line
-    degree(L+X)==6
-
+    (L0,adjList,ptsList,J)=adjunctionProcess(X);
+    betti(H=parametrization(ring J,adjList))
+    cH=primaryDecomposition ideal H;
+    tally apply(cH,c->(dim c, degree radical c, degree c))
+  Text
+    This times the ideal H decomposes in to 10 points of degree 1 defined ove kk
+    and an embedded (y_0..y_2)-primary ideal. 
 SeeAlso
    enriquesSurfaceOfDegree9
+   tateResolutionOfSurface
+   LeBarzN6
+   adjunctionProcess
 ///
 
 doc ///
@@ -3631,12 +3702,7 @@ Description
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
-  Text
-   The function
-   
-   X=biellipticSurfaceD10 P4;
-
-   failed.
+   elapsedTime X=biellipticSurfaceD10 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    betti(T=tateResolutionOfSurface X)
@@ -3645,8 +3711,6 @@ Description
    Perhaps the code can be improved.
 References
   ADHPR
-Caveat
-   The function can fail, in which case it returns null.
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -3668,19 +3732,12 @@ Outputs
 Description
   Text
   Example
-   kk=ZZ/nextPrime 10^4; -- is this a good choice?
+   kk=ZZ/nextPrime 10^4; 
    P4=kk[x_0..x_4];
-  Text
-   The code
-   
-   X=biellipticSurfaceD15 P4;
-
-   fails.
+   elapsedTime X=biellipticSurfaceD15 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    betti(T=tateResolutionOfSurface X)
-
-   fails. Perhape use a setRandomSeed.
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve .
    Perhaps the code can be improved.
