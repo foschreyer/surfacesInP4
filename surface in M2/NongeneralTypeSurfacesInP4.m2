@@ -16,9 +16,6 @@ peek loadedFiles
 help adjunctionProcess
 
 
- Q':=ideal((P4_0*(P4_2*P4_4^2-P4_1^2*P4_3))^2+(P4_3*(P4_0*P4_2^2-P4_4^2*P4_1)+P4_2*(P4_4*P4_1^2-P4_3^2*P4_0))*(P4_1*(P4_3*P4_0^2-P4_2^2*P4_4)+P4_4*(P4_1*P4_3^2-P4_0^2*P4_2)));
-
-
 ///
 
 newPackage(
@@ -2042,7 +2039,7 @@ Headline => "unirational families of rational surfaces",
 
 document {
 Key => schreyerSurfaces,
-Headline => "functions concerning Schreyer surfaces",
+Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
    "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11, sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 10 families. In the following we give an overview
@@ -2078,7 +2075,7 @@ Headline => "functions concerning Schreyer surfaces",
 
 document {
 Key => aboRanestadSurfaces,
-Headline => "functions concerning Abo-Ranestad surfaces",
+Headline => "functions concerning Abo-Ranestad surfaces ( 9 families)",
    "[Abo-Ranestad,199x] discovered 4 families of rational surfaces X in P4 with d=12, sectional genus pi=13 via a search over a finite field.
     Reviewing their construction we found altogether 9 families. 
     Most of these components are unirational.",
@@ -3409,7 +3406,7 @@ Key
  popescuSurface
  (popescuSurface, PolynomialRing,Ring,Number)
 Headline
- construct a Popescu surface 
+ construct a Popescu surface (4 families)
 Usage
  X= popescuSurface(P4,E,s)
 Inputs
