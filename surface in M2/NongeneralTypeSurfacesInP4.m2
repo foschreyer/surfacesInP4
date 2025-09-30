@@ -139,7 +139,7 @@ sectionalGenus(Ideal):= X -> (genera X)_1
 chiI=method()
 chiI(Number,Number,Number) := (m,d,sg) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(sg-1)+1)
 
-
+ 
 
 chiITable=method()
 chiITable(Number,Number) := (d,sg) -> apply(toList(-1..5),m->chiI(m,d,sg))
