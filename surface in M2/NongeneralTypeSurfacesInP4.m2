@@ -29,18 +29,22 @@ newPackage(
 	        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer"}},
     AuxiliaryFiles => false,
     DebuggingMode => true,
-    PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition"},
+    PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition","Varieties"},
     Keywords => {"Algebraic Geometry"}
     )
 
 export {
     --"NongeneralTypeSuracesInP4",
     "sectionalGenus",
+    "chiO",
+    "irregularity",
+    "geometricGenus",
     "chiI",
     "chiITable",
     "HdotK",
     "Ksquare",
     "LeBarzN6",
+    "residualInQuintics",
     "cubicScroll",
     "veroneseSurface",
     "delPezzoSurface",
@@ -139,22 +143,42 @@ sectionalGenus(Ideal):= X -> (genera X)_1
 chiI=method()
 chiI(Number,Number,Number) := (m,d,sg) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(sg-1)+1)
 
- 
+chiO=method()
+chiO(Ideal) := X -> (
+    Pn:= ring X;
+    OX := sheaf(Pn^1/X);
+    sum(toList(0..dim X),i-> (-1)^i*rank HH^i(OX))
+    )
+
+irregularity=method()
+irregularity(Ideal) := X -> (
+    if dim X !=3 then error "expected the ideal of a projective surface";
+    Pn:= ring X;
+    OX := sheaf(Pn^1/X);
+    rank HH^1(OX))
+
+geometricGenus=method()
+geometricGenus(Ideal) := X -> (
+    if dim X !=3 then error "expected the ideal of a projective surface";
+    Pn:= ring X;
+    OX := sheaf(Pn^1/X);
+    rank HH^2(OX))
+
 
 chiITable=method()
 chiITable(Number,Number) := (d,sg) -> apply(toList(-1..5),m->chiI(m,d,sg))
 
 HdotK=method()
-HdotK(Number,Number) := (d,sg) -> 2*(sg-1)-d
+HdotK(ZZ,ZZ) := (d,sg) -> 2*(sg-1)-d
    
 Ksquare=method()
 -- H2+HK=2(sg-1)
 -- d^2-10d-5HK-2K2+12x==0
-Ksquare(Number,Number,Number) := (d,sg,xO) -> (HK:=2*(sg-1)-d;
+Ksquare(ZZ,ZZ,ZZ) := (d,sg,xO) -> (HK:=2*(sg-1)-d;
     floor(1/2*(d^2-10*d-5*HK+12*xO)))
 
 LeBarzN6=method()
-LeBarzN6(Number,Number,Number) := (d,sg,xO) -> (
+LeBarzN6(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
     delta:=binomial(d-1,2)-sg;
     t:= binomial(d-1,3)-sg*(d-3)+2*(xO-1);
     h:= floor(1/2*(delta*(delta-d+2)-3*t));
@@ -164,6 +188,12 @@ LeBarzN6(Number,Number,Number) := (d,sg,xO) -> (
 	    h*(delta-8*d+56)+t*(9*d-3*delta-28)+binomial(t,2))
     )
 
+residualInQuintics=method()
+residualInQuintics(Ideal) := X -> (
+    pos := positions(flatten (degrees gens X)_1,d->d<6);
+    X5 := ideal (gens X)_pos;
+    residual:= X5:X)
+    
 -* rational surfaces *-
 cubicScroll=method()
 cubicScroll(PolynomialRing) := P4 -> minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
@@ -330,65 +360,110 @@ popescuSurface(PolynomialRing,Ring,Number):= (P4,E,s) -> (
     X)
 
 vBELSurface=method()
+
 vBELSurface(Ring,Ring) := (P4,P2) -> ( -- the specific surface from the vBEL paper
+    -- A rational surface (from the vBEL paper) obtained via a linear system in the plane with assigned baselocus.
+    --     PURPOSE : Construct a nonsingular rational surface of degree 11 and sectional genus 11 over a field of characteristic 2
+    --       INPUT : 'P4' and 'P2', the homogeneous coordinate rings of projective fourspace and the projective plane, both in characteristic 2.
+    --      OUTPUT : Ideal of the rational surface of degree 11
+    -- DESCRIPTION : This function outputs the ideal of a rational surface as the image of a rational map from the projective plane
+
     if char P4 !=2 then error "expect a ground field of caharcteristic 2";
     if char P2 =!= char P4 then error "P2 and P4 should have the same characteristic 2";
     t:= symbol t;
+    --define a finite field with 2^14 elements
     FF14:=ZZ/2[t]/ideal(t^14+t^13+t^11+t^10+t^8+t^6+t^4+t+1);
+    --define the homogeneous coordinate ring of the projective plane over 'FF14'
     P2FF14:=FF14[gens P2];
+    --define a FF14-rational point in  'P2FF14'
     Q:=ideal(vars P2FF14*syz matrix{{t^11898,t^137, 1}});
+    --define a finite field with 2^5 elements
     FF5:=ZZ/2[t]/ideal(t^5 +t^3 +t^2 +t +1);
+     --define the homogeneous coordinate ring of the projective plane over 'FF5'
     P2FF5:=FF5[gens P2];
+    --define FF5-rational point in 'P2FF5'
     R:=ideal(vars P2FF5*syz matrix{{t^6 ,t^15, 1}});
+    -- define the orbits of 'Q' under the Frobenius endomorphism in 'P2'
     Q14:=ker map(P2FF14/Q,P2);
+     -- define the orbits of 'R' under the Frobenius endomorphism in 'P2'
     R5:=ker map(P2FF5/R,P2);
+    -- define a point in 'P2' 
     P:=ideal(P2_0,P2_1);
+    -- define the ideal of forms triple at 'P', double along 'Q14' and simple in 'R5'
     H:=intersect(saturate(Q14^2),R5,P^3);
+    -- the five generators of 'H' of degree 9 define a rational map to 'P4' with image 'X' 
     X:=ker map(P2,P4,(gens H)_{0..4});
+    --'X' is a smooth surface of degree 11 and sectional genus 11.
     assert(dim(X+minors(2, jacobian X))==0);
     X)
 
 
+
+
 vBELSurface(PolynomialRing) := P4 -> (
+    -- A rational surface obtained via a linkage.
+    --     PURPOSE : Construct a nonsingular rational surface of degree 11 and sectional genus 11 
+    --       INPUT : 'P4', the homogeneous coordinate rings of projective fourspace 
+    --      OUTPUT : Ideal of the rational surface of degree 11
+    -- DESCRIPTION : This function outputs the ideal of a rational surface as linked to a reducible surface of degree 7
+
     kk:= coefficientRing P4;
     u := symbol u;
+    --define the homogeneous coordinate ring of the projective plane over 'kk'
     P2:=kk[u_0..u_2];
-    p123:=ideal(u_0*u_1,u_0*u_2,u_1*u_2);
-    p5:=minors(2,random(P2^2,P2^{2:-1,-2}));-- five general points
-    p8:=saturate intersect(p123^2,p5);-- double points at p123, simple at p5
--- betti p8-- a unique quartic (gens p8)_{0} in p8
-   p122:=ideal(u_1+u_2)+ideal (gens p8)_{0};
-   p2:=p122:p123^2;-- two points in line through (1:0:0)
-   p10:=saturate(intersect(p2,p123,p5)); --ideal of 10 points (for Bordiga)
-   assert(betti res p10==new BettiTally from {(0,{0},0) => 1, (1,{4},4) => 5, (2,{5},5) => 4});
-   xx:= ideal gens P4;
-   F:=map(P2,P4,gens p10);
-   s6:=kernel F;--Bordiga surface
-   s60:=preimage (F,ideal(u_1+u_2));--a (-2)-line in s6
-   s622:=preimage (F,ideal (gens p8)_{0});--a twisted cubic curve in s6
-   s6h:=ideal(gens s622)_{0}+s6;--the hyperplane section of s6 containing s622
-   s612:=s6h:s622;--three (-1)-lines residual to s622 in s6h
-   s61200:=saturate(s60+s612);--the point of intersection between s60 and a line in s612
-   --betti s61200
-   s620x:=preimage (F,ideal (u_1^2,u_2*u_1,u_2^2));
-   s6201:=ideal (gens s620x)_{0..2};--the (-1)-line in s6 over (1:0:0) 
-   --betti s620x
-   ts61200:=gens xx* gens kernel(diff(gens xx,transpose gens s61200));
-   ts62h:=ideal(gens s612)_{0..1}+ideal flatten diff( ts61200, (gens s612)_{1});
-   s601:=ts62h:s6201;-- the line in s6 through s61200, different from s6201
---betti s601
---degree(s601+s612)--the line s601 intersect all three lines in s612
-   s602:=saturate intersect(s60,s601);--the union of the lines s60 and s601
---betti s602
-   s1:=ideal(gens s602)_{0..1}; --the plane spanned by the lines s60 and s601
-   s2:=ideal(gens s612)_{0..1};-- the quadric surface containing the three lines in s612
-   s9:=saturate intersect (s1,s2,s6);--a surface of degree 9
-   assert(minimalBetti s9== new BettiTally from {(0,{0},0) => 1, (1,{4},4) => 1, (1,{5},5) => 12, (2,{6},6) => 23, (3,{7},7) => 14, (4,{8},8) => 3}); -- proceed if it is contained in one quartic
-   s20:=ideal (gens s9 * random(source gens s9, P4^{-4,-5}));
-   X:=s20:s9;-- A surface of degree 11, genus 11
+    --define the ideal of the three coordinate points in the plane
+    coordinatepoints:=ideal(u_0*u_1,u_0*u_2,u_1*u_2);
+    --define the ideal of five general points in the plane 
+    fivepoints:=minors(2,random(P2^2,P2^{2:-1,-2}));
+    --define the unique quartic form double along 'p123' and simple along 'p5'
+   specialplanequartic:=ideal(gens(saturate intersect(coordinatepoints^2,fivepoints)))_{0};
+-- define the ideal of intersection of a line through a coordinate point (1:0:0) and 'specialplanequartic'
+   fourpoints:=ideal(u_1+u_2)+specialplanequartic;
+   --define the two points in 'fourpoints' outside the coordinate point (1:0:0)
+   twopoints:=fourpoints:coordinatepoints^2;-- two points in line through (1:0:0)
+   --define the ideal of ten points:  the union of 'coordinatepoints','fivepoints' and 'twopoints'.
+   tenpoints:=saturate(intersect(twopoints,coordinatepoints,fivepoints));
+   --check that the Hilbert Burch matrix of 'tenpoints' is a 4x5-matrix with linear entries
+   assert(betti res tenpoints==new BettiTally from {(0,{0},0) => 1, (1,{4},4) => 5, (2,{5},5) => 4});
+   -- define the rational map defined by the five quartic generators of 'tenpoints' to P4
+   F:=map(P2,P4,gens tenpoints);
+   -- define the image of 'F', a Bordiga surface (of degree 6 and sectional genus 3)
+   bordiga:=kernel F;--Bordiga surface
+   --define the image by 'F' in 'bordiga' of the line through 'twopoints', this is a (-2)-line on 'bordiga'
+   minus2line:=preimage (F,ideal(u_1+u_2));--a (-2)-line in s6
+   --define the image by 'F' in 'bordiga' of the 'specialplane quartic' (which is also in 'tenpoints'), it is a twisted cubic curve in 's6' 
+   twistedcubic:=preimage (F,specialplanequartic);--a twisted cubic curve in 'bordiga'
+   hyp3:=ideal(gens twistedcubic)_{0}+bordiga;--the hyperplane section of 'bordiga' containing 'twistedcubic'
+   --the ideal of three exceptional lines in 'bordiga' over the 'coordinatepoints', the lines in the hyperplane section of 's6' that contains the twisted cubic curve 's622'
+  threelines:=hyp3:twistedcubic;--three (-1)-lines residual to twistedcubic in 'hyp3'
+   xline0:=preimage (F,ideal (u_1^2,u_2*u_1,u_2^2));
+   --the (-1)-line in 'bordiga' over (1:0:0) 
+   line0:=ideal (gens xline0)_{0..2};
+--the ideal of the point of intersection between the exceptional line over (1:0:0) and the (-2)-line 'minus2line'
+   point1:=saturate(minus2line+line0);--the point of intersection between 'minus2line' and a line in 'threelines'
+   dpoint1:=vars P4* gens kernel(diff(vars P4,transpose gens point1));
+-- the ideal of the tangent plane section at 'point1' of the unique quadric surface that contains the three lines 'threelines'
+   twolines:=ideal(gens threelines)_{0..1}+ideal flatten diff( dpoint1, (gens threelines)_{1});
+   --the ideal of the line residual to 'line0' in 'twolines'; a line that passes through 'point1' and meet all three lines in 'threelines'
+   line3:=twolines:line0;-- a trisecant line to 'bordiga' through 'point1'
+--the 'line3' intersect all 'threelines' 
+--the ideal of the union of the (-2)-line 'minus2line' and the line 3-secant line 'line3', they both pass through 's61200'
+twolines1:=saturate intersect(minus2line,line3);
+ --the plane spanned by the 'minus2line' and 'line3' 
+   plane:=ideal (gens (saturate intersect(minus2line,line3)))_{0..1};
+   -- the quadric surface containing the 'threelines'
+   quadricsurface:=ideal(gens threelines)_{0..1}; 
+--a reducible surface, the union of 'plane','quadricsurface' and 'bordiga', of degree nine.
+   Y9:=saturate intersect (plane,quadricsurface, bordiga);--a surface of degree 9
+   --check that the ideal of 's9' is generated by a unique quartic and 12 quintic forms 
+   assert(minimalBetti Y9== new BettiTally from {(0,{0},0) => 1, (1,{4},4) => 1, (1,{5},5) => 12, (2,{6},6) => 23, (3,{7},7) => 14, (4,{8},8) => 3}); -- proceed if it is contained in one quartic
+   ci45:=ideal (gens Y9 * random(source gens Y9, P4^{-4,-5}));
+   --define a surface as linked to 's9' in a complete intersection (4,5)
+   X:=ci45:Y9;-- A surface of degree 11, genus 11
    assert( (dim X, degree X, (genera X)_1)==(3,11,11));
    X)
 ///
+
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 X= vBELSurface P4;
@@ -2151,9 +2226,356 @@ Headline => "explains the output of the function adjunctionProcess",
     "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces",
 help adjunctionProcess,                
 }
+-- numerical functions
+
+doc ///
+Key
+ sectionalGenus
+ (sectionalGenus, Ideal)
+Headline
+ compute the sectional genus of a surface
+Usage
+ sg = sectionalGenus X
+Inputs
+ X:Ideal
+  ideal of a (smooth) projective surface
+Outputs
+ sg:ZZ
+  the genus of a hyperplane section
+Description
+  Text
+    The sectional genus of a projective surface is a part of the data provided by
+    the function genera.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=bordigaSurface P4;
+    sectionalGenus X
+    genera X
+    degree X == last genera X +1
+SeeAlso
+   genera
+///
+
+doc ///
+Key
+ HdotK
+ (HdotK, ZZ,ZZ)
+Headline
+ compute the intersection number H.K 
+Usage
+ HK = HdotK(d,sg)
+Inputs
+ d:ZZ
+  degree of a smooth projective surface
+Outputs
+ sg:ZZ
+  the genus of a hyperplane section
+Description
+  Text
+    Let H denite the hyperplane class and K the canonical divisor class on a smooth projective surface.
+    By the adjunction formula
+
+    2sg-2=H.(H+K)
+
+    one can compute H.K form the degree d=H.H and the sectional genus sg.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=bordigaSurface P4;
+    d=degree X
+    sg=sectionalGenus X
+    HdotK(d,sg)   
+SeeAlso
+   sectionalGenus
+///
 
 
+doc ///
+Key
+ Ksquare
+ (Ksquare,ZZ,ZZ,ZZ)
+Headline
+ compute the self intersection number K^2 of a smooth surface X in P4.
+Usage
+ k2 = Ksquare(d,sg,xO)
+Inputs
+ d:ZZ
+  the degree of X
+ sg:ZZ
+  the sectional genus of X
+ xO:ZZ
+  the Euler charcteristic (1-q+pg) of O_X
+Outputs
+ k2:ZZ
 
+Description
+  Text
+   The self-intersection number of the canonical divisor of a smooth surface in P4
+   is determined by the degree d, the sectional genus and the Euler characteristic
+   of chi(O_X)=h^0(O_X)-h^1(O_X)+h^2(O_X):
+  
+      d^2-10d-5HK+2K2+12chi(O_X)==0
+
+   In general for a surface in P5 the right hand side in this formula describes
+   the number of non Cohen-Macaulay double points of the image under a projection from a
+   point p in P5 \setminus X. Hence the name.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=bordigaSurface P4;
+    d=degree X
+    sg=sectionalGenus X
+    HK=HdotK(d,sg)
+    xO=1+(genera X)_0
+    xO==chiO(X)
+    K2=Ksquare(d,sg,xO)
+    d^2-10*d-5*HK-2*K2+12*xO==0
+  Text
+    The complete intersection of a quadric and a cubic in P4 is a minimal
+    K3 surface.
+  Example
+    X=ideal random(P4^1,P4^{-2,-3});
+    d=degree X
+    sg=sectionalGenus X
+    HK=HdotK(d,sg)
+    xO=1+(genera X)_0
+    xO==chiO(X)
+    K2=Ksquare(d,sg,xO)
+    d^2-10*d-5*HK-2*K2+12*xO==0
+References
+   Hartshorne, Appendix A
+SeeAlso
+   HdotK
+   sectionalGenus
+   chiO
+   irregularity
+   geometricGenus
+///
+
+doc ///
+Key
+ chiO
+ (chiO,Ideal)
+Headline
+ compute the Euler characteristic chiO(X)
+Usage
+ xO = chiO(X)
+Inputs
+ X:Ideal
+  of a smooth projective variety
+Outputs
+ xO:ZZ
+  the Euler characteristic of the strucure sheaf
+Description
+  Text
+   The Euler characteristic of the structure sheaf O_X is
+
+     chi(O_X)=sum_{i=0}^{dim X} (-1)^i*h^i(O_X).
+  
+   This quantity coincides with 1+ (genera X)_0 by Hirzebruch-Riemann-Roch.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=bordigaSurface P4;
+    xO=chiO(X)
+    xO=1+(genera X)_0
+    q=irregularity X
+    pg=geometricGenus X
+    1-q+pg==chiO(X)
+References
+   Hartshorne, V
+SeeAlso
+   irregularity
+   geometricGenus
+///
+
+doc ///
+Key
+ irregularity
+ (irregularity,Ideal)
+Headline
+ compute h^1(O_X)
+Usage
+ q = irregularity X
+Inputs
+ X:Ideal
+  of a smooth projective surface
+Outputs
+ q:ZZ
+  the dimension of the cohomology group H^1(O_X)
+Description
+  Text
+    Using sheaf cohomology we can compute this quantity for a smooth projective surface.    
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=irregularEllipticSurfaceD12 P4;
+    xO=chiO(X)
+    xO=1+(genera X)_0
+    q=irregularity X
+    pg=geometricGenus X
+    1-q+pg==chiO(X)
+References
+   Hartshorne, V
+SeeAlso
+   chiO
+   geometricGenus
+///
+
+doc ///
+Key
+ geometricGenus
+ (geometricGenus,Ideal)
+Headline
+ compute h^2(O_X)
+Usage
+ pg = geometricGenus
+Inputs
+ X:Ideal
+  of a smooth projective surface
+Outputs
+ pg:ZZ
+  the dimension of the cohomology group H^2(O_X)
+Description
+  Text
+    Using sheaf cohomology we can compute this quantity for a smooth projective surface.    
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=irregularEllipticSurfaceD12 P4;
+    pg=geometricGenus X
+    xO=chiO(X)
+    xO=1+(genera X)_0
+    q=irregularity X   
+    1-q+pg==chiO(X)
+References
+   Hartshorne, V
+SeeAlso
+   chiO
+   irregularity
+///
+
+
+doc ///
+Key
+ LeBarzN6
+ (LeBarzN6,ZZ,ZZ,ZZ)
+Headline
+ compute the value of Le Barz formula for 6-secants lines
+Usage
+ N6 = LeBarzN6(d,sg,xO)
+Inputs
+ d:ZZ
+  degree of a a smooth projective surface in P4
+ sg:ZZ
+  the sectional genus of X
+ oX:ZZ
+  the Euler characteristic of the structure sheaf
+Outputs
+ N6:ZZ
+  the expected number of 6-secant line plus the number (-1) lines.
+Description
+  Text
+    If there only finitly many 6-secant lines then LeBarz formula computes
+    the sum of the number of 6-secants lines (with multiplicities) and the nmber of (-1)
+    lines.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=enriquesSurfaceOfDegree9 P4;
+    d=degree X
+    sg=sectionalGenus X
+    xO=1+(genera X)_0
+    N6=LeBarzN6(d,sg,xO)
+    minimalBetti X
+    K2=Ksquare(d,sg,xO)
+    HK=HdotK(d,sg)
+    d+2*HK+K2==10
+    d+3*HK+2*K2==10
+  Text
+   Since the homogeneous ideal of this surface is generated by qunitics, there are no
+   6-secant lines by Bezout. Thus there is a (-1) line, which will be blown down by the first
+   adjunction map. The image of the adjunction map defined by |H+K| is a
+   surface X1 in P^{sg-1} of degree (H+K)^2=10, K1^2=K2+1=0 and sectional
+   genus sg1=6 since
+   2sg1-2=(H+K).(H+2K)=10. It follows that X1 is a minimal Enriques surface.
+
+   On the other hand the surface
+  Example
+   X=nonspecialAlexanderSurface P4;
+   d=degree X
+   sg=sectionalGenus X
+   xO=1+(genera X)_0
+   minimalBetti X
+  Text
+   has the same numerical invariants and visibly a 6-secant line.
+  Example
+   L=residualInQuintics X
+   dim L, degree L
+   dim (X+L),degree (X+L)
+References
+    \textit{P. Le Barz}, Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981) Zbl 0492.14045) 
+SeeAlso
+   residualInQuintics
+///
+
+doc ///
+Key
+ residualInQuintics
+ (residualInQuintics,Ideal)
+Headline
+ compute the residual scheme of X in the ideal generated by the quintics
+Usage
+ Z = residualInQuintics X
+Inputs
+ X:Ideal
+  homogenous ideal of a smooth projective surface in P4
+Outputs
+ Z:Ideal
+  the redidual ideal in the ideal generated by the quintics in X
+Description
+  Text
+    If an ideal of a surface in P4 has 6-secant lines,
+    then any such line is contained in vanishing loci of the residual ideal
+    Z by Bezout. This allows us frequently to compute the number of 6-secant lines
+    and hence the number of (-1) lines by LeBarz 6-secant formula.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=vBELSurface P4;
+    d=degree X
+    sg=sectionalGenus X
+    xO=1+(genera X)_0
+    N6=LeBarzN6(d,sg,xO)
+    minimalBetti X
+    Z=residualInQuintics X;
+    dim Z, degree Z
+    tally apply(decompose Z,L->(dim L, degree L, degree (L+X)))
+  Text
+    Thus there are two 6-secant lines and by Le Barz 6-secant formula,
+    the first adjunction map defined by
+    |H+K| contracts five (-1) lines.
+  Example
+    K2=Ksquare(d,sg,xO)
+    "elapsedTime (numList,L2,L3,J)=adjunctionProcess(X,2)";
+    "numList=={(4, 11, 11), 5, (10, 18, 9), 14, (8, 8, 1)}";
+    "degree J == 9-1";
+    "sectionalGenus J==1";
+    K2==8-5-14-1   
+  Text
+   Thus this surface arizes as a blow-up of a Del Pezzo surface of degree 8
+   in 14+5 points.
+References
+   \textit{P. Le Barz}, Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981) Zbl 0492.14045) 
+SeeAlso
+   LeBarzN6
+   sectionalGenus
+   Ksquare
+///
+
+
+-- schreyer surfaces --
 doc ///
 Key
  moduleFromSchreyerSurface
