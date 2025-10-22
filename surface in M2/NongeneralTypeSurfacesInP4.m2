@@ -462,8 +462,8 @@ twolines1:=saturate intersect(minus2line,line3);
    X:=ci45:Y9;-- A surface of degree 11, genus 11
    assert( (dim X, degree X, (genera X)_1)==(3,11,11));
    X)
-///
 
+///
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 X= vBELSurface P4;
