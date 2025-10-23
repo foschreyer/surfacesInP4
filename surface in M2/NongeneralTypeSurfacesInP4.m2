@@ -4,6 +4,8 @@ needsPackage"NongeneralTypeSurfacesInP4"
 
 installPackage "NongeneralTypeSurfacesInP4"
 
+viewHelp "NongeneralTypeSurfacesInP4"
+
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
@@ -508,6 +510,31 @@ tateResolutionOfSurface(Ideal) := X -> (
     m':=symExt(m,E);
     T1:=res(coker m',LengthLimit=>8);
     T:=(dual T1)[-7]**E^{-6})
+
+tateResolutionOfSurface(Ideal,ZZ) := (X,n) -> (
+    if not (dim X==3 and codim X==2) then error "expected the ideal of a surface in P4";
+    P4:= ring X;
+    kk:=coefficientRing P4;
+    e:=symbol e;
+    E:=kk[e_0..e_4,SkewCommutative=>true];
+    m:=syz gens truncate(n,X);
+    m':=symExt(m,E);
+    T1:=res(coker m',LengthLimit=>n+2);
+    T:=(dual T1)[-n-1]**E^{-n})
+///
+kk=ZZ/nextPrime 10^4
+P4=kk[x_0..x_4]
+X=K3surfaceD10S9SL1 P4;
+X=ellipticSurfaceD12S14Linfinite P4;
+minimalBetti X
+T=tateResolutionOfSurface X;
+betti T
+betti tateResolutionOfSurface(X,7)
+
+///
+
+
+
 
 -* schreyer surfaces *-
 
@@ -1753,13 +1780,14 @@ K3surfaceD11S11SLn(PolynomialRing,ZZ):=(P4,n)->(
     assert(dim X==3 and degree X==11 and sectionalGenus X==11);
     X)
 
+
+K3surfaceD11S12=method()
 -- K3 surface of degree 11 and sectional genus 12 (B4.12)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 11 and sectional genus 12 
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the K3 surface of degree 11 and sectional genus 12
 -- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
 
-K3surfaceD11S12=method()
 K3surfaceD11S12(PolynomialRing) := P4 -> (
     -- Compute the koszul complex of the variables of 'P4'
     kos:=res coker vars P4;
@@ -1777,6 +1805,8 @@ K3surfaceD11S12(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==11 and sectionalGenus X==12);
     X)
 
+
+K3surfaceD12=method()
 -- K3 surface of degree 12 and sectional genus 14 (B4.13)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 12 and sectional genus 14
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -1784,7 +1814,6 @@ K3surfaceD11S12(PolynomialRing) := P4 -> (
 -- DESCRIPTION : This function constructs the K3 surface as the surface residual to a regular elliptic surface of degree 12 in the (5,5) complete intersection
 --     COMMENT : This function uses 'BGG'
 
-K3surfaceD12=method()
 K3surfaceD12(PolynomialRing) := P4 -> (
     -- Compute the koszul complex of the variables of 'P4'
     kos:=res coker vars P4;
@@ -1802,6 +1831,8 @@ K3surfaceD12(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
 
+
+K3surfaceD13=method()
 -- K3 surface of degree 13 and sectional genus 16 (B4.14)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 13 and sectional genus 16
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -1809,7 +1840,6 @@ K3surfaceD12(PolynomialRing) := P4 -> (
 -- DESCRIPTION : This function constructs the K3 surface as the surface residual to a regular elliptic surface of degree 12 in the (5,5) complete intersection
 --     COMMENT : This function uses 'regularEllipticSurfaceD12'
 
-K3surfaceD13=method()
 K3surfaceD13(PolynomialRing):=P4->(
     -- Use 'regularEllipticSurfaceD12'to construct a regular elliptic surface of degree 12
     Y:=regularEllipticSurfaceD12(P4);
@@ -1821,13 +1851,14 @@ K3surfaceD13(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==13 and sectionalGenus X==16);
     X)
 
+
+K3surfaceD14=method()
 -- K3 surface of degree 14 and sectional genus 19 (B4.15)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 14 and sectional genus 19
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the K3 surface of degree 14
 -- DESCRIPTION : This function constructs the K3 surface as the degeneracy locus of a map between two vector bundles
 
-K3surfaceD14=method()
 K3surfaceD14(PolynomialRing):=P4->(
     -- Choose four random planes
     P:=for i from 0 to 3 list random(P4^{1:4},P4^{2:3});
@@ -1847,13 +1878,14 @@ K3surfaceD14(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==14 and sectionalGenus X==19);
     X)
 
+
+ellipticSurfaceD7=method()
 -- Elliptic surface of degree 7 and sectional genus 6 (B7.1)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 7 and sectional genus 6
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the elliptic surface of degree 7
 -- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
 
-ellipticSurfaceD7=method()
 ellipticSurfaceD7(PolynomialRing) := P4 -> (
     -- Construct 'X' as the dependency locus of a generic map from 2O_P4(-2) to 2O_P4(-1) ++ O_P4(1)  
     X:=minors(2,random(P4^{1:1,2:-1},P4^{2:-2}));
@@ -1861,13 +1893,14 @@ ellipticSurfaceD7(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==7 and sectionalGenus X==6);
     X)
 
+
+ellipticSurfaceD8=method()
 -- Elliptic surface of degree 8 and sectional genus 7 (B7.2)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 8 and sectional genus 7
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the elliptic surface of degree 8
 -- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
 
-ellipticSurfaceD8=method()
 ellipticSurfaceD8(PolynomialRing) := P4 -> (
     -- Construct 'X' as the dependency locus of a generic map from 2O_P4(-2) to O_P4 ++ 2O_P4(1)  
     X:=minors(2,random(P4^{2:1,1:0},P4^{2:-1}));
@@ -1875,6 +1908,8 @@ ellipticSurfaceD8(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==8 and sectionalGenus X==7);
     X)
 
+
+ellipticSurfaceD9=method()
 -- Elliptic surface of degree 9 and sectional genus 7 (B7.3)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 9 and sectional genus 7
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -1882,7 +1917,6 @@ ellipticSurfaceD8(PolynomialRing) := P4 -> (
 -- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
 --     COMMENT : This function uses the BGG package
 
-ellipticSurfaceD9=method()
 ellipticSurfaceD9(PolynomialRing) := P4 -> (
     -- Compute the koszul complex of the variables of 'P4'
     kos:=res coker vars P4;
@@ -1901,6 +1935,9 @@ ellipticSurfaceD9(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==9 and sectionalGenus X==7);
     X)
 
+
+
+ellipticSurfaceD10S9=method()
 -- Elliptic surface of degree 10 and sectional genus 9 (B7.4)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 10 and sectional genus 9
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -1908,7 +1945,6 @@ ellipticSurfaceD9(PolynomialRing) := P4 -> (
 -- DESCRIPTION : This function constructs the elliptic surface as the homology of a Beilinson monad 
 --     COMMENT : This function uses the BGG package
 
-ellipticSurfaceD10S9=method()
 ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
     e:= symbol e;
@@ -1928,6 +1964,8 @@ ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==10 and sectionalGenus X==9);
     X)
     
+
+ellipticSurfaceD10S10=method()
 -- Elliptic surface of degree 10 and sectional genus 10 (B7.5)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 10 and sectional genus 10
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -1935,7 +1973,6 @@ ellipticSurfaceD10S9(PolynomialRing) := P4 -> (
 -- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
 --     COMMENT : This function uses the BGG package
 
-ellipticSurfaceD10S10=method()
 ellipticSurfaceD10S10(PolynomialRing) := P4 -> (
     -- Compute the koszul complex of the variables of 'P4'
     kos:=res coker vars P4;
@@ -1953,6 +1990,8 @@ ellipticSurfaceD10S10(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==10 and sectionalGenus X==10);
     X)
 
+
+ellipticSurfaceD11S12=method()
 -- Elliptic surface of degree 11 and sectional genus 12 (B7.6)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 11 and sectional genus 12
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -1960,8 +1999,7 @@ ellipticSurfaceD10S10(PolynomialRing) := P4 -> (
 -- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
 --     COMMENT : This function uses the BGG package
 
-ellipticSurfaceD11S12=method()
-ellipticSurfaceD11S12(PolynomialRing):=P4 -> (
+ellipticSurfaceD11S12(PolynomialRing):= P4 -> (
     -- Compute the koszul complex of the variables of 'P4'
     kos:=res coker vars P4;
     -- Define a map 'f' whose image is the direct sum of O_P4(-1), the cotangent bundle, and its second exterior power
@@ -1978,14 +2016,15 @@ ellipticSurfaceD11S12(PolynomialRing):=P4 -> (
     assert(dim X==3 and degree X==11 and sectionalGenus X==12);
     X)
 
+
+
+ellipticSurfaceD12S14L0=method()
 -- Elliptic surface of degree 12 and sectional genus 14 with no 6 secant line (B7.8)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 12 and sectional genus 14
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the elliptic surface of degree 12
 -- DESCRIPTION : This function constructs the elliptic surface as the homology of a Beilinson monad 
 --     COMMENT : This function uses the BGG package
-
-ellipticSurfaceD12S14L0=method()
 ellipticSurfaceD12S14L0(PolynomialRing):=P4 -> (
     KK:=coefficientRing P4;
     e:= symbol e;
@@ -2002,6 +2041,8 @@ ellipticSurfaceD12S14L0(PolynomialRing):=P4 -> (
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
 
+
+ellipticSurfaceD12S14Linfinite=method()
 -- Elliptic surface of degree 12 and sectional genus 14 with infinitely many 6 secant line (B7.9)
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 12 and sectional genus 14 with infinitely many 6-secant lines
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -2009,7 +2050,6 @@ ellipticSurfaceD12S14L0(PolynomialRing):=P4 -> (
 -- DESCRIPTION : This function constructs the elliptic surface as the homology of a Beilinson monad 
 --     COMMENT : This function uses the BGG package
 
-ellipticSurfaceD12S14Linfinite=method()
 ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
     KK:=coefficientRing P4;
     e:= symbol e;
@@ -2574,6 +2614,100 @@ SeeAlso
    Ksquare
 ///
 
+doc ///
+Key
+ tateResolutionOfSurface
+ (tateResolutionOfSurface,Ideal)
+ (tateResolutionOfSurface,Ideal,ZZ)
+Headline
+ compute the Tate resolution of the ideal sheaf of a surface in P4
+Usage
+ T = tateResolutionOfSurface X
+ T = tateResolutionOfSurface(X,n)
+Inputs
+ X:Ideal
+  homogenous ideal of a smooth projective surface in P4
+Outputs
+ T: ChainComplex
+  the Tate resolution of the ideal sheaf of surface in P4
+Description
+  Text
+    The Tate resolution T of a coherent sheaf F on a projective space P^n is an infinite
+    exact complex of free modules over an exterior algebra E encoding the cohomology groups of
+    F:
+
+    T^d(F) = sum_{i=0}^n Hom_kk(H^i(Pn,F(d-i)),E).
+
+    For details see [EFS].
+    In case of a surface the interesting cohomology groups lie in the range d = -1..7.
+    From the betti table of T we can read of the dimension of certain cohomology group.
+  Example
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=ellipticSurfaceD12S14Linfinite P4;
+    minimalBetti X
+    T=tateResolutionOfSurface X;
+    "elapsedTime geometricGenus X == 2"; -- 52.2s elapsed
+    betti T
+    33==5*8-9+2
+  Text
+    For example, the entry 1 in homological degree -1 is $h^4(I_X(-5)) = h^4(O_{P4}(-5))=1$. 
+    The entry 2 in homological degree 3 is $h^3(I_X)=h^2(O_X)=pg$.
+    $h^0(I_X(6))=33=5*8-9+2$ which we can read of betti numbers of the minimal free
+    resolution of X.
+
+    Note that it might be faster to compute the geometric genus pg and the irregularity q of a surface
+    by using the Tate resolution instead of sheaf cohomology.
+    
+    If the homogeneous ideal is generated by forms of degree <=6, then the trucation used in the computation
+    can be choosen to be 6. If there are larger degree generators we might need a larger truncation.
+  Example
+    X=irregularEllipticSurfaceD12 P4;
+    minimalBetti X
+    betti tateResolutionOfSurface(X,7)
+  Text
+    So the irregularity of this surface is q=1 and the geometricGenus is pg=3.
+    It is a minimal elliptic surface.
+  Example
+    sg=sectionalGenus X
+    d=degree X
+    xO=chiO(X)
+    Ksquare(d,sg,xO)==0
+    HdotK(d,sg)
+    LeBarzN6(d,sg,xO)
+    residual=residualInQuintics X;
+    dim residual,degree residual
+    primaryDecomposition residual
+    cH=primaryDecomposition saturate (X+ideal x_2)
+    tally apply(cH,c->(dim c, degree c, degree radical c, minimalBetti c))
+  Text
+    Say something sensible.
+
+    
+References
+  \textit{D. Eisenbud, G. Floystad, F.-O. Schreyer} Sheaf cohomology and free resolutions over exterior algebras, Trans. Am. Math. Soc. 355, No. 11, 4397-4426 (2003; Zbl 1063.14021)
+SeeAlso
+   geometricGenus
+   irregularity
+   chiO
+///
+
+///
+ Example
+    sg=sectionalGenus X
+    d=degree X
+    xO=chiO(X)
+    Ksquare(d,sg,xO)==0
+    HdotK(d,sg)
+    LeBarzN6(d,sg,xO)
+    residual=residualInQuintics X;
+    dim residual,degree residual
+    primaryDecomposition residual
+    cH=primaryDecomposition saturate (X+ideal x_2)
+    tally apply(cH,c->(dim c, degree c, degree radical c, minimalBetti c))
+  Text
+    Say something sensible.
+///
 
 -- schreyer surfaces --
 doc ///
