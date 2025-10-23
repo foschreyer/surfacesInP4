@@ -4426,54 +4426,54 @@ Outputs
   of a abelian surface of degree 10, a Horrocks-Mumford surface. 
 Description
   Text
-   Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
-   Horrocks-Mumford bundle, which is a rank 2 vector bundle with
-   Chern classes c1=-1 and c2=4.
-   Commesati found these surface already in 192x?.
+    Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
+    Horrocks-Mumford bundle, which is a rank 2 vector bundle with
+    Chern classes c1=-1 and c2=4.
+    Commesati found these surfaces already in 192x?.
   Example
-   kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4];
-   X=abelianSurfaceD10 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   betti(fX=res X)
-   betti(T=tateResolutionOfSurface X)
+    kk=ZZ/nextPrime 10^4; 
+    P4=kk[x_0..x_4];
+    X=abelianSurfaceD10 P4;
+    betti(fX=res X)
+    (d,sg)=(degree X, sectionalGenus X)
+    betti(T=tateResolutionOfSurface(X,7))
+  Text
+    The surface X is the zero loci of a vector bundle, whose
+    module of global sections is
+  Example
+    HMBundle=coker transpose (syz transpose fX.dd_3)_{0..18};
+    minimalBetti HMBundle
+  Text
+   In the code we use the Horrocks-Mumford bundle to get X. 
+   The constuction of the Horrocks-Mumford bundle uses a monad:
+  Example
+    e=symbol e;
+    E=kk[e_0..e_4,SkewCommutative=>true]; 
+    alphad= map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
  Text
-   The surface X is the zero loci of a vector bundle, whose
-   module of global sections is
+   The matrix
  Example
-  HMBundle=coker transpose (syz transpose fX.dd_3)_{0..18};
-  minimalBetti HMBundle
+   diagonalMatrix{1,-1}*transpose alphad
  Text
-  In the code we use the Horrocks-Mumford bundle get X. 
-  The constuction of the Horrocks-Mumford bundle uses a monad:
+   is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
  Example
-  e=symbol e;
-  E=kk[e_0..e_4,SkewCommutative=>true]; 
-  alphad= map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
+   F=res coker alphad;
+   betti (F'=res(coker transpose F.dd_6,LengthLimit=>10)[3]**E^{-2})
  Text
-  The matrix
+   The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
+   is the module of global sections of the Horrocks-Mumford bundle.
  Example
-  diagonalMatrix{1,-1}*transpose alphad
+   HMbundle= (prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4)))**P4^{-4}
+   minimalBetti HMbundle
+   minimalBetti X
  Text
-  is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
+   The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
+   Tate resolution, cf. [EFS,pp xxx].
  Example
-  betti (F=res coker alphad);
-  betti (F'=res(coker transpose F.dd_6,LengthLimit=>9)[5])
- Text
-  The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
-  is the module of global sections of the Horrocks-Mumford bundle.
- Example
-  HMbundle= prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4))
-  minimalBetti HMbundle
-  minimalBetti X
- Text
-  The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
-  Tate resolution, cf. [EFS,pp xxx].
- Example
-  H2cohomology=prune Ext^2(HMbundle,P4^{-5})
-  H1cohomology=prune Ext^1(HMbundle,P4^{-5})
-  apply(toList(3..8),i->hilbertFunction(i,H1cohomology))
-  betti F'
+   H2cohomology=prune Ext^2(HMbundle,P4^{-5})
+   H1cohomology=prune Ext^1(HMbundle,P4^{-5})
+   apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
+   betti F'
 References
   Horrocks-Mumford
   Barth-Hulek-Moore
