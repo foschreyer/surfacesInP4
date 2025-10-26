@@ -31,7 +31,7 @@ newPackage(
 	        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer"}},
     AuxiliaryFiles => false,
     DebuggingMode => true,
-    PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition","Varieties"},
+    PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition","Varieties","FastMinors"},
     Keywords => {"Algebraic Geometry"}
     )
 
@@ -5619,22 +5619,35 @@ Description
    We construct a regular elliptic surface of degree 12 and pg=2.
   Example
    kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4]; 
+   P4=kk[x_0..x_4];
    X=regularEllipticSurfaceD12 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    betti(T=tateResolutionOfSurface X)
    OX=sheaf(P4^1/X);
-   apply(3,i->HH^i(OX))
-   Ksquare(degree X,sectionalGenus X,3)
+   apply(3,i->rank HH^i(OX))
+   Ksquare(d,sg,3)
+   betti(T=tateResolutionOfSurface(X,7))
+   D=saturate canonicalDivisor X; 
+   HdotK(d,sg)
+   degree D
+   rank HH^0 sheaf(P4^1/D)
+   selfIntersectionNumber(X,D)
+   genus D
+   singD=singularLocus(P4/D); dim singD==0 -- 9.57484s elapsed
+   minimalBetti D
+   
  Text
-   Since K^2=0 this surface is minimal.   
+   Since K^2=0 this surface is minimal. The surface is elliptic fibration over P1 into
+   elliptic curves of degree 12. Perhaps use regular in codimension 1 from FastMinors
 References
   
 SeeAlso
   tateResolutionOfSurface
 ///
-
+-*
+regularInCodimension(1,P4/D)
+*-
 doc ///
 Key
  irregularEllipticSurfaceD12
@@ -5654,21 +5667,44 @@ Description
    We construct a irregular elliptic surface of degree 12 and pg=2.
   Example
    kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4]; 
+   P4=kk[x_0..x_4];
+   setRandomSeed("fix a fast canonical divisor");
    X=irregularEllipticSurfaceD12 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
-   OX=sheaf(P4^1/X);
-   apply(3,i->HH^i(OX))
-   Ksquare(degree X,sectionalGenus X,3)
-   --betti (T=tateResolutionOfSurface X) -- there is a bug in TateReolutionOfSurface
- Text
-   Since K^2=0 this surface is minimal.   
+   betti(T=tateResolutionOfSurface(X,7))
+   Ksquare(d,sg,3)
+   "D=saturate canonicalDivisor X;";
+   HdotK(d,sg)
+   "degree D==HdotK(d,sg)";
+   "betti(fD=res D)";
+   "M=(coker transpose fD.dd_4)**P4^{-5}"
+   "hilbertFunction(0,M)+1==3 -- the number of connected composnts of D";
+   "selfIntersectionNumber(X,D)==0";   
+  Text
+    Since K^2=0 this surface is minimal. X is fibered in elliptic curves of degree 4.
+    The canonical divisor is the pullback of a divisor of degree 3 on the albanese curve, which is
+    an elliptic curve.
 References
   
 SeeAlso
   tateResolutionOfSurface
+  selfIntersectionNumber
+  canonicalDivisor
+  HdotK
+  Ksquare
 ///
+-*
+rank HH^0((sheaf(P4^1/D))
+cD=primaryDecomposition D;  -- 5.2895s elapsed
+   cD=select(cD,c-> dim c ==2);
+   #cD
+   tally apply(cD,c->(dim c,degree c,degree radical c,minimalBetti c))
+   matrix apply(cD,c->apply(cD,d->dim (c+d)))
+   netList apply(cD,c->(singC=singularLocus(P4/c);
+	   (rank HH^0 sheaf(P4^1/c),genus c,degree c,selfIntersectionNumber(X,c),dim singC)))   
+
+*-
 
 doc ///
 Key
