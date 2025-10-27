@@ -51,7 +51,11 @@ export {
     "aboSurfaceFromMatrix",
     "testMatrix",
     "testMatrix1",
+    "testMatrix2",
+    "WithM3x13",
+    "WithX",
     "abo111333Surface",
+    "abo111117Surface",
 
     
     "sectionalGenus",
@@ -1361,7 +1365,8 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
 	    m4x2s=append(m4x2s,m4x2)));
     return (Xs,adjTypes,m4x2s))
 
--* Abo surfaces *-
+      -* Abo surfaces *-
+
 testMatrix1=method(Options=>{Verbose=>false,SingX=>true})
 testMatrix1(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     --toDo improve the code using a Hom computation of E-modules
@@ -1429,7 +1434,79 @@ testMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     if opt.Verbose then <<"degree X == 12 and codim X == 2 is "<< degree I == 12 and codim I == 2 <<endl;
         not( degree I==12 and codim I ==2)) do ();
     saturate ideal singularLocus I)
+
+testMatrix2=method(Options=>{Verbose=>false,WithM3x13 =>false,WithX=>false})
+-- Input: m3x4 Matrix, linear matrix over the exterior algebra
+--        P4 Ring, coordinate ring of P4
+-- Output: d, ZZ, dimension of Hom(coker m3x4, coker m3x1**E^{1}
+--         M3x13 Matrix, of 1-forms and 2 forms over the exterior algebra
+--
+testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
+    E:=ring m3x4;
+    m3x1:=matrix{{E_0},{E_1},{E_2}};
+    if o.Verbose then (
+	elapsedTime B:=betti(hom:=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>2))
+	) else (
+        B=betti(hom=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>2)));
+    r:=if member((0,{1},1),keys B) then B#(0,{1},1) else 0;
+    if not (o.WithM3x13 or o.WithX) then return r;
+    kk:=coefficientRing ring m3x4;
+    c:=null;
+    genHomo:=sum(r,i->(
+	while (c=random kk; c==0) do ();c*hom_i));
+    m3x3:=homomorphism genHomo;
+    m3x13:=matrix(m3x1**E^{1}|m3x3);
+    if not o.WithX then return (r,m3x13);
+    s1:=syz m3x13;
+    s2:=s1*((id_(E^{4:-1})||map(E^{5:-2},E^{4:-2},0))|random(source s1,E^{4:-2}));
+    T1:=res coker transpose s2;
+    T2:=res(coker transpose T1.dd_6,LengthLimit=>8);
+    X:=saturate ideal syz symExt(T2.dd_8,P4);
+    dimDegSGCorrect:=dim X==3 and degree X==12 and sectionalGenus X ==13;
+    if not dimDegSGCorrect then return (r,null);
+    if o.Verbose then (
+	elapsedTime dimSingX:=dim singularLocus(P4/X);
+	<<"dim SingX = " <<dimSingX <<flush<<endl;);
+    return (r,X)
+    )
     
+///
+    kk=ZZ/19
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    m3x4a=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
+      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
+      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
+      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+    
+    elapsedTime testMatrix2(m3x4a,P4)
+    elapsedTime testMatrix1(m3x4a,P4)
+
+    p=5
+    kk=ZZ/p
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    
+    elapsedTime tally apply(p^3,i-> (m3x4=random(E^3,E^{4:-1});testMatrix2(m3x4,P4)))
+    -- 74.7302s elapsed
+    -- o6 = Tally{0 => 1331}
+
+    elapsedTime tally apply(p^5,i-> (m3x4=random(E^3,E^{4:-1});testMatrix1(m3x4,P4)))
+     --p=11, p^3, 53.7482s elapsed
+     -- o7 = Tally{5 => 1331}
+-*
+  p=5,p^5 -- 115.654s elapsed
+
+o7 = Tally{5 => 3078}
+           6 => 40
+           8 => 6
+           9 => 1
+*-
+40/5^2+0.0
+///
+
+
+
 
 aboSurfaceFromMatrix= method(Options=>{Verbose=>false})
 aboSurfaceFromMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
@@ -1512,6 +1589,88 @@ abo111333Surface(Ring,Ring) := opt -> (P4,E) -> (
     if opt.Verbose then <<adjointMatrices(mE3x4,P2,P3,P4)<<endl;
     X:=aboSurfaceFromMatrix(mE3x4,P4,Verbose=>opt.Verbose);
     (X,mE3x4))
+
+///
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true];
+elapsedTime (X,m3x4)=abo111333Surface(P4,E);
+elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X
+testMatrix1(m3x4,P4)
+X1=aboSurfaceFromMatrix(m3x4,P4);
+
+K=partitionOfCanonicalDivisorOfAboSurface(X,Equations=>true);
+betti K
+K1=partitionOfCanonicalDivisorOfAboSurface(X1,Equations=>true);
+K==K1
+X==X1
+///
+
+
+abo111117Surface=method(Options=>{Verbose=>false})
+
+
+abo111117Surface(Ring,Ring) := o -> (P4,E) -> (
+    kk:=coefficientRing P4;
+    z:=symbol z;
+    P3:=kk[z_0..z_3];
+    P3xP4:=P3**P4;
+    --a 3x2 matrix that has rank one along three lines L1,L2,L3 and rank 0 at the point (0:1:0:0) in P3
+    n3x2:=random(kk^3,kk^3)*matrix {{ z_0, 0}, { 0, z_2},{ z_3, z_3}}*random(kk^2,kk^2);
+    --Ls:=decompose minors(2,n3x2);
+    gm1:=random(kk^3,kk^3)*matrix {{ 0}, { 0},{ 0}}| random(kk^3,kk^3)*matrix {{ z_0, 0}, { 0, z_2},{ z_3, z_3}}*random(kk^2,kk^2);
+    gm2:=matrix{{z_1,z_1,z_1},{z_1,z_1,z_1},{z_1,z_1,z_1}};
+    -- a 3x3 matrix of rank one at the point (0:1:0:0) and
+    -- at the three points of intersection between L1,L2,L3 and the plane z_3=0:
+    gm:=transpose (gm1+gm2);
+    -- a 3x5 matrix with rank one at (0:1:0:0) and rank two
+    -- at the three points of intersection between L1,L2,L3 and the plane z_3=0
+    n3x5 := gm |n3x2;
+    n33:=minors(3,n3x5);
+    n32:=minors(2,n3x2);
+    --(degree n33, codim n33)--n3x5 has rank 2 in a scheme of length ten
+    --degree (n33+n32), codim (n33+n32)--n3x5 has rank 2 in a scheme of length seven on the union of L1,L2,L3
+    --primaryDecomposition n33
+    xs:=vars P4;
+    mn31:=sub(n3x5, P3xP4)*transpose(sub(xs,P3xP4));
+    m3x4:=sub(diff(sub(vars P3,P3xP4),mn31),P4);
+    --the 3x4 matrix adjoint to n3x5
+    --decompose(minors(3,m3x4)):  the union of a cubic surface in a P3 and a cubic scroll
+    mE3x4:=sub(m3x4,vars E);
+    X:= if o.Verbose then elapsedTime aboSurfaceFromMatrix(mE3x4,P4) else (
+	aboSurfaceFromMatrix(mE3x4,P4));
+    assert((3,12,13)==(dim X,degree X,sectionalGenus X));
+    (X,mE3x4)
+    )
+
+
+///
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true];
+elapsedTime (X,m3x4)=abo111117Surface(P4,E);
+elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X
+testMatrix1(m3x4,P4)
+X1=aboSurfaceFromMatrix(m3x4,P4);
+
+K=partitionOfCanonicalDivisorOfAboSurface(X,Equations=>true);
+betti K
+K1=partitionOfCanonicalDivisorOfAboSurface(X1,Equations=>true);
+K==K1
+betti(T=tateResolutionOfSurface X)
+betti(m3x31=(T.dd_4)^{0..2})
+betti(T1=res coker m3x31)
+E'=ring T1
+betti(m13x44=T1.dd_2*random(T1_2,E'^{4:-4,4:-5}))
+betti(T2=res coker transpose m13x44)
+betti(T3=res coker transpose T2.dd_3)
+X2=saturate ideal syz symExt(T3.dd_5,P4);
+K2=partitionOfCanonicalDivisorOfAboSurface(X2,Equations=>true);
+K==K2
+X==X2
+///
+
+
 
 adjointMatrices=method(Options=>{Verbose=>false})
 adjointMatrices(Matrix,Ring,Ring,Ring):= opt -> (mE3x4,P2,P3,P4) -> (
@@ -1765,11 +1924,11 @@ partitionOfCanonicalDivisorOfAboSurface(Ideal) := opt -> X -> (
     sort apply(cK',c->degree c))
 
 
-analyzeAboSurface=method(Options=>{PrintConstructionData=>false,Verbose=>true})
+analyzeAboSurface=method(Options=>{PrintConstructionData=>false,Verbose=>false})
 analyzeAboSurface(Ring) := opt -> P4 -> (
-   elapsedTime X:=randomAboSurface(P4,PrintConstructionData=>opt.PrintConstructionData);
-   elapsedTime K:=partitionOfCanonicalDivisorOfAboSurface (X,Verbose=>true);
-   elapsedTime residual:=residualInQuintics X;
+   X:=randomAboSurface(P4,PrintConstructionData=>opt.PrintConstructionData);
+   K:=partitionOfCanonicalDivisorOfAboSurface (X,opt);
+   residual:=residualInQuintics X;
    if opt.Verbose then (
        << "reduced components of K have degree= " << K <<endl;
        << "residualInQuintics = " << residual <<endl;
@@ -1777,8 +1936,8 @@ analyzeAboSurface(Ring) := opt -> P4 -> (
    (K,residual))
 
 analyzeAboSurface(Ideal) := opt -> X -> (
-   elapsedTime K:=partitionOfCanonicalDivisorOfAboSurface (X,Verbose=>true);
-   elapsedTime residual:=residualInQuintics X;
+   K:=partitionOfCanonicalDivisorOfAboSurface (X,Verbose=>true);
+   residual:=residualInQuintics X;
    if opt.Verbose then (
        << "reduced components of K have degree= " << K <<endl;
        << "residualInQuintics = " << residual <<endl;
@@ -2807,6 +2966,7 @@ Headline => "functions for investigating Abo surfaces, (6 families)",
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO abo111333Surface,
+	TO abo111117Surface,
         },
     PARA{},
      SUBSECTION "6-secants and adjunction",
@@ -4374,12 +4534,15 @@ Headline
  compute the partition of the canonical divisor
 Usage
  K = partitionOfCanonicalDivisorOfAboSurface X
+ IK = partitionOfCanonicalDivisorOfAboSurface(X,Equations=>true)
 Inputs
   X:Ideal
     of an Abo surface  
 Outputs
  K:List
   the partition of the canonical divisor of X
+ IK: Ideal
+  the homogeneous ideal of the canonical divisor
 Description
   Text
     The canonical divisor of a Abo surafce is a collection of six (-1) curves
@@ -4406,6 +4569,7 @@ Description
    think that these are boundary cases, which hence give no new families.
 SeeAlso
   abo111333Surface
+  abo111117Surface
   Ksquare
   HdotK
 ///
@@ -4471,6 +4635,67 @@ SeeAlso
   partitionOfCanonicalDivisorOfAboSurface
   analyzeAboSurface
   aboSurfaceFromMatrix
+///
+
+doc ///
+Key
+ abo111117Surface
+ (abo111117Surface,Ring,Ring)
+ [abo111117Surface,Verbose]
+Headline
+ get an Abo surface whose canonical divisors partitions into components of degrees {1,1,1,1,1,7}
+ 
+Usage
+ (X,m3x4) = abo111117Surface(P4,E)
+
+Inputs
+  P4:Ring
+    coordinate ring of P4
+  E: Ring
+    dual exterior algebra
+Outputs
+ X:Ideal
+  ideal of an Abo surface X
+ m3x4: Matrix
+  the 3x4 matrix of linear forms over the exterior algebra
+Description
+  Text
+    This gives an (apparantly) unirational construction of Abo surfaces with 111117 partition
+    of the canonical divisor. Add how it works.
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    setRandomSeed("fix a fast decomposition of K");
+    elapsedTime (X,m3x4)=abo111117Surface(P4,E,Verbose=>false);
+    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+    K    
+    cResidual=primaryDecomposition residual;
+    netList apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) == -#K    
+    numberOfMinusOneLines=#select(K,d->d==1)
+    expectedNumberOfSixSecants=LeBarzN6(d,sg,xO)-numberOfMinusOneLines
+    plane=cResidual_0
+    cPlaneCapX=primaryDecomposition saturate(plane+X)
+    point=(select(cPlaneCapX,c->dim c==1))_0
+    randomLineThroughPoint=trim(plane+ideal ((gens point)*random(source gens point,P4^{-1})))
+    degree(randomLineThroughPoint+X)==6
+    L1=cResidual_4
+    degree(L1+X)
+    dim(L1+plane)
+    tally apply(cResidual_{1,2,3},L->dim(L+plane))
+  Text
+    In this example X has a pencil of 6-secant lines:
+    All the lines in the plane trough the point. Thus LeBarz 6-secant formula does not apply.
+    There are three further 6-secants lines one of which is L1.
+
+    The 5-secant lines are contained in every quintic, because each intersects the plane in a point. 
+SeeAlso
+  LeBarzN6
+  partitionOfCanonicalDivisorOfAboSurface
+  analyzeAboSurface
 ///
 
 
