@@ -167,7 +167,7 @@ sectionalGenus=method()
 sectionalGenus(Ideal):= X -> (genera X)_1
 
 chiI=method()
-chiI(Number,Number,Number) := (m,d,sg) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(sg-1)+1)
+chiI(ZZ,ZZ,ZZ,ZZ) := (m,d,sg,xO) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(sg-1)+xO)
 
 chiO=method()
 chiO(Ideal) := X -> (
@@ -192,7 +192,41 @@ geometricGenus(Ideal) := X -> (
 
 
 chiITable=method()
-chiITable(Number,Number) := (d,sg) -> apply(toList(-1..5),m->chiI(m,d,sg))
+-- Input: d,sg xO ZZ values for the degree,the sectional genus and the eulerCharcteristic
+-- Output: B BettiTally
+--         plausible BettiTally
+--         in case the ideal sheaf of X has natural cohomology
+
+chiITable(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
+    L:=apply(toList(-4..8),m->chiI(m,d,sg,xO));
+    l:=#L;
+    h3:=position(L,h->h>0);
+    L3:=L_{0..h3-1};
+    h2:=position(L_{h3..l-1},h->h<0);
+    L2:=L_{h3..h3+h2-1};
+    h1:=position(L_{h3+h2..l-1},h->h>0);
+    L1:=L_{h3+h2..h3+h2+h1-1};
+    L0:=L_{h3+h2+h1..l-1};	  
+    H3:=apply(#L3,i->(i-1,{-4+i},-4+i)=>-L3_i);
+    H2:=apply(#L2,i->(i+h3-2,{-4+i+h3},-4+i+h3)=>L2_i);
+    H1:=apply(#L1,i->(i+h3+h2-3,{-4+i+h3+h2},-4+i+h3+h2)=>-L1_i);
+    H0:=apply(#L0,i->(i+h3+h2+h1-4,{-4+i+h3+h2+h1},-4+i+h3+h2+h1)=>L0_i);
+    H4:={(-1,{-5},-5)=>1};
+    new BettiTally from (H4|H3|H2|H1|H0))
+
+/// -* Test chiTable *-
+kk=ZZ/nextPrime 10^4
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+(X,m3x4)=abo111333Surface(P4,E);
+B=betti tateResolutionOfSurface(X,7)
+
+d=12,sg=13,xO=2
+A=chiITable(d,sg,xO)
+assert(A==B)
+
+///
+
 
 HdotK=method()
 HdotK(ZZ,ZZ) := (d,sg) -> 2*(sg-1)-d
@@ -1445,11 +1479,12 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
     E:=ring m3x4;
     m3x1:=matrix{{E_0},{E_1},{E_2}};
     if o.Verbose then (
-	elapsedTime B:=betti(hom:=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>2))
-	) else (
-        B=betti(hom=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>2)));
-    r:=if member((0,{1},1),keys B) then B#(0,{1},1) else 0;
+	elapsedTime hom:=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>1)) else (
+        hom=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>1));
+    if hom==0 then r:=0 else (B:=betti hom;r=B#(0,{1},1));
+    --r:=if member((0,{1},1),keys B) then B#(0,{1},1) else 0;
     if not (o.WithM3x13 or o.WithX) then return r;
+    if r==0 then return (r,null);
     kk:=coefficientRing ring m3x4;
     c:=null;
     genHomo:=sum(r,i->(
@@ -1491,18 +1526,35 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
     -- 74.7302s elapsed
     -- o6 = Tally{0 => 1331}
 
-    elapsedTime tally apply(p^5,i-> (m3x4=random(E^3,E^{4:-1});testMatrix1(m3x4,P4)))
-     --p=11, p^3, 53.7482s elapsed
+    elapsedTime tally apply(p^5,i-> (m3x4=random(E^3,E^{4:-1});testMatrix2(m3x4,P4)))
+
+    --p=11, p^3, 53.7482s elapsed for testMatrix1
      -- o7 = Tally{5 => 1331}
 -*
-  p=5,p^5 -- 115.654s elapsed
-
+p=5,p^5 -- 115.654s elapsed testMatrix1
 o7 = Tally{5 => 3078}
            6 => 40
            8 => 6
            9 => 1
+
+
+p=5,p^5 -- 79.3831s elapsed for testMatrix2
+o13 = Tally{0 => 3067}
+            1 => 48
+            2 => 2
+            3 => 7
+            4 => 1
 *-
 40/5^2+0.0
+
+count=1;while ( --get 2 sections
+         m3x4=random(E^3,E^{4:-1});
+         testMatrix2(m3x4,P4) !=2) do count=count+1;
+count
+-- kk=ZZ/5 is too small to get a smooth surface
+
+elapsedTime (r,X)=testMatrix2(m3x4,P4,WithX=>true);
+X=aboSurfaceFromMatrix(m3x4,P4,Verbose=>true)
 ///
 
 
@@ -2985,6 +3037,58 @@ Headline => "explains the output of the function adjunctionProcess",
 help adjunctionProcess,                
 }
 -- numerical functions
+
+doc ///
+Key
+ chiITable
+ (chiITable,ZZ,ZZ,ZZ)
+Headline
+ compute a plausible cohomology tally for a smooth surface in P4
+Usage
+ B = chiITable(d,sg,xO)
+Inputs
+ d:ZZ
+  a desired degree
+ sg:ZZ
+  a desired sectional genus
+ xO:ZZ
+  a desired Euler characteristic of O_X
+Outputs
+  B:BettiTally
+    plausible Betti tally of the cohomology of the desired ideal sheaf
+Description
+  Text
+    Since
+
+    chi(I_X(m))=chi(O_P4(m))-chi(O_X(m))
+
+    one can compute chi(I_X(m)) from Riemann-Roch which depends only
+    degree d, the sectional genus sg, the Euler characteristic xO and m.
+    Assuming that I_X has natural cohomology for m in {-4..8} and m -> chi(I_X(m)) has enough
+    sign changes, we get a plausible table.
+  Example    
+    chiITable(11,10,1)
+    chiITable(12,13,1)
+    chiITable(12,13,2)
+
+    B=chiITable(12,13,3)    
+    kk=ZZ/nextPrime 10^4
+    P4=kk[x_0..x_4]
+    X=regularEllipticSurfaceD12 P4;
+    (degree X,sectionalGenus X)
+    B'=betti tateResolutionOfSurface(X,7)
+    B==B'
+    keyWithZeroValue=select(keys B,k->not member(k,keys B'))
+    B#(keyWithZeroValue_0)
+  Text
+    If chi(I_X(m))\in ZZ[m] has an integral zero then B contains a superflous key.   
+SeeAlso
+   tateResolutionOfSurface
+   regularEllipticSurfaceD12
+   sectionalGenus
+   chiO
+///
+
 
 doc ///
 Key
