@@ -1649,6 +1649,7 @@ E=kk[e_0..e_4,SkewCommutative=>true];
 elapsedTime (X,m3x4)=abo111333Surface(P4,E);
 elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X
 testMatrix1(m3x4,P4)
+testMatrix2(m3x4,P4)
 X1=aboSurfaceFromMatrix(m3x4,P4);
 
 K=partitionOfCanonicalDivisorOfAboSurface(X,Equations=>true);
@@ -1656,6 +1657,7 @@ betti K
 K1=partitionOfCanonicalDivisorOfAboSurface(X1,Equations=>true);
 K==K1
 X==X1
+betti tateResolutionOfSurface X
 ///
 
 
