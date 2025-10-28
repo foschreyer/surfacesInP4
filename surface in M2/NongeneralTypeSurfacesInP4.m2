@@ -3088,7 +3088,25 @@ SeeAlso
    sectionalGenus
    chiO
 ///
-
+///
+chiITable(10,8,1)
+tex chiITable(10,8,1)
+chiITable(16,22,1)
+apply(toList(-4..10),i->chiI(i,16,24,1))
+chiITable(13,14,1)
+chiITable(13,15,1)
+p=7
+kk=ZZ/p
+E=kk[e_0..e_4,SkewCommutative=> true]
+P4=kk[x_0..x_4]
+while( --distinct values
+    as=apply(5,i->random kk);
+    #unique as != 5) do ()
+m2x5=transpose matrix apply(5,i->{e_i,(i+1)*e_i})
+elapsedTime tally apply(p^3,c->(	 
+	m5x3=random(E^5,E^{3:-1});
+	betti(hom=Hom(coker m2x5,coker m5x3,DegreeLimit=>4))))
+///
 
 doc ///
 Key
