@@ -438,10 +438,27 @@ degree10DESSurface=method()
 degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
     bb:=random(E^2,E^{2:-2,-3});
     betti (T:= res(coker bb,LengthLimit=>3));
+    -- The function symExt from the package BGG computes from a differential in a Tate resolution
+    -- above the regularity (hence a linear differential)
+    -- over the exterior algebra E the linear presentation matrix
+    -- of the corresponding sheaf on P4 (and vice versa from P4-modules to E-modules).
     X := saturate ideal syz symExt(T.dd_3,P4);
+    -- In this particular case symExt(T.dd_3,P4) is a 28x15 matrix whose kernel has rank 1
+    -- and is given by the quintics in the ideal of desired X.
     assert(dim X ==3 and degree X==10 and (genera X)_1==9);
     X)
+///
+kk=ZZ/nextPrime 10^4
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+X=degree10DESSurface(P4,E);
+minimalBetti X
+(degree X, sectionalGenus X, chiO(X))
+betti tateResolutionOfSurface X
 
+tex betti res coker random(P4^{2:-2},P4^{5:-3,2:-4})
+tex betti res coker random(P4^{2:-2},P4^{5:-3})
+///
 
 popescuSurface=method()
 
@@ -1785,7 +1802,7 @@ elapsedTime X=abo111333Surface(P4,E);
 analyzeAboSurface X
 ///
 randomAboSurface=method(Options=>{Verbose=>false,Count=>false,
-	PrintConstructionData=>true})
+	PrintConstructionData=>false})
 
 randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
     assert(char P4==char E);
@@ -1963,6 +1980,8 @@ partitionOfCanonicalDivisorOfAboSurface(Ideal) := opt -> X -> (
     --minimalBetti K
     cK:=primaryDecomposition K;
     r:=lcm apply(cK,c->degree c);
+    -- we pass to a finite field extension where all component become distinct
+    -- i.e. we compute the absolutely irreducible components.
     kk2:=GF(p,r);
     P42:=kk2[gens P4];
     cK':=flatten apply(cK,c->decompose sub(c,P42));   
@@ -5070,8 +5089,7 @@ Description
     (d,sg)=(degree X, sectionalGenus X)
     LeBarzN6(d,sg,1)==6
     Ksquare(d,sg,1)==-4
-    betti(X5=ideal (gens X)_{0..9})
-    residual=X5:X;
+    residual=residualInQuintics X;
     dim residual, degree residual, betti residual
     tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
 	    degree (c+X), betti saturate (c+X),
@@ -5137,8 +5155,8 @@ Description
     (d,sg)=(degree X, sectionalGenus X)
     LeBarzN6(d,sg,1)==6
     Ksquare(d,sg,1)==-4
-    X5=ideal (gens X)_{0..9};
-    R=X5:X;
+    HdotK(d,sg)==4
+    R=residualInQuintics X;
     dim R,degree R
     elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
     numList
@@ -5154,6 +5172,76 @@ Description
 SeeAlso
     degree10pi8RanestadSurface
     adjunctionProcessData
+///
+
+///
+kk=ZZ/nextPrime 10^3;
+P4=kk[x_0..x_4];
+elapsedTime tally apply(5,c->(
+	X=enriquesSurfaceOfDegree10 P4;
+	elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+	minimalBetti Y))
+-*
+                    0  1  2  3  4 5
+o142 = Tally{total: 1 12 40 56 35 8 => 5}
+                 0: 1  .  .  .  . .
+                 1: .  7  5  .  . .
+                 2: .  5 35 56 35 8
+*-
+
+elapsedTime tally apply(5,c->(
+	X=enriquesSurfaceOfDegree10 P4;
+	elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+	(numList,minimalBetti Y)))
+-*
+ -- 101.272s elapsed
+
+                                                                 0  1  2  3  4 5
+o144 = Tally{({(4, 10, 8), 4, (7, 14, 8), 0, (7, 14, 8)}, total: 1 11 39 56 35 8) => 5}
+                                                              0: 1  .  .  .  . .
+                                                              1: .  7  4  .  . .
+                                                              2: .  4 35 56 35 8
+*-
+elapsedTime tally apply(2,c->(
+	X=enriquesSurfaceOfDegree10 P4;
+	elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+	(minimalBetti Y,minimalBetti ideal (gens Y)_{0..6}))
+    )
+-*
+o145 = Tally{(total: 1 12 40 56 35 8, total: 1 7 16 16 7 1) => 2}
+                  0: 1  .  .  .  . .      0: 1 .  .  . . .
+                  1: .  7  5  .  . .      1: . 7  5  . . .
+                  2: .  5 35 56 35 8      2: . . 11 11 . .
+                                          3: . .  .  5 7 .
+                                          4: . .  .  . . 1
+*-
+elapsedTime tally apply(2,c->(
+	X=enriquesSurfaceOfDegree10 P4;
+	elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+	J=ideal (gens Y)_{0..6};
+	minimalBetti J, minimalBetti Y
+	codim Y
+	(dim J, degree J), (dim Y, degree Y)
+	residual=J:Y;
+	--cJ=primaryDecomposition J;
+	degree residual, dim residual, betti residual
+	cResidual=primaryDecomposition residual;
+	netList apply(cResidual,c->(cY=primaryDecomposition saturate(c+Y);(dim c, degree c, betti c,
+		dim(c+Y),degree (c+Y), betti saturate (c+Y),genus radical (c+Y),
+		tally apply(cY,d->(dim d, degree d, genus d,betti d))
+		))
+	M4x4=matrix apply(cResidual_{0,2,1,4},c-> apply(cResidual_{0,2,1,4},d->
+		if dim(c+d+Y)==1 then degree(c+d+Y) else 0))
+	det M4x4
+	apply(cResidual_{0..2,4},c->selfIntersectionNumber(Y,c+Y))
+
+	q=cResidual_3_4
+	dim ideal jacobian q
+	codim cResidual_3, dim cResidual_3, dim (cResidual_3+Y)
+	support q, support cResidual_3
+	(minimalBetti Y,minimalBetti ideal (gens Y)_{0..6}))
+    )
+
 ///
 
 doc ///
