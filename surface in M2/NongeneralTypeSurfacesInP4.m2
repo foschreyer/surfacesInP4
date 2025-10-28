@@ -5174,7 +5174,7 @@ SeeAlso
     adjunctionProcessData
 ///
 
-///
+/// -- experiments about the adjoint surface Y=X_1 of the Enriques surface.
 kk=ZZ/nextPrime 10^3;
 P4=kk[x_0..x_4];
 elapsedTime tally apply(5,c->(
