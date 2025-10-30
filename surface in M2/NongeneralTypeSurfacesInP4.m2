@@ -5248,7 +5248,7 @@ elapsedTime tally apply(2,c->(
 needsPackage "NongeneralTypeSurfacesInP4"
 kk=ZZ/nextPrime 10^4
 P4=kk[x_0..x_4]
-m2x5=transpose matrix apply(5,i->{x_i,(i+1) *x_i})
+m2x5=transpose matrix apply(5,i->{x_i,(2*i+1) *x_i})
 m2x2=matrix{{0,0},{sum(2,i->random kk*x_i^2),sum(toList(2..4),i->random kk*x_i^2)}}
 betti(m2x7=map(P4^{2:-2},,m2x5|m2x2))
 fm2x7=res coker m2x7
@@ -5279,45 +5279,28 @@ radical cC_3, radical cC_4
 -- each of the lines contains two pinch points.
 -- => in the normalization the lines become conics
 twoLines=intersect(cC_0,cC_1)
--- blowUp
-P4y=kk[z_0..z_4,y_0,y_1,y_2,Degrees=>{5:{1,0},2:{0,1},{1,1}}]
-P4y=kk[z_0..z_4,y_0,y_1,y_2,Degrees=>{7:1,2}]
-degrees P4y
-zs=(vars P4y)_{0..4}
-m2x3=sub(gens twoLines,zs)||matrix{{y_1,y_0,y_2}}
-isHomogeneous minors(2,m2x3)
-betti (X1=saturate(minors(2,m2x3)+sub(X0,zs),ideal(y_0,y_1,y_2)))
-betti(X1=saturate(minors(2,m2x3)+sub(X0,zs):ideal(y_0,y_1,y_2)))
-cX1=decompose X1;
-netList apply(cX1, c->betti c)
-X1a=cX1_2; betti X1a
-support X1a
-betti(X1b=eliminate(X1a,y_2))
-P7=kk[z_0..z_4,y_0,y_1]
+-- => the normalization has sectional genus 6, H1 the hyperplane class
+radical cC_2
+Xaff=sub(X0,x_2=>1);
+p=radical(cC_2)
+modP3=trim ideal(gens Xaff%p^2)
 
-betti (X1c= saturate(sub(X1b,P7)))
-dim X1c,degree X1c, genera X1c
--- another try
-twoLines
-use P4
-PX0=P4/X0
-betti (m=sub(syz sub((gens twoLines),PX0),P4))
-P61=kk[x_0..x_4,z_0,z_1,z_2,Degrees=>{7:1,2}]
-X0a=ideal(matrix{{z_0,z_1,z_2}}*sub(m,P61));
-isHomogeneous X0a
-betti(Xb=saturate(sub(X0,P61)+X0a))
-dim Xb, degree Xb
-betti (Xc=ideal ideal (  matrix{{z_0^2,z_0*z_1,z_1^2,z_2^2}}*sub(syz sub(matrix{{x_0^2,x_0*x_1,x_1^2,(x_3*x_4)^2}},PX0),P61))
-)
-betti(Xd=trim(Xb+Xc))
-dim Xd
-Xe=eliminate(Xd,z_2);
-P6=kk[x_0..x_4,z_0,z_1]
-Xf=sub(Xe,P6);
-betti saturate Xf
-dim Xf, degree Xf
-cXf=decompose Xf;#cXf
-netList apply(cXf,c-> (dim c, degree c, betti c))
+modP3=trim ideal(gens Xaff%p^3)
+primaryDecomposition modP3
+-- guess: the two conics intersect in the normalization in a point.
+cPlaneCapX0=primaryDecomposition saturate (X0+ideal(x_1,x_0))
+netList apply(cPlaneCapX0,c->(dim c, degree c ,degree radical c, radical c))
+dim singularLocus cPlaneCapX0_2
+-- => cPlaneCapX0_2 is a smooth conic
+
+
+-- h^0(O_H1(1))-h^1(O_H1(1))=
+10+1-6==5
+-- =>  the normalization X1 should be a rational surface of degree 10
+--     and sectional genus 6 in a P6.
+
+-- to be continued
+
 ///
 
 doc ///
