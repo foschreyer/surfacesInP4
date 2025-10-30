@@ -5244,6 +5244,82 @@ elapsedTime tally apply(2,c->(
 
 ///
 
+/// -* surface of degree 10 sectional genus 8 and xO=1 in the intersection of the two components *-
+needsPackage "NongeneralTypeSurfacesInP4"
+kk=ZZ/nextPrime 10^4
+P4=kk[x_0..x_4]
+m2x5=transpose matrix apply(5,i->{x_i,(i+1) *x_i})
+m2x2=matrix{{0,0},{sum(2,i->random kk*x_i^2),sum(toList(2..4),i->random kk*x_i^2)}}
+betti(m2x7=map(P4^{2:-2},,m2x5|m2x2))
+fm2x7=res coker m2x7
+betti fm2x7
+fm2x7.dd_3_{0..13}^{0..14}
+fm2x7.dd_4_{0..3}^{0..13}
+fm2x7.dd_2_{0..14}
+betti (s1=syz fm2x7.dd_2_{1..14})
+betti syz s1
+betti (s2=syz(transpose (s1*random(source s1,P4^{-6})),DegreeLimit=>0))
+betti (s3=syz (transpose s2_{0..8}))
+betti(s4=syz transpose (fm2x7.dd_2_{1..14}*s3))
+betti (X0=trim ideal (transpose s4_{2}*fm2x7.dd_2))
+minimalBetti X0
+(degree X0, sectionalGenus X0)==(10,8)
+betti tateResolutionOfSurface X0
+elapsedTime cX0=primaryDecomposition X0;#cX0==1
+betti(C=saturate(X0+minors(codim X0,jacobian X0)))
+dim C,degree C
+cC=primaryDecomposition C;
+netList apply(cC,c->(dim c, degree c , betti c, degree radical c))
+cC_0, cC_1
+matrix apply(cC,c->apply(cC,d->if dim(c+d)==1 then degree radical (c+d) else 0))
+-- => X0 has two A1 lines which intersect in the point
+radical cC_2
+--
+radical cC_3, radical cC_4
+-- each of the lines contains two pinch points.
+-- => in the normalization the lines become conics
+twoLines=intersect(cC_0,cC_1)
+-- blowUp
+P4y=kk[z_0..z_4,y_0,y_1,y_2,Degrees=>{5:{1,0},2:{0,1},{1,1}}]
+P4y=kk[z_0..z_4,y_0,y_1,y_2,Degrees=>{7:1,2}]
+degrees P4y
+zs=(vars P4y)_{0..4}
+m2x3=sub(gens twoLines,zs)||matrix{{y_1,y_0,y_2}}
+isHomogeneous minors(2,m2x3)
+betti (X1=saturate(minors(2,m2x3)+sub(X0,zs),ideal(y_0,y_1,y_2)))
+betti(X1=saturate(minors(2,m2x3)+sub(X0,zs):ideal(y_0,y_1,y_2)))
+cX1=decompose X1;
+netList apply(cX1, c->betti c)
+X1a=cX1_2; betti X1a
+support X1a
+betti(X1b=eliminate(X1a,y_2))
+P7=kk[z_0..z_4,y_0,y_1]
+
+betti (X1c= saturate(sub(X1b,P7)))
+dim X1c,degree X1c, genera X1c
+-- another try
+twoLines
+use P4
+PX0=P4/X0
+betti (m=sub(syz sub((gens twoLines),PX0),P4))
+P61=kk[x_0..x_4,z_0,z_1,z_2,Degrees=>{7:1,2}]
+X0a=ideal(matrix{{z_0,z_1,z_2}}*sub(m,P61));
+isHomogeneous X0a
+betti(Xb=saturate(sub(X0,P61)+X0a))
+dim Xb, degree Xb
+betti (Xc=ideal ideal (  matrix{{z_0^2,z_0*z_1,z_1^2,z_2^2}}*sub(syz sub(matrix{{x_0^2,x_0*x_1,x_1^2,(x_3*x_4)^2}},PX0),P61))
+)
+betti(Xd=trim(Xb+Xc))
+dim Xd
+Xe=eliminate(Xd,z_2);
+P6=kk[x_0..x_4,z_0,z_1]
+Xf=sub(Xe,P6);
+betti saturate Xf
+dim Xf, degree Xf
+cXf=decompose Xf;#cXf
+netList apply(cXf,c-> (dim c, degree c, betti c))
+///
+
 doc ///
 Key
  enriquesSurfaceD11S10
