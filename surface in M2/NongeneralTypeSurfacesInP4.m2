@@ -5215,22 +5215,28 @@ o145 = Tally{(total: 1 12 40 56 35 8, total: 1 7 16 16 7 1) => 2}
                                           3: . .  .  5 7 .
                                           4: . .  .  . . 1
 *-
-elapsedTime tally apply(2,c->(
+--elapsedTime tally apply(2,c->(
 	X=enriquesSurfaceOfDegree10 P4;
 	elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
 	J=ideal (gens Y)_{0..6};
+	fourPoints=saturate L2_0;
+	degree fourPoints, dim fourPoints, minimalBetti fourPoints
+	apply(decompose fourPoints,c->(dim c, degree c)) 
 	minimalBetti J, minimalBetti Y
 	codim Y
-	(dim J, degree J), (dim Y, degree Y)
+	(dim J, degree J), (dim Y, degree Y, genera Y)
 	residual=J:Y;
 	--cJ=primaryDecomposition J;
 	degree residual, dim residual, betti residual
 	cResidual=primaryDecomposition residual;
+	#cResidual
 	netList apply(cResidual,c->(cY=primaryDecomposition saturate(c+Y);(dim c, degree c, betti c,
 		dim(c+Y),degree (c+Y), betti saturate (c+Y),genus radical (c+Y),
 		tally apply(cY,d->(dim d, degree d, genus d,betti d))
-		))
-	M4x4=matrix apply(cResidual_{0,2,1,4},c-> apply(cResidual_{0,2,1,4},d->
+		)))
+	tally apply(cResidual,c->(dim(c+fourPoints),
+		degree(c+fourPoints),saturate(c+fourPoints)))
+	M5x5=matrix apply(cResidual_{0,2,1,4,3},c-> apply(cResidual_{0,2,1,4,3},d->
 		if dim(c+d+Y)==1 then degree(c+d+Y) else 0))
 	det M4x4
 	apply(cResidual_{0..2,4},c->selfIntersectionNumber(Y,c+Y))
@@ -5239,8 +5245,36 @@ elapsedTime tally apply(2,c->(
 	dim ideal jacobian q
 	codim cResidual_3, dim cResidual_3, dim (cResidual_3+Y)
 	support q, support cResidual_3
+	(minimalBetti Y,minimalBetti ideal (gens Y)_{0..6})
+    )
+
+--elapsedTime tally apply(2,c->(
+	X=enriquesSurfaceOfDegree10 P4;
+	elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+	J=ideal (gens Y)_{0..6};
+	minimalBetti J, minimalBetti Y
+	codim Y
+	(dim J, degree J), (dim Y, degree Y)
+	residual=J:Y;
+	--cJ=primaryDecomposition J;
+	degree residual, dim residual, betti residual
+	cResidual=primaryDecomposition residual;
+	tally apply(cResidual,c->(cY=primaryDecomposition saturate(c+Y);(dim c, degree c, betti c,
+		dim(c+Y),degree (c+Y), betti saturate (c+Y),genus radical (c+Y),
+		tally apply(cY,d->(dim d, degree d, genus d,betti d))
+		)))
+	M4x4=matrix apply(cResidual,c-> apply(cResidual,d->
+		if dim(c+d+Y)==1 then degree(c+d+Y) else 0))
+	det M4x4
+	apply(cResidual,c->selfIntersectionNumber(Y,c+Y))
+
+	q=cResidual_3_4
+	dim ideal jacobian q
+	codim cResidual_3, dim cResidual_3, dim (cResidual_3+Y)
+	support q, support cResidual_3
 	(minimalBetti Y,minimalBetti ideal (gens Y)_{0..6}))
     )
+
 
 ///
 
@@ -5283,10 +5317,17 @@ twoLines=intersect(cC_0,cC_1)
 radical cC_2
 Xaff=sub(X0,x_2=>1);
 p=radical(cC_2)
-modP3=trim ideal(gens Xaff%p^2)
+modP2=trim ideal(gens Xaff%p^2)
 
-modP3=trim ideal(gens Xaff%p^3)
+perhapsTangentCone=(modP3=trim ideal(gens Xaff%p^3))
+codim modP3, dim modP3
+codim perhapsTangentCone
+singPTC=trim (minors(2,jacobian perhapsTangentCone)+perhapsTangentCone)
 primaryDecomposition modP3
+cSingPTC=primaryDecomposition singPTC;
+netList apply(cSingPTC,c->(dim c, degree c, betti c))
+-- => presumably it is not the tangent cone
+
 -- guess: the two conics intersect in the normalization in a point.
 cPlaneCapX0=primaryDecomposition saturate (X0+ideal(x_1,x_0))
 netList apply(cPlaneCapX0,c->(dim c, degree c ,degree radical c, radical c))
