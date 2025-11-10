@@ -56,7 +56,7 @@ export {
     "WithX",
     "abo111333Surface",
     "abo111117Surface",
-
+    "okonekSurfaceD8SG5",
     
     "sectionalGenus",
     "chiO",
@@ -324,6 +324,12 @@ castelnuovoSurface=method()
 castelnuovoSurface(PolynomialRing) := P4 -> minors(2,random(P4^{-2,2:-3},P4^{2:-4}))
 
 bordigaSurface=method()
+-- Output: the ideal of a Bordiga surface. Such surface is the blow up P2 in 10 points
+--         embedded by quartics through those points. The points in P2 are determintal
+--         so is the surface. They are given by a triple tensor (3,4,5).
+-- Note:   The rank two locus of the 3x5 tensor of linear forms in P3,
+--         correspond to planes in P4 containing one of the 10 cubics through nine
+--         of the 10 points  in P2
 bordigaSurface(PolynomialRing) := P4 -> minors(3,random(P4^{4:-3},P4^{3:-4}))
 bordigaSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     kk:= coefficientRing P2;
@@ -335,6 +341,8 @@ bordigaSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     X)
 
 ionescuOkonekSurface=method()
+--Output: the desired surface. We choose the 5+6 points over the field of definition.
+--      We could specify the collection of points also via their Hilbert-Burch matrices.
 ionescuOkonekSurface(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
     sixPoints:=apply(6,i->ideal random(P2^1,P2^{2:-1}));
     fivePoints:=apply(5,i->ideal random(P2^1,P2^{2:-1}));
@@ -346,16 +354,26 @@ ionescuOkonekSurface(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
 
 
 degree8OkonekSurface=method()
+-- Output: A surface linked (3,4) to the Veronese surface
+degree8OkonekSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    Y:=veroneseSurface(P4,P2);
+    ci:=ideal(gens Y*random(source gens Y,P4^{-3,-4}));
+    X:=ci:Y;
+    assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
+    X)
 
 degree8OkonekSurface(PolynomialRing,Ring) :=(P4,E) -> (
+    -- We construct the surface from one matrix in its Tate resolution.
     m6x2:=random(E^6,E^{-2,-4});
     betti(T:=res(coker m6x2,LengthLimit=>3));
+    -- For the function symExt see the package BGG.
     X:= saturate ideal syz symExt(T.dd_3,P4);
     assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
     X)
 
 
 degree8AlexanderSurface=method()
+-- Maybe this is a Ionescu  Okonek surface -- fix rename
 degree8AlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     H:= intersect (apply(10,i->(ideal random(P2^1,P2^{2:-1}))^2)|{ideal random(P2^1,P2^{2:-1})});
     X:= trim ker map(P2,P4,gens H);
@@ -374,16 +392,20 @@ nonspecialAlexanderSurface(PolynomialRing) := P4 -> (
     X)
 
 enriquesSurfaceOfDegree9=method()
+-- Comment: the 12 quadrics are dual to 3 quadrics in dual space
+--          hence define a canonical curve of genus 5. Since the Enriques surface
+--          is blown-up in precisely one point, we get a birational map
+--          M_5 -> U, where U is the universal family over M_E of Enriques surfaces
 enriquesSurfaceOfDegree9(PolynomialRing) := P4 -> (
-    N:=random(P4^1,P4^{12:-2});
+    N:=random(P4^1,P4^{12:-2});-- twelve quadrics
     betti (fN:=res coker N);
     X:=trim ideal (fN.dd_4*syz fN.dd_4^{15..20});
     assert(dim X==3 and degree X==9 and sectionalGenus X==6);
     X)
 
 nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
-    --tenPts = minors(4,random(P4^5,P4^{4:-1}));
-    --elapsedTime betti (h1=saturate (tenPts^4))
+    --tenPts = minors(4,random(P4^5,P4^{4:-1})); via Hilbert-Burch
+    --elapsedTime betti (h1=saturate (tenPts^4)) could be alternative
     betti(h1:=intersect apply(10,c->(ideal random(P2^1,P2^{2:-1}))^4));
     X:=trim ker map(P2,P4,(gens h1)_{0..4});
     assert(dim X==3 and degree X==9 and sectionalGenus X==6);
@@ -391,10 +413,13 @@ nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
 
 
 specialityOneAlexanderSurface=method()
+-- Considering the Tate resolution simplifies the construction
+-- Linkage with two quartics is reducible, known the condition on points
 specialityOneAlexanderSurface(PolynomialRing,Ring) := (P4,E) -> (
     b1:=gens trim ideal(basis(2,E)%ideal(E_0,E_1))|matrix{{E_0,E_1}};
     bb:=b1||random(E^{1},source b1);
     T:=res(coker bb,LengthLimit=>3);
+    -- For the function symExt see the package BGG.
     X:=trim saturate ideal syz symExt(T.dd_3,P4);
     assert(dim X==3 and degree X== 9 and sectionalGenus X==7);
     X)
@@ -424,8 +449,15 @@ enriquesSurfaceOfDegree10(PolynomialRing) := P4 -> (
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
     assert(dim X==3 and degree X==10 and sectionalGenus X==8);
     X)
+///
+tex betti res coker random(P4^{2:-2},P4^{5:-3,2:-4})
+tex betti res coker random(P4^{2:-2},P4^{5:-3})
+///
+
+
 
 degree10pi9RanestadSurface=method()
+-- using the Tate resolution simplifies the construction
 degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     a1:=(syz matrix{{E_0,E_1}})*random(E^{3:-1},E^{2:-2});
     a2:=map(E^2,,random(E^2,E^{2:-3})|transpose a1);
@@ -456,8 +488,7 @@ minimalBetti X
 (degree X, sectionalGenus X, chiO(X))
 betti tateResolutionOfSurface X
 
-tex betti res coker random(P4^{2:-2},P4^{5:-3,2:-4})
-tex betti res coker random(P4^{2:-2},P4^{5:-3})
+
 ///
 
 popescuSurface=method()
@@ -2899,15 +2930,16 @@ Headline => "unirational families of rational surfaces",
 	TO delPezzoSurface,
 	TO castelnuovoSurface,
 	TO bordigaSurface,        
-        TO ionescuOkonekSurface,
+        TO ionescuOkonekSurface, -- D7
 	TO degree8OkonekSurface,
-	TO nonspecialAlexanderSurface,
-	TO specialityOneAlexanderSurface,
-	TO degree10DESSurface,
-	TO degree10pi9RanestadSurface,
-	TO degree10pi8RanestadSurface,
-	TO popescuSurface,
-	TO vBELSurface
+	TO okonekSurfaceD8SG5,
+	TO nonspecialAlexanderSurface,--
+	TO specialityOneAlexanderSurface,--
+	TO degree10DESSurface,--
+	TO degree10pi9RanestadSurface,--
+	TO degree10pi8RanestadSurface,--
+	TO popescuSurface,--
+	TO vBELSurface-- change notation
         },
     PARA{},
      SUBSECTION "further families",
@@ -3595,7 +3627,7 @@ Description
     exact complex of free modules over an exterior algebra E encoding the cohomology groups of
     F:
 
-    T^d(F) = sum_{i=0}^n Hom_kk(H^i(Pn,F(d-i)),E).
+    T^d(F) = sum_{i=0}^n Hom_kk(E,H^i(Pn,F(d-i))).
 
     For details see [EFS].
     In case of a surface the interesting cohomology groups lie in the range d = -1..7.
@@ -3618,7 +3650,7 @@ Description
     Note that it might be faster to compute the geometric genus pg and the irregularity q of a surface
     by using the Tate resolution instead of sheaf cohomology.
     
-    If the homogeneous ideal is generated by forms of degree <=6, then the trucation used in the computation
+    If the homogeneous ideal is generated by forms of degree <=6, then the truncation used in the computation
     can be choosen to be 6. If there are larger degree generators we might need a larger truncation.
   Example
     X=irregularEllipticSurfaceD12 P4;
@@ -5308,6 +5340,7 @@ cC_0, cC_1
 matrix apply(cC,c->apply(cC,d->if dim(c+d)==1 then degree radical (c+d) else 0))
 -- => X0 has two A1 lines which intersect in the point
 radical cC_2
+
 --
 radical cC_3, radical cC_4
 -- each of the lines contains two pinch points.
@@ -5334,14 +5367,37 @@ netList apply(cPlaneCapX0,c->(dim c, degree c ,degree radical c, radical c))
 dim singularLocus cPlaneCapX0_2
 -- => cPlaneCapX0_2 is a smooth conic
 
+-- try to compute a normalization
+c0=primaryDecomposition (ideal(x_0+x_1)+X0)
+apply(c0,c->(dim c, degree c,degree radical c))
+betti (R=intersect(c0_{2,3}))
+R
+a=R_0,b=R_1
+betti(m=matrix{{b^3,a^9}}|gens X0)
+betti(sm=syz m)--,DegreeLimit=>12))
+sub(sm,matrix{{0_P4,0,0,0,0}})
 
--- h^0(O_H1(1))-h^1(O_H1(1))=
-10+1-6==5
--- =>  the normalization X1 should be a rational surface of degree 10
---     and sectional genus 6 in a P6.
-
--- to be continued
-
+-- for write up
+binomial(9+2,2)-6-14*3-5*1
+3^14, 3^8
+restart
+needsPackage "NongeneralTypeSurfacesInP4"
+setRandomSeed ("random")
+P4=ZZ/3[x_0..x_4]
+elapsedTime tally apply(10,c->(X=findRandomSmoothSchreyerSurface P4;
+	<<"c = "<<c<<flush <<endl;betti X))
+elapsedTime X=findRandomSchreyerSurface P4;
+P4=ZZ/2[x_0..x_4]
+elapsedTime tally apply(10,c->(X=findRandomSmoothSchreyerSurface P4;
+	<<"c = "<<c<<flush <<endl;betti X))
+P4=ZZ/5[x_0..x_4]
+elapsedTime tally apply(10,c->(X=findRandomSmoothSchreyerSurface P4;
+	<<"c = "<<c<<flush <<endl;betti X))
+2^15
+kk=ZZ/nextPrime 10^4
+P4=kk[x_0..x_4]
+X=vBELSurface P4;
+tex minimalBetti X
 ///
 
 doc ///
