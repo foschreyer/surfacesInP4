@@ -7137,3 +7137,20 @@ betti Ar
 	betti (m2x5**E^{1}||Ar)
 betti res coker (m2x5**E^{1}||Ar)
 betti res coker transpose (m2x5**E^{1}||Ar)
+--- for tex
+restart
+loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
+kk=ZZ/nextPrime 10^4;
+P4=kk[x_0..x_4]
+X=abelianSurfaceD10 P4
+singX=singularLocus(P4/X);
+dim singX
+tex betti(T=tateResolutionOfSurface(X,7))
+
+X=biellipticSurfaceD10 P4;
+betti(T=tateResolutionOfSurface(X,6))
+tex betti(T=tateResolutionOfSurface(X,6))
+
+X=biellipticSurfaceD15 P4;
+betti(T=tateResolutionOfSurface(X,6))
+tex betti(T=tateResolutionOfSurface(X,6))
