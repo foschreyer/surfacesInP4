@@ -427,7 +427,8 @@ specialityOneAlexanderSurface(PolynomialRing,Ring) := (P4,E) -> (
 
 
 degree10pi8RanestadSurface=method()
-degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
+-- see the paper for motivation of this construction and compare with enriquesSurfaceOfDegree10
+degree10pi8RanestadSurface(PolynomialRing) := P4 -> (   
     a1:=transpose matrix apply (5,i->{P4_i,random(0,P4)*P4_i});
     a2:=map(P4^1,P4^{2:-2},0)||matrix{{sum(3,i->random(0,P4)*P4_i^2),sum(2,i->random(0,P4)*P4_(i+3)^2)}};
     aa:=map(P4^2,,a1|a2);
@@ -439,6 +440,7 @@ degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
     X)
 
 enriquesSurfaceOfDegree10=method()
+-- see the paper for motivation of this construction and compare with degree10pi8RanestadSurface
 enriquesSurfaceOfDegree10(PolynomialRing) := P4 -> (
     a1:=transpose matrix apply (5,i->{P4_i,random(0,P4)*P4_i});
     a2:=map(P4^1,P4^{2:-2},0)||matrix{{sum(3,i->random(0,P4)*P4_i^2),sum(3,i->random(0,P4)*P4_(i+2)^2)}};
@@ -492,7 +494,8 @@ betti tateResolutionOfSurface X
 ///
 
 popescuSurface=method()
-
+-- every thing is determined by the map aa which is part of a differential in the Tate resolution
+-- and a random choice to get bb, a differential in the Tate resolution. 
 popescuSurface(PolynomialRing,Ring,Number):= (P4,E,s) -> (
     kk:= coefficientRing P4;
     if not member(s,{0,1,2}) then error "expect s in {0,1,2}";
@@ -504,6 +507,7 @@ popescuSurface(PolynomialRing,Ring,Number):= (P4,E,s) -> (
     bb:=sa*random(source sa,E^{3:-3});
     T := res(coker transpose bb,LengthLimit=>4);
     X := trim saturate ideal syz symExt(T.dd_4,P4);
+    --betti tateResolutionOfSurface X
     assert(dim X==3 and degree X==11 and (genera X)_1==11);
     X)
 
@@ -626,7 +630,7 @@ degree Rest, dim Rest, genus Rest--two lines
 degree (Rest+X), dim (Rest+X)-- 6-secants
 degree (Rest+s2), dim (Rest+s2)-- lie in the quadric surface s2.
 ///
-
+-- presumably not used
 randomSurfaceDegreeAndSectionalGenus=method()
 randomSurfaceDegreeAndSectionalGenus(Function,List) := (F,ringList) -> (
     (P4,E,P2):=(ringList_0,ringList_1,ringList_2);
@@ -646,6 +650,8 @@ randomSurfaceDegreeAndSectionalGenus(Function,List) := (F,ringList) -> (
     {d,sg,numberOfExceptionalLines})
 
 tateResolutionOfSurface=method()
+-- Most surfaces are 6 regular, if not one has truncate at the real regularity,
+-- the n in the second version
 tateResolutionOfSurface(Ideal) := X -> (
     if not (dim X==3 and codim X==2) then error "expected the ideal of a surface in P4";
     P4:= ring X;
@@ -653,6 +659,7 @@ tateResolutionOfSurface(Ideal) := X -> (
     e:=symbol e;
     E:=kk[e_0..e_4,SkewCommutative=>true];
     m:=syz gens truncate(6,X);
+    -- see BGG for the documentation of symExt
     m':=symExt(m,E);
     T1:=res(coker m',LengthLimit=>8);
     T:=(dual T1)[-7]**E^{-6})
@@ -664,6 +671,7 @@ tateResolutionOfSurface(Ideal,ZZ) := (X,n) -> (
     e:=symbol e;
     E:=kk[e_0..e_4,SkewCommutative=>true];
     m:=syz gens truncate(n,X);
+     -- see BGG for the documentation of symExt
     m':=symExt(m,E);
     T1:=res(coker m',LengthLimit=>n+2);
     T:=(dual T1)[-n-1]**E^{-n})
@@ -685,12 +693,15 @@ betti tateResolutionOfSurface(X,7)
 -* schreyer surfaces *-
 
 moduleFromSchreyerSurface=method()
+-- computes the H^1-module of the ideal sheaf
 moduleFromSchreyerSurface(Ideal) := X -> (
     betti(fX:=res X);
     betti (fN:=res(coker transpose fX.dd_4));
     ideal fN.dd_5)
 
 schreyerSurfaceFromModule=method()
+-- computes a surface with given H^1-module M.
+-- M is known to lead to a smooth surface.
 schreyerSurfaceFromModule(Ideal) := M -> (
     P4:= ring M;
     fM:=res(M);
@@ -698,9 +709,10 @@ schreyerSurfaceFromModule(Ideal) := M -> (
     rows:=positions(degrees fM_3,d->d=={4});
     columns:=positions(degrees fM_2,d->d=={3});
     N:=(fM.dd_3)^columns_rows;
-    while(
-	while(
-	    while(n1:=random(kk^(rank source N),kk^2);
+    while( -- get a smooth surface
+	while( -- get a surface
+	    while( -- check that the linear 10x2 transposed matrix has kk^2 as a cokernel
+		n1:=random(kk^(rank source N),kk^2);
 		N2:=map(P4^{15:-3},,N*n1);
 	    not (dim coker transpose N2==0)) do();
 	    m10x10:=(fM.dd_2_{0..14}*syz transpose syz(transpose N2,DegreeLimit=>-3));
@@ -712,7 +724,13 @@ schreyerSurfaceFromModule(Ideal) := M -> (
     X)
 
 schreyerSurface=method(Options=>{Smooth=>true,Verbose=>false})
+--Input: P4: coordinate ring of P4
+--       s: integer desired number of extra syzygies
+-- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+--           is either rational or non-minimal Enriques
+-- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
 schreyerSurface(Ring,Number) := opt -> (P4,s) -> (
+    if s<2 then error "need s>=2 extra syzygies in the construction";
     F:=res(ideal vars P4, LengthLimit=>3);
     kk:=coefficientRing P4;
     M:=null;fM:=null;N:=null;N1:=null; X:=null; singX:=null;
@@ -721,7 +739,7 @@ schreyerSurface(Ring,Number) := opt -> (P4,s) -> (
     while( --smooth
 	while( -- monad ok
 	    while( -- module ok
-		while ( -- module tested
+		while ( -- module tested for s extra syzygies
 		    while (-- hilbertFunction ok
 			M=ideal (F.dd_3*random(F_3,P4^{-4}));
 			apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
@@ -750,18 +768,24 @@ elapsedTime X=schreyerSurface(P4,3,Verbose=>true);
 minimalBetti X
 singX=X+minors(2,jacobian X);
 dim saturate singX
-
 ///
 
 findRandomSchreyerSurface=method()
+-- same as schreyerSurface without options
+-- first version is the same as the second with s=2
+-- we ask for at least s extra syzygies
+
 findRandomSchreyerSurface(Ring) := P4 -> (
+    findRandomSchreyerSurface(P4,2))
+-*
     F:=res(ideal vars P4, LengthLimit=>3);
     kk:=coefficientRing P4;
     M:=null;fM:=null;N:=null;N1:=null;J1:=null;
     while(
     while(
       while (
-	while (M=ideal (F.dd_3*random(F_3,P4^{-4}));
+	while (
+	  M=ideal (F.dd_3*random(F_3,P4^{-4}));
           apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
 	fM=res(M,DegreeLimit=>1,LengthLimit=>3);
 	rank fM_3 <2) do ();
@@ -774,7 +798,7 @@ findRandomSchreyerSurface(Ring) := P4 -> (
     source J1 != P4^{0,-2}) do ();
     trim ideal(transpose J1_{1}*syz(fM.dd_1))
     )
-
+*-
 findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
     F:=res(ideal vars P4, LengthLimit=>3);
     kk:=coefficientRing P4;
@@ -796,7 +820,9 @@ findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
     trim ideal(transpose J1_{1}*syz(fM.dd_1))
     )
 
+
 singSchreyerSurfacesStatistic=method()
+-- maybe not used
 
 singSchreyerSurfacesStatistic(Ring,Number) := (P4,N) -> (
     Ms:={};L:={};X:=null;M:=null;Rdata:=null;R:=null;
@@ -820,9 +846,12 @@ singSchreyerSurfacesStatistic(Ring,Number) := (P4,N) -> (
     L)
 
 collectSchreyerSurfaces=method()
-
+-- Input: adjTypes, List of adjunction types
+--        Ms, List of H^1-modules
+--        N, integer, desired number of H^1-modules
+-- Output
 collectSchreyerSurfaces(List,List,Number) :=(adjTypes,Ms,N) -> (
-    --collect N smooth surfaces
+    -- collect N smooth surfaces
     -- or discover a new family
     P4:= ring first Ms;
     adjTypes1:=adjTypes;Ms1:=Ms;adjTypes2:={};Ms2:={};
@@ -1057,6 +1086,7 @@ tangentDimension M
 ///
 
 schreyerSurfaceWith2LinearSyzygies=method(Options=>{Smooth=>true})
+-- corresponds to modules with s=4 extra syzygies
 schreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
     m2x3:=matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}};
     scroll:=minors(2,m2x3);
@@ -1108,7 +1138,7 @@ restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
 kk=ZZ/nextPrime 10^3;
 P4=kk[x_0..x_4]
-elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true);
+elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true); -- 12.1562s elapsed
 minimalBetti X
 elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
 minimalBetti X
@@ -1128,6 +1158,7 @@ unirationalConstructionOfSchreyerSurface(Ring) := P4 -> (
 	return X )
 
 specialEnriquesSchreyerSurface=method()
+-- to be mentioned in the Moore matrix section
 specialEnriquesSchreyerSurface(Ring) := P4 -> (
     kk:=coefficientRing P4;
     t:= symbol t;
@@ -1181,6 +1212,7 @@ tangentDimension(Ideal) := (M) -> (
     50-codim ideal leadTerm mingens trim ideal m7x2)
 
 -* Abo-Ranestad surfaces *-
+
 
 prepareAboRanestadSurfaces=method()
 prepareAboRanestadSurfaces(Ring) := P4 -> (
@@ -5647,7 +5679,7 @@ Key
  popescuSurface
  (popescuSurface, PolynomialRing,Ring,Number)
 Headline
- construct a Popescu surface (4 families)
+ construct a Popescu surface degree 11 and sectional genus 11 (3 families)
 Usage
  X= popescuSurface(P4,E,s)
 Inputs
@@ -5677,8 +5709,8 @@ Description
    In the second case there is a unique 6-secant line.
   Example
    elapsedTime minimalBetti(X=popescuSurface(P4,E,1))
-   X5=ideal (gens X)_{0..9};
-   L=X5:X, degree(L+X)
+   L=residualInQuintics X;
+   degree L, degree(L+X)
    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
    numList_1
   Text
@@ -5691,13 +5723,13 @@ Description
    since the plane intersects the surface in a plane quintic curve.
   Example
    elapsedTime minimalBetti(X=popescuSurface(P4,E,2))
-   X5=ideal (gens X)_{0..9};
-   R=X5:X 
+   R=residualInQuintics X; 
    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
 
     
 SeeAlso
   adjunctionProcessData
+  residualInQuintics
 
 ///
 
