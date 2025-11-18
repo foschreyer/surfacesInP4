@@ -1,5 +1,5 @@
 ///
-restart
+restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
 installPackage "NongeneralTypeSurfacesInP4"
@@ -56,8 +56,8 @@ export {
     "WithX",
     "abo111333Surface",
     "abo111117Surface",
-    "okonekSurfaceD8SG5",
     
+    "symExtFunction",
     "sectionalGenus",
     "chiO",
     "irregularity",
@@ -75,8 +75,9 @@ export {
     "delPezzoSurface",
     "castelnuovoSurface",
     "bordigaSurface",
-    "ionescuOkonekSurface",
-    "degree8OkonekSurface",
+    "ionescuOkonekSurfaceD7",
+    "ionescuOkonekSurfaceD8S5",
+    "okonekSurfaceD8S6",
     "nonspecialAlexanderSurface",
     "specialityOneAlexanderSurface",
     "degree10pi8RanestadSurface",
@@ -131,7 +132,7 @@ export {
     "quinticEllipticScroll",
     "ellipticConicBundle",
     "irregularEllipticSurfaceD12",
-    "regularEllipticSurfaceD12",
+    "ellipticSurfaceD12S13",
     "biellipticSurfaceD10",
     "biellipticSurfaceD15",
     "abelianSurfaceD10",
@@ -141,10 +142,10 @@ export {
     "K3surfaceD7",
     "K3surfaceD8",
     "K3surfaceD9",
-    "K3surfaceD10S9SL1",
-    "K3surfaceD10S9SL3",
+    "K3surfaceD10S9L1",
+    "K3surfaceD10S9L3",
     "H1module",
-    "K3surfaceD11S11SLn",
+    "K3surfaceD11S11Ln",
     "K3surfaceD11S12",
     "K3surfaceD12",
     "K3surfaceD13",
@@ -154,6 +155,7 @@ export {
     "ellipticSurfaceD9",
     "ellipticSurfaceD10S9",
     "ellipticSurfaceD10S10",
+    "ellipticSurfaceD11S12",
     "ellipticSurfaceD12S14L0",
     "ellipticSurfaceD12S14Linfinite",
     "K3surfaces",
@@ -340,10 +342,10 @@ bordigaSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     assert(degree X ==6 and dim X==3);
     X)
 
-ionescuOkonekSurface=method()
+ionescuOkonekSurfaceD7=method()
 --Output: the desired surface. We choose the 5+6 points over the field of definition.
 --      We could specify the collection of points also via their Hilbert-Burch matrices.
-ionescuOkonekSurface(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
+ionescuOkonekSurfaceD7(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
     sixPoints:=apply(6,i->ideal random(P2^1,P2^{2:-1}));
     fivePoints:=apply(5,i->ideal random(P2^1,P2^{2:-1}));
     H:= intersect (apply(sixPoints,p->p^2)|fivePoints);
@@ -353,22 +355,31 @@ ionescuOkonekSurface(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
 
 
 
-degree8OkonekSurface=method()
--- Output: A surface linked (3,4) to the Veronese surface
-degree8OkonekSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
-    Y:=veroneseSurface(P4,P2);
-    ci:=ideal(gens Y*random(source gens Y,P4^{-3,-4}));
-    X:=ci:Y;
-    assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
-    X)
+okonekSurfaceD8S6=method()
 
-degree8OkonekSurface(PolynomialRing,Ring) :=(P4,E) -> (
+okonekSurfaceD8S6(PolynomialRing,Ring) := (P4,E) -> (
     -- We construct the surface from one matrix in its Tate resolution.
     m6x2:=random(E^6,E^{-2,-4});
     betti(T:=res(coker m6x2,LengthLimit=>3));
     -- For the function symExt see the package BGG.
     X:= saturate ideal syz symExt(T.dd_3,P4);
     assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
+    X)
+-*
+degree8OkonekSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    -- Output: A surface linked (3,4) to the Veronese surface
+    Y:=veroneseSurface(P4,P2);
+    ci:=ideal(gens Y*random(source gens Y,P4^{-3,-4}));
+    X:=ci:Y;
+    assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
+    X)
+*-
+ionescuOkonekSurfaceD8S5=method()
+-- Maybe this is a Ionescu  Okonek surface -- fix rename
+ionescuOkonekSurfaceD8S5(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    H:= intersect (apply(10,i->(ideal random(P2^1,P2^{2:-1}))^2)|{ideal random(P2^1,P2^{2:-1})});
+    X:= trim ker map(P2,P4,gens H);
+    assert(dim X==3 and degree X==8 and sectionalGenus X==5);
     X)
 
 
@@ -619,6 +630,7 @@ twolines1:=saturate intersect(minus2line,line3);
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 X= vBELSurface P4;
+degree X, sectionalGenus X
 minimalBetti X
 singX=saturate(X+minors(2,jacobian X))
 dim singX==-1
@@ -678,7 +690,7 @@ tateResolutionOfSurface(Ideal,ZZ) := (X,n) -> (
 ///
 kk=ZZ/nextPrime 10^4
 P4=kk[x_0..x_4]
-X=K3surfaceD10S9SL1 P4;
+X=K3surfaceD10S9L1 P4;
 X=ellipticSurfaceD12S14Linfinite P4;
 minimalBetti X
 T=tateResolutionOfSurface X;
@@ -2168,7 +2180,7 @@ irregularEllipticSurfaceD12(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==12 and sectionalGenus X==13);
     X)
 
-regularEllipticSurfaceD12=method()
+ellipticSurfaceD12S13=method()
 -- Regular elliptic surface of degree 12 and sectional genus 13 obtained as the dependency locus of two global sections of an extension of the HM bundle (B7.7)
 --     PURPOSE : Construct a nonsingular regular elliptic surface of degree 12 and sectional genus 13
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -2176,7 +2188,7 @@ regularEllipticSurfaceD12=method()
 -- DESCRIPTION : This function constructs a regular elliptic surface as the dependency locus of two sections of a rank three vector bundle
 --     COMMENT : This function uses the BGG package
 
-regularEllipticSurfaceD12(PolynomialRing) := P4 -> (
+ellipticSurfaceD12S13(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
     e:=symbol e; 
     -- Define an exterior algebra
@@ -2502,7 +2514,7 @@ K3surfaceD9(PolynomialRing) := P4 -> (
     X)
 
 
-K3surfaceD10S9SL1=method()
+K3surfaceD10S9L1=method()
 -- K3 surface of degree 10 and sectional genus 9 with one 6-secant line (this script is a little cheating) (B4.6)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 10 and sectional genus 9 with one 6-secant line
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
@@ -2510,7 +2522,7 @@ K3surfaceD10S9SL1=method()
 -- DESCRIPTION : This function constructs the ideal of the K3 surface as the homology of a Beilinson monad
 --     COMMENT : This function uses the BGG package
 
-K3surfaceD10S9SL1(PolynomialRing) := P4 -> (
+K3surfaceD10S9L1(PolynomialRing) := P4 -> (
     KK:=coefficientRing P4;
     e:= symbol e;
     -- Define an exterior algebra
@@ -2535,8 +2547,8 @@ K3surfaceD10S9SL1(PolynomialRing) := P4 -> (
 --      OUTPUT : Ideal of the K3 surface of degree 10 with one 6-secant line
 -- DESCRIPTION : This function constructs the ideal of the K3 surface as the degeneracy locus of a map between two vector bundles
 
-K3surfaceD10S9SL3=method()
-K3surfaceD10S9SL3(PolynomialRing) := P4 -> (
+K3surfaceD10S9L3=method()
+K3surfaceD10S9L3(PolynomialRing) := P4 -> (
     -- Compute the koszul complex of the variables of 'P4'
     kos:=res coker vars P4;
     -- Compute the presentation 'omega' of the third exterior power of the cotangent bundle twisted by 3 
@@ -2575,7 +2587,7 @@ H1module(PolynomialRing,ZZ):= (P4,a)->(
     ftphi.dd_3
     )
 
-K3surfaceD11S11SLn=method()
+K3surfaceD11S11Ln=method()
 -- K3 surface of degree 11 and sectional genus 11 witha 6-secant lines (B4.8-11)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 11 and sectional genus 11 with 'n' 6-secant lines
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace and an integer between 0 and 3 
@@ -2583,7 +2595,7 @@ K3surfaceD11S11SLn=method()
 -- DESCRIPTION : This function constructs the ideal of the K3 surface as the degeneracy locus of a map between two vector bundles
 --     COMMENT : This function uses 'H1module,' a command that takes "P4' and an integer between 0 and 3 and returns the H1 module of the ideal sheaf of the surface 
 
-K3surfaceD11S11SLn(PolynomialRing,ZZ):=(P4,n)->(
+K3surfaceD11S11Ln(PolynomialRing,ZZ):=(P4,n)->(
     var:=vars P4;
     -- Calculate the direct sum of two Koszul complexes
     kos:=res coker (var++var);
@@ -2664,7 +2676,7 @@ K3surfaceD13=method()
 
 K3surfaceD13(PolynomialRing):=P4->(
     -- Use 'regularEllipticSurfaceD12'to construct a regular elliptic surface of degree 12
-    Y:=regularEllipticSurfaceD12(P4);
+    Y:=ellipticSurfaceD12S13(P4);
     -- Choose two quintics containing 'Y' to define a complete intersection 'V' 
     V:=ideal ((gens Y)*random(source gens Y,P4^{2:-5}));
     -- Define 'X' resitual to 'Y' in 'V'
@@ -2736,23 +2748,17 @@ ellipticSurfaceD9=method()
 --     PURPOSE : Construct a nonsingular elliptic surface of degree 9 and sectional genus 7
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the elliptic surface of degree 9
--- DESCRIPTION : This function constructs the elliptic surface as the degeneracy locus of a map between two vector bundles
+-- DESCRIPTION : This function constructs the elliptic surface
+--               as the degeneracy locus of a map between avector bundle and a sum of line bundles
 --     COMMENT : This function uses the BGG package
 
 ellipticSurfaceD9(PolynomialRing) := P4 -> (
-    -- Compute the koszul complex of the variables of 'P4'
-    kos:=res coker vars P4;
-    -- Construct a set of generatros for the direct sum of three copies of the cotangent bundle twisted by -1 and two copies of O_P4(-1)
-    f:=map(P4^{2:-1},P4^{2:-1},1)++map(P4^{15:-1},,kos.dd_2++kos.dd_2++kos.dd_2);
-    -- Find the presentation of 'image f' 
-    syzf:=syz f;
-    -- Choose a map from the direct sum of O_P4(-3) and two copies of the second exterior power of the cotangent bundle twisted by -1 to 'image f'
-    KK:=coefficientRing P4;
-    e:= symbol e;
-    E:=KK[e_0..e_4,SkewCommutative=>true];
-    g:=map(target syzf,,beilinson(random(E^{2:0,3:-1},E^{2:-2,-4}),P4));
-    -- Construct 'X' as the dependency locus of 'g' 
-    X:=trim ideal syz transpose (syzf | g);
+   --desired H1-module
+   H1:=coker random(P4^{2:-2},P4^{7:-3});
+   fH1:=res( H1,LengthLimit=>2);
+   -- toString betti fH1
+   A:=syz transpose (fH1.dd_2*random(source fH1.dd_2,P4^{3:-4,-5}));
+   X:=trim ideal (transpose A_{2}*fH1.dd_2); 
     -- Check whether 'X' is a surface with the desired degree and sectional genus
     assert(dim X==3 and degree X==9 and sectionalGenus X==7);
     X)
@@ -2932,11 +2938,11 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO abelianSurfaceD15S21Popescu,
 	TO biellipticSurfaceD10,
 	TO biellipticSurfaceD15,
+	TO irregularEllipticSurfaceD12,
         },
     SUBSECTION "Elliptic surfaces",
      UL{
         TO irregularEllipticSurfaceD12,
-	TO regularEllipticSurfaceD12,
 	TO surfacesOfKodairaDimension1,
         },
      SUBSECTION "Existence proofs",
@@ -2962,16 +2968,16 @@ Headline => "unirational families of rational surfaces",
 	TO delPezzoSurface,
 	TO castelnuovoSurface,
 	TO bordigaSurface,        
-        TO ionescuOkonekSurface, -- D7
-	TO degree8OkonekSurface,
-	TO okonekSurfaceD8SG5,
+        TO ionescuOkonekSurfaceD7,
+	TO okonekSurfaceD8S6,
+	TO ionescuOkonekSurfaceD8S5,
 	TO nonspecialAlexanderSurface,--
 	TO specialityOneAlexanderSurface,--
 	TO degree10DESSurface,--
 	TO degree10pi9RanestadSurface,--
 	TO degree10pi8RanestadSurface,--
-	TO popescuSurface,--
-	TO vBELSurface-- change notation
+	TO popescuSurface,
+	TO vBELSurface
         },
     PARA{},
      SUBSECTION "further families",
@@ -3067,10 +3073,10 @@ Headline => "Known families of K3 surfaces",
         TO K3surfaceD7,
 	TO K3surfaceD8,
 	TO K3surfaceD9,
-	TO K3surfaceD10S9SL1,
-	TO K3surfaceD10S9SL3,
+	TO K3surfaceD10S9L1,
+	TO K3surfaceD10S9L3,
 	-- TO H1module,
-	TO K3surfaceD11S11SLn,
+	TO K3surfaceD11S11Ln,
 	TO K3surfaceD11S12,
 	TO K3surfaceD12,
 	TO K3surfaceD13,
@@ -3116,11 +3122,48 @@ Headline => "functions for investigating Abo surfaces, (6 families)",
 }
 
 document {
+Key => surfacesOfKodairaDimension1,
+Headline => "surface of Kodaira dimension 1 (10 families)",
+   "",
+    
+   PARA{},
+     SUBSECTION "elliptic surfaces",
+     UL{	
+        TO ellipticSurfaceD7,
+	TO ellipticSurfaceD8,
+	TO ellipticSurfaceD9,
+	TO ellipticSurfaceD10S9,
+	TO ellipticSurfaceD10S10,
+	TO ellipticSurfaceD11S12,
+	TO ellipticSurfaceD12S14L0,
+	TO ellipticSurfaceD12S14Linfinite,
+	TO ellipticSurfaceD12S13,
+	TO irregularEllipticSurfaceD12,
+        },
+    PARA{},
+     SUBSECTION "6-secants and adjunction",
+     UL{
+	TO LeBarzN6,
+	TO residualInQuintics,
+	TO canonicalDivisor,
+	TO selfIntersectionNumber,
+	},
+}
+
+document {
 Key => adjunctionProcessData,
 Headline => "explains the output of the function adjunctionProcess",
     "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces",
 help adjunctionProcess,                
 }
+
+document {
+Key => symExtFunction,
+Headline => "symExt",
+    "documentation of the symExt function from the BGG package",
+help symExt,                
+}
+
 -- numerical functions
 
 doc ///
@@ -3159,7 +3202,7 @@ Description
     B=chiITable(12,13,3)    
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
-    X=regularEllipticSurfaceD12 P4;
+    X=ellipticSurfaceD12S13 P4;
     (degree X,sectionalGenus X)
     B'=betti tateResolutionOfSurface(X,7)
     B==B'
@@ -3169,7 +3212,7 @@ Description
     If chi(I_X(m))\in ZZ[m] has an integral zero then B contains a superflous key.   
 SeeAlso
    tateResolutionOfSurface
-   regularEllipticSurfaceD12
+   ellipticSurfaceD12S13
    sectionalGenus
    chiO
 ///
@@ -5044,18 +5087,18 @@ Description
 
 doc ///
 Key
- degree8OkonekSurface
- (degree8OkonekSurface, PolynomialRing, Ring)
+ okonekSurfaceD8S6
+ (okonekSurfaceD8S6, PolynomialRing, Ring)
 Headline
- construct a degree 8 Okonek surface
+ construct a degree 8 Okonek surface, sectional genus 6
 Usage
- X= degree8OkonekSurface P4
+ X=okonekSurfaceD8S6(P4,E)
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
 Outputs
  X:Ideal
-  of the cubic scroll in P4
+  of a degree 8 surface
 Description
   Text
     We construct the surface from a randomly choosen differential T.dd_3
@@ -5064,20 +5107,25 @@ Description
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     E=kk[e_0..e_4,SkewCommutative=>true];
-    minimalBetti(X=degree8OkonekSurface(P4,E))
+    minimalBetti(X=okonekSurfaceD8S6(P4,E))
     degree X, sectionalGenus X
     betti(T=tateResolutionOfSurface X)
     betti T.dd_3
+    ci=ideal(gens X*random(source gens X,P4^{-3,-4}));
+    Y=ci:X;
+    minimalBetti Y
+    P2=kk[y_0..y_2];
+    minimalBetti veroneseSurface(P4,P2)
 ///
 
 doc ///
 Key
- ionescuOkonekSurface
- (ionescuOkonekSurface, PolynomialRing,PolynomialRing)
+ ionescuOkonekSurfaceD7
+ (ionescuOkonekSurfaceD7, PolynomialRing,PolynomialRing)
 Headline
- construct a Ionescu-Okonek surface
+ construct a Ionescu-Okonek surface of degree 7 and sectional genus 4
 Usage
- X= ionescuOkonekSurface(P4,P2)
+ X= ionescuOkonekSurfaceD7(P4,P2)
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
@@ -5093,8 +5141,59 @@ Description
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     P2=kk[y_0..y_2];
-    minimalBetti(X=ionescuOkonekSurface(P4,P2))
+    minimalBetti(X=ionescuOkonekSurfaceD7(P4,P2))
     degree X, sectionalGenus X
+///
+///
+apply((toList(-4..8),m->chiI(m,8,5,1)))
+m2x2=random(E^{2:2},E^{2:1})
+betti (T=res coker m2x2)
+///
+
+doc ///
+Key
+ ionescuOkonekSurfaceD8S5
+ (ionescuOkonekSurfaceD8S5, PolynomialRing,PolynomialRing)
+Headline
+ construct a Ionescu-Okonek surface of degree 8 and sectional genus 5
+Usage
+ X= ionescuOkonekSurfaceD8S5(P4,P2)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ P2:PolynomialRing
+  coordinate ring of P2
+Outputs
+ X:Ideal
+  of a Ionescu-Okonek surface in P4
+Description
+  Text
+    We construct a Ionescu-Okonek surface from its rational parametrization:
+    X=P2(7;2^10,1); 
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    P2=kk[y_0..y_2];
+    minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
+    degree X, sectionalGenus X
+    
+///
+
+///
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    P2=kk[y_0..y_2];
+    minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
+    degree X, sectionalGenus X
+    X4=ideal (gens X)_{0..4};
+    minimalBetti X4
+    Y=X4:X;
+    degree Y, sectionalGenus Y
+    singX=singularLocus(P4/X);
+    dim singX
+    dim(X+Y)
+    apply(decompose(X+Y),c->(dim c, degree c, genus c, minimalBetti c))
+
 ///
 
 doc ///
@@ -5739,7 +5838,7 @@ Key
  (vBELSurface, PolynomialRing)
  (vBELSurface, Ring,Ring)
 Headline
- construct a von Bothmer-Erdenberger-Ludwig surface 
+ construct a von Bothmer-Erdenberger-Ludwig surface, degree 11, sectional genus 11
 Usage
  X= vBElSurface(P4,P2)
  X= vBELSurface(P4) 
@@ -5868,7 +5967,7 @@ Description
     E=kk[e_0..e_4,SkewCommutative=>true];
     P2=kk[y_0..y_2];
     ringList={P4,E,P2};
-    Fs={bordigaSurface,ionescuOkonekSurface,degree8OkonekSurface,nonspecialAlexanderSurface,specialityOneAlexanderSurface}
+    Fs={bordigaSurface,ionescuOkonekSurfaceD7,okonekSurfaceD8S6,ionescuOkonekSurfaceD8S5,specialityOneAlexanderSurface}
     elapsedTime dges=apply(Fs,F->randomSurfaceDegreeAndSectionalGenus(F,ringList))
     Fs1={degree10pi8RanestadSurface,degree10pi9RanestadSurface,degree10DESSurface};
     --apply(Fs1,F->elapsedTime randomSurfaceDegreeAndSectionalGenus(F,ringList))   
@@ -6227,25 +6326,342 @@ SeeAlso
 
 doc ///
 Key
- regularEllipticSurfaceD12
- (regularEllipticSurfaceD12,PolynomialRing)
+ ellipticSurfaceD7
+ (ellipticSurfaceD7,PolynomialRing)
 Headline
- construct a regular elliptic surface of degree 12 
+ construct an elliptic surface of degree 7 
 Usage
- X=regularEllipticSurfaceD12 P4
+ X=ellipticSurfaceD7 P4
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
 Outputs
  X:Ideal
-  of a regular elliptic surface of degree 12 
+  of an elliptic surface of degree 7 
 Description
   Text
-   We construct a regular elliptic surface of degree 12 and pg=2.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD7 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+ Text
+   The surface is ACM. We use its Hilbert-Burch matrix.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+///
+doc ///
+Key
+ ellipticSurfaceD8
+ (ellipticSurfaceD8,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 8 
+Usage
+ X=ellipticSurfaceD8 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 8 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD8 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+ Text
+   The surface is ACM. We use its Hilbert-Burch matrix.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+///
+
+doc ///
+Key
+ ellipticSurfaceD9
+ (ellipticSurfaceD9,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 9 
+Usage
+ X=ellipticSurfaceD9 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 9 
+Description
+  Text
+    The syzygy bundle G of the desired H^1-module has rank 5
+    and a presentation 7x15 matrix 
+  Example
+    new BettiTally from {(0,{2},2) => 2, (1,{3},3) => 7, (2,{4},4) => 5, (2,{5},5) =>
+     10}
+  Text
+    We take the dependency locus of a homomorphism from F=3O(-4)++O(-5) to G.
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD9 P4;
+   (degree X, sectionalGenus X)==(9,7)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   Ksquare(9,7,2)==0
+   D=saturate canonicalDivisor X;
+   betti D, degree D
+   HdotK(9,7)==degree D
+   selfIntersectionNumber(X,D)
+ Text
+   X is a minimal elliptic surface.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  canonicalDivisor
+  selfIntersectionNumber
+  Ksquare
+///
+
+doc ///
+Key
+ ellipticSurfaceD10S9
+ (ellipticSurfaceD10S9,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 10 and sectional genus 9
+Usage
+ X=ellipticSurfaceD10S9 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 10 and sectional genus 9 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   setRandomSeed(" fix the decomposition of the canonicalDivisor");
+   elapsedTime X=ellipticSurfaceD10S9 P4;
+   (degree X, sectionalGenus X)==(10,9)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+   Ksquare(10,9,2)
+   D=saturate canonicalDivisor X;
+   apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+ Text
+   X is non-minimal elliptic surface blown-up in three points.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  canonicalDivisor
+  selfIntersectionNumber
+  Ksquare
+  LeBarzN6
+///
+
+doc ///
+Key
+ ellipticSurfaceD10S10
+ (ellipticSurfaceD10S10,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 10 and sectional genus 10
+Usage
+ X=ellipticSurfaceD10S10 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 10 and sectional genus 10 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD10S10 P4;
+   (degree X, sectionalGenus X)==(10,10)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   LeBarzN6(10,10,3)
+   
+   D=saturate canonicalDivisor X;
+   tally apply(primaryDecomposition D,c->
+       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+   HdotK(10,10)==2+6
+   Ksquare(10,10,3)==-2
+ Text
+   X is elliptic surface blown-up with two (-1) lines.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  canonicalDivisor
+  HdotK
+  Ksquare
+  LeBarzN6
+///
+
+doc ///
+Key
+ ellipticSurfaceD11S12
+ (ellipticSurfaceD11S12,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 11 and sectional genus 12
+Usage
+ X=ellipticSurfaceD11S12 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 11 and sectional genus 12 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD11S12 P4;
+   (degree X, sectionalGenus X)==(11,12)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   D=saturate canonicalDivisor X;
+   tally apply(primaryDecomposition D,c->
+       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+   LeBarzN6(11,12,3)==3
+   HdotK(11,12)==3+6+2
+   Ksquare(11,12,3)
+ Text
+   X is an elliptic surface blown-up with three (-1) lines and one (-1) conic.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  canonicalDivisor
+  HdotK
+  Ksquare
+  LeBarzN6
+///
+
+doc ///
+Key
+ ellipticSurfaceD12S14L0
+ (ellipticSurfaceD12S14L0,PolynomialRing)
+Headline
+ construct an elliptic su4rface of degree 12, sectional genus 14 and no 6-secant line
+Usage
+ X=ellipticSurfaceD12S12L0 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 12 and sectional genus 14 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD12S14L0 P4;
+   (degree X, sectionalGenus X)==(12,14)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   D=saturate canonicalDivisor X;
+   degree D,HdotK(12,14)
+   selfIntersectionNumber(X,D),Ksquare(12,14,3)   
+ Text
+   X is an non-minimal elliptic surface with four (-1) lines and one further (-1) curve.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  canonicalDivisor
+  selfIntersectionNumber
+  Ksquare
+  LeBarzN6
+///
+
+
+doc ///
+Key
+ ellipticSurfaceD12S14Linfinite
+ (ellipticSurfaceD12S14Linfinite,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 12, sectional genus 14 and infinitly many 6-secant line
+Usage
+ X=ellipticSurfaceD12S12Linfinite P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 12 and sectional genus 14 
+Description
+  Text
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD12S14Linfinite P4;
+   (degree X, sectionalGenus X)==(12,14)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   LeBarzN6(12,14,3)
+   HdotK(12,14)
+   Ksquare(12,14,3)
+   R=residualInQuintics X;
+   dim R, degree R ,betti R, degree (R+X)
+   apply(primaryDecomposition(R+X),c->(dim c ,degree c, betti c))
+ Text
+   X contains a plane quintic curve with an additional point p in that plane.
+   Every line through p in that plaen is a 6-secant line.
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  residualInQuintics
+  Ksquare
+  LeBarzN6
+///
+
+doc ///
+Key
+ ellipticSurfaceD12S13
+ (ellipticSurfaceD12S13,PolynomialRing)
+Headline
+ construct a regular elliptic surface of degree 12 and sectional genus 13
+Usage
+ X=ellipticSurfaceD12S13 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a regular elliptic surface of degree 12 and sectional genus 13
+Description
+  Text
+   We construct a regular elliptic surface of degree 12, sectional genus 13 and pg=2.
   Example
    kk=ZZ/nextPrime 10^4; 
    P4=kk[x_0..x_4];
-   X=regularEllipticSurfaceD12 P4;
+   X=ellipticSurfaceD12S13 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    betti(T=tateResolutionOfSurface X)
@@ -6279,7 +6695,7 @@ Key
  irregularEllipticSurfaceD12
  (irregularEllipticSurfaceD12,PolynomialRing)
 Headline
- construct a regular elliptic surface of degree 12 
+ construct a regular elliptic surface of degree 12 and sectional genus 13
 Usage
  X=irregularEllipticSurfaceD12 P4
 Inputs
@@ -6287,10 +6703,10 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of a irregular elliptic surface of degree 12 
+  of a irregular elliptic surface of degree 12 sectional genus 13
 Description
   Text
-   We construct a irregular elliptic surface of degree 12 and pg=2.
+   We construct a irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
   Example
    kk=ZZ/nextPrime 10^4; 
    P4=kk[x_0..x_4];
@@ -6319,6 +6735,37 @@ SeeAlso
   canonicalDivisor
   HdotK
   Ksquare
+///
+
+/// -- residual to X=irregularEllipticSurfaceD12 P4
+kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4];
+   setRandomSeed("fix a fast canonical divisor");
+   X=irregularEllipticSurfaceD12 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface(X,7))
+   Ksquare(d,sg,3)
+   ci=ideal(gens X*random(source gens X,P4^{2:-5}));
+   Y=ci:X;   
+   dim Y, degree Y, sectionalGenus Y
+   minimalBetti Y
+   betti tateResolutionOfSurface(Y,8)
+   Ksquare(13,16,2)
+   cY=decompose Y
+   netList apply(cY,c->(dim c,degree c, sectionalGenus c))
+   Y1=cY_1;
+   dim singularLocus(P4/Y1)
+   betti tateResolutionOfSurface Y1
+   degree Y1,sectionalGenus Y1
+   Ksquare(10,10,4)
+   HdotK(10,10)
+   D1=saturate canonicalDivisor Y1;
+   D2=saturate canonicalDivisor Y1;
+   dim D1, degree D1, genus D1
+   tally apply(primaryDecomposition (D1+D2),c->(dim c,degree c))
+   selfIntersectionNumber(Y1,D1)
+   -- => Y1 is a minimal surface of general type
 ///
 -*
 rank HH^0((sheaf(P4^1/D))
@@ -6485,12 +6932,12 @@ SeeAlso
 
 doc ///
 Key
- K3surfaceD10S9SL1
- (K3surfaceD10S9SL1, PolynomialRing)
+ K3surfaceD10S9L1
+ (K3surfaceD10S9L1, PolynomialRing)
 Headline
  construct a K3 surface of degree 10 and sectional genus 9 with 1 six-secant line
 Usage
- X=K3surfaceD10S9SL1 P4
+ X=K3surfaceD10S9L1 P4
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
@@ -6503,7 +6950,7 @@ Description
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
-   X=K3surfaceD10S9SL1 P4;
+   X=K3surfaceD10S9L1 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    OX=sheaf(P4^1/X);
@@ -6523,12 +6970,12 @@ SeeAlso
 
 doc ///
 Key
- K3surfaceD10S9SL3
- (K3surfaceD10S9SL3, PolynomialRing)
+ K3surfaceD10S9L3
+ (K3surfaceD10S9L3, PolynomialRing)
 Headline
  construct a K3 surface of degree 10 and sectional genus 9 with 3 six-secant line
 Usage
- X=K3surfaceD10S9SL3 P4
+ X=K3surfaceD10S9L3 P4
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
@@ -6541,7 +6988,7 @@ Description
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
-   X=K3surfaceD10S9SL3 P4;
+   X=K3surfaceD10S9L3 P4;
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    OX=sheaf(P4^1/X);
@@ -6571,12 +7018,12 @@ SeeAlso
 
 doc ///
 Key
- K3surfaceD11S11SLn
- (K3surfaceD11S11SLn, PolynomialRing,ZZ)
+ K3surfaceD11S11Ln
+ (K3surfaceD11S11Ln, PolynomialRing,ZZ)
 Headline
  construct a K3 surface of degree 11, sectional genus 11 and precisely n six-secants lines (4 families)
 Usage
- X=K3surfaceD11S11SLn(P4,n)
+ X=K3surfaceD11S11Ln(P4,n)
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
@@ -6591,7 +7038,7 @@ Description
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
-   X=K3surfaceD11S11SLn(P4,0);
+   X=K3surfaceD11S11Ln(P4,0);
    (d,sg)=(degree X, sectionalGenus X)
    minimalBetti X
    --OX=sheaf(P4^1/X);
@@ -6599,7 +7046,7 @@ Description
   Text
    X has no 6-secant line, since the ideal is generated by quintics.
   Example
-   X=K3surfaceD11S11SLn(P4,1);
+   X=K3surfaceD11S11Ln(P4,1);
    minimalBetti X
   Text
    In case n=1 there is precisely one 6-secant line:
@@ -6610,7 +7057,7 @@ Description
   Text
    In case n=2 there are 2 six secant lines:
   Example
-   X=K3surfaceD11S11SLn(P4,2);
+   X=K3surfaceD11S11Ln(P4,2);
    minimalBetti X
    betti(X5=ideal (gens X)_{0..8})
    betti(residual=X5:X)
@@ -6618,7 +7065,7 @@ Description
   Text
    In case n=3 there are 3 six secant lines:
   Example
-   X=K3surfaceD11S11SLn(P4,3);
+   X=K3surfaceD11S11Ln(P4,3);
    minimalBetti X
    betti(X5=ideal (gens X)_{0..8})
    betti(plane=X5:X)
