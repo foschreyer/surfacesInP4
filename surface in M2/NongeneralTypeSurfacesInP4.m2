@@ -2895,7 +2895,17 @@ ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
 
-
+/// -* rank 2 vector bundle on P4 *-
+R=QQ[a,b,c1,c2]
+binom=c -> product(4,i->(c+(i+1))/(i+1))
+binom a
+(a+4)*(a+3)*(a+2)*(a+1)
+xEnd=binom(a-b)+binom(b-a)+2*binom 0
+rel=ideal(a+b-c1,a*b-c2)
+xEnd1=xEnd%rel
+h1minush2End=1-sub(xEnd1,{c1=>-1,c2=>4})
+h1minush2End=1-sub(xEnd1,{c1=>0,c2=>11})
+///
 
 
 -* Documentation section *-
