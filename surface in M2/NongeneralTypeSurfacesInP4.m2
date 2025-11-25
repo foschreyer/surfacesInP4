@@ -783,46 +783,27 @@ dim saturate singX
 ///
 
 findRandomSchreyerSurface=method()
--- same as schreyerSurface without options
--- first version is the same as the second with s=2
--- we ask for at least s extra syzygies
-
+--Input: P4: coordinate ring of P4
+--       s: integer desired number of extra syzygies
+-- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+--          if X is smooth then X is either rational or non-minimal Enriques
+-- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
 findRandomSchreyerSurface(Ring) := P4 -> (
     findRandomSchreyerSurface(P4,2))
--*
-    F:=res(ideal vars P4, LengthLimit=>3);
-    kk:=coefficientRing P4;
-    M:=null;fM:=null;N:=null;N1:=null;J1:=null;
-    while(
-    while(
-      while (
-	while (
-	  M=ideal (F.dd_3*random(F_3,P4^{-4}));
-          apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
-	fM=res(M,DegreeLimit=>1,LengthLimit=>3);
-	rank fM_3 <2) do ();
-        while (
-	    N1=random(P4^{rank fM_3:-4},P4^{2:-4});
-	  coker transpose N1 !=0) do ();
-      N = coker transpose (fM.dd_3*N1);
-      (dim N , degree N)!=(0,2)) do ();
-    J1=syz transpose (fM.dd_2*syz transpose syz(transpose(fM.dd_3*N1),DegreeLimit=>-3));
-    source J1 != P4^{0,-2}) do ();
-    trim ideal(transpose J1_{1}*syz(fM.dd_1))
-    )
-*-
+
 findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
     F:=res(ideal vars P4, LengthLimit=>3);
     kk:=coefficientRing P4;
     M:=null;fM:=null;N:=null;N1:=null;
-    while(
-    while(
-      while (
-	while (M=ideal (F.dd_3*random(F_3,P4^{-4}));
+    while( -- phi: sF ->sG drops rank in expected codimension => degree X is ok
+    while( -- the sheaf sF is the syzygy sheaf of two copies of kk
+      while ( -- get s extra syzygies
+	while (-- hilbert function ok
+	    M=ideal (F.dd_3*random(F_3,P4^{-4}));
           apply(4,i->hilbertFunction(i,M))!={1,5,5,0}) do ();
 	fM=res(M,DegreeLimit=>1,LengthLimit=>3);
 	rank fM_3 <s) do ();
-        while (
+        while ( -- non-zero s'x2 matrix where s'>=s
 	    N1=random(P4^{rank fM_3:-4},P4^{2:-4});
 	  coker transpose N1 !=0) do ();
       N = coker transpose (fM.dd_3*N1);
@@ -831,6 +812,45 @@ findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
     source J1 != P4^{0,-2}) do ();
     trim ideal(transpose J1_{1}*syz(fM.dd_1))
     )
+
+findRandomSmoothSchreyerSurface=method(Options=>{Verbose=>true})
+findRandomSmoothSchreyerSurface(Ring) := opt -> (P4 -> (
+    J:=null;singX:=null;
+	if opt.Verbose==true then ( -- verbose version gives timings
+    while ( -- smooth surface
+     elapsedTime while ( --only hypersurface singularities
+	 J=findRandomSchreyerSurface P4;
+	 dim (J+ideal jacobian J)!=0) do (); 
+	elapsedTime singX=J+minors(2,jacobian J);<<endl;
+	elapsedTime dim singX !=0) do ();) else (
+    while (  -- smooth surface
+	while (-- only hypersurface singularities
+	    J=findRandomSchreyerSurface P4;
+	    dim (J+ideal jacobian J)!=0) do ();
+	 singX=J+minors(2,jacobian J);
+	 dim singX !=0) do ());
+   J))
+
+findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
+    X:=null;singX:=null;
+    count:=1;
+    while (  -- smooth surface
+	elapsedTime while ( -- only hypersurface singularities
+	    X=findRandomSchreyerSurface(P4,s);
+	    dim (X+ideal jacobian X)!=0) do (count=count+1);
+	<<count <<endl;
+	singX=X+minors(2,jacobian X);
+	 dim singX !=0) do ();
+   X)
+/// -* oes not exists *-
+kk=ZZ/nextPrime(10^3)
+P4=kk[x_0..x_4]
+elapsedTime X=unirationalConstructionOfSchreyerSurfaces(P4,KodairaDimension=>-1);
+minimalBetti X
+M=moduleFromSchreyerSurface X;
+minimalBetti M
+tangentDimension M
+///
 
 
 singSchreyerSurfacesStatistic=method()
@@ -863,6 +883,8 @@ collectSchreyerSurfaces=method()
 --        N, integer, desired number of H^1-modules
 -- Output
 collectSchreyerSurfaces(List,List,Number) :=(adjTypes,Ms,N) -> (
+    -- the same as
+    --            collectSchreyerSurfaces((adjTypes,Ms,2,N)
     -- collect N smooth surfaces
     -- or discover a new family
     P4:= ring first Ms;
@@ -893,13 +915,20 @@ collectSchreyerSurfaces(List,List,Number) :=(adjTypes,Ms,N) -> (
     )
 
 collectSchreyerSurfaces(List,List,Number,Number) :=(adjTypes,Ms,s,N) -> ( 
-    --collect N smooth s>=3 surfaces
-    -- or discover a new family
+    -- either collect N smooth with at least s extra surfaces
+    --     or discover a new family
+    -- Input adjTypes, a list of already discovered adjunction type
+    --       Ms, a list of H1-mudules M
+    --       s: integer desired number of additional syzygies
+    --       N: integer the desired number of new modules M    
+    -- Output
+    --      two new lists: adjTypes and Ms
     P4:=ring first Ms;
     adjTypes1:=adjTypes;
     adjTypes2:={};Ms2:={};
     Ms1:=Ms;
-    count:=0;count1:=0;
+    count:=0; -- number of new adjunction types
+    count1:=0; -- number of new modules
     X:= null; numList:=null; adjList:=null; ptsList:=null;M:= null;J:=null;
     while (
     elapsedTime X=findRandomSmoothSchreyerSurface(P4,s);
@@ -924,6 +953,8 @@ collectSchreyerSurfaces(List,List,Number,Number) :=(adjTypes,Ms,s,N) -> (
     )
 
 exampleOfSchreyerSurfaces=method()
+-- precompute modules and adjunction types produced by applying the function
+-- collectSchreyerSurfaces and sorting by hand.
 exampleOfSchreyerSurfaces(Ring) := P4 -> (
     if char P4 !=3 then error "expected coordinate ring of P4 in caharcteristic 3";
     Ms:={ideal(-P4_0*P4_2+P4_1*P4_2+P4_0*P4_3+P4_2*P4_3-P4_0*P4_4+P4_1*P4_4+P4_2*P4_4-P4_3*P4_4,P4_1*P4
@@ -1010,13 +1041,15 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
       {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0, (8,13,6), 3, (5,6,2)},
       {(4,11,10), 2, (9,19,11), 3, (10,17,8), 2, (7,10,4), 2, (3,3,1)},
       {(4,11,10), 2, (9,19,11), 3, (10,17,8), 1, (7,10,4), 8, (3,2,0)},
-      {(4,11,10), 2, (9,19,11), 2, (10,17,8), 4, (7,9,3), 7, (2,1,0)}, {(4,11,10),
-      1, (9,19,11), 4, (10,16,7), 4, (6,7,2)}, {(4,11,10), 0, (9,19,11), 6,
-      (10,15,6), 5, (5,5,1)}};
+      {(4,11,10), 2, (9,19,11), 2, (10,17,8), 4, (7,9,3), 7, (2,1,0)},
+      {(4,11,10), 1, (9,19,11), 4, (10,16,7), 4, (6,7,2)},
+      {(4,11,10), 0, (9,19,11), 6, (10,15,6), 5, (5,5,1)}};
     (Ms,adjTypes)
     )
 
 specificSchreyerSurface=method()
+--Input: k an integer
+--Output a specific schreyer surface
 specificSchreyerSurface(Ring,Number) := (P4,k) -> (
     (Ms,Types):=exampleOfSchreyerSurfaces(P4);
     X:=schreyerSurfaceFromModule(Ms_k);
@@ -1024,12 +1057,15 @@ specificSchreyerSurface(Ring,Number) := (P4,k) -> (
     X)
 
 enriquesSurfaceD11S10 = method()
+-- Get the precomputed enriques-schreyer surface
 enriquesSurfaceD11S10(PolynomialRing) := P4 -> (
     if char P4 != 3 then error "Need a ground field of characteristic 3";
     X:=specificSchreyerSurface(P4,0)
     )
 
-///
+/// -* discovering a unirational construction in case k=7 by analyzing an example
+       through linkage;  see schreyerSurfaceWith2LinearSyzygies *-
+       
 kk=ZZ/3
 P4=kk[x_0..x_4]
 minimalBetti (X=enriquesSurfaceD11S10(P4))
@@ -1062,40 +1098,6 @@ tally apply(planes,p->(pts=p+cZ_1;
 vertex=trim sum planes
 ///
 
-findRandomSmoothSchreyerSurface=method(Options=>{Verbose=>true})
-findRandomSmoothSchreyerSurface(Ring) := opt -> (P4 -> (
-    J:=null;singX:=null;
-	if opt.Verbose==true then (
-    while (
-     elapsedTime while (J=findRandomSchreyerSurface P4;
-	 dim (J+ideal jacobian J)!=0) do ();
-	elapsedTime singX=J+minors(2,jacobian J);<<endl;
-	elapsedTime dim singX !=0) do ();) else (
-    while (
-	while (J=findRandomSchreyerSurface P4; dim (J+ideal jacobian J)!=0) do ();
-	 singX=J+minors(2,jacobian J);
-	 dim singX !=0) do ());
-   J))
-
-findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
-    X:=null;singX:=null;
-    count:=1;
-    while (
-	elapsedTime while (X=findRandomSchreyerSurface(P4,s);
-	    dim (X+ideal jacobian X)!=0) do (count=count+1);
-	<<count <<endl;
-	singX=X+minors(2,jacobian X);
-	 dim singX !=0) do ();
-   X)
-///
-kk=ZZ/nextPrime(10^3)
-P4=kk[x_0..x_4]
-elapsedTime X=unirationalConstructionOfSchreyerSurfaces(P4,KodairaDimension=>-1);
-minimalBetti X
-M=moduleFromSchreyerSurface X;
-minimalBetti M
-tangentDimension M
-///
 
 schreyerSurfaceWith2LinearSyzygies=method(Options=>{Smooth=>true})
 -- corresponds to modules with s=4 extra syzygies
@@ -1103,38 +1105,55 @@ schreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
     m2x3:=matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}};
     scroll:=minors(2,m2x3);
     hypPlane:=ideal P4_1;
-    lines1:=decompose(hypPlane+scroll);
+    lines1:={ideal(P4_4,P4_2,P4_1),ideal(P4_3,P4_1,P4_0),ideal(P4_2,P4_1,P4_0)};
+    -- two rulings ond the directrix of the scroll
     q2x2 := matrix{{P4_0,P4_2}}||random(P4^1,P4^{2:-1})%hypPlane;
     quadric := hypPlane+minors(2,q2x2);
+    -- a quadric surface with a ruling containing the directrix
+    -- maybe check smoothness 
     Z:=intersect(scroll,quadric);
-    twoPointsa:=(decompose(quadric+scroll))_{1,2};
+    assert(degree Z == 5);
+    twoPointsa:=(decompose((quadric+scroll):lines1_2));
     if twoPointsa_0+lines1_0==twoPointsa_0 then twoPointsa=twoPointsa_{1,0};
-    twoPointsb:=apply(lines1_{0,1},l->trim(l+lines1_2));
+    -- now twoPointsa_0 lies on lines1_1
+    twoPointsb:={ideal(P4_4,P4_2,P4_1,P4_0),ideal(P4_3,P4_2,P4_1,P4_0)}; 
     twoLines:=apply(2,i->ideal (gens intersect(twoPointsa_i,twoPointsb_i))_{0..2});
-    vertex:=ideal random(P4^1,P4^{4:-1});
+    -- two disjoint lines.
+    vertex:=ideal random(P4^1,P4^{4:-1}); --a general point
     twoPlanes:=apply(twoLines,l->ideal (gens intersect(l,vertex))_{0,1});
+    -- cones over the two disjoint lines
+    middlePlane:= null; conic:= null; twiceTwoPoints:=null; threePoints:= null;
     while( --get four points defined over kk
-	middlePlane:=trim sum apply(twoPlanes,p->ideal (gens p*random(source gens p,P4^{-1})));
-	betti(conic:=ideal (gens saturate( middlePlane+Z))_{0..2});
-	betti(threePoints:=saturate(middlePlane+scroll));
-	twoPoints:=apply(2,i->decompose(twoPlanes_i+conic));
-    not all(twoPoints,a->#a==2)) do ();
-    twoPoints=apply(twoPoints,a->first a);
+	middlePlane=trim sum apply(twoPlanes,p->ideal (gens p*random(source gens p,P4^{-1})));
+	-- a plane through the vertex, meeting each of the two planes in a line.
+	-- the middlePlane intersects Z in 5 points, which lie on a conic
+	assert(betti saturate( middlePlane+Z)==
+	    new BettiTally from {(0,{0},0) => 1, (1,{1},1) => 2, (1,{2},2) => 1, (1,{3},3) => 2});
+	conic=ideal (gens saturate( middlePlane+Z))_{0..2};
+	threePoints=saturate(middlePlane+scroll);
+	assert(degree threePoints ==3);
+	twiceTwoPoints=apply(2,i->decompose(twoPlanes_i+conic));
+        not all(twiceTwoPoints,a->#a==2)) do (); -- this is not a unirational step, but a finite cover
+    twoPoints:=apply(twiceTwoPoints,a->first a);
     -- apply(2,i->degree(twoPlanes_i+Z)==6)
-    -- degree(conic+Z)==5
-    --betti intersect({conic+Z}|twoPoints)
+    -- Each plane intersects the union Z in one of the two non-CM double point of Z   
+    assert(degree  intersect({conic+Z}|twoPoints)==7);
     planeCubics:=apply(2,i->(p7:=saturate intersect(twoPlanes_i+Z,twoPoints_i);
 	    twoPlanes_i+ideal(gens p7*random(source gens p7,P4^{-3}))));
     genus2Curve:=intersect(planeCubics|{conic});
-    -- dim genus2Curve, degree genus2Curve, genus genus2Curve
+    --netList primaryDecomposition genus2Curve;
+    assert((dim genus2Curve, degree genus2Curve, genus genus2Curve)==(2,8,2));
     betti(p17:=saturate(Z+genus2Curve));
-    --degree p17, dim p17 -- 17 point
+    assert((dim p17, degree p17)==(1,17)); -- 17 point
     betti (Z':=intersect(Z,genus2Curve));
     ci2:=ideal(gens Z'*random(source gens Z',P4^{2:-4}));
-    Y:=ci2:Z; --betti Y
+    --netList apply(2,i->tally apply(decompose  (ci2+twoPlanes_i),c->(dim c, degree c)));
+    Y:=ci2:Z; 
+    assert(degree Y==11);
     unionOfPlanes:=intersect(twoPlanes|{middlePlane});
     -- minimalBetti unionOfPlanes
     betti(Y':=intersect(Y,unionOfPlanes));
+    assert((tally degrees source  gens Y')#{5}==2);
     ci:=ideal(gens Y')_{0,1};
     X:=ci:Y';
     assert((dim X, degree X, (genera X)_1) == (3,11,10));
@@ -5487,6 +5506,9 @@ radical cC_3, radical cC_4
 -- each of the lines contains two pinch points.
 -- => in the normalization the lines become conics
 twoLines=intersect(cC_0,cC_1)
+--
+betti(hom=Hom(C/X0,P4^1/X0))
+A=prune image homomorphism hom_{1}
 -- => the normalization has sectional genus 6, H1 the hyperplane class
 radical cC_2
 Xaff=sub(X0,x_2=>1);
