@@ -1173,6 +1173,7 @@ elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true); -- 12.1562s e
 minimalBetti X
 elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
 minimalBetti X
+
 ///
 
 unirationalConstructionOfSchreyerSurface=method()
