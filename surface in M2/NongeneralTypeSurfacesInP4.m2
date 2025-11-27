@@ -113,6 +113,7 @@ export {
     "collectSchreyerSurfaces",
     "tangentDimension",
     "schreyerSurfaceWith2LinearSyzygies",
+    "schreyerSurfaceWith2or3LinearSyzygies",
     "unirationalConstructionOfSchreyerSurface",
     "specialEnriquesSchreyerSurface",
     "adjunctionProcessData",
@@ -1163,15 +1164,93 @@ schreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
     return X;
     )
 
+schreyerSurfaceWith2or3LinearSyzygies=method(Options=>{Smooth=>true})
+schreyerSurfaceWith2or3LinearSyzygies(Ring,ZZ) := opt -> (P4,s) -> (
+    if not member(s,{2,3}) then return error " expected s to be 2 or 3";
+    m2x3:=matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}};
+    scroll:=minors(2,m2x3);
+    hypPlane:=ideal P4_1;
+    lines1:={ideal(P4_4,P4_2,P4_1),ideal(P4_3,P4_1,P4_0),ideal(P4_2,P4_1,P4_0)};
+    -- two rulings ond the directrix of the scroll
+    q2x2 := matrix{{P4_0,P4_2}}||random(P4^1,P4^{2:-1})%hypPlane;
+    quadric := hypPlane+minors(2,q2x2);
+    -- a quadric surface with a ruling containing the directrix
+    -- maybe check smoothness 
+    Z:=intersect(scroll,quadric);
+    assert(degree Z == 5);
+    twoPointsa:=(decompose((quadric+scroll):lines1_2));
+    if twoPointsa_0+lines1_0==twoPointsa_0 then twoPointsa=twoPointsa_{1,0};
+    -- now twoPointsa_0 lies on lines1_1
+    twoPointsb:={ideal(P4_4,P4_2,P4_1,P4_0),ideal(P4_3,P4_2,P4_1,P4_0)}; 
+    twoLines:=apply(2,i->ideal (gens intersect(twoPointsa_i,twoPointsb_i))_{0..2});
+    -- two disjoint lines.
+    vertex:=ideal random(P4^1,P4^{4:-1}); --a general point
+    twoPlanes:=apply(twoLines,l->ideal (gens intersect(l,vertex))_{0,1});
+    -- cones over the two disjoint lines
+    middlePlane:= null; conic:= null; twiceTwoPoints:=null; threePoints:= null;
+    while( --get four points defined over kk
+	middlePlane=trim sum apply(twoPlanes,p->ideal (gens p*random(source gens p,P4^{-1})));
+	-- a plane through the vertex, meeting each of the two planes in a line.
+	-- the middlePlane intersects Z in 5 points, which lie on a conic
+	assert(betti saturate( middlePlane+Z)==
+	    new BettiTally from {(0,{0},0) => 1, (1,{1},1) => 2, (1,{2},2) => 1, (1,{3},3) => 2});
+	conic=ideal (gens saturate( middlePlane+Z))_{0..2};
+	threePoints=saturate(middlePlane+scroll);
+	assert(degree threePoints ==3);
+	twiceTwoPoints=apply(2,i->decompose(twoPlanes_i+conic));
+        not all(twiceTwoPoints,a->#a==2)) do (); -- this is not a unirational step, but a finite cover
+    twoPoints:=apply(twiceTwoPoints,a->first a);
+    -- apply(2,i->degree(twoPlanes_i+Z)==6)
+    -- Each plane intersects the union Z in one of the two non-CM double point of Z   
+    assert(degree  intersect({conic+Z}|twoPoints)==7);
+    if s==2 then  planeCubics:=apply(2,i->(p3:=saturate ((intersect(twoPlanes_i+scroll,twoPoints_i)):(twoPointsb_i));
+	  saturate(intersect(twoLines_i,twoPlanes_i+ideal(gens p3*random(source gens p3,P4^{-2})))))) else (
+    if s==3 then planeCubics=apply(2,i->(p4:=saturate intersect(twoPlanes_i+scroll,twoPoints_i);
+	  saturate(intersect(twoLines_i,twoPlanes_i+ideal(gens p4*random(source gens p4,P4^{-2})))))));
+    genus2Curve:=intersect(planeCubics|{conic});
+    --netList primaryDecomposition genus2Curve;
+    assert((dim genus2Curve, degree genus2Curve, genus genus2Curve)==(2,8,2));
+    betti(p17:=saturate(Z+genus2Curve));
+    assert((dim p17, degree p17)==(1,17)); -- 17 point
+    betti (Z':=intersect(Z,genus2Curve));
+    ci2:=ideal(gens Z'*random(source gens Z',P4^{2:-4}));
+    --netList apply(2,i->tally apply(decompose  (ci2+twoPlanes_i),c->(dim c, degree c)));
+    Y:=ci2:Z; 
+    assert(degree Y==11);
+    unionOfPlanes:=intersect(twoPlanes|{middlePlane});
+    -- minimalBetti unionOfPlanes
+    betti(Y':=intersect(Y,unionOfPlanes));
+    assert((tally degrees source  gens Y')#{5}==2);
+    ci:=ideal(gens Y')_{0,1};
+    X:=ci:Y';
+    assert((dim X, degree X, (genera X)_1) == (3,11,10));
+    if opt.Smooth==true then (
+	singX:=saturate(X+minors(2,jacobian X));
+	<<"dim singX=" <<dim singX << endl;);
+    return X;
+    )
+
 
 ///
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
 kk=ZZ/nextPrime 10^3;
 P4=kk[x_0..x_4]
-elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4,Smooth=>true); -- 12.1562s elapsed
+elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,3,Smooth=>true); -- 12.1562s elapsed
 minimalBetti X
-elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
+M=moduleFromSchreyerSurface X;
+minimalBetti M
+elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
+numList
+
+elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2,Smooth=>true); -- 12.1562s elapsed
+minimalBetti X
+M=moduleFromSchreyerSurface X;
+minimalBetti M
+elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
+numList
+
+elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2);
 minimalBetti X
 
 ///
