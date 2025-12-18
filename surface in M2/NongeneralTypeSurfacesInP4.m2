@@ -1253,6 +1253,9 @@ numList
 elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2);
 minimalBetti X
 
+X=unirationalConstructionOfSchreyerSurface(P4);
+minimalBetti X
+
 ///
 
 unirationalConstructionOfSchreyerSurface=method()
