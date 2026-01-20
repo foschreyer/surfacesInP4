@@ -1435,16 +1435,28 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
 ///
 kk=ZZ/11
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,9,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
-L0
+L0=={(4, 12, 13), 8, (12, 24, 13)}
 
+m4x2
+E=ring m4x2
+-*
+m4x2n=m4x2^{0,1,2}||random(E^{2:1},E^{1:0})
+Xn=aboRanestadSurfaceFromMatrix(P4,m4x2n,Verbose=>true);
+-- does not give a surface
+*-
 X5=ideal (gens X)_{0..4};
 R=X5:X;
 dim R, degree R, minimalBetti R, degree (R+X)
 
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+--elapsedTime (X,m4x2)=aboRanestadSurface(P4,4,Special=>2,Verbose=>true); will not work
+minimalBetti X
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4]
+
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
 assert(L0_1==6)
@@ -1592,6 +1604,8 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
 	    adjTypes=append(adjTypes,numList);
 	    m4x2s=append(m4x2s,m4x2)));
     return (Xs,adjTypes,m4x2s))
+
+
 
       -* Abo surfaces *-
 
