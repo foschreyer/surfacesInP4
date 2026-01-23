@@ -201,7 +201,7 @@ chiITable=method()
 --         in case the ideal sheaf of X has natural cohomology
 
 chiITable(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
-    L:=apply(toList(-4..8),m->chiI(m,d,sg,xO));
+    L:=apply(toList(-4..10),m->chiI(m,d,sg,xO));
     l:=#L;
     h3:=position(L,h->h>0);
     L3:=L_{0..h3-1};
