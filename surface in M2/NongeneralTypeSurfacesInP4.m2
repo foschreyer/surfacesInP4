@@ -37,7 +37,8 @@ newPackage(
 
 export {
     --"NongeneralTypeSuracesInP4",
-    "searchSpecialAboSurfaces",
+    "specificAboSurface",
+    "collectSpecialAboSurfaces",
     "randomSpecialAboSurface",
     "numericalTypeOfResidualInQuintics",
     "partitionOfCanonicalDivisorOfAboSurface",
@@ -47,7 +48,7 @@ export {
     "Count",
     "PrintConstructionData",
     "analyzeAboSurface",
-    "searchAboSurfaces",
+    "collectAboSurfaces",
     "aboSurfaces",
     "canonicalDivisorOfAboSurface",
     "randomAboSurface",
@@ -1722,94 +1723,7 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
     )
     
 ///
-restart
-needsPackage"NongeneralTypeSurfacesInP4"
-p=19
-kk=ZZ/p
-E=kk[e_0..e_4,SkewCommutative=>true]
-P4=kk[x_0..x_4]
 
-collectAboSurfaces=method(Options=>{Verbose=>false})
--- Input: E exterior algebra
---        P4 Ring, coordinate ring of P4
---        L a List triples (m3x4,d,K) of m3x4 matrices leading to smooth surface X,
---            the dimension of the Hom space 
---            together with the partition type K of the canonical divisor of X
---        N integer, the number of desired additional cases.
---       
--- Output: a new type or N new entries of the List.
---
-collectAboSurfaces(Ring,Ring,List,ZZ) := o -> (E,P4,L,N) -> (
-    assert(coefficientRing E === coefficientRing P4);
-    count=0
-    while count<N do (
-	count1=0;
-	elapsedTime while (
-	    m3x4=random(E^3,E^{4:-1});
-	    (d,X)=testMatrix2(m3x4,P4,WithX=>true);
-	    d==0 or X===null) do (count1=count1+1; if d>0 then <<count1<<", d = "<<d<<flush<<endl;);
-	d
-	betti m3x13
-	betti syz m3x13
-	X===null
-	minimalBetti X
-	K=partitionOfCanonicalDivisorOfAboSurface X
-
-    kk=ZZ/19
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    m3x4a=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
-      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
-      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
-      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
-    
-    elapsedTime (r,m3x13)=testMatrix2(m3x4a,P4,WithM3x13=>true,Verbose=>true);
-    betti m3x13, degrees source m3x13
-    betti syz m3x13
-    elapsedTime (r,X)=testMatrix2(m3x4a,P4,WithX=>true,Verbose=>true);
-minimalBetti X
-K=partitionOfCanonicalDivisorOfAboSurface X
-    elapsedTime testMatrix1(m3x4a,P4)
-
-    p=5
-    kk=ZZ/p
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    
-    elapsedTime tally apply(p^4,i-> (m3x4=random(E^3,E^{4:-1});(testMatrix2(m3x4,P4,Verbose=>true))))
-		,testMatrix1(m3x4,P4))))
-    -- 74.7302s elapsed
-    -- o6 = Tally{0 => 1331}
-
-    elapsedTime tally apply(p^5,i-> (m3x4=random(E^3,E^{4:-1});testMatrix2(m3x4,P4)))
-
-    --p=11, p^3, 53.7482s elapsed for testMatrix1
-     -- o7 = Tally{5 => 1331}
--*
-p=5,p^5 -- 115.654s elapsed testMatrix1
-o7 = Tally{5 => 3078}
-           6 => 40
-           8 => 6
-           9 => 1
-
-
-p=5,p^5 -- 79.3831s elapsed for testMatrix2
-o13 = Tally{0 => 3067}
-            1 => 48
-            2 => 2
-            3 => 7
-            4 => 1
-*-
-40/5^2+0.0
-
-count=1;while ( --get 2 sections
-         m3x4=random(E^3,E^{4:-1});
-         testMatrix2(m3x4,P4) !=2) do count=count+1;
-count
--- kk=ZZ/5 is too small to get a smooth surface
-
-elapsedTime (r,X)=testMatrix2(m3x4,P4,WithX=>true);
-X=aboSurfaceFromMatrix(m3x4,P4,Verbose=>true)
 ///
 
 
@@ -2015,19 +1929,6 @@ adjointMatrices(Matrix,Ring,Ring,Ring):= opt -> (mE3x4,P2,P3,P4) -> (
     tally apply(primaryDecomposition (minors(3,m3x5)+minors(2,m2x3)),c->(dim c, degree c)))
       )
 
-collectAboSurfaces=method(Options=>{Verbose=>false})	
-collectAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKs,P4,E,N) -> (
-    count:= #mKs;count1:=0;
-    mKs':=mKs;
-    X:=null; m3x4:= null;K:=null;
-    while (count<N) do (
-	elapsedTime (X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
-	elapsedTime K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>false);
-	if opt.Verbose then <<count << " K = " << K <<endl;
-	mKs'=append(mKs',{m3x4,K});
-	count=count+1;
-	);
-    mKs')
 
 ///
 mKs={}
@@ -2266,26 +2167,6 @@ analyzeAboSurface(ZZ,Ring):= opt -> (n,P4) -> (
 	    elapsedTime analyzeAboSurface(P4,PrintConstructionData=>opt.PrintConstructionData)))
 )
     
-searchAboSurfaces=method(Options=>{Verbose=>true})	
-searchAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
-    count:= #mKRs;count1:=0;
-    ms:=apply(mKRs,m->m_0);KRs:=apply(mKRs,m->m_1);mKRs':=mKRs;
-    X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
-    while (count<N) do (
-	(X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
-	K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true);
-	if opt.Verbose then << "K = " << K <<endl;
-	R1 = residualInQuintics X; count1=count1+1;
-	R = tally numericalTypeOfResidualInQuintics(R1,X);
-	if opt.Verbose then << "count1= "<<count1 <<endl;
-	if #select(KRs,KR-> (K,R)==KR)<3 then (
-	    count=count+1;
-	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
-	    KRs=append(KRs,(K,R));
-	    mKRs'=append(mKRs',(m3x4,(K,R))););
-	);
-    << "count1= "<<count1 <<endl;
-    mKRs')
 
 
 numericalTypeOfResidualInQuintics=method()
@@ -2391,8 +2272,33 @@ randomSpecialAboSurface(Ring,Ring) := opt -> (P4,E) -> (
       if opt.Count then << "count2= " << count2 <<endl;      
       (I,m3x4,rIs))
 
-searchSpecialAboSurfaces=method(Options=>{Verbose=>true})	
-searchSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
+
+
+collectAboSurfaces=method(Options=>{Verbose=>true})	
+collectAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
+    count:= #mKRs;count1:=0;
+    ms:=apply(mKRs,m->m_0);KRs:=apply(mKRs,m->m_1);mKRs':=mKRs;
+    X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
+    while (count<N) do (
+	elapsedTime (X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
+	K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true);
+	if opt.Verbose then << "K = " << K <<endl;
+	R1 = residualInQuintics X; count1=count1+1;
+	R = tally numericalTypeOfResidualInQuintics(R1,X);
+	if opt.Verbose then << "count1= "<<count1 <<endl;
+	if #select(KRs,KR-> (K,R)==KR)<15 then (
+	    count=count+1;
+	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
+	    KRs=append(KRs,(K,R));
+	    mKRs'=append(mKRs',(m3x4,(K,R))););
+	);
+    << "count1= "<<count1 <<endl;
+    mKRs')
+
+
+
+collectSpecialAboSurfaces=method(Options=>{Verbose=>true})	
+collectSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
     count:= #mKRs;count1:=0;
     ms:=apply(mKRs,m->m_0);KRs:=apply(mKRs,m->m_1);mKRs':=mKRs;
     X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
@@ -2404,7 +2310,7 @@ searchSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
 	R1 = residualInQuintics X; count1=count1+1;
 	R = tally numericalTypeOfResidualInQuintics(R1,X);
 	if opt.Verbose then << "count1= "<<count1 <<endl;
-	if #select(KRs,KR-> (K,R)==KR)<3 then (
+	if #select(KRs,KR-> (K,R)==KR)<20 then (
 	    count=count+1;
 	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
 	    KRs=append(KRs,(K,R));
@@ -2413,32 +2319,47 @@ searchSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
     << "count1= "<<count1 <<endl;
     mKRs')
 
+specificAboSurface=method()
+
+specificAboSurface(Ring,Ring,Number) := (P4,E,k) -> (
+    mKRs:={(matrix {{0, -E_0+4*E_1+7*E_2-4*E_4, 8*E_0+7*E_1-9*E_2+9*E_3+4*E_4, -6*E_0+8*E_1+4*E_2+9*E_3-9*E_4},
+      {-3*E_0+2*E_1-6*E_2, -8*E_0+2*E_1-5*E_2+E_4, 9*E_0-7*E_1-9*E_2-9*E_3-4*E_4, -9*E_0-3*E_1+7*E_2-2*E_3+2*E_4},
+      {4*E_0-5*E_1-9*E_2+3*E_3, E_0-3*E_1+2*E_2+E_4, E_0+9*E_1+8*E_2-2*E_3-3*E_4, 7*E_0+2*E_1-5*E_2+E_3-E_4}},({1,
+      2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 6})), (matrix {{-9*E_0+7*E_1-7*E_2-2*E_3,
+      3*E_0-2*E_1-9*E_4, 6*E_0-2*E_1-3*E_2-5*E_3-2*E_4, 3*E_0+4*E_1-7*E_2-3*E_3+3*E_4}, {-8*E_0+5*E_1+6*E_2+8*E_3,
+      4*E_0-6*E_1+3*E_2-6*E_4, -6*E_0-2*E_1-3*E_2-4*E_3+6*E_4, 5*E_0-9*E_1+9*E_2+7*E_3-7*E_4},
+      {4*E_0-7*E_1+4*E_2-6*E_3, 3*E_0-4*E_1-2*E_2+6*E_4, 5*E_0+3*E_1-5*E_2, -8*E_0-8*E_1+E_2-9*E_3+9*E_4}},({1, 1,
+      2, 2, 3, 3},new Tally from {((2,1),(1,6)) => 5})), (matrix {{-5*E_0-5*E_1+2*E_2+E_3, -7*E_1+9*E_2,
+      -7*E_0+7*E_1+8*E_2-3*E_3+7*E_4, 4*E_0+9*E_1-E_2-6*E_3+6*E_4}, {6*E_0+9*E_1+9*E_2, -7*E_1+9*E_2,
+      -3*E_0-3*E_1-5*E_2, -E_0+2*E_1+8*E_2+E_3-E_4}, {5*E_0+2*E_1-3*E_3, -7*E_1+9*E_2, 7*E_0-E_1-4*E_2+5*E_3+E_4,
+      -4*E_0+4*E_1+4*E_2-5*E_3+5*E_4}},({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
+      1})), (matrix {{2*E_0-6*E_1-5*E_2+E_3, -4*E_0+9*E_1+8*E_2+6*E_4, -6*E_0+6*E_1-5*E_2-2*E_3-2*E_4,
+      4*E_0-8*E_1-7*E_2+2*E_3-2*E_4}, {7*E_0-8*E_1-5*E_2-4*E_3, 9*E_0-4*E_1+9*E_2-8*E_4,
+      E_0-8*E_1+8*E_2-5*E_3-5*E_4, -4*E_0+2*E_1-6*E_2+5*E_3-5*E_4}, {E_0+5*E_1+3*E_2+E_3, E_0-8*E_1-6*E_2-9*E_4,
+      5*E_0+6*E_1-8*E_2+E_3+E_4, -E_0-9*E_1+8*E_2+6*E_3-6*E_4}},({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6))
+      => 4, ((2,4),(1,21)) => 1})), (matrix {{-5*E_0-5*E_1-5*E_2-8*E_3, -8*E_0-2*E_1+3*E_2-4*E_4,
+      7*E_0+8*E_1-9*E_2-E_3+9*E_4, -9*E_0-2*E_1+7*E_3-7*E_4}, {-5*E_0-2*E_1+6*E_2-5*E_3, 3*E_0+7*E_1+E_2+9*E_4,
+      6*E_0-2*E_1+2*E_3+E_4, 9*E_0+5*E_1+3*E_2-E_3+E_4}, {6*E_0+6*E_1+6*E_2+2*E_3, 8*E_0+E_1-6*E_2-E_4,
+      -7*E_0-3*E_1-7*E_2, 3*E_0-2*E_1-9*E_2+5*E_3-5*E_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
+      ((2,2),(1,11)) => 1})), (matrix {{5*E_0+4*E_1+2*E_3, 3*E_0-5*E_1-9*E_2-5*E_4, 5*E_1+4*E_2,
+      -4*E_0+2*E_1-4*E_2-9*E_3+9*E_4}, {2*E_0+2*E_1-7*E_2-3*E_3, 5*E_0-3*E_1+4*E_2+5*E_4, 0,
+      6*E_0+E_1-6*E_2-8*E_3+8*E_4}, {3*E_0+6*E_1+7*E_2+7*E_3, -2*E_0+2*E_1+6*E_2, 4*E_1+7*E_2,
+      9*E_0-7*E_1-6*E_2-5*E_3+5*E_4}},({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5,
+      ((3,1),(2,5)) => 1})), (matrix {{6*E_0-E_1-8*E_2, -5*E_0+2*E_1+4*E_2, -7*E_1+2*E_2+3*E_3+3*E_4,
+      4*E_0+9*E_1+2*E_2+6*E_3-6*E_4}, {5*E_0-6*E_1+8*E_2-5*E_3, -2*E_0-3*E_1-6*E_2, E_0-8*E_1-8*E_2+5*E_3+5*E_4,
+      -3*E_0-8*E_1+7*E_2+5*E_3-5*E_4}, {9*E_0-8*E_1+4*E_2-2*E_3, E_0-8*E_1+3*E_2, -8*E_0+3*E_1-3*E_3-3*E_4,
+      7*E_0+9*E_1+E_3-E_4}},({1, 1, 1, 1, 1, 7},new Tally from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 2,
+      ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1}))};
+      mKR:=mKRs_k;
+      << "(K,R) = " << mKR_1 << flush<<endl;
+      m3x4:= mKR_0;
+      X:=aboSurfaceFromMatrix(m3x4,P4);
+      return X)
+    
 
 
 
 ///
-searchAboSurfaces=method(Options=>{Verbose=>true})	
-searchAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
-    count:= #mKRs;count1:=0;
-    ms:=apply(mKRs,m->m_0);KRs:=apply(mKRs,m->m_1);mKRs':=mKRs;
-    X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
-    while (count<N) do (
-	(X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
-	K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true);
-	if opt.Verbose then << "K = " << K <<endl;
-	R1 = numericalTypeResidualInQuintics X; count1=count1+1;
-	cR1 = decompose R1;
-	R = tally apply(cR1,c->((dim c, degree c), (dim (c+X),degree (c+X))));
-	if opt.Verbose then << "count1= "<<count1 <<endl;
-	if #select(KRs,KR-> (K,R)==KR)<3 then (
-	    count=count+1;
-	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
-	    KRs=append(KRs,(K,R));
-	    mKRs'=append(mKRs',(m3x4,(K,R))););
-	);
-    << "count1= "<<count1 <<endl;
-    mKRs')
-
 
 
 
@@ -2450,21 +2371,97 @@ setRandomSeed("A lot of surfaces")
 kk=ZZ/7
 E=kk[e_0..e_4,SkewCommutative=>true]
 P4=kk[x_0..x_4]
-mKRs={}
---	elapsedTime mKRs1=searchSpecialAboSurfaces(mKRs,P4,E,15);
+-- from Kristian
+mE3x4=matrix {{-e_0-2*e_1, -3*e_0+3*e_2-3*e_4, e_0+3*e_2-3*e_4, -e_0-2*e_2},
+       {-3*e_0-2*e_2+e_3, -2*e_0+2*e_2, 3*e_0-e_1-2*e_2+e_4,
+       -3*e_0+2*e_1-2*e_2}, {3*e_1, -2*e_2+e_4, -2*e_1-2*e_2, 3*e_1}}
+elapsedTime X=aboSurfaceFromMatrix(mE3x4,P4);
+minimalBetti X
+dim X, degree X, sectionalGenus X
+K=canonicalDivisor(X);
 
-elapsedTime mKRs2=searchAboSurfaces(mKRs,P4,E,20);
+partitionOfCanonicalDivisorOfAboSurface(X)
+cK=decompose K;
+tally apply(cK,c->(dim c, degree c, genus c, minimalBetti c,selfIntersectionNumber(X,c)))--,
+
+
+HdotK(12,13)
+Ksquare(12,13,2)
+betti(T=tateResolutionOfSurface X)
+betti (L=T.dd_4^{0..2}_{3})
+L1=trim ideal sub(L,vars P4)
+bordigaMatrix=sub(mE3x4,vars P4)
+bordiga=minors(3,bordigaMatrix);
+dim bordiga, degree bordiga
+singBordiga=saturate ideal singularLocus bordiga;
+degree singBordiga, dim singBordiga
+minimalBetti radical singBordiga
+cSingBordiga=primaryDecomposition singBordiga;
+apply(cSingBordiga,c->(dim c, degree c, genus c, trim radical c, degree radical c, genus radical c))
+apply(cSingBordiga,c->rank(bordigaMatrix%radical c))
+bordigaMatrix%L1
+saturate ideal singularLocus X
+
+degree K
+selfIntersectionNumber(X,cK_0)
+dim X, degree X, sectionalGenus X
+
+
+R=residualInQuintics X
+cR=primaryDecomposition R
+tally apply(cR, c-> (dim c, degree c, genus c, degree(c+X), minimalBetti c))
+dim R, degree R
+
+ci=ideal(gens X*random(source gens X,P4^{2:-5}));
+minimalBetti(Y=ci:X)
+dim Y, degree Y, sectionalGenus Y
+degree R
+Y9=Y:R;
+minimalBetti Y9
+dim singularLocus Y9,degree singularLocus Y9
+singY9=saturate ideal singularLocus Y9;
+betti singY9
+degree singY9
+decompose singY9
+dim (singR=ideal singularLocus R)
+degree singR
+
+decompose singR
+saturate singR==saturate
+trim sum cR
+
+elapsedTime cY9=decompose Y9;
+
+
+
+mKRs={}
+--	elapsedTime mKRs1=collectSpecialAboSurfaces(mKRs,P4,E,15);
+
+elapsedTime mKRs2=collectAboSurfaces(mKRs,P4,E,20);
 #mKRs2
 
 
 
 
+restart
 
+needsPackage"NongeneralTypeSurfacesInP4"
+setRandomSeed("A lot of surfaces")
 
 
 kk=ZZ/19
 E=kk[e_0..e_4,SkewCommutative=>true]
 P4=kk[x_0..x_4]
+count=0;elapsedTime while (
+   m3x4=(diagonalMatrix{E_3,E_4,E_3+E_4}|map(E^3,E^{-1},0))+(random(E^3,E^{4:-1})%ideal(E_3,E_4));
+   d=testMatrix1(m3x4,P4)
+   ; d<6 ) do (count=count+1);(count,d)
+
+elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
+minimalBetti X
+ks=partitionOfCanonicalDivisorOfAboSurface X
+
+
 mKRs1={(matrix {{-5*e_1, -7*e_0-3*e_1+2*e_2-e_4, 3*e_0+4*e_1+3*e_2+9*e_3-7*e_4, -2*e_0+4*e_1+6*e_2+e_3-e_4}, {8*e_1,
      2*e_0-6*e_1+7*e_2, -9*e_0+3*e_1-9*e_2-9*e_3+7*e_4, 6*e_0+9*e_1-7*e_2+6*e_3-6*e_4}, {4*e_1,
      -5*e_0+4*e_1+7*e_2-7*e_4, -6*e_0+7*e_2+6*e_3+8*e_4, 4*e_0+3*e_1-8*e_2-6*e_3+6*e_4}},({1, 1, 2, 2, 2, 4},new
@@ -2659,16 +2656,23 @@ mKRs3={(matrix {{0, -e_0+4*e_1+7*e_2-4*e_4, 8*e_0+7*e_1-9*e_2+9*e_3+4*e_4, -6*e_
       7*e_0+9*e_1-5*e_2, 6*e_0+8*e_1+e_2-3*e_3+4*e_4, -5*e_0-9*e_1-e_2-7*e_3+7*e_4}},({1, 1, 1, 1, 1, 7},new Tally
       from {((2,1),(1,5)) => 3, ((2,1),(1,6)) => 3, ((3,1),(2,5)) => 1}))}
 
+mKRs3Distinct=select(mKRs3,mKR->sum(mKR_1_0)==12);#mKRs3Distinct
+T=tally apply(mKRs3Distinct,mKR->mKR_1_0)
+pos=apply(keys T,p->position(mKRs3Distinct,mKR->mKR_1_0==p));
+exampleOfAbo=reverse sort(mKRs3Distinct_pos,mKR->mKR_1_0)
+#mKRs3
+mKRs3
+bordigaMatrices=apply(mKRs3,mKR->sub(mKR_0,vars P4));
+special1=select(bordigaMatrices,m->rank source gens trim minors(3,m%ideal(P4_0,P4_1,P4_2))==1)
+tally apply(bordigaMatrices,m->codim trim minors(3,m%ideal(P4_0,P4_1,P4_2)))
 
 
-
-#mKRs2
-tally apply(mKRs2,mKR->(mKR_1_0,mKR_1_1))
+tally apply(mKRs3,mKR->(mKR_1))
 mKRLinkage=select(mKRs3,mKR->max apply( keys mKR_1_1,k->k_0_0)<3);
 tally apply(mKRLinkage,mKR->(mKR_1_0,sum mKR_1_0,mKR_1_1))
 mKRs3=reverse sort(mKRs2,mKR->mKR_1_0);
 netList apply(mKRs3,mKR->(mKR_1_0,mKR_1_1))
-apply(mKRs2,mKR->(
+apply(mKRs3,mKR->(
 	m3x4=mKR_0;
 	
 	elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
@@ -2698,15 +2702,32 @@ apply(mKRs2,mKR->(
 netList oo
 tally sort o9
 Ksquare(13,16,3)
-mKRs1={}
+
+restart
+needsPackage"NongeneralTypeSurfacesInP4"
+setRandomSeed("A lot of surfaces")
+kk=ZZ/7
+E=kk[e_0..e_4,SkewCommutative=>true]
+P4=kk[x_0..x_4]
+mKRs={}
 
 
-elapsedTime mKRs2=searchAboSurfaces(mKRs3,P4,E,25);
-mKRs3=reverse sort(mKRs2,mKR->mKR_1_0);
-tally apply(mKRs3,mKR->mKR_1)
-#keys tally apply(mKRs3,mKR->mKR_1_0)
+elapsedTime mKRsp7=collectAboSurfaces(mKRs,P4,E,5);
+mKRp7=reverse sort(mKRsp7,mKR->mKR_1_0);
+tally apply(mKRp7,mKR->mKR_1)
+#keys tally
+netList apply(mKRp7,mKR->mKR_1)
+m3x4=(mKRp7_1)_0
+X=aboSurfaceFromMatrix(m3x4,P4);
+partitionOfCanonicalDivisorOfAboSurface X
+R=residualInQuintics X;
+Rt = tally numericalTypeOfResidualInQuintics(R,X)
 
-elapsedTime mKRs4=searchSpecialAboSurfaces(mKRs3,P4,E,30);
+cR=primaryDecomposition R;
+apply(cR,c->(dim c, degree c, genus c, degree(c+X)))
+apply(cR,c->(dim c, degree c, genus c, minimalBetti c, degree(c+X),
+	degree radical c, genus radical c, degree(radical c+X)))
+    elapsedTime mKRs4=collectSpecialAboSurfaces(mKRs3,P4,E,30);
 #mKRs4
 mKRs5=reverse sort(mKRs4,mKR->mKR_1_0);
 tally apply(mKRs5,mKR->mKR_1)
@@ -3628,7 +3649,6 @@ Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
      SUBSECTION "search for modules",
      UL{
 	TO findRandomSchreyerSurface,
-        TO singSchreyerSurfacesStatistic,
         TO findRandomSmoothSchreyerSurface, 
         TO collectSchreyerSurfaces
         },
@@ -3729,6 +3749,7 @@ Headline => "functions for investigating Abo surfaces, (6 families)",
 	TO analyzeAboSurface,
 	TO abo111333Surface,
 	TO abo111117Surface,
+	TO specificAboSurface,
         },
     PARA{},
      SUBSECTION "6-secants and adjunction",
@@ -4900,6 +4921,52 @@ SeeAlso
    findRandomSchreyerSurface
 ///
 
+
+doc ///
+Key
+ collectSchreyerSurfaces
+ (collectSchreyerSurfaces, List, List, Number, Number)
+ (collectSchreyerSurfaces, List, List, Number)
+Headline
+ collect random smooth Schreyer surfaces
+Usage
+ (adj',Ms')= collectSchreyerSurfaces(adjTypes,Ms,s,N)
+Inputs
+ adjTypes:List
+  of already discovered adjunction types
+ Ms: List
+    of ideals leading to the desired H^1-modules
+ s:Number
+  the number of desired extra syzygies
+ N:Number
+  the desired number of new modules
+Outputs
+ adj':List
+  of adjunction types
+ Ms' : List
+  of modules
+Description
+  Text
+    It searches for a suitable H^1-module with Hilbert function (1,5,5) and min(2,s) extra syzygies by searching in the
+    codimension 6 subspace of modules with one extra syzygy, and computes the corresponding surface
+    and checks it smoothness. Since many H^1-modules lead to singular surfaces one has to check
+    more then 3^6 examples of modules.
+  Example
+    P4=ZZ/3[x_0..x_4];
+    setRandomSeed("carefully choosen good randomSeed ");
+    (Ms,adjTypes)=exampleOfSchreyerSurfaces P4;
+    netList adjTypes
+  Text
+    The following command takes too much time
+  Example
+    #Ms
+    "elapsedTime (adj',Ms')=collectSchreyerSurfaces(adjTypes,Ms,2,1);"  
+    
+SeeAlso
+   exampleOfSchreyerSurfaces
+///
+
+
 doc ///
 Key
  tangentDimension
@@ -5565,6 +5632,76 @@ SeeAlso
   LeBarzN6
   partitionOfCanonicalDivisorOfAboSurface
   analyzeAboSurface
+///
+
+doc ///
+Key
+ specificAboSurface
+ (specificAboSurface, Ring, Ring, Number)
+Headline
+ compute a smooth Schreyer surface with given H^1-module
+Usage
+ X = specificAboSurface(P4,E,k)
+Inputs
+ P4:Ring
+  coordinate ring of P4 over a ground field of characteristic 3
+ E: Ring
+  exterior algebra dual to P4.
+ k: Number
+  a number between 0 and 6 specifies m3x4 matrix of linear forms over E to use. 
+Outputs
+ X:Ideal
+  ideal of a Schreyer surface
+Description
+  Text
+    The function returns one of 7 specific Abo surface corresponding to one of the following partitions
+    of the canonical divisor:
+    {1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 2, 2, 2, 4}, {1, 1, 1, 3, 3, 3},
+    {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 1, 7}
+  Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    X=specificAboSurface(P4,E,3);
+    minimalBetti X
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,2)==-6   
+    LeBarzN6(d,sg,2)==7
+  Text
+    There are three (-1) lines and four 6-secant lines in this case.
+    
+    The Tate resolution has a specific form
+  Example
+    betti(T=tateResolutionOfSurface X)
+    m3x4=T.dd_5^{0..2}_{4..7}
+    m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
+    betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
+  Text
+    The construction of X uses a special 3x4 matrix over E such
+    that the Hom group above is non zero.
+
+    The (5,5) linked surface Y is an elliptic surface of degree 13 and sectional genus 16.
+  Example
+    betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
+    minimalBetti (Y=ci:X)
+    D1=canonicalDivisor Y;
+    D2=canonicalDivisor Y;
+    betti(baseLocus=saturate (D1+D2))
+    degree baseLocus, genus baseLocus
+    selfIntersectionNumber(Y,baseLocus)
+    degree Y, sectionalGenus Y
+    Ksquare(13,16,3)==-5
+    betti(E1=D1:baseLocus)
+    degree E1, genus E1, selfIntersectionNumber(Y,E1)
+    betti(tateResolutionOfSurface Y)
+SeeAlso
+   adjunctionProcessData
+   LeBarzN6
+   Ksquare
+   tateResolutionOfSurface
+   moduleFromSchreyerSurface
+   tangentDimension
+   exampleOfSchreyerSurfaces
 ///
 
 
