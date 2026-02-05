@@ -37,6 +37,8 @@ newPackage(
 
 export {
     --"NongeneralTypeSuracesInP4",
+    "numericalFunctions",
+    "specificEllipticSurfaceD13S16",
     "specificAboSurface",
     "collectSpecialAboSurfaces",
     "randomSpecialAboSurface",
@@ -1634,6 +1636,7 @@ testMatrix1(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     c := m4x4*m4x3;
     m13x12:=map(E^13,,sub(transpose diff(sub(vars B,ExB),transpose flatten c),E));
     rank source syz(m13x12,DegreeLimit=>3)
+    --betti syz(m13x12,DegreeLimit=>3)
     )
 
 
@@ -1690,10 +1693,9 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
     E:=ring m3x4;
     m3x1:=matrix{{E_0},{E_1},{E_2}};
     if o.Verbose then (
-	elapsedTime hom:=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>1)) else (
-        betti(hom=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>1))
-	);
-    if hom==0 then r:=0 else (B:=betti hom;r=B#(0,{1},1));
+	elapsedTime hom:=Hom(coker m3x4,coker m3x1**E^{2},DegreeLimit=>1)) else (
+        betti(hom=Hom(coker m3x4,coker m3x1**E^{2},DegreeLimit=>1)));
+    if hom==0 then r:=0 else (B:=betti hom;r=B#(0,{0},0));
     --r:=if member((0,{1},1),keys B) then B#(0,{1},1) else 0;
     if not (o.WithM3x13 or o.WithX) then return r;
     if r==0 then return (r,null);
@@ -2181,7 +2183,19 @@ numericalTypeOfResidualInQuintics(Ideal,Ideal) := (R,X) -> (
 		else {((dim c, degree c),(dim(c+X),degree(c+X)))}
 		)
 	    )
+///
+kk=ZZ/7
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+setRandomSeed("same start");
+elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+setRandomSeed("same start");
+saturate minors(2,sub(m3x4,vars P4))
+elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
+pt=saturate minors(2,sub(m3x4s,vars P4))
+sub(m3x4s,vars P4)%pt
 
+///
 
 randomSpecialAboSurface=method(Options=>{Verbose=>false,Count=>false,
 	PrintConstructionData=>false})
@@ -2270,17 +2284,21 @@ randomSpecialAboSurface(Ring,Ring) := opt -> (P4,E) -> (
 	  <<"codim singX = " << codim singX <<endl);
       not codim singX == 5) do (count2=count2+1);
       if opt.Count then << "count2= " << count2 <<endl;      
-      (I,m3x4,rIs))
+      (I,m3x4))
 
 
 
-collectAboSurfaces=method(Options=>{Verbose=>true})	
-collectAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
-    count:= #mKRs;count1:=0;
-    ms:=apply(mKRs,m->m_0);KRs:=apply(mKRs,m->m_1);mKRs':=mKRs;
+collectAboSurfaces=method(Options=>{Verbose=>true,Special=>false})	
+collectAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mdKRs,P4,E,N) -> (
+    count:= #mdKRs;count1:=0;
+    ms:=apply(mdKRs,m->m_0);KRs:=apply(mdKRs,m->m_2);mdKRs':=mdKRs;
     X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
+    d:=null;
     while (count<N) do (
-	elapsedTime (X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
+	elapsedTime if opt.Special then (X,m3x4)=randomSpecialAboSurface(P4,E,Verbose=>false) else (
+	(X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
+	);
+	d=testMatrix2(map(E^3,,m3x4),P4);
 	K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true);
 	if opt.Verbose then << "K = " << K <<endl;
 	R1 = residualInQuintics X; count1=count1+1;
@@ -2288,23 +2306,24 @@ collectAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
 	if opt.Verbose then << "count1= "<<count1 <<endl;
 	if #select(KRs,KR-> (K,R)==KR)<15 then (
 	    count=count+1;
-	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
+	    if opt.Verbose then <<"count=" <<count <<", (K,R)= " << (K,R) <<", dim Hom = " << d<<flush<< endl; 
 	    KRs=append(KRs,(K,R));
-	    mKRs'=append(mKRs',(m3x4,(K,R))););
+	    mdKRs'=append(mdKRs',(m3x4,d,(K,R))););
 	);
     << "count1= "<<count1 <<endl;
-    mKRs')
+    mdKRs')
 
 
-
+-*
 collectSpecialAboSurfaces=method(Options=>{Verbose=>true})	
-collectSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
-    count:= #mKRs;count1:=0;
-    ms:=apply(mKRs,m->m_0);KRs:=apply(mKRs,m->m_1);mKRs':=mKRs;
+collectSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mdKRs,P4,E,N) -> (
+    count:= #mdKRs;count1:=0;
+    ms:=apply(mdKRs,m->m_0);KRs:=apply(mKRs,m->m_2);mKRs':=mKRs;
     X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
-    n:=0;
+    n:=0;d:=null;
     while (count<N) do (
 	(X,m3x4,n)=randomSpecialAboSurface(P4,E,Verbose=>false);
+	d=testMatrix2(m3x4,P4);
 	K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true);
 	if opt.Verbose then << "K = " << K <<endl;
 	R1 = residualInQuintics X; count1=count1+1;
@@ -2314,45 +2333,163 @@ collectSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mKRs,P4,E,N) -> (
 	    count=count+1;
 	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
 	    KRs=append(KRs,(K,R));
-	    mKRs'=append(mKRs',(m3x4,(K,R))););
+	    mdKRs'=append(mKRs',(m3x4,d,(K,R))););
 	);
     << "count1= "<<count1 <<endl;
-    mKRs')
+    mdKRs')
+*-
 
 specificAboSurface=method()
 
 specificAboSurface(Ring,Ring,Number) := (P4,E,k) -> (
-    mKRs:={(matrix {{0, -E_0+4*E_1+7*E_2-4*E_4, 8*E_0+7*E_1-9*E_2+9*E_3+4*E_4, -6*E_0+8*E_1+4*E_2+9*E_3-9*E_4},
+    p:=char P4;
+    if not member(p,{7,11,19}) then return (<<"no example stored for p = "<<p<<flush<<endl;
+	return ideal 0_P4);
+    if p == 19 then (
+    mdKRs:={(matrix {{0, -E_0+4*E_1+7*E_2-4*E_4, 8*E_0+7*E_1-9*E_2+9*E_3+4*E_4, -6*E_0+8*E_1+4*E_2+9*E_3-9*E_4},
       {-3*E_0+2*E_1-6*E_2, -8*E_0+2*E_1-5*E_2+E_4, 9*E_0-7*E_1-9*E_2-9*E_3-4*E_4, -9*E_0-3*E_1+7*E_2-2*E_3+2*E_4},
-      {4*E_0-5*E_1-9*E_2+3*E_3, E_0-3*E_1+2*E_2+E_4, E_0+9*E_1+8*E_2-2*E_3-3*E_4, 7*E_0+2*E_1-5*E_2+E_3-E_4}},({1,
-      2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 6})), (matrix {{-9*E_0+7*E_1-7*E_2-2*E_3,
-      3*E_0-2*E_1-9*E_4, 6*E_0-2*E_1-3*E_2-5*E_3-2*E_4, 3*E_0+4*E_1-7*E_2-3*E_3+3*E_4}, {-8*E_0+5*E_1+6*E_2+8*E_3,
-      4*E_0-6*E_1+3*E_2-6*E_4, -6*E_0-2*E_1-3*E_2-4*E_3+6*E_4, 5*E_0-9*E_1+9*E_2+7*E_3-7*E_4},
-      {4*E_0-7*E_1+4*E_2-6*E_3, 3*E_0-4*E_1-2*E_2+6*E_4, 5*E_0+3*E_1-5*E_2, -8*E_0-8*E_1+E_2-9*E_3+9*E_4}},({1, 1,
-      2, 2, 3, 3},new Tally from {((2,1),(1,6)) => 5})), (matrix {{-5*E_0-5*E_1+2*E_2+E_3, -7*E_1+9*E_2,
-      -7*E_0+7*E_1+8*E_2-3*E_3+7*E_4, 4*E_0+9*E_1-E_2-6*E_3+6*E_4}, {6*E_0+9*E_1+9*E_2, -7*E_1+9*E_2,
-      -3*E_0-3*E_1-5*E_2, -E_0+2*E_1+8*E_2+E_3-E_4}, {5*E_0+2*E_1-3*E_3, -7*E_1+9*E_2, 7*E_0-E_1-4*E_2+5*E_3+E_4,
-      -4*E_0+4*E_1+4*E_2-5*E_3+5*E_4}},({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
+      {4*E_0-5*E_1-9*E_2+3*E_3, E_0-3*E_1+2*E_2+E_4, E_0+9*E_1+8*E_2-2*E_3-3*E_4,
+      7*E_0+2*E_1-5*E_2+E_3-E_4}},1,({1, 2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 6})),
+      (matrix {{-9*E_0+7*E_1-7*E_2-2*E_3, 3*E_0-2*E_1-9*E_4, 6*E_0-2*E_1-3*E_2-5*E_3-2*E_4,
+      3*E_0+4*E_1-7*E_2-3*E_3+3*E_4}, {-8*E_0+5*E_1+6*E_2+8*E_3, 4*E_0-6*E_1+3*E_2-6*E_4,
+      -6*E_0-2*E_1-3*E_2-4*E_3+6*E_4, 5*E_0-9*E_1+9*E_2+7*E_3-7*E_4}, {4*E_0-7*E_1+4*E_2-6*E_3,
+      3*E_0-4*E_1-2*E_2+6*E_4, 5*E_0+3*E_1-5*E_2, -8*E_0-8*E_1+E_2-9*E_3+9*E_4}},1,({1, 1, 2, 2, 3, 3},new Tally
+      from {((2,1),(1,6)) => 5})), (matrix {{-5*E_0-5*E_1+2*E_2+E_3, -7*E_1+9*E_2, -7*E_0+7*E_1+8*E_2-3*E_3+7*E_4,
+      4*E_0+9*E_1-E_2-6*E_3+6*E_4}, {6*E_0+9*E_1+9*E_2, -7*E_1+9*E_2, -3*E_0-3*E_1-5*E_2,
+      -E_0+2*E_1+8*E_2+E_3-E_4}, {5*E_0+2*E_1-3*E_3, -7*E_1+9*E_2, 7*E_0-E_1-4*E_2+5*E_3+E_4,
+      -4*E_0+4*E_1+4*E_2-5*E_3+5*E_4}},2,({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
       1})), (matrix {{2*E_0-6*E_1-5*E_2+E_3, -4*E_0+9*E_1+8*E_2+6*E_4, -6*E_0+6*E_1-5*E_2-2*E_3-2*E_4,
       4*E_0-8*E_1-7*E_2+2*E_3-2*E_4}, {7*E_0-8*E_1-5*E_2-4*E_3, 9*E_0-4*E_1+9*E_2-8*E_4,
       E_0-8*E_1+8*E_2-5*E_3-5*E_4, -4*E_0+2*E_1-6*E_2+5*E_3-5*E_4}, {E_0+5*E_1+3*E_2+E_3, E_0-8*E_1-6*E_2-9*E_4,
-      5*E_0+6*E_1-8*E_2+E_3+E_4, -E_0-9*E_1+8*E_2+6*E_3-6*E_4}},({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6))
+      5*E_0+6*E_1-8*E_2+E_3+E_4, -E_0-9*E_1+8*E_2+6*E_3-6*E_4}},1,({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6))
       => 4, ((2,4),(1,21)) => 1})), (matrix {{-5*E_0-5*E_1-5*E_2-8*E_3, -8*E_0-2*E_1+3*E_2-4*E_4,
       7*E_0+8*E_1-9*E_2-E_3+9*E_4, -9*E_0-2*E_1+7*E_3-7*E_4}, {-5*E_0-2*E_1+6*E_2-5*E_3, 3*E_0+7*E_1+E_2+9*E_4,
       6*E_0-2*E_1+2*E_3+E_4, 9*E_0+5*E_1+3*E_2-E_3+E_4}, {6*E_0+6*E_1+6*E_2+2*E_3, 8*E_0+E_1-6*E_2-E_4,
-      -7*E_0-3*E_1-7*E_2, 3*E_0-2*E_1-9*E_2+5*E_3-5*E_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
+      -7*E_0-3*E_1-7*E_2, 3*E_0-2*E_1-9*E_2+5*E_3-5*E_4}},2,({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
       ((2,2),(1,11)) => 1})), (matrix {{5*E_0+4*E_1+2*E_3, 3*E_0-5*E_1-9*E_2-5*E_4, 5*E_1+4*E_2,
       -4*E_0+2*E_1-4*E_2-9*E_3+9*E_4}, {2*E_0+2*E_1-7*E_2-3*E_3, 5*E_0-3*E_1+4*E_2+5*E_4, 0,
       6*E_0+E_1-6*E_2-8*E_3+8*E_4}, {3*E_0+6*E_1+7*E_2+7*E_3, -2*E_0+2*E_1+6*E_2, 4*E_1+7*E_2,
-      9*E_0-7*E_1-6*E_2-5*E_3+5*E_4}},({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5,
+      9*E_0-7*E_1-6*E_2-5*E_3+5*E_4}},3,({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5,
       ((3,1),(2,5)) => 1})), (matrix {{6*E_0-E_1-8*E_2, -5*E_0+2*E_1+4*E_2, -7*E_1+2*E_2+3*E_3+3*E_4,
       4*E_0+9*E_1+2*E_2+6*E_3-6*E_4}, {5*E_0-6*E_1+8*E_2-5*E_3, -2*E_0-3*E_1-6*E_2, E_0-8*E_1-8*E_2+5*E_3+5*E_4,
       -3*E_0-8*E_1+7*E_2+5*E_3-5*E_4}, {9*E_0-8*E_1+4*E_2-2*E_3, E_0-8*E_1+3*E_2, -8*E_0+3*E_1-3*E_3-3*E_4,
-      7*E_0+9*E_1+E_3-E_4}},({1, 1, 1, 1, 1, 7},new Tally from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 2,
-      ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1}))};
-      mKR:=mKRs_k;
-      << "(K,R) = " << mKR_1 << flush<<endl;
-      m3x4:= mKR_0;
+      7*E_0+9*E_1+E_3-E_4}},5,({1, 1, 1, 1, 1, 7},new Tally from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 2,
+      ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1}))};); 
+      if p==7 then (
+       mdKRs= {(matrix {{3*E_0-E_3, 2*E_0+2*E_1-3*E_4, E_0+E_1-E_2-2*E_3+3*E_4, 2*E_0+3*E_2+3*E_3-3*E_4},
+      {E_0-2*E_1-3*E_2+2*E_3, -2*E_0+E_1+2*E_2, -2*E_0+E_1-E_3-2*E_4, -2*E_0+2*E_1-3*E_2+3*E_3-3*E_4}, {-E_1+2*E_2,
+      -2*E_0+3*E_1+E_2-2*E_4, -3*E_1+2*E_2-2*E_3+3*E_4, E_1+3*E_3-3*E_4}},2,({1, 1, 1, 1, 2, 3},new Tally from
+      {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 1, ((3,2),(2,8)) => 1})), (matrix {{3*E_1+2*E_2+E_3, 3*E_1-2*E_2, E_1,
+      3*E_1+E_2}, {-3*E_0-E_1-3*E_2+2*E_3, 2*E_0+3*E_1+3*E_2+2*E_4, 2*E_1, -E_0-2*E_2+3*E_3-3*E_4},
+      {E_0-E_1-E_2+3*E_3, -3*E_0-2*E_1+2*E_2-3*E_4, 0, -2*E_0+E_1-3*E_3+3*E_4}},4,({1, 1, 1, 1, 2, 6},new Tally
+      from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 4, ((3,1),(2,5)) => 1})), (matrix {{E_0+E_1-E_2+E_3,
+      -E_0+2*E_1+2*E_2-2*E_4, -E_0+3*E_1-2*E_2-2*E_4, -3*E_1+3*E_2+3*E_3-3*E_4}, {E_0-3*E_2-3*E_3,
+      3*E_0+2*E_1-2*E_2, 3*E_1-2*E_2+3*E_4, E_0+2*E_1+3*E_2+2*E_3-2*E_4}, {E_0+E_1-E_2+E_3, -E_0-2*E_1+E_4,
+      E_1-3*E_2+E_4, 2*E_0+2*E_1+E_2-E_3+E_4}},2,({1, 1, 1, 1, 1, 2},new Tally from {((2,1),(1,6)) => 4,
+      ((2,2),(1,11)) => 1})), (matrix {{-2*E_0-3*E_1+2*E_2, E_0-E_1-3*E_2+2*E_4, -E_0+2*E_2,
+      -2*E_1-2*E_2-3*E_3+3*E_4}, {-3*E_0+3*E_1-E_2+E_3, 2*E_0-3*E_1+2*E_2, 3*E_0+3*E_1+E_2-3*E_4,
+      3*E_0+3*E_1-3*E_2+E_3-E_4}, {2*E_0+E_2+E_3, 3*E_0-E_1+3*E_2, -2*E_0+2*E_1-3*E_2-2*E_4,
+      2*E_0-2*E_1+E_2-3*E_3+3*E_4}},1,({1, 1, 1, 2, 3, 3},new Tally from {((0,44),(0,42)) => 1, ((2,1),(1,6)) =>
+      5})), (matrix {{E_0-2*E_1-E_2, 3*E_1+E_2+3*E_4, -2*E_1+2*E_2+2*E_3-3*E_4, 2*E_0-E_1-3*E_2},
+      {2*E_0+3*E_1-2*E_2, -3*E_0-3*E_1-2*E_2, E_1-E_2-E_3-2*E_4, 3*E_0+2*E_1-3*E_2+E_3-E_4}, {2*E_0+3*E_1-2*E_2,
+      -2*E_0-E_1-E_2+E_4, E_0-2*E_1+E_2-2*E_3+3*E_4, E_0+3*E_1-2*E_2+2*E_3-2*E_4}},5,({1, 1, 1, 1, 1, 7},new Tally
+      from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 2, ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1})),
+   (matrix {{-2*E_1+3*E_3, E_0+2*E_1+3*E_2+E_4, 3*E_0-E_1+E_2+E_3-3*E_4, 3*E_0-E_1-E_3+E_4}, {-3*E_0+2*E_1-2*E_2+3*E_3,
+      -E_0+2*E_1-E_2+E_4, -E_0+3*E_1-2*E_2+3*E_3-2*E_4, -2*E_0+E_3-E_4}, {E_0-E_1+3*E_2+3*E_3, E_0-2*E_1+E_2-E_4,
+      -3*E_1+E_2-2*E_3-E_4, -3*E_0+3*E_1}},2,({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4, ((2,2),(1,11))
+      => 1})), (matrix {{-E_1+2*E_2, -2*E_0-E_1-3*E_2-3*E_4, E_0-3*E_1+E_2+E_3-E_4, -3*E_0-E_1-E_2},
+      {3*E_0-E_1+3*E_2+2*E_3, -2*E_0-E_1-3*E_2-3*E_4, -3*E_1+3*E_3-3*E_4, 2*E_0+2*E_1+E_2+E_3-E_4}, {E_0-E_1+3*E_3,
+      2*E_0+2*E_1-2*E_4, -E_0+2*E_1-E_2, 2*E_1-3*E_2-2*E_3+2*E_4}},2,({1, 1, 1, 2, 2, 2},new Tally from
+      {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 3, ((2,2),(1,12)) => 1})), (matrix {{3*E_0+E_1-2*E_2-E_3,
+      -E_0-E_1-E_2+3*E_4, 3*E_0-3*E_1-3*E_2-E_3+E_4, 2*E_1-3*E_3+3*E_4}, {3*E_0-2*E_1+E_2-2*E_3, 2*E_0+2*E_2+E_4,
+      E_0+3*E_1-E_2+3*E_3-3*E_4, -2*E_0-3*E_2-2*E_3+2*E_4}, {2*E_0+3*E_1+E_2-3*E_3, 3*E_1,
+      -2*E_0+E_1+2*E_2+E_3-E_4, -2*E_0-2*E_1-3*E_2+E_3-E_4}},2,({1, 1, 1, 2, 2, 3},new Tally from {((2,1),(1,5)) =>
+      1, ((2,1),(1,6)) => 2, ((2,3),(1,18)) => 1})), (matrix {{2*E_0-3*E_1+E_2-3*E_3, E_0-3*E_1-E_2+2*E_4,
+      2*E_1+E_2, 3*E_0+2*E_1-2*E_3+2*E_4}, {E_1+3*E_2+2*E_3, -E_1-3*E_2-2*E_4, 0, 2*E_1-2*E_3+2*E_4},
+      {-E_0-2*E_1+2*E_3, 3*E_0-E_1-3*E_2-2*E_4, 2*E_1+E_2, 2*E_0+2*E_2+2*E_3-2*E_4}},2,({1, 1, 1, 2, 2, 4},new
+      Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) => 1})), (matrix {{3*E_0+E_1-E_2-3*E_3, -E_0+3*E_1+3*E_2-E_4,
+      -3*E_0-2*E_1-2*E_2-3*E_3+3*E_4, -3*E_0-E_1-E_2-2*E_3+2*E_4}, {E_0, 2*E_0+E_1+E_2+2*E_4, -2*E_0+2*E_2-E_3+E_4,
+      2*E_0+2*E_1+3*E_2+E_3-E_4}, {2*E_0+E_1-E_2-3*E_3, 2*E_0-E_1+2*E_2+3*E_4, 2*E_0-2*E_2+E_3-E_4,
+      3*E_0-3*E_1+E_2+3*E_3-3*E_4}},2,({1, 1, 2, 2, 3, 3},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 2,
+      ((3,1),(2,4)) => 1})), (matrix {{-3*E_0, 3*E_1-3*E_2, -E_0-2*E_1+2*E_2+2*E_3+2*E_4,
+      3*E_0-E_1+3*E_2+3*E_3-3*E_4}, {E_0-3*E_1+2*E_2-2*E_3, 2*E_1-2*E_2, -2*E_0+2*E_1-E_2+E_3+E_4, -E_0-E_1+E_2},
+      {-3*E_0-E_1+E_3, 3*E_1-3*E_2, -E_0-E_1-3*E_2+3*E_3+3*E_4, 3*E_0+3*E_1+E_3-E_4}},3,({1, 1, 1, 2, 2, 5},new
+      Tally from {((2,1),(1,6)) => 4, ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1})), (matrix {{-2*E_0-3*E_2,
+      2*E_0+2*E_1+E_2-3*E_4, -3*E_0-2*E_1+2*E_2-E_3+2*E_4, E_0+2*E_2+E_3-E_4}, {3*E_2, E_0+E_1+3*E_2+2*E_4,
+      E_0-2*E_1-3*E_2, -E_0-2*E_2-E_3+E_4}, {-E_0-3*E_2, -2*E_0-2*E_1+E_2+3*E_4, -2*E_0-2*E_1-E_2+E_3-2*E_4,
+      E_0+E_1+E_2}},2,({1, 1, 2, 2, 2, 2},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 5, ((2,2),(1,11)) =>
+      1})), (matrix {{E_0-3*E_3, -2*E_1-2*E_4, -2*E_0+E_1-2*E_2+2*E_3-2*E_4, -E_0-3*E_1-2*E_3+2*E_4}, {3*E_0-2*E_3,
+      E_0+E_1+2*E_2, -3*E_0+2*E_1+2*E_2+E_3-E_4, E_0+2*E_1+E_2}, {-2*E_0+E_1+E_2-E_3, -2*E_0-2*E_1+3*E_2,
+      E_0-2*E_1-2*E_3+2*E_4, -E_0+3*E_1+E_2+3*E_3-3*E_4}},1,({1, 1, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1,
+      ((2,1),(1,6)) => 6})), (matrix {{-E_0+2*E_1-3*E_2-2*E_3, -3*E_0-3*E_2+E_4, -3*E_0+2*E_1+2*E_3-E_4,
+      -E_0+3*E_1+2*E_2+E_3-E_4}, {3*E_1-2*E_2+3*E_3, E_0+2*E_1-2*E_2+3*E_4, E_0+E_1+E_2+E_3+3*E_4,
+      E_0-3*E_1-2*E_2-E_3+E_4}, {3*E_0+2*E_1-E_2, -3*E_0-E_1+2*E_2-3*E_4, 3*E_1-E_2+3*E_3+2*E_4,
+      3*E_0-2*E_1-E_2-2*E_3+2*E_4}},1,({1, 2, 2, 2, 2, 2},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) =>
+      6})), (matrix {{-3*E_0-3*E_2+3*E_3, -E_0+3*E_1-2*E_2+3*E_4, E_0+E_1-E_2-2*E_4, -2*E_1+3*E_3-3*E_4},
+      {-2*E_0+E_1-2*E_2+2*E_3, 3*E_0-3*E_1-E_2+2*E_4, -3*E_0-2*E_2-E_4, 3*E_3-3*E_4}, {-E_0-E_1-E_2+E_3,
+      -E_1-3*E_4, E_0+2*E_1+2*E_2-2*E_4, -E_1+E_3-E_4}},2,({1, 1, 2, 2, 2, 4},new Tally from {((1,1),(0,6)) => 1,
+      ((2,1),(1,6)) => 5, ((2,2),(1,11)) => 1})), (matrix {{3*E_0-2*E_1+2*E_2+E_3, -E_0+E_1-3*E_2-2*E_4,
+      2*E_0+3*E_1+2*E_2, -E_0+2*E_1-2*E_2+E_3-E_4}, {E_0+E_1-3*E_2+2*E_3, E_0+E_1+2*E_2, -E_0+2*E_1-E_2,
+      2*E_0+2*E_1+E_2-3*E_3+3*E_4}, {-E_0-2*E_1+E_2-3*E_3, E_1+3*E_2-E_4, 2*E_1+3*E_2-3*E_3-E_4,
+      3*E_0+3*E_2+3*E_3-3*E_4}},1,({1, 2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 6})),
+      (matrix {{-2*E_0+E_2-3*E_3, 3*E_0+E_1-3*E_2+E_4, 3*E_0-E_1-3*E_2, -E_0+E_1+E_2+2*E_3-2*E_4},
+      {2*E_0-2*E_1-3*E_2+E_3, 2*E_0+3*E_1-2*E_2+3*E_4, -E_0+E_1-2*E_2+3*E_3-E_4, E_0+E_1-2*E_2-3*E_3+3*E_4},
+      {-3*E_0+3*E_1+E_2+2*E_3, -E_0-E_1-E_2+E_4, -3*E_1+3*E_2-3*E_3+E_4, -E_0+2*E_1-3*E_2-2*E_3+2*E_4}},1,({1, 1,
+      1, 3, 3, 3},new Tally from {((2,1),(1,3)) => 1, ((2,1),(1,6)) => 1, ((2,6),(1,36)) => 1}))});
+      if p==11 then (
+      mdKRs= {(matrix {{E_1-4*E_2+5*E_3, 5*E_0-2*E_1-3*E_2+E_4, 2*E_0+E_1-4*E_2+5*E_3+E_4, 5*E_0+4*E_1+E_2+4*E_3-4*E_4},
+      {2*E_1+3*E_2-E_3, -E_0+4*E_1+4*E_2+2*E_4, 4*E_0-3*E_1+5*E_2+5*E_3+E_4, -E_0-5*E_1-E_2+E_3-E_4},
+      {-3*E_1+3*E_2+4*E_3, E_0+5*E_1-5*E_2-5*E_4, -4*E_0+E_1-2*E_2+4*E_3+3*E_4, E_0+3*E_1-3*E_2+E_3-E_4}},2,({1, 2,
+      2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 2, ((2,2),(1,11)) => 1, ((3,1),(2,4)) =>
+      1})), (matrix {{-5*E_1+E_2-E_3, -5*E_0+2*E_1-4*E_2-E_4, -2*E_0+E_1-3*E_2-2*E_3+2*E_4, -5*E_2-2*E_3+2*E_4},
+      {-4*E_1-5*E_2+2*E_3, 2*E_0-4*E_1+4*E_2-3*E_4, 3*E_0+5*E_1-5*E_2+E_3-E_4, 2*E_1-E_2-4*E_3+4*E_4},
+      {3*E_1+2*E_2+2*E_3, E_0+5*E_1-E_2-5*E_4, -4*E_0+2*E_1-2*E_2-4*E_3+4*E_4, -E_1+3*E_2+3*E_3-3*E_4}},2,({1, 1,
+      2, 2, 3, 3},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 2, ((3,1),(2,4)) => 1})),
+  (matrix{{3*E_1-3*E_2, 2*E_0+2*E_1+2*E_2+3*E_4, -2*E_0-E_1-4*E_2+4*E_3-2*E_4, E_0+5*E_1+E_2+4*E_3-4*E_4},
+      {-2*E_1+2*E_2, 4*E_0+4*E_1-2*E_4, -4*E_0-E_1-4*E_2+4*E_3-2*E_4, 2*E_0+5*E_1-3*E_2-3*E_3+3*E_4}, {E_1-E_2,
+      3*E_0-E_1+5*E_2+5*E_4, -3*E_0-E_1-3*E_2+3*E_3+4*E_4, -4*E_0-2*E_1+2*E_2-4*E_3+4*E_4}},2,({1, 1, 2, 2, 2,
+      4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) => 1})), (matrix {{-4*E_0-E_1-3*E_2-2*E_3, -2*E_2,
+      3*E_0+4*E_1+E_2-2*E_3+E_4, -E_0+4*E_1+5*E_2-5*E_3+5*E_4}, {-3*E_0+4*E_1+E_2-3*E_3, -3*E_2,
+      5*E_0+3*E_2-4*E_3+2*E_4, 2*E_0-4*E_2+E_3-E_4}, {-5*E_0-2*E_1-E_2-5*E_3, 2*E_2, E_0+4*E_1+3*E_3+4*E_4,
+      -4*E_0-2*E_2-5*E_3+5*E_4}},2,({1, 1, 2, 2, 2, 2},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) => 1})),
+      (matrix {{3*E_0-3*E_1-2*E_2+2*E_3, -5*E_0-2*E_1+4*E_2+2*E_4, 5*E_0+5*E_1+2*E_2+3*E_3+2*E_4, -2*E_0},
+      {-5*E_0+4*E_1+E_2-3*E_3, -5*E_0+E_1-2*E_2+E_4, -4*E_0+4*E_1+5*E_3-4*E_4, -E_0-4*E_2+3*E_3-3*E_4},
+      {4*E_0+E_1-2*E_2+E_3, 2*E_0-2*E_1+4*E_2-5*E_4, 5*E_0-3*E_1-4*E_2, -2*E_0+2*E_2+4*E_3-4*E_4}},1,({1, 1, 1, 3,
+      3, 3},new Tally from {((2,1),(1,6)) => 4, ((2,4),(1,21)) => 1})), (matrix {{-3*E_1-4*E_3, -2*E_0+2*E_1+2*E_4,
+      5*E_0-5*E_1-2*E_2-E_3-4*E_4, -2*E_0+3*E_1-3*E_2+E_3-E_4}, {-4*E_2+4*E_3, 2*E_0+4*E_1+E_2,
+      -5*E_0-E_1+3*E_2+3*E_3+E_4, 2*E_0+2*E_1-2*E_2-3*E_3+3*E_4}, {-4*E_1+2*E_2, -E_0-5*E_1+3*E_2+5*E_4,
+      -3*E_0-2*E_1-2*E_2+3*E_3+E_4, -E_0+4*E_1-4*E_2+5*E_3-5*E_4}},2,({1, 1, 1, 2, 3, 3},new Tally from
+      {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 2, ((3,1),(2,4)) => 1})), (matrix {{4*E_0+4*E_1-3*E_2-4*E_3,
+      -5*E_0+5*E_1+3*E_2-3*E_4, 3*E_0-5*E_1+2*E_2+3*E_3+3*E_4, 5*E_1+5*E_2}, {5*E_1+4*E_3, 2*E_1-3*E_4,
+      3*E_1-4*E_2+4*E_3+4*E_4, -E_1-E_2}, {-5*E_0+4*E_2+3*E_3, -2*E_0+E_1+2*E_2-4*E_4, -E_0-E_1+2*E_2+2*E_3+2*E_4,
+      2*E_1+2*E_2}},3,({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5, ((3,1),(2,5)) =>
+      1})), (matrix {{2*E_0+5*E_1-3*E_2, 5*E_1-E_2+E_4, 2*E_1+4*E_2, -3*E_0-3*E_1+2*E_2-3*E_3+3*E_4},
+      {3*E_0+2*E_1+5*E_2+5*E_3, 2*E_1-4*E_2, -2*E_1-4*E_2, E_0-4*E_1-3*E_2-3*E_3+3*E_4}, {-5*E_0+2*E_1-3*E_2-5*E_3,
+      E_1-3*E_2-5*E_4, E_1+2*E_2, 2*E_0+4*E_1-4*E_2+E_3-E_4}},3,({1, 1, 1, 2, 2, 4},new Tally from {((2,1),(1,5))
+      => 1, ((2,1),(1,6)) => 5, ((3,1),(2,5)) => 1})), (matrix {{-3*E_1+E_2+5*E_3, -2*E_1+3*E_2-E_4,
+      -4*E_1-4*E_2+5*E_3+2*E_4, -2*E_1}, {5*E_0+2*E_1-2*E_2-E_3, -5*E_0-2*E_1+4*E_2-5*E_4,
+      -2*E_0-5*E_1+5*E_2+3*E_3-E_4, -3*E_1}, {-4*E_0+5*E_1-E_2-4*E_3, 4*E_0-5*E_1-2*E_2-3*E_4,
+      -5*E_0+3*E_1-E_2-3*E_3+E_4, 2*E_1}},3,({1, 1, 1, 2, 2, 3},new Tally from {((2,1),(1,6)) => 4, ((2,2),(1,11))
+      => 1, ((3,1),(2,5)) => 1})), (matrix {{-E_0+3*E_1+4*E_2+4*E_3, E_0+E_1+2*E_2-2*E_4,
+      -5*E_0-4*E_1-5*E_2+2*E_3+4*E_4, 4*E_1}, {5*E_0-5*E_1-4*E_2-2*E_3, -5*E_0, 3*E_0-3*E_1-4*E_2-4*E_3+3*E_4,
+      -4*E_1}, {-4*E_0-E_1+2*E_2-E_3, 4*E_0-5*E_1+E_2-E_4, 2*E_0-4*E_1-4*E_2+2*E_3+4*E_4, -3*E_1}},3,({1, 1, 1, 1,
+      2, 5},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5, ((3,1),(2,5)) => 1})), (matrix {{2*E_0,
+      -3*E_0-E_1+E_2-3*E_4, E_0-5*E_1+3*E_2+5*E_3-5*E_4, E_1-E_2}, {4*E_0-4*E_1-2*E_2-3*E_3,
+      5*E_0+2*E_1-2*E_2+3*E_4, 2*E_0-4*E_1+5*E_2-2*E_3+2*E_4, 4*E_1-4*E_2}, {5*E_0-4*E_1-3*E_2-5*E_3, -2*E_0+4*E_4,
+      -3*E_0+5*E_1+4*E_2, 3*E_1-3*E_2}},3,({1, 1, 1, 1, 2, 4},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) =>
+      5, ((3,1),(2,5)) => 1})), (matrix {{2*E_1-4*E_2+3*E_3, -E_1-3*E_2-2*E_4, -5*E_1-E_2, 2*E_1+5*E_2},
+      {4*E_0+5*E_1-2*E_3, -3*E_0+E_1+3*E_2-3*E_4, -E_1+2*E_2, 3*E_1+2*E_2}, {-4*E_0+E_1+4*E_3, 3*E_0-4*E_4,
+      -4*E_1-3*E_2, 4*E_2-E_3+E_4}},3,({1, 1, 1, 1, 2, 3},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5,
+      ((3,1),(2,5)) => 1})), (matrix {{-2*E_0+3*E_1-4*E_2-3*E_3, 0, E_0-3*E_2+4*E_3+E_4, -5*E_0+5*E_1-2*E_3+2*E_4},
+      {-E_0+2*E_1-2*E_2+2*E_3, 0, 3*E_0+5*E_2, -5*E_0+4*E_1-2*E_2-5*E_3+5*E_4}, {-3*E_0+5*E_2-3*E_3,
+      -5*E_0+4*E_1-4*E_2, 4*E_0-2*E_2-2*E_3+5*E_4, 5*E_0-E_2-5*E_3+5*E_4}},5,({1, 1, 1, 1, 1, 7},new Tally from
+      {((2,1),(1,5)) => 2, ((2,4),(1,23)) => 1, ((3,1),(2,5)) => 1}))};);
+
+
+      if not k <#mdKRs then (<<"only "|#mdKRs|" examples stored"<<flush<<endl;return ideal 1_(P4));
+      mdKR:=mdKRs_k;
+      << "(K,R) = " << mdKR_2 <<", dim Hom = " <<mdKR_1 <<flush<<endl;
+      m3x4:= mdKR_0;
       X:=aboSurfaceFromMatrix(m3x4,P4);
       return X)
     
@@ -2657,10 +2794,16 @@ mKRs3={(matrix {{0, -e_0+4*e_1+7*e_2-4*e_4, 8*e_0+7*e_1-9*e_2+9*e_3+4*e_4, -6*e_
       from {((2,1),(1,5)) => 3, ((2,1),(1,6)) => 3, ((3,1),(2,5)) => 1}))}
 
 mKRs3Distinct=select(mKRs3,mKR->sum(mKR_1_0)==12);#mKRs3Distinct
+
 T=tally apply(mKRs3Distinct,mKR->mKR_1_0)
 pos=apply(keys T,p->position(mKRs3Distinct,mKR->mKR_1_0==p));
 exampleOfAbo=reverse sort(mKRs3Distinct_pos,mKR->mKR_1_0)
-#mKRs3
+exAbo=apply(exampleOfAbo,mKR->
+    (m3x4=mKR_0;
+    d=testMatrix2(m3x4,P4);
+    (m3x4,d,mKR_1))
+)
+toString exAbo
 mKRs3
 bordigaMatrices=apply(mKRs3,mKR->sub(mKR_0,vars P4));
 special1=select(bordigaMatrices,m->rank source gens trim minors(3,m%ideal(P4_0,P4_1,P4_2))==1)
@@ -3525,6 +3668,37 @@ ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
 
+specificEllipticSurfaceD13S16=method()
+
+specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):=(P4,E,k) -> (
+    if not member(k,{1,3,4}) then (<< k <<"should be in "<<{1,3,4} <<flush<<endl;
+	    return ideal 1_P4);
+    X:=specificAboSurface(P4,E,k);
+    betti(ci:=ideal(gens X*random(source gens X,P4^{2:-5})));
+    Y:=ci:X;
+    return Y)
+
+///
+kk=ZZ/19
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+X=specificAboSurface(P4,E,0);
+betti(ci=ideal(gens X*random(source gens X,P4^{2:-5})))
+minimalBetti (Y=ci:X)
+betti tateResolutionOfSurface Y
+dim singularLocus Y
+K1=canonicalDivisor Y;
+K2=canonicalDivisor Y;
+betti(baseLocus=saturate (K1+K2))
+E1=K1:baseLocus;
+dim E1, degree E1, genus E1, selfIntersectionNumber(Y,E1)
+betti(baseLocus1=K1:E1)
+cBaseLocus1=decompose baseLocus1;
+tally apply(cBaseLocus1,c->(dim c, degree c, genus c, selfIntersectionNumber(Y,c)))
+Ksquare(13,16,3)
+///
+
+
 /// -* rank 2 vector bundle on P4 *-
 R=QQ[a,b,c1,c2]
 binom=c -> product(4,i->(c+(i+1))/(i+1))
@@ -3585,13 +3759,14 @@ Headline => "Construction of smooth non-general type surfaces in P4",
         TO irregularEllipticSurfaceD12,
 	TO surfacesOfKodairaDimension1,
         },
-     SUBSECTION "Existence proofs",
+     SUBSECTION "Investigating embedded surfaces",
      UL{
 	TO adjunctionProcessData,
-	TO unirationalFamilies,
-	TO constructionsViaFiniteFieldSearches,
-	TO extensionToCharacteristicZero,
-	TO LabBookProtocol
+	TO residualInQuintics,
+	TO canonicalDivisor,
+	TO selfIntersectionNumber,
+	TO tateResolutionOfSurface,
+	TO numericalFunctions,
         }     
 }
 
@@ -3626,6 +3801,37 @@ Headline => "unirational families of rational surfaces",
 	TO aboRanestadSurfaces
 	}
 }
+document {
+Key => numericalFunctions,
+Headline => "Various numerical functions to investigate surfaces in P4",
+   
+   PARA{},
+     SUBSECTION "Intersection numbers",
+     UL{
+        TO LeBarzN6,
+	TO Ksquare,
+        TO HdotK,
+	TO sectionalGenus,
+        },
+    
+     SUBSECTION "Tate resolutions",
+     UL{
+	TO tateResolutionOfSurface,
+        TO chiITable,
+	TO chiO,
+	TO irregularity,
+	TO geometricGenus,        
+        },
+
+    SUBSECTION "6-secants and canonical divisors",
+     UL{
+	TO canonicalDivisor,
+        TO partitionOfCanonicalDivisorOfAboSurface,
+	TO residualInQuintics,      
+        },
+    
+   
+}
 
 
 
@@ -3658,7 +3864,8 @@ Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
 	TO tangentDimension,
         TO unirationalConstructionOfSchreyerSurface,
 	TO specialEnriquesSchreyerSurface,
-	TO schreyerSurfaceWith2LinearSyzygies
+	TO schreyerSurfaceWith2LinearSyzygies,
+	TO schreyerSurfaceWith2or3LinearSyzygies,
         }        
 }
 
@@ -3735,20 +3942,21 @@ Headline => "Known families of K3 surfaces",
 
 document {
 Key => aboSurfaces,
-Headline => "functions for investigating Abo surfaces, (6 families)",
+Headline => "functions for investigating Abo surfaces, (8 families)",
    "",
     
    PARA{},
-     SUBSECTION "K3 surfaces",
+     SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
-        TO testMatrix,
-	TO testMatrix1,
+        TO testMatrix1,
+	TO testMatrix2,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO abo111333Surface,
 	TO abo111117Surface,
+	TO collectAboSurfaces,
 	TO specificAboSurface,
         },
     PARA{},
@@ -3778,6 +3986,7 @@ Headline => "surface of Kodaira dimension 1 (10 families)",
 	TO ellipticSurfaceD12S14L0,
 	TO ellipticSurfaceD12S14Linfinite,
 	TO ellipticSurfaceD12S13,
+	TO specificEllipticSurfaceD13S16,
 	TO irregularEllipticSurfaceD12,
         },
     PARA{},
@@ -4533,6 +4742,91 @@ Description
     m3x2=(res cZ_1).dd_2
     syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
 ///
+
+doc ///
+Key
+ schreyerSurfaceWith2or3LinearSyzygies
+ (schreyerSurfaceWith2or3LinearSyzygies, Ring, ZZ)
+ [schreyerSurfaceWith2or3LinearSyzygies,Smooth]
+Headline
+ compute a rational Schreyer surface whose H^1-module has 4 or 5 extra syzyzgies
+Usage
+ X = schreyerSurfaceWith2or3LinearSyzygies(P4,s)
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+ s: ZZ
+   a number s=2 or s=3
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The construction is a 2 step liaison construction.
+    In case of s=2, the desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
+    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
+    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
+    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
+    which intersect along the directrix of the scroll and two non-CM points of Z.
+  Example
+    kk=ZZ/nextPrime(2*10^3);P4=kk[x_0..x_4];
+    elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    R=residualInQuintics X;
+    tally apply(primaryDecomposition R,c->(dim c, degree c, minimalBetti c))
+    ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+    Y=(ci:X):R;
+    degree (ci:X)
+    degree Y,betti(fY=res Y)
+    nCM=decompose ann coker transpose fY.dd_3
+    ci2=ideal (gens Y)_{0,1};
+    Z=ci2:Y;
+    minimalBetti Z
+    cZ=decompose Z;
+    tally apply(cZ,c->(dim c, degree c, minimalBetti c))
+  Text
+    The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
+    in two (common) points.     
+  Example    
+    intersectionOftheTwoComponentsOfZ=sum(cZ);
+    apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
+    cI, cI_{1,2}==nCM
+    planes=decompose R
+    matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
+    matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
+    dim(radical R+Z),degree(radical R+Z)
+    matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
+    m3x2=(res cZ_1).dd_2
+    cI_0
+    syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
+  Text
+    In case s=3 the residualInQuintics scheme consists of 5 planes.
+  Example
+    elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,3);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    R=residualInQuintics X;
+    cR=decompose R;
+    tally apply(cR,c->(dim c, degree c))
+    ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+    Y=(ci:X):R;
+    degree (ci:X)
+    degree Y,betti(fY=res Y), sectionalGenus Y
+    apply(cR,p->dim trim(p+Y))
+    matrix apply(cR|{Y},p->apply(cR|{Y},q-> dim(p+q)))
+    betti tateResolutionOfSurface Y
+    betti tateResolutionOfSurface X
+    Ksquare(9,9,4)
+    HdotK(9,9)
+    K=canonicalDivisor Y;
+    degree Y, degree K
+    saturate ideal singularLocus Y
+    selfIntersectionNumber(Y,K)
+///
+
 
 doc ///
 Key
@@ -5321,6 +5615,11 @@ Key
  (testMatrix1,Matrix,Ring)
  [testMatrix1,SingX]
  [testMatrix1,Verbose]
+ testMatrix2
+ (testMatrix2,Matrix,Ring)
+ [testMatrix2,Verbose]
+ [testMatrix2,WithM3x13]
+ [testMatrix2,WithX]
 Headline
  test whether a 3x4 matrix with entries over the exterior algebra leads to an Abo surface
 Usage
@@ -5341,7 +5640,7 @@ Description
     In the Tate resolution of Abo surfaces there are linear 3x1 and linear 3x4 matrices.
     We assume that transpose m3x1= matrix{{e_0,e_1,e_2}}. Whether the given m3x4 matrix
     together with m3x1 leads to a smooth surface can be tested with testMatrix1.
-    We need that r>5.  	
+    We need that r1>5.  	
   Example
     kk=ZZ/19
     P4=kk[x_0..x_4];
@@ -5351,7 +5650,10 @@ Description
       -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
       -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
       9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
-    r=testMatrix1(m3x4,P4)>5
+    elapsedTime r1=testMatrix1(m3x4,P4)
+    elapsedTime r2=testMatrix2(m3x4,P4)
+    r1==r2+5
+    elapsedTime singX=testMatrix(m3x4,P4)
   Text
     The matrix m3x4 give rize to a surface if r>5.
   Example
@@ -5639,7 +5941,7 @@ Key
  specificAboSurface
  (specificAboSurface, Ring, Ring, Number)
 Headline
- compute a smooth Schreyer surface with given H^1-module
+ compute a smooth Abo surface of given data (m3x4,d,(K,R))
 Usage
  X = specificAboSurface(P4,E,k)
 Inputs
@@ -5648,20 +5950,27 @@ Inputs
  E: Ring
   exterior algebra dual to P4.
  k: Number
-  a number between 0 and 6 specifies m3x4 matrix of linear forms over E to use. 
+  a number between 0 and 6 specifies the m3x4 matrix of linear forms over E to use. 
 Outputs
  X:Ideal
-  ideal of a Schreyer surface
+  ideal of a Abo surface
 Description
   Text
-    The function returns one of 7 specific Abo surface corresponding to one of the following partitions
+    In characteristic p=19 the function returns one of 7 specific Abo surface
+    corresponding to one of the following partitions
     of the canonical divisor:
+    
     {1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 2, 2, 2, 4}, {1, 1, 1, 3, 3, 3},
-    {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 1, 7}
+    
+    {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 1, 7}.
+
+    Other cases are p=11 and p=7. In characteristic 7 the example with k=1 has the partition 
+
+    {1, 1, 1, 1, 2, 6}.
   Example
     kk=ZZ/19;
     P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true]
+    E=kk[e_0..e_4,SkewCommutative=>true];
     X=specificAboSurface(P4,E,3);
     minimalBetti X
     (d,sg)=(degree X, sectionalGenus X)
@@ -5695,16 +6004,144 @@ Description
     degree E1, genus E1, selfIntersectionNumber(Y,E1)
     betti(tateResolutionOfSurface Y)
 SeeAlso
-   adjunctionProcessData
+   residualInQuintics
+   tateResolutionOfSurface
+   selfIntersectionNumber
    LeBarzN6
    Ksquare
+   canonicalDivisor
    tateResolutionOfSurface
-   moduleFromSchreyerSurface
-   tangentDimension
-   exampleOfSchreyerSurfaces
+///
+
+doc ///
+Key
+ collectAboSurfaces
+ (collectAboSurfaces, List, Ring, Ring, ZZ)
+ [collectAboSurfaces,Verbose]
+ [collectAboSurfaces,Special]
+Headline
+ collect Abo surfaces
+Usage
+ mdKR'= specificAboSurfaces(mdKRs,P4,E,N)
+Inputs
+ mdKRs: List
+   of Abo surface data m3x4,d,(K,R)
+ P4:Ring
+  coordinate ring of P4 over a ground field of characteristic 3
+ E: Ring
+  exterior algebra dual to P4.
+ N: ZZ
+  the desired total number of  surface data. 
+Outputs
+ mdKR':List
+  of Abo surface data m3x4,d,(K,R)
+Description
+  Text
+    The functions collects N surface data by choosing randomly 3x4 matrices over the exterior
+    algebra and testing whether they lead to a surface.
+    If the pair of (K,R) of partition of the canonical divisor and numerical type of
+    the residulaInQuintics scheme is new or of that type there are only few examples in the list then the
+    the example will be appended to the current list. The functions stops if the total number N of
+    examples is reached.
+    
+    In case of the option Special=>true, the m3x4 Bordiga matrix has a rank 1 point.
+  Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    mdKRs={};
+    setRandomSeed("carefully choosen randomSeed");
+    elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) -- 31.8852s elapsed
+   
+SeeAlso
+   residualInQuintics
+   partitionOfCanonicalDivisorOfAboSurface
+   
+///
+
+/// --prepare specificAboExample
+kk=ZZ/11
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+elapsedTime minimalBetti (X=specificAboSurface(P4,E,9))
+
+kk=ZZ/5
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+setRandomSeed("start from here");
+mdKRs={}
+elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,20,Special=>true);#mdKRs'
+elapsedTime mdKRs=collectAboSurfaces(mdKRs',P4,E,50);#mdKRs
+#mdKRs
+mdKRs= reverse sort(mdKRs , mdKR-> mdKR_2_0);
+Ta=tally apply(mdKRs , mdKR-> mdKR_2_0)
+netList apply(mdKRs,mdKR->(mdKR_1,mdKR_2))
+pos=apply(reverse sort keys Ta,K->position(mdKRs,mdKR->K==mdKR_2_0))
+toString mdKRs_pos
+--     1) use cut and paste into specificAboSurface
+--     2) replace e->E use replace nEw -> new
+--     3) adapt the coments and error handling in specificAboSurface
+#pos
+kk=ZZ/7;
+P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true];
+elapsedTime minimalBetti (X=specificAboSurface(P4,E,4))
+elapsedTime apply(7,k->minimalBetti (X=specificAboSurface(P4,E,k)))
+
+
 ///
 
 
+doc ///
+Key
+ randomAboSurface
+ randomSpecialAboSurface
+ (randomAboSurface, Ring, Ring)
+ [randomAboSurface,Verbose]
+ [randomAboSurface,Count]
+ [randomAboSurface,PrintConstructionData]
+ (randomSpecialAboSurface, Ring, Ring)
+ [randomSpecialAboSurface,Verbose]
+ [randomSpecialAboSurface,Count]
+ [randomSpecialAboSurface,PrintConstructionData]
+Headline
+ get random Abo surfaces
+Usage
+ (X,m3x4)=randomAboSurface(P4,E)
+ (X,m3x4)=randomSpexialAboSurface(P4,E)
+Inputs
+ P4:Ring
+  coordinate ring of P4 over a ground field of characteristic 3
+ E: Ring
+  exterior algebra dual to P4.
+Outputs
+ X:Ideal
+   of an Abo surface
+ m3x4: Matrix
+   3x4 matrix over the exterior algebra
+Description
+  Text
+    The functions constracts a Abo surface by choosing randomly 3x4 matrices over the exterior
+    algebra and testing whether they lead to a surface.
+    
+    In the case of randomSpecialAboSurface, the m3x4 Bordiga matrix has a rank 1 point.
+  Example
+    kk=ZZ/7;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];    
+    setRandomSeed("carefully choosen randomSeed");
+    elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+    saturate minors(2,sub(m3x4,vars P4))
+    setRandomSeed("same start");
+    elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
+    pt=saturate minors(2,sub(m3x4s,vars P4))
+    sub(m3x4s,vars P4)%pt
+       
+SeeAlso
+   residualInQuintics
+   partitionOfCanonicalDivisorOfAboSurface
+   
+///
 
 -* classical rational surfaces *-
 
@@ -7437,6 +7874,73 @@ Description
  Text
    Since K^2=0 and the canonicaal divisor connected this surface is minimal. The surface is elliptic fibration over P1 into
    elliptic curves of degree 12. Perhaps use regular in codimension 1 from FastMinors
+References
+  
+SeeAlso
+  tateResolutionOfSurface
+  selfIntersectionNumber
+  canonicalDivisor
+  HdotK
+  Ksquare
+///
+
+
+doc ///
+Key
+ specificEllipticSurfaceD13S16
+ (specificEllipticSurfaceD13S16,PolynomialRing,Ring, ZZ)
+Headline
+ construct a specific elliptic surface via linkage form a Abo surface (3 familie)
+Usage
+ X=specificEllipticSurfaceD13S16(P4,E,k)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ E: Ring
+   exterior algebra dual to P4
+ k: ZZ
+   the number of the specific Abo surface used in the construction.
+Outputs
+ X:Ideal
+  of a specific elliptic surface of degree 13 sectional genus 16
+Description
+  Text
+   We construct a specific elliptic surface of degree 13 sectional genus 16 from
+   a specficAboSurface of number k via linkage. The function needs the ground field
+   kk=ZZ/19 and a number k in {1,3,4}.
+  Example
+   kk=ZZ/19; 
+   P4=kk[x_0..x_4];
+   E=kk[e_0..e_4,SkewCommutative=>true];
+   setRandomSeed("faily fast");
+   X=specificEllipticSurfaceD13S16(P4,E,3);
+  Text
+   The printed information is the partition type of canonical divisor of the specific Abo surface used and
+   its redidualInQuintics decomposition. Which in this case consists of four 6-secant lines and
+   a rational normal curve of degree 4 which is 21-secant.
+  Example
+   minimalBetti X
+   betti(T=tateResolutionOfSurface(X))
+   (d,sg)=(degree X, sectionalGenus X)
+   Ksquare(d,sg,3)
+   HdotK(d,sg)
+   K1=canonicalDivisor X;
+   K2=canonicalDivisor X;
+   betti(baseLocus=saturate (K1+K2))
+   cBaseLocus=decompose baseLocus;
+   minimalBetti last cBaseLocus
+   tally apply(cBaseLocus,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+  Text
+   Note that the exceptional curves of X coincide with the residualInQuintics curves of
+   the used Abo surface.
+  Example
+   E1=K1:baseLocus;
+   dim E1, degree E1, genus E1, selfIntersectionNumber(X,E1)
+   R=residualInQuintics X;
+   tally apply(decompose R,c->(dim c, degree c, genus c, degree (c+X)))
+  Text
+    X contains four (-1) lines and a (-1) degree 4 rational normal curve. The canonical divisor E
+    of the minimal surface has genus 1 and self-intersection number 0. Thus X is an elliptic surface.
 References
   
 SeeAlso
