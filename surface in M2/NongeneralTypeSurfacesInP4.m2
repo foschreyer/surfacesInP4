@@ -16,7 +16,23 @@ check "NongeneralTypeSurfaceInP4"
 path
 peek loadedFiles
 help adjunctionProcess
+///
 
+///
+kk=ZZ/nextPrime 10^3
+P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true]
+elapsedTime (X,m3x4)=abo111333Surface(P4,E);
+R=residualInQuintics X;
+cR=decompose R;
+tally apply(cR,c->(dim c, degree c, degree (c+X)))
+ci=ideal(gens X*random(source gens X,P4^{2:-5}));
+Y=ci:X;
+degree Y, sectionalGenus Y
+betti tateResolutionOfSurface Y
+RY=residualInQuintics Y;
+cRY=decompose RY;
+tally apply(cRY,c->(dim c, degree c, degree (c+Y)))
 
 ///
 
@@ -6369,7 +6385,7 @@ Description
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
     degree X, sectionalGenus X
-    
+
 ///
 
 ///
@@ -6386,7 +6402,7 @@ Description
     dim singX
     dim(X+Y)
     apply(decompose(X+Y),c->(dim c, degree c, genus c, minimalBetti c))
-
+    betti tateResolutionOfSurface X
 ///
 
 doc ///
