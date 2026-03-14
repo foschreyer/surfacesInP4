@@ -2,7 +2,7 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-installPackage "NongeneralTypeSurfacesInP4"
+elapsedTime installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -815,6 +815,12 @@ findRandomSchreyerSurface(Ring) := P4 -> (
     findRandomSchreyerSurface(P4,2))
 
 findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
+    --Input: P4: coordinate ring of P4
+    --       s: integer desired number of extra syzygies
+    -- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+    --           is either rational or non-minimal Enriques
+    -- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
+
     F:=res(ideal vars P4, LengthLimit=>3);
     kk:=coefficientRing P4;
     M:=null;fM:=null;N:=null;N1:=null;
@@ -835,36 +841,30 @@ findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
     source J1 != P4^{0,-2}) do ();
     trim ideal(transpose J1_{1}*syz(fM.dd_1))
     )
-
 findRandomSmoothSchreyerSurface=method(Options=>{Verbose=>true})
-findRandomSmoothSchreyerSurface(Ring) := opt -> (P4 -> (
-    J:=null;singX:=null;
-	if opt.Verbose==true then ( -- verbose version gives timings
-    while ( -- smooth surface
-     elapsedTime while ( --only hypersurface singularities
-	 J=findRandomSchreyerSurface P4;
-	 dim (J+ideal jacobian J)!=0) do (); 
-	elapsedTime singX=J+minors(2,jacobian J);<<endl;
-	elapsedTime dim singX !=0) do ();) else (
-    while (  -- smooth surface
-	while (-- only hypersurface singularities
-	    J=findRandomSchreyerSurface P4;
-	    dim (J+ideal jacobian J)!=0) do ();
-	 singX=J+minors(2,jacobian J);
-	 dim singX !=0) do ());
-   J))
 
 findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
+    -- Input: P4: coordinate ring of P4
+    --       s: integer desired number of extra syzygies
+    -- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+    --           is either rational or non-minimal Enriques
+    -- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
+
     X:=null;singX:=null;
     count:=1;
     while (  -- smooth surface
+	if opt.Verbose then (
 	elapsedTime while ( -- only hypersurface singularities
 	    X=findRandomSchreyerSurface(P4,s);
 	    dim (X+ideal jacobian X)!=0) do (count=count+1);
-	<<count <<endl;
+	    <<count <<endl;) else (
+        while ( -- only hypersurface singularities
+	    X=findRandomSchreyerSurface(P4,s);
+	    dim (X+ideal jacobian X)!=0) do (count=count+1););	
 	singX=X+minors(2,jacobian X);
 	 dim singX !=0) do ();
    X)
+
 /// -* oes not exists *-
 kk=ZZ/nextPrime(10^3)
 P4=kk[x_0..x_4]
@@ -875,7 +875,7 @@ minimalBetti M
 tangentDimension M
 ///
 
-
+///
 singSchreyerSurfacesStatistic=method()
 -- maybe not used
 
@@ -899,6 +899,7 @@ singSchreyerSurfacesStatistic(Ring,Number) := (P4,N) -> (
 	count<N) do ();
     --<<tally L <<endl;
     L)
+///
 
 collectSchreyerSurfaces=method()
 -- Input: adjTypes, List of adjunction types
@@ -3870,7 +3871,6 @@ Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
     
      SUBSECTION "search for modules",
      UL{
-	TO findRandomSchreyerSurface,
         TO findRandomSmoothSchreyerSurface, 
         TO collectSchreyerSurfaces
         },
@@ -3878,8 +3878,7 @@ Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
      SUBSECTION "lift to characteristic zero and unirational or nearly unirational families",
      UL{
 	TO tangentDimension,
-        TO unirationalConstructionOfSchreyerSurface,
-	TO specialEnriquesSchreyerSurface,
+	TO specialEnriquesSchreyerSurface, 
 	TO schreyerSurfaceWith2LinearSyzygies,
 	TO schreyerSurfaceWith2or3LinearSyzygies,
         }        
@@ -4018,7 +4017,8 @@ Headline => "surface of Kodaira dimension 1 (10 families)",
 document {
 Key => adjunctionProcessData,
 Headline => "explains the output of the function adjunctionProcess",
-    "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces",
+    "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces. 
+    Notice the typo: adjointMatrix should be adjunctionProcess",
 help adjunctionProcess,                
 }
 
@@ -5176,8 +5176,8 @@ Outputs
 Description
   Text
     It searches for a suitable H^1-module with Hilbert function (1,5,5) and two extra syzygies by searching in the
-    codimension 6 subspace of modules with one extra syzygy, and computes the corresponding surface.
-    To find an example one has to check about 3^6 examples of modules.
+    codimension 8 subspace of modules with one extra syzygy, and computes the corresponding surface.
+    To find an example one has to check about 3^8 examples of modules.
   Example
     P4=ZZ/3[x_0..x_4];
     setRandomSeed("find one fairly fast");
@@ -5198,7 +5198,6 @@ SeeAlso
 doc ///
 Key
  findRandomSmoothSchreyerSurface
- (findRandomSmoothSchreyerSurface, Ring)
  (findRandomSmoothSchreyerSurface, Ring, Number)
  [findRandomSmoothSchreyerSurface,Verbose]
 Headline
@@ -5217,13 +5216,13 @@ Outputs
 Description
   Text
     It searches for a suitable H^1-module with Hilbert function (1,5,5) and min(2,s) extra syzygies by searching in the
-    codimension 6 subspace of modules with one extra syzygy, and computes the corresponding surface
+    codimension 8 subspace of modules with one extra syzygy, and computes the corresponding surface
     and checks it smoothness. Since many H^1-modules lead to singular surfaces one has to check
-    more then 3^6 examples of modules.
+    more then 3^8 examples of modules.
   Example
     P4=ZZ/3[x_0..x_4];
     setRandomSeed("carefully choosen good randomSeed ");
-    elapsedTime X=findRandomSmoothSchreyerSurface(P4,Verbose=>false);  
+    elapsedTime X=findRandomSmoothSchreyerSurface(P4,2);  
     minimalBetti X
     singX=X+minors(2,jacobian X);
     dim saturate singX==-1
@@ -5258,9 +5257,9 @@ Outputs
 Description
   Text
     It searches for a suitable H^1-module with Hilbert function (1,5,5) and min(2,s) extra syzygies by searching in the
-    codimension 6 subspace of modules with one extra syzygy, and computes the corresponding surface
+    codimension 8 subspace of modules with one extra syzygy, and computes the corresponding surface
     and checks it smoothness. Since many H^1-modules lead to singular surfaces one has to check
-    more then 3^6 examples of modules.
+    more then 3^8 examples of modules.
   Example
     P4=ZZ/3[x_0..x_4];
     setRandomSeed("carefully choosen good randomSeed ");
