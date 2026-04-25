@@ -397,6 +397,18 @@ degree8OkonekSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
     X)
 *-
+///
+
+needsPackage"NongeneralTypeSurfacesInP4"
+kk=ZZ/nextPrime 10^4
+P2=kk[y_0..y_2]
+pencil=ideal(y_0*(y_1-y_2),y_1*(y_0-y_2))
+decompose pencil
+
+
+
+///
+
 ionescuOkonekSurfaceD8S5=method()
 -- Maybe this is a Ionescu  Okonek surface -- fix rename
 ionescuOkonekSurfaceD8S5(PolynomialRing,PolynomialRing) := (P4,P2) -> (
@@ -5111,8 +5123,29 @@ Description
     P4=ZZ/3[x_0..x_4];
     (Ms,types)=exampleOfSchreyerSurfaces P4;
     tally apply(Ms,M->minimalBetti M)
-    netList apply(#Ms,i->(minimalBetti Ms_i, types_i))
+    netList apply(#Ms,i->(minimalBetti Ms_i, types_i))   
 ///
+///
+-- additional information
+   P4=ZZ/3[x_0..x_4];
+   (Ms,types)=exampleOfSchreyerSurfaces P4;
+   tally apply(Ms,M->minimalBetti M)
+   #Ms
+   netList apply(#Ms,i->(minimalBetti Ms_i, types_i))  
+   elapsedTime Xs=apply(9,i->schreyerSurfaceFromModule Ms_i);
+   netList apply(9,i->(X=Xs_i;
+	   R=residualInQuintics X;
+	   type=types_i;
+	   s=#type;
+	   curves=reverse flatten apply(sub((s-1)/2,ZZ),j->type_{2*j+1});
+	   lastSurface=type_(s-1);
+	   residual=tally (apply(decompose R,c->(dim c-1, degree c,
+		   ( dim (c+X)-1,degree(c+X)))));
+            (curves,lastSurface,residual))
+	   )
+   -- compare with the table for schreyer surfaces
+///
+
 
 doc ///
 Key
@@ -7359,6 +7392,22 @@ Description
     betti(fX=res X)
     (d,sg)=(degree X, sectionalGenus X)
     betti(T=tateResolutionOfSurface(X,7))
+    k2=Ksquare(10,6,0)
+    LeBarzN6(10,6,0)==25
+    tally apply(decompose residualInQuintics(X),c->(dim c-1, degree c,
+	    (dim(c+X)-1 ,degree(c+X))))
+  Text
+    X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of
+    degree 15. The six secant lines are  twentyfive  (-1)-lines of X'.
+  Example 
+    ci=ideal(gens X*random(source gens X,P4^{2:-5}));
+    X'=ci:X;
+    minimalBetti X'
+    betti tateResolutionOfSurface(X',7)
+    (d',sg')=(degree X',sectionalGenus X')
+    Ksquare(d',sg',0)==-25
+    LeBarzN6(d',sg',0)==LeBarzN6(d,sg,0)
+    saturate residualInQuintics(X')
   Text
     The surface X is the zero loci of a vector bundle, whose
     module of global sections is
@@ -7380,7 +7429,7 @@ Description
    is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
  Example
    F=res coker alphad;
-   betti (F'=res(coker transpose F.dd_6,LengthLimit=>10)[3]**E^{-2})
+   betti (F'=res(coker transpose F.dd_6,LengthLimit=>10)[5]**E^{0})
  Text
    The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
    is the module of global sections of the Horrocks-Mumford bundle.
@@ -8911,3 +8960,33 @@ tex betti(T=tateResolutionOfSurface(X,6))
 X=biellipticSurfaceD15 P4;
 betti(T=tateResolutionOfSurface(X,6))
 tex betti(T=tateResolutionOfSurface(X,6))
+
+restart
+loadPackage ("NongeneralTypeSurfacesInP4",Reload=>true)
+kk=ZZ/nextPrime 30;
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+bT=chiITable(13,15,1)
+m5x3=random(P4^5,P4^{3:-1})
+C=minors(3,m5x3);
+minimalBetti C
+degree C
+m2x5=transpose (m5x3_{0,1})
+pts=minors(2,m2x5)
+aut=vars P4*transpose matrix{apply(5,i->(
+	while( cpts=decompose(C+ideal random(1,P4));
+        p=first cpts;
+	degree p > 1) do ();
+        p1=syz transpose jacobian p))}
+sub(C,aut)
+radical ideal (coefficients gens oo)_0
+m5x3=sub(m5x3,aut)
+m3x5E=transpose sub(m5x3,vars E)
+
+elapsedTime tally apply(10^3,c->(
+m5x2E=transpose matrix{gens E,apply(5,i->random kk*e_i)};
+betti(hom =Hom(coker m3x5E,coker m5x2E))
+))
+
+apply(7,i->hilbertFunction(i-2,coker m5x2E))
+apply(6,i->hilbertFunction(i-2,coker m3x5E))
