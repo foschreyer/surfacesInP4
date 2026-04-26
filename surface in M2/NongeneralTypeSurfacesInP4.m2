@@ -3977,21 +3977,25 @@ Headline => "functions for investigating Abo surfaces, (8 families)",
      UL{
 	TO aboSurfaceFromMatrix,
         TO testMatrix1,
-	TO testMatrix2,
-	TO partitionOfCanonicalDivisorOfAboSurface,
+	TO testMatrix2,	
 	TO randomAboSurface,
 	TO analyzeAboSurface,
-	TO abo111333Surface,
-	TO abo111117Surface,
 	TO collectAboSurfaces,
 	TO specificAboSurface,
         },
+    PARA{},
+     SUBSECTION "unirational or nearly unrirational constructions",
+     UL{
+	TO abo111333Surface,
+	TO abo111117Surface,
+	},
     PARA{},
      SUBSECTION "6-secants and adjunction",
      UL{
 	TO LeBarzN6,
 	TO residualInQuintics,
 	TO canonicalDivisor,
+	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
 	},
 }
@@ -6180,7 +6184,7 @@ Inputs
  mdKRs: List
    of Abo surface data m3x4,d,(K,R)
  P4:Ring
-  coordinate ring of P4 over a ground field of characteristic 3
+  coordinate ring of P4 over a small finite ground field 
  E: Ring
   exterior algebra dual to P4.
  N: ZZ
