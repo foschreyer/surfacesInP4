@@ -2383,15 +2383,15 @@ specificAboSurface(Ring,Ring,Number) := (P4,E,k) -> (
       3*E_0+4*E_1-7*E_2-3*E_3+3*E_4}, {-8*E_0+5*E_1+6*E_2+8*E_3, 4*E_0-6*E_1+3*E_2-6*E_4,
       -6*E_0-2*E_1-3*E_2-4*E_3+6*E_4, 5*E_0-9*E_1+9*E_2+7*E_3-7*E_4}, {4*E_0-7*E_1+4*E_2-6*E_3,
       3*E_0-4*E_1-2*E_2+6*E_4, 5*E_0+3*E_1-5*E_2, -8*E_0-8*E_1+E_2-9*E_3+9*E_4}},1,({1, 1, 2, 2, 3, 3},new Tally
-      from {((2,1),(1,6)) => 5})), (matrix {{-5*E_0-5*E_1+2*E_2+E_3, -7*E_1+9*E_2, -7*E_0+7*E_1+8*E_2-3*E_3+7*E_4,
-      4*E_0+9*E_1-E_2-6*E_3+6*E_4}, {6*E_0+9*E_1+9*E_2, -7*E_1+9*E_2, -3*E_0-3*E_1-5*E_2,
-      -E_0+2*E_1+8*E_2+E_3-E_4}, {5*E_0+2*E_1-3*E_3, -7*E_1+9*E_2, 7*E_0-E_1-4*E_2+5*E_3+E_4,
-      -4*E_0+4*E_1+4*E_2-5*E_3+5*E_4}},2,({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
-      1})), (matrix {{2*E_0-6*E_1-5*E_2+E_3, -4*E_0+9*E_1+8*E_2+6*E_4, -6*E_0+6*E_1-5*E_2-2*E_3-2*E_4,
+      from {((2,1),(1,6)) => 5})),(matrix {{2*E_0-6*E_1-5*E_2+E_3, -4*E_0+9*E_1+8*E_2+6*E_4, -6*E_0+6*E_1-5*E_2-2*E_3-2*E_4,
       4*E_0-8*E_1-7*E_2+2*E_3-2*E_4}, {7*E_0-8*E_1-5*E_2-4*E_3, 9*E_0-4*E_1+9*E_2-8*E_4,
       E_0-8*E_1+8*E_2-5*E_3-5*E_4, -4*E_0+2*E_1-6*E_2+5*E_3-5*E_4}, {E_0+5*E_1+3*E_2+E_3, E_0-8*E_1-6*E_2-9*E_4,
       5*E_0+6*E_1-8*E_2+E_3+E_4, -E_0-9*E_1+8*E_2+6*E_3-6*E_4}},1,({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6))
-      => 4, ((2,4),(1,21)) => 1})), (matrix {{-5*E_0-5*E_1-5*E_2-8*E_3, -8*E_0-2*E_1+3*E_2-4*E_4,
+      => 4, ((2,4),(1,21)) => 1})), (matrix {{-5*E_0-5*E_1+2*E_2+E_3, -7*E_1+9*E_2, -7*E_0+7*E_1+8*E_2-3*E_3+7*E_4,
+      4*E_0+9*E_1-E_2-6*E_3+6*E_4}, {6*E_0+9*E_1+9*E_2, -7*E_1+9*E_2, -3*E_0-3*E_1-5*E_2,
+      -E_0+2*E_1+8*E_2+E_3-E_4}, {5*E_0+2*E_1-3*E_3, -7*E_1+9*E_2, 7*E_0-E_1-4*E_2+5*E_3+E_4,
+      -4*E_0+4*E_1+4*E_2-5*E_3+5*E_4}},2,({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
+      1})),  (matrix {{-5*E_0-5*E_1-5*E_2-8*E_3, -8*E_0-2*E_1+3*E_2-4*E_4,
       7*E_0+8*E_1-9*E_2-E_3+9*E_4, -9*E_0-2*E_1+7*E_3-7*E_4}, {-5*E_0-2*E_1+6*E_2-5*E_3, 3*E_0+7*E_1+E_2+9*E_4,
       6*E_0-2*E_1+2*E_3+E_4, 9*E_0+5*E_1+3*E_2-E_3+E_4}, {6*E_0+6*E_1+6*E_2+2*E_3, 8*E_0+E_1-6*E_2-E_4,
       -7*E_0-3*E_1-7*E_2, 3*E_0-2*E_1-9*E_2+5*E_3-5*E_4}},2,({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
@@ -3700,7 +3700,7 @@ ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
 specificEllipticSurfaceD13S16=method()
 
 specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):=(P4,E,k) -> (
-    if not member(k,{1,3,4}) then (<< k <<"should be in "<<{1,3,4} <<flush<<endl;
+    if not member(k,{1,2,4}) then (<< k <<"should be in "<<{1,2,4} <<flush<<endl;
 	    return ideal 1_P4);
     X:=specificAboSurface(P4,E,k);
     betti(ci:=ideal(gens X*random(source gens X,P4^{2:-5})));
@@ -3711,7 +3711,7 @@ specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):=(P4,E,k) -> (
 kk=ZZ/19
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
-X=specificAboSurface(P4,E,0);
+X=specificAboSurface(P4,E,1);
 betti(ci=ideal(gens X*random(source gens X,P4^{2:-5})))
 minimalBetti (Y=ci:X)
 betti tateResolutionOfSurface Y
@@ -8076,13 +8076,13 @@ Description
   Text
    We construct a specific elliptic surface of degree 13 sectional genus 16 from
    a specficAboSurface of number k via linkage. The function needs the ground field
-   kk=ZZ/19 and a number k in {1,3,4}.
+   kk=ZZ/19 and a number k in {1,2,4}.
   Example
    kk=ZZ/19; 
    P4=kk[x_0..x_4];
    E=kk[e_0..e_4,SkewCommutative=>true];
    setRandomSeed("faily fast");
-   X=specificEllipticSurfaceD13S16(P4,E,3);
+   X=specificEllipticSurfaceD13S16(P4,E,2);
   Text
    The printed information is the partition type of canonical divisor of the specific Abo surface used and
    its redidualInQuintics decomposition. Which in this case consists of four 6-secant lines and
@@ -8118,6 +8118,12 @@ SeeAlso
   canonicalDivisor
   HdotK
   Ksquare
+///
+
+///
+
+
+
 ///
 -*
 regularInCodimension(1,P4/D)
