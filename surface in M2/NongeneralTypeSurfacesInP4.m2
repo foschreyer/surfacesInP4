@@ -53,6 +53,7 @@ newPackage(
 
 export {
     --"NongeneralTypeSuracesInP4",
+    "randomEllipticAboSurface",
     "numericalFunctions",
     "specificEllipticSurfaceD13S16",
     "specificAboSurface",
@@ -149,6 +150,7 @@ export {
     "get4x2Matrix",
     "Smooth",
     "Special",
+    "Strategy",
     "KodairaDimension",
     "veroneseImagesInG25",
     "vBELSurface",
@@ -2142,6 +2144,327 @@ randomAboSurface(Ring):= opt -> P4 -> (
       if opt.Count then << "count2= " << count2 <<endl;      
       I)
 
+randomEllipticAboSurface=method(Options=>{Verbose=>false,Count=>false,
+	PrintConstructionData=>false,Strategy=>3})
+randomEllipticAboSurface(Ring,Ring) := o -> (P4,P3) -> (
+    if o.Strategy==1 then return randomEllipticAboSurface1(P4,P3);
+    if o.Strategy==2 then return randomEllipticAboSurface2(P4,P3);
+    if o.Strategy==3 then return randomEllipticAboSurface3(P4,P3);
+    return null) 	  
+
+randomEllipticAboSurface0=method(Options=>{Verbose=>false,Count=>false,
+	PrintConstructionData=>false})
+  ---finds elliptic Abo surfaces from (4x5) matrices over the plane, s.t. the Bordiga matrix has three rank one points
+ randomEllipticAboSurface0( Ring, Ring):= opt -> (P4,P2) -> (
+ kk := coefficientRing P4;
+    e:= symbol e;
+     P2xP4:= P2**P4;
+    E := kk[e_0..e_4,SkewCommutative=>true];
+    m1x3 := matrix{{e_0,e_1,e_2}};
+       a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;rIs:=null;
+    m4x5:=null;Irs:=null;
+    while ( --get smooth surface
+   -- count1=1;	
+    while ( -- get surface of degree 12
+	 -- count=1;
+          while ( -- syz bb as desired
+	      while (
+	     m4x5=random(P2^4,P2^1)*( transpose matrix { {P2_0}})|random(P2^4,P2^1)*( transpose matrix { {P2_1}})|random(P2^4,P2^3)*(transpose vars P2)|random(P2^4,P2^1)*( transpose matrix { {P2_2}})|random(P2^4,P2^3)*(transpose vars P2);
+           m3x4=sub(transpose (sub(diff(sub(vars P2,P2xP4),transpose (sub(vars P4,P2xP4)*sub(transpose m4x5,P2xP4))),P4)), vars E);
+--mE3x4=sub(m3x4, vars E);
+	      --m3x4 = k31|k32|k33|k34;
+	      m4x4 = (transpose a1x4) | (transpose sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	      not (rIs==109)) do count=count+1;
+	  --    if opt.PrintConstructionData and opt.Verbose then (
+	--	  <<"betti Is= " << betti Is <<endl);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | (transpose m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	     -- if opt.PrintConstructionData and opt.Verbose then (
+	--	  <<"betti syz bb = " << betti tau <<endl);
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do count1=count1+1;
+--	  if opt.Verbose then << "count= " <<count << endl;
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count2=count2+1);
+       if opt.Verbose then << "count= " <<count << endl;
+     -- if opt.Count then << "count1= " << count1 <<endl;
+     if opt.PrintConstructionData then (
+	      <<Irs <<endl;
+--	      <<"betti syz bb = " << betti tau <<endl);
+      singX:= singularLocus I; 
+    --  if opt.PrintConstructionData then (
+--	  <<"codim singX = " << codim singX <<endl);
+      not codim singX == 5)) do ( );
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I, m3x4, rIs))
+
+
+
+
+
+ randomEllipticAboSurface3=method(Options=>{Verbose=>false,Count=>false,
+	PrintConstructionData=>false})
+  ---finds elliptic Abo surfaces from (4x5) matrices over the plane, s.t. the Bordiga matrix has three rank one points
+ randomEllipticAboSurface3( Ring, Ring):= opt -> (P4,P3) -> (
+ kk := coefficientRing P4;
+    e:= symbol e;
+     P3xP4 := P3**P4;
+    E := kk[e_0..e_4,SkewCommutative=>true];
+    m1x3 := matrix{{e_0,e_1,e_2}};
+       a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;rIs:=null;
+    while ( --get smooth surface
+   -- count1=1;	
+    while ( -- get surface of degree 12
+	 -- count=1;
+          while ( -- syz bb as desired
+	      while (
+m3x5:=matrix {{P3_0},{0},{0}}|matrix { {0},{P3_1},{0}}|random(P3^3,P3^4)*(transpose vars P3)|matrix {{0},{0},{P3_2}}|transpose(transpose(random(P3^2,P3^3)*matrix {{P3_0},{P3_1},{P3_3}})|random(P3^1,P3^4)*(transpose vars P3));
+m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*sub(transpose m3x5,P3xP4))),P4)), vars E);
+--mE3x4=sub(m3x4, vars E);
+	      --m3x4 = k31|k32|k33|k34;
+	      m4x4 = (transpose a1x4) | ( sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	  --   if opt.PrintConstructionData and opt.Verbose then (
+       	 -- << rIs <<endl);
+	 not (rIs==109)) do (count=count+1);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | ( m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	     -- if opt.PrintConstructionData and opt.Verbose then (
+	--	  <<"betti syz bb = " << betti tau <<endl);
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do (count2=count2+1);
+--	  if opt.Verbose then << "count= " <<count << endl;
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+       if opt.Verbose then << "count= " <<count << endl;
+      if opt.Count then << "count1= " << count1 <<endl;
+     -- if opt.PrintConstructionData then (
+--	      <<"betti Is= " << betti Is <<endl;
+--	      <<"betti syz bb = " << betti tau <<endl);
+      singX:= singularLocus I; 
+    --  if opt.PrintConstructionData then (
+--	  <<"codim singX = " << codim singX <<endl);
+      not codim singX == 5) do ();
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I, m3x4, rIs))
+
+
+
+
+
+
+randomEllipticAboSurface2=method(Options=>{Verbose=>false,Count=>false,PrintConstructionData=>false})
+  ---finds elliptic Abo surfaces from (3x5) matrices over P3, s.t. the Bordiga matrix has two rank one points
+  randomEllipticAboSurface2( Ring, Ring):= opt -> (P4,P3) -> (
+ kk := coefficientRing P4;
+    e:= symbol e;
+     P3xP4 := P3**P4;
+    E := kk[e_0..e_4,SkewCommutative=>true];
+    m1x3 := matrix{{e_0,e_1,e_2}};
+       a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;m3x5:=null;
+    rIs:=null;
+    while ( --get smooth surface
+   -- count1=1;	
+    while ( -- get surface of degree 12
+	 -- count=1;
+          while ( -- syz bb as desired
+	      while (
+m3x5= transpose(matrix {{0}}|transpose(random(P3^2,P3^1)*matrix {{P3_1}}))|transpose(transpose(random(P3^2,P3^3)*matrix {{P3_1},{P3_2},{P3_3}})|random(P3^1,P3^4)*(transpose vars P3))|random(P3^3,P3^4)*(transpose vars P3)|matrix {{0},{0},{P3_0}}|random(P3^3,P3^3)*matrix {{P3_1},{P3_2},{P3_3}};
+m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*sub(transpose m3x5,P3xP4))),P4)), vars E);
+	      m4x4 = (transpose a1x4) | ( sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	  --   if opt.PrintConstructionData and opt.Verbose then (
+       	 -- << rIs <<endl);
+	 not (rIs==109)) do (count=count+1);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | ( m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	     -- if opt.PrintConstructionData and opt.Verbose then (
+	--	  <<"betti syz bb = " << betti tau <<endl);
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do (count2=count2+1);
+--	  if opt.Verbose then << "count= " <<count << endl;
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+       if opt.Verbose then << "count= " <<count << endl;
+      if opt.Count then << "count1= " << count1 <<endl;
+     -- if opt.PrintConstructionData then (
+--	      <<"betti Is= " << betti Is <<endl;
+--	      <<"betti syz bb = " << betti tau <<endl);
+      singX:= singularLocus I; 
+    --  if opt.PrintConstructionData then (
+--	  <<"codim singX = " << codim singX <<endl);
+      not codim singX == 5) do ();
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I, m3x4, rIs))
+
+
+  randomEllipticAboSurface1=method(Options=>{Verbose=>false,Count=>false,PrintConstructionData=>false})
+  ---finds elliptic Abo surfaces from (3x5) matrices over P3, s.t. the Bordiga matrix has one rank one point
+  randomEllipticAboSurface1( Ring, Ring):= opt -> (P4,P3) -> (
+ kk := coefficientRing P4;
+    e:= symbol e;
+     P3xP4 := P3**P4;
+    E := kk[e_0..e_4,SkewCommutative=>true];
+    m1x3 := matrix{{e_0,e_1,e_2}};
+       a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;m3x5:=null;
+    rIs:=null;
+    while ( --get smooth surface
+   -- count1=1;	
+    while ( -- get surface of degree 12
+	 -- count=1;
+          while ( -- syz bb as desired
+	      while (
+m3x5= transpose(transpose(random(P3^2,P3^3)*matrix {{P3_1},{P3_2},{P3_3}})|random(P3^1,P3^4)*(transpose vars P3))|transpose(transpose(random(P3^2,P3^3)*matrix {{P3_1},{P3_2},{P3_3}})|random(P3^1,P3^4)*(transpose vars P3))|random(P3^3,P3^4)*(transpose vars P3)|matrix {{0},{0},{P3_0}}|random(P3^3,P3^3)*matrix {{P3_1},{P3_2},{P3_3}};
+m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*sub(transpose m3x5,P3xP4))),P4)), vars E);
+--mE3x4=sub(m3x4, vars E);
+	      --m3x4 = k31|k32|k33|k34;
+	      m4x4 = (transpose a1x4) | ( sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	  --   if opt.PrintConstructionData and opt.Verbose then (
+       	 -- << rIs <<endl);
+	 not (rIs==109)) do (count=count+1);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | ( m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	     -- if opt.PrintConstructionData and opt.Verbose then (
+	--	  <<"betti syz bb = " << betti tau <<endl);
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do (count2=count2+1);
+--	  if opt.Verbose then << "count= " <<count << endl;
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+       if opt.Verbose then << "count= " <<count << endl;
+      if opt.Count then << "count1= " << count1 <<endl;
+     -- if opt.PrintConstructionData then (
+--	      <<"betti Is= " << betti Is <<endl;
+--	      <<"betti syz bb = " << betti tau <<endl);
+      singX:= singularLocus I; 
+    --  if opt.PrintConstructionData then (
+--	  <<"codim singX = " << codim singX <<endl);
+      not codim singX == 5) do ();
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I, m3x4, rIs))
+  
 
 partitionOfCanonicalDivisorOfAboSurface=method(Options=>{Verbose=>false,Equations=>false})
 partitionOfCanonicalDivisorOfAboSurface(Ideal) := opt -> X -> (
@@ -2853,6 +3176,7 @@ apply(mKRs3,mKR->(
 	<<" d = " << d <<flush<<endl;
 	betti (ci=ideal(gens X*random(source gens X, P4^{2:-5})));
 	Y=ci:X;
+       
 	--<< minimalBetti Y << flush<<endl;
 	assert((degree Y, sectionalGenus Y)==(13,16));
 	--betti tateResolutionOfSurface Y
@@ -3969,7 +4293,7 @@ Headline => "Known families of K3 surfaces",
 
 document {
 Key => aboSurfaces,
-Headline => "functions for investigating Abo surfaces, (8 families)",
+Headline => "functions for investigating Abo surfaces, (9 families)",
    "",
     
    PARA{},
@@ -3984,7 +4308,7 @@ Headline => "functions for investigating Abo surfaces, (8 families)",
 	TO specificAboSurface,
         },
     PARA{},
-     SUBSECTION "unirational or nearly unrirational constructions",
+     SUBSECTION "unirational or nearly unirational constructions",
      UL{
 	TO abo111333Surface,
 	TO abo111117Surface,
@@ -6299,6 +6623,83 @@ SeeAlso
    partitionOfCanonicalDivisorOfAboSurface
    
 ///
+
+doc ///
+Key
+ randomEllipticAboSurface
+ (randomEllipticAboSurface, Ring, Ring)
+ [randomEllipticAboSurface,Verbose]
+ [randomEllipticAboSurface,Count]
+ [randomEllipticAboSurface,PrintConstructionData]
+ [randomEllipticAboSurface,Strategy]
+Headline
+ get random elliptic Abo surfaces
+Usage
+ (X,m3x5,m3x4,r)=randomEllipticAboSurface(P4,P3)
+Inputs
+ P4:Ring
+  coordinate ring of P4 over a ground field of characteristic 3
+ P3: Ring
+  coordinate ring of a P3
+Outputs
+ X:Ideal
+   of an Abo surface
+ m3x4: Matrix
+   over the exterior algebra dual P4
+ r: ZZ
+   rank of solution space, dimension of the Hom space is 115-r  
+Description
+  Text
+    The functions constracts a Abo surface by choosing randomly 3x4 matrices over the exterior
+    algebra and testing whether they lead to a surface.
+    
+    In the case of randomSpecialAboSurface, the m3x4 Bordiga matrix has a rank 1 point.
+  Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    P3=kk[y_0..y_3];
+    setRandomSeed("fairly fast");
+    elapsedTime (X,m3x4,r)=randomEllipticAboSurface(P4,P3);
+    minimalBetti X
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,2)
+    betti(tateResolutionOfSurface X)
+    RX=residualInQuintics X;
+    cRX=decompose RX;
+    tally apply(cRX, c-> (dim c -1, degree c, (dim(c+X)-1,degree(c+X))))
+    K=canonicalDivisor X;
+    cK=decompose K;
+    tally apply(cK,c->(dim c -1, degree c, genus c, selfIntersectionNumber(X,c), minimalBetti c))
+  Text
+    The canonical divisor decomposes into four (-1) lines and two (1-) conics, and elliptic
+    curve of class (2,2) on a P1xP1. So the minimal model has K^2_min=0,
+    hence is an elliptic surface.
+  Example
+    E=(select(cK,c->genus c ==1))_0;
+    betti E,
+    saturate ideal singularLocus(P4/E)
+    dim E,degree E, genus E, minimalBetti E
+    m=2
+    mE= saturate(E^m+X);
+    betti mE
+    H=ideal( gens mE*random(source gens mE,P4^{-6}));
+    linked=saturate((H+X):mE);
+    betti linked, betti saturate linked
+    H'=ideal(gens linked*random(source gens linked,P4^{-6}));
+    betti trim ideal(gens linked%X)
+    betti linked, betti X
+    E'=(X+H'):linked;
+    betti E'
+    degree E', genus E'
+    dim(E'+E)
+  Text
+    the divisor 2E moves in a pencil.
+SeeAlso
+   residualInQuintics
+   
+   
+///
+
 
 -* classical rational surfaces *-
 
