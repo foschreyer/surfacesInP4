@@ -8177,6 +8177,25 @@ singY=saturate ideal singularLocus(P4/Y)
 dim singY, degree singY,genus singY, minimalBetti singY
 csingY=decompose singY
 netList apply(csingY,c->(dim c, degree c, genus c, minimalBetti c))
+-*
++-----------------------------+
+       |                 0 1 2 3     |
+o436 = |(2, 1, 0, total: 1 3 3 1)    |
+       |              0: 1 3 3 1     |
+       +-----------------------------+
+       |                  0 1  2 3 4 |
+       |(2, 3, -2, total: 1 6 11 8 2)|
+       |               0: 1 1  . . . |
+       |               1: . 1  1 . . |
+       |               2: . 4 10 8 2 |
+       +-----------------------------+
+       |                  0 1  2 3 4 |
+       |(2, 3, -2, total: 1 6 11 8 2)|
+       |               0: 1 1  . . . |
+       |               1: . 1  1 . . |
+       |               2: . 4 10 8 2 |
+       +-----------------------------+
+*-
 ///
 
 
