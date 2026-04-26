@@ -5613,6 +5613,27 @@ SeeAlso
    tateResolutionOfSurface
 ///
 
+
+///
+ci=ideal(gens X*random(source gens X,P4^{2:-5}));
+Y=ci:X;
+minimalBetti Y
+betti tateResolutionOfSurface Y
+(d,sg)=(degree Y, sectionalGenus Y)
+Ksquare(d,sg,4)
+D1=canonicalDivisor Y;
+D2=canonicalDivisor Y;
+D3=canonicalDivisor Y;
+baseLocus=saturate(D1+D2+D3)
+degree baseLocus, genus baseLocus
+R=residualInQuintics X;
+R==baseLocus
+degree baseLocus, genus baseLocus, selfIntersectionNumber(Y,baseLocus)
+E1=D1:baseLocus;
+dim E1, degree E1, genus E1, selfIntersectionNumber(Y,E1)
+///
+
+
 -* Abo surfaces *-
 
 doc ///
@@ -6071,16 +6092,21 @@ Description
   Example
     betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
     minimalBetti (Y=ci:X)
+    RY=residualInQuintics Y;
+    degree RY
+    RY==canonicalDivisor X
+    saturate ideal singularLocus (P4/Y)== ideal 1_P4
     D1=canonicalDivisor Y;
     D2=canonicalDivisor Y;
     betti(baseLocus=saturate (D1+D2))
     degree baseLocus, genus baseLocus
     selfIntersectionNumber(Y,baseLocus)
-    degree Y, sectionalGenus Y
+    (degree Y, sectionalGenus Y)==(13,16)
+    betti tateResolutionOfSurface Y
     Ksquare(13,16,3)==-5
+    LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
     betti(E1=D1:baseLocus)
     degree E1, genus E1, selfIntersectionNumber(Y,E1)
-    betti(tateResolutionOfSurface Y)
 SeeAlso
    residualInQuintics
    tateResolutionOfSurface
@@ -6090,6 +6116,55 @@ SeeAlso
    canonicalDivisor
    tateResolutionOfSurface
 ///
+
+///
+
+kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    X=specificAboSurface(P4,E,4);
+    minimalBetti X
+    saturate ideal singularLocus(P4/X)
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,2)==-6   
+    LeBarzN6(d,sg,2)==7
+betti(T=tateResolutionOfSurface X)
+betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
+    minimalBetti (Y=ci:X)
+    RX=residualInQuintics X;
+    RY=residualInQuintics Y;
+    planes=select(decompose RX,c->dim c==3)
+    minimalBetti(Y1=Y:planes_0)
+    singY1=saturate ideal singularLocus(P4/Y1)
+    dim singY1, degree singY1
+    decompose singY1
+    decompose Y1
+    degree RY
+    RY==canonicalDivisor X
+    saturate ideal singularLocus (P4/Y)== ideal 1_P4
+    D1=canonicalDivisor Y;
+    D2=canonicalDivisor Y;
+    betti(baseLocus=saturate (D1+D2))
+    degree baseLocus, genus baseLocus
+    selfIntersectionNumber(Y,baseLocus)
+    (degree Y, sectionalGenus Y)==(13,16)
+    betti tateResolutionOfSurface Y
+    Ksquare(13,16,3)==-5
+    LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
+    betti(E1=D1:baseLocus)
+    degree E1, genus E1, selfIntersectionNumber(Y,E1)    
+
+tally apply(decompose RY,c->(dim c-1, degree c,genus c,
+		(dim(c+Y)-1, degree(c+Y)),selfIntersectionNumber(X,c)))
+tally apply(select(decompose baseLocus,c->dim c ==2),c->(dim c -1, degree c, genus c,
+	    selfIntersectionNumber(Y,c)))
+    betti(E2=D2:baseLocus)
+    degree E2, genus E2, selfIntersectionNumber(Y,E2)
+    residualInQuintics X==baseLocus
+    dim (E1+E2), degree(E1+E2)
+///
+
+
 
 doc ///
 Key
@@ -8093,6 +8168,18 @@ SeeAlso
   HdotK
   Ksquare
 ///
+
+/// -- the linked surface
+betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
+minimalBetti(Y=ci:X)
+betti(tateResolutionOfSurface(Y,7))
+singY=saturate ideal singularLocus(P4/Y)
+dim singY, degree singY,genus singY, minimalBetti singY
+csingY=decompose singY
+netList apply(csingY,c->(dim c, degree c, genus c, minimalBetti c))
+///
+
+
 
 /// -- residual to X=irregularEllipticSurfaceD12 P4
 kk=ZZ/nextPrime 10^4; 
