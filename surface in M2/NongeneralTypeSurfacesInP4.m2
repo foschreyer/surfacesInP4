@@ -8059,7 +8059,7 @@ Key
  specificEllipticSurfaceD13S16
  (specificEllipticSurfaceD13S16,PolynomialRing,Ring, ZZ)
 Headline
- construct a specific elliptic surface via linkage form a Abo surface (3 familie)
+ construct a specific elliptic surface via linkage form a Abo surface (3 families)
 Usage
  X=specificEllipticSurfaceD13S16(P4,E,k)
 Inputs
