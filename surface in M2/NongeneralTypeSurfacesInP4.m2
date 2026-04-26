@@ -53,6 +53,7 @@ newPackage(
 
 export {
     --"NongeneralTypeSuracesInP4",
+    "tangentToMonad",
     "randomEllipticAboSurface",
     "numericalFunctions",
     "specificEllipticSurfaceD13S16",
@@ -85,6 +86,7 @@ export {
     "chiO",
     "irregularity",
     "geometricGenus",
+    "chiNX",
     "chiI",
     "chiITable",
     "HdotK",
@@ -150,7 +152,7 @@ export {
     "get4x2Matrix",
     "Smooth",
     "Special",
-    "Strategy",
+    "NumberOfRank1Points",
     "KodairaDimension",
     "veroneseImagesInG25",
     "vBELSurface",
@@ -217,6 +219,26 @@ geometricGenus(Ideal) := X -> (
     OX := sheaf(Pn^1/X);
     rank HH^2(OX))
 
+chiNX = method();
+-- PURPOSE : Find the Euler characteristic of the normal bundle of a nonsingular surface 'X' in projective space 'P4'
+--   INPUT : 'd', degree of 'X'
+--           'Pi',sectional genus of 'X'
+--           'Chi', euler characteristic of 'X' 
+--  OUTPUT : Euler characteristic of the normal bundle of 'X' in 'P4'
+-- COMMENT : The command can also take the ideal of 'X' and returns the Euler characteristic of the normal bundle of 'X' in 'P4'
+chiNX(ZZ,ZZ,ZZ) := (d,Pi,Chi) -> (
+    5*d-5*Pi-2*Ksquare(d,Pi,Chi)+14*Chi+5
+    )
+chiNX(Ideal) := X -> (
+    assert(dim X-1 == 2);
+    d := degree X;
+    Pi := sectionalGenus X;
+    Chi := genus X+1;
+    chiNX(d,Pi,Chi)
+    )
+///    
+chiNX(12,13,2)
+///
 
 chiITable=method()
 -- Input: d,sg xO ZZ values for the degree,the sectional genus and the eulerCharcteristic
@@ -736,6 +758,50 @@ betti tateResolutionOfSurface(X,7)
 
 ///
 
+tangentToMonad = method();
+-- DESCTRIPTION : This command computes the dimension of the tangent space to the space 'M' of monads of the form a*OMega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example
+--                by taking the derivative of the composite of differentials. The dimension of the space of isomophism classes of monads is
+--                dim (M)-(a^2+b^2+c^2+5*b*c+d^2-1). 
+tangentToMonad(Ideal) := X -> (
+    assert(regularity X <= 6);
+    KK := coefficientRing ring X;
+    pX := syz gens X;
+    e := symbol e;
+    E := KK[e_0..e_4,SkewCommutative => true];
+    T := tateResolution(pX,E,3,8);
+    beta := (T.dd_4)^(positions(degrees target T.dd_4,i->i=={-4}));
+    alpha := (T.dd_5)_(positions(degrees source T.dd_5,i->i=={-1}));
+    nrowsBeta := (tally degrees target beta)_{-4};
+    ncolsBeta := (tally degrees source beta)_{-3};
+    ncolsBeta' := (tally degrees source beta)_{-2};
+    ncolsAlpha := (tally degrees source alpha)_{-1};
+    n1 := nrowsBeta*ncolsBeta;
+    n2 := nrowsBeta*ncolsBeta';
+    n3 := ncolsBeta*ncolsAlpha;
+    n4 := ncolsBeta'*ncolsAlpha;
+    a := symbol a;
+    b := symbol b;
+    c := symbol c;
+    d := symbol d;
+    R := KK[a_(0,0)..a_(nrowsBeta-1,ncolsBeta-1),
+	b_(0,0)..b_(nrowsBeta-1,ncolsBeta'-1),
+	c_(0,0)..c_(ncolsBeta-1,ncolsAlpha-1),
+	d_(0,0)..d_(ncolsBeta'-1,ncolsAlpha-1),
+	e_0..e_4,
+	Degrees=>{n1:1,n2:2,n3:1,n4:2,5:1},
+	SkewCommutative => true];
+    salpha := substitute(alpha,R);
+    sbeta := substitute(beta,R);
+    beta' := matrix table(nrowsBeta,ncolsBeta,(i,j)->a_(i,j)) | matrix table(nrowsBeta,ncolsBeta',(i,j)->b_(i,j));
+    alpha' := matrix table(ncolsBeta,ncolsAlpha,(i,j)->c_(i,j)) || matrix table(ncolsBeta',ncolsAlpha,(i,j)->d_(i,j));
+    gamma := map(flatten (sbeta*alpha'+beta'*salpha));
+    delta := map(E^{nrowsBeta*ncolsAlpha:-3},,sub(contract(matrix{{a_(0,0)..a_(nrowsBeta-1,ncolsBeta-1),
+			b_(0,0)..b_(nrowsBeta-1,ncolsBeta'-1),
+			c_(0,0)..c_(ncolsBeta-1,ncolsAlpha-1),
+			d_(0,0)..d_(ncolsBeta'-1,ncolsAlpha-1)}},transpose gamma),E));
+    mu := syz(delta);
+    super basis(6,image mu)
+    )
 
 
 
@@ -2145,11 +2211,11 @@ randomAboSurface(Ring):= opt -> P4 -> (
       I)
 
 randomEllipticAboSurface=method(Options=>{Verbose=>false,Count=>false,
-	PrintConstructionData=>false,Strategy=>3})
+	PrintConstructionData=>false,NumberOfRank1Points=>3})
 randomEllipticAboSurface(Ring,Ring) := o -> (P4,P3) -> (
-    if o.Strategy==1 then return randomEllipticAboSurface1(P4,P3);
-    if o.Strategy==2 then return randomEllipticAboSurface2(P4,P3);
-    if o.Strategy==3 then return randomEllipticAboSurface3(P4,P3);
+    if o.NumberOfRank1Points==1 then return randomEllipticAboSurface1(P4,P3);
+    if o.NumberOfRank1Points==2 then return randomEllipticAboSurface2(P4,P3);
+    if o.NumberOfRank1Points==3 then return randomEllipticAboSurface3(P4,P3);
     return null) 	  
 
 randomEllipticAboSurface0=method(Options=>{Verbose=>false,Count=>false,
@@ -4963,6 +5029,36 @@ SeeAlso
    chiO
 ///
 
+doc ///
+Key
+ tangentToMonad
+ (tangentToMonad,Ideal)
+Headline
+ Compute the tangent space to the monad for a surface
+Usage
+  m = tangentToMonad X
+Inputs
+  X:Ideal
+    homogenous ideal of a smooth projective surface in P4
+Outputs
+  m:Matrix
+   which describes the first order deformation space for the monad of X
+Description
+  Text
+    add some explanation
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4]
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    minimalBetti(X=specificAboSurface(P4,E,1))
+    m=tangentToMonad X;
+    rank source m
+SeeAlso
+
+///
+
+
+
 ///
  Example
     sg=sectionalGenus X
@@ -6631,14 +6727,14 @@ Key
  [randomEllipticAboSurface,Verbose]
  [randomEllipticAboSurface,Count]
  [randomEllipticAboSurface,PrintConstructionData]
- [randomEllipticAboSurface,Strategy]
+ [randomEllipticAboSurface,NumberOfRank1Points]
 Headline
- get random elliptic Abo surfaces
+ Get random elliptic Abo surface
 Usage
- (X,m3x5,m3x4,r)=randomEllipticAboSurface(P4,P3)
+ (X,m3x4,r)=randomEllipticAboSurface(P4,P3)
 Inputs
  P4:Ring
-  coordinate ring of P4 over a ground field of characteristic 3
+  coordinate ring of P4 over a small finite ground field
  P3: Ring
   coordinate ring of a P3
 Outputs
@@ -6650,10 +6746,10 @@ Outputs
    rank of solution space, dimension of the Hom space is 115-r  
 Description
   Text
-    The functions constracts a Abo surface by choosing randomly 3x4 matrices over the exterior
-    algebra and testing whether they lead to a surface.
+    The functions constructs a random elliptic Abo surface by choosing carefully
+    3x5 over P3 such that the adjoint Bordiga matrix has the desired number of rank 1 points.
     
-    In the case of randomSpecialAboSurface, the m3x4 Bordiga matrix has a rank 1 point.
+    The fastest hence default choice is NumberOfRank1Points=>3.
   Example
     kk=ZZ/19;
     P4=kk[x_0..x_4];
@@ -6699,6 +6795,7 @@ SeeAlso
    
    
 ///
+
 
 
 -* classical rational surfaces *-
