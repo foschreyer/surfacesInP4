@@ -56,6 +56,7 @@ export {
     "tangentToMonad",
     "randomEllipticAboSurface",
     "numericalFunctions",
+    "specificAboRanestadSurface",
     "specificEllipticSurfaceD13S16",
     "specificAboSurface",
     "collectSpecialAboSurfaces",
@@ -72,6 +73,8 @@ export {
     "aboSurfaces",
     "canonicalDivisorOfAboSurface",
     "randomAboSurface",
+    "randomAboSurfaceWithLargeHomSpace",
+    "randomAboSurfaceWithHomSpaceOfGivenDimension",
     "aboSurfaceFromMatrix",
     "testMatrix",
     "testMatrix1",
@@ -344,6 +347,7 @@ selfIntersectionNumber(X,D)
 
 
 -* rational surfaces *-
+
 cubicScroll=method()
 cubicScroll(PolynomialRing) := P4 -> minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
 ///
@@ -537,6 +541,9 @@ degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
     X := saturate ideal syz symExt(T.dd_4,P4);
     assert(dim X ==3 and degree X==10 and sectionalGenus X==9);
     X)
+
+
+
 
 degree10DESSurface=method()
 degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
@@ -1620,6 +1627,117 @@ elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
 ///
 
+specificAboRanestadSurface=method()
+
+specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
+    -- list of seven example ordered as in the paper.
+    if char P4 == 19 then (       
+    Ms:={matrix {{4*E_1+7*E_2+4*E_4, 4*E_0-9*E_1-9*E_2+4*E_3+3*E_4},
+      {-2*E_0+3*E_1-5*E_2-3*E_3-6*E_4, E_0-5*E_1-9*E_2-8*E_3-7*E_4},
+      {-9*E_0+5*E_1-7*E_2+3*E_3-7*E_4, -8*E_0+2*E_1-4*E_2+9*E_3-4*E_4},
+      {8*E_0+7*E_1+E_2+2*E_3-7*E_4, -3*E_0+5*E_1+3*E_2+4*E_3-2*E_4}},
+    matrix {{-E_0+7*E_1-6*E_2-4*E_3+4*E_4, -5*E_0-6*E_1+7*E_2-E_3+8*E_4},
+      {6*E_0+7*E_1-3*E_2+9*E_3+4*E_4, -9*E_0-2*E_1+8*E_2-4*E_3+2*E_4},
+      {E_0+9*E_1-5*E_2+5*E_3-9*E_4, -5*E_0+2*E_1-7*E_2-6*E_3-5*E_4},
+      {-3*E_1-9*E_2+2*E_3+6*E_4, 6*E_1+E_2-4*E_3-7*E_4}},
+    matrix {{-9*E_0-9*E_1+4*E_2-5*E_3+6*E_4,
+      -9*E_0-8*E_1-9*E_2-5*E_3-4*E_4}, {-8*E_0-5*E_1-6*E_2-9*E_3+2*E_4,
+      6*E_0-4*E_1-2*E_2+2*E_3+7*E_4}, {3*E_1+5*E_2+3*E_3+5*E_4,
+      5*E_1+5*E_2+5*E_3+5*E_4}, {-8*E_0+3*E_1+7*E_2+4*E_3-3*E_4,
+      -9*E_0+5*E_1+7*E_2-5*E_3-3*E_4}},
+    matrix {{7*E_0+8*E_1-2*E_2+8*E_3+2*E_4, -8*E_0+8*E_1-8*E_2-E_3+8*E_4},
+      {-7*E_0+4*E_1-6*E_2+7*E_3-2*E_4, 9*E_0+6*E_1-4*E_2-9*E_3+5*E_4},
+      {-2*E_0+8*E_1-2*E_3+8*E_4, 4*E_0-9*E_1+4*E_3-9*E_4},
+      {-8*E_0-9*E_1-9*E_2+5*E_3-7*E_4, 6*E_0+6*E_1+9*E_2-E_3-E_4}},
+    matrix {{8*E_0+9*E_1+E_2, -9*E_0+3*E_1-7*E_2}, {-6*E_0+E_1-3*E_2,
+      -3*E_0-5*E_1-8*E_2}, {-8*E_0+9*E_1-7*E_2-6*E_3+7*E_4,
+      8*E_0+E_1+9*E_2+6*E_3-9*E_4}, {-2*E_0-5*E_1-7*E_2-9*E_3+2*E_4,
+      -7*E_0+8*E_1-E_2-3*E_3+3*E_4}},
+    matrix {{-9*E_0+2*E_1+3*E_2, -4*E_0+5*E_1+6*E_2}, {-8*E_0+3*E_2,
+      -E_0+2*E_1-9*E_2}, {-3*E_0-4*E_1+7*E_2-3*E_3+3*E_4,
+      7*E_0+4*E_1+5*E_2+7*E_3-6*E_4}, {E_0-9*E_1+E_2-4*E_3-3*E_4,
+      -E_0-4*E_1+7*E_2+4*E_3-2*E_4}},
+     matrix {{5*E_0+6*E_1-8*E_2, 8*E_0-4*E_1-8*E_2}, {E_0-3*E_1+6*E_2,
+      -2*E_0-6*E_1-E_2}, {-5*E_0-2*E_1+3*E_2-9*E_3-6*E_4,
+      5*E_0-5*E_2+9*E_3-9*E_4}, {-9*E_0+E_1+E_2-3*E_3+7*E_4,
+      -E_0-7*E_1+7*E_2-4*E_3-E_4}}};
+    adjData:={{(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)},
+	{(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)},
+	{(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)},
+	{(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)},
+	{(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)},
+	{(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)},
+	{(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}
+	};
+    X:=aboRanestadSurfaceFromMatrix(P4,Ms_k);
+    return (X,adjData_k);
+    );
+    if not member(char P4 ,{19}) then (
+	<<" no example in characteristic = "<< char P4<<" recorded yet." <<endl);
+    )
+
+/// -* Test the list of examples of aboRanestad surfaces *-
+restart
+needsPackage"NongeneralTypeSurfacesInP4"
+kk=ZZ/19;
+P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true]
+(X,L0)=specificAboRanestadSurface(P4,E,0);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0==L0,minimalBetti L_3
+
+elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,1);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0==L0,minimalBetti L_3
+
+elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,2);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0==L0,minimalBetti L_3
+
+elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,3);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0==L0,minimalBetti L_3
+
+elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,4);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0==L0,minimalBetti L_3
+
+elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,5);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0==L0,minimalBetti L_3
+
+elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,6);
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0==L0,minimalBetti L_3
+
+
+minimalBetti X
+elapsedTime L=adjunctionProcess X;
+L_0
+L_0  ,minimalBetti L_3
+///
+   
+
+
+
+
+
+
+
+
 veroneseImagesInG25=method()
 veroneseImagesInG25(Matrix) := m4x2 -> (
     E:=ring m4x2;
@@ -2045,10 +2163,8 @@ E=kk[e_0..e_4,SkewCommutative=>true]
 elapsedTime X=abo111333Surface(P4,E);
 analyzeAboSurface X
 ///
-randomAboSurface=method(Options=>{Verbose=>false,Count=>false,
-	PrintConstructionData=>false})
-
-randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
+randomAboSurfaceWithLargeHomSpace=method(Options=>{Verbose=>false,Count=>false})
+randomAboSurfaceWithLargeHomSpace(Ring,Ring,ZZ) := opt -> (P4,E,h) -> (
     assert(char P4==char E);
     kk:=coefficientRing E;
     y:= symbol y;z:=symbol z;
@@ -2077,12 +2193,13 @@ randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
     ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
     m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
     m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
-    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;rIs:=null;dHom:=null;
     while ( --get smooth surface
     count1=1;	
     while ( -- get surface of degree 12
 	  count=1;
           while ( -- syz bb as desired
+	      while ( -- large hom space
 	      ek1 = random(E^2,E^4)*transpose p1;
 	      k31 = random(E^3,E^2)*ek1;
 	      ek2 = random(E^2,E^4)*transpose p2;
@@ -2096,6 +2213,9 @@ randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
 	      m4x4 = (transpose a1x4) | (transpose sub(m3x4,ExB));
 	      c = m4x4*m4x3;
 	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	      dHom =115-rIs;
+	      dHom<h) do ();
 	      if opt.PrintConstructionData and opt.Verbose then (
 		  <<"betti Is= " << betti Is <<endl);
 	      sol = vars B%Is;
@@ -2128,11 +2248,204 @@ randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
 	  <<"codim singX = " << codim singX <<endl);
       not codim singX == 5) do (count2=count2+1);
       if opt.Count then << "count2= " << count2 <<endl;      
+      (I,m3x4,dHom))
+
+/// -*test randomAboSurfaceWithLargeHomSpace *-
+needsPackage"NongeneralTypeSurfacesInP4"
+kk=ZZ/19;
+P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true]
+--elapsedTime (X,m3x4)=randomAboSurface(P4,E);--,PrintConstructionData=>true);
+h=2
+elapsedTime (X,m3x4,dh)=randomAboSurfaceWithLargeHomSpace(P4,E,h);
+dh
+partitionOfCanonicalDivisorOfAboSurface X
+tally apply(decompose residualInQuintics X,c->(dim c -1 , degree c, genus c,(dim(c+X)-1, degree (c+X))))
+
+///
+
+randomAboSurfaceWithHomSpaceOfGivenDimension=method(Options=>
+    {Verbose=>false,Count=>false})
+randomAboSurfaceWithHomSpaceOfGivenDimension(Ring,Ring,ZZ) := opt -> (P4,E,h) -> (
+    assert(char P4==char E);
+    kk:=coefficientRing E;
+    y:= symbol y;z:=symbol z;
+    P2:=kk[y_0..y_2];
+    P3:=kk[z_0..z_3];    
+    r:=null;
+    while (r=random(kk);member(r, {1_kk,0_kk})) do ();
+    m1x3 := matrix{{E_0,E_1,E_2}};
+    p1 := matrix{{E_0,E_1,E_2,E_3}};
+    p2 := matrix{{E_0,E_1,E_2,E_4}};
+    p3 := matrix{{E_0,E_1,E_2,E_4-random(kk)*E_3}};
+    p4 := matrix{{E_0,E_1,E_2,E_4-E_3}};
+    a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;rIs:=null;dHom:=null;
+    while ( --get smooth surface
+    count1=1;	
+    while ( -- get surface of degree 12
+	  count=1;
+          while ( -- syz bb as desired
+	      while ( -- large hom space
+	      ek1 = random(E^2,E^4)*transpose p1;
+	      k31 = random(E^3,E^2)*ek1;
+	      ek2 = random(E^2,E^4)*transpose p2;
+	      k32 = random(E^3,E^2)*ek2;
+	      ek3 = random(E^2,E^4)*transpose p3;
+	      k33 = random(E^3,E^2)*ek3;
+	      ek4 = random(E^2,E^4)*transpose p4;
+	      k34 = random(E^3,E^2)*ek4;
+	      m3x4 = k31|k32|k33|k34;
+	      m4x4 = (transpose a1x4) | (transpose sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	      dHom =115-rIs;
+	      dHom=!=h) do ();
+	      if opt.Verbose then (
+		  <<"betti Is= " << betti Is <<endl);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | (transpose m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do count=count+1;
+	  if opt.Verbose then << "count= " <<count << endl;
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+      if opt.Count then << "count1= " << count1 <<endl;
+           singX:= singularLocus I; 
+      not codim singX == 5) do (count2=count2+1);
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I,m3x4,dHom))
+
+/// -*test randomAboSurfaceWithLargeHomSpace *-
+needsPackage"NongeneralTypeSurfacesInP4"
+kk=ZZ/19;
+P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true]
+--elapsedTime (X,m3x4)=randomAboSurface(P4,E);--,PrintConstructionData=>true);
+h=3
+elapsedTime (X,m3x4,dh)=randomAboSurfaceWithHomSpaceOfGivenDimension(P4,E,h);
+dh
+partitionOfCanonicalDivisorOfAboSurface X
+tally apply(decompose residualInQuintics X,c->(dim c -1 , degree c, genus c,(dim(c+X)-1, degree (c+X))))
+
+///
+
+
+randomAboSurface=method(Options=>{Verbose=>false,Count=>false,
+	PrintConstructionData=>false})
+
+randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
+    assert(char P4==char E);
+    kk:=coefficientRing E;
+    y:= symbol y;z:=symbol z;
+    P2:=kk[y_0..y_2];
+    P3:=kk[z_0..z_3];    
+    r:=null;
+    while (r=random(kk);member(r, {1_kk,0_kk})) do ();
+    m1x3 := matrix{{E_0,E_1,E_2}};
+    p1 := matrix{{E_0,E_1,E_2,E_3}};
+    p2 := matrix{{E_0,E_1,E_2,E_4}};
+    p3 := matrix{{E_0,E_1,E_2,E_4-random(kk)*E_3}};
+    p4 := matrix{{E_0,E_1,E_2,E_4-E_3}};
+    a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;dHom:=null;rIs:=null;
+    while ( --get smooth surface
+    count1=1;	
+    while ( -- get surface of degree 12
+	  count=1;
+          while ( -- syz bb as desired
+	      while ( -- enough hom
+	      ek1 = random(E^2,E^4)*transpose p1;
+	      k31 = random(E^3,E^2)*ek1;
+	      ek2 = random(E^2,E^4)*transpose p2;
+	      k32 = random(E^3,E^2)*ek2;
+	      ek3 = random(E^2,E^4)*transpose p3;
+	      k33 = random(E^3,E^2)*ek3;
+	      ek4 = random(E^2,E^4)*transpose p4;
+	      k34 = random(E^3,E^2)*ek4;
+	      m3x4 = k31|k32|k33|k34;
+	      if opt.PrintConstructionData then << (adjointMatrices(m3x4,P2,P3,P4)) <<endl;
+	      m4x4 = (transpose a1x4) | (transpose sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	      dHom =115-rIs;
+	      dHom<1) do ();
+	      if opt.Verbose then (
+		  <<"betti Is= " << betti Is <<endl);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | (transpose m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	      if opt.Verbose then (
+		  <<"betti syz bb = " << betti tau <<endl);
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do count=count+1;
+	  if opt.Verbose then << "count= " <<count << endl;
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+      if opt.Count then << "count1= " << count1 <<endl;
+      singX:= singularLocus I; 
+      not codim singX == 5) do (count2=count2+1);
+      if opt.Count then << "count2= " << count2 <<endl;      
       (I,m3x4))
 
     
 
-
+-*
 randomAboSurface(Ring):= opt -> P4 -> (
     kk := coefficientRing P4;
     e:= symbol e;
@@ -2209,6 +2522,8 @@ randomAboSurface(Ring):= opt -> P4 -> (
       not codim singX == 5) do (count2=count2+1);
       if opt.Count then << "count2= " << count2 <<endl;      
       I)
+*-
+
 
 randomEllipticAboSurface=method(Options=>{Verbose=>false,Count=>false,
 	PrintConstructionData=>false,NumberOfRank1Points=>3})
@@ -4305,6 +4620,7 @@ Headline => "functions concerning Abo-Ranestad surfaces ( 9 families)",
      SUBSECTION "search for modules",
      UL{
 	TO aboRanestadSurface,
+	TO specificAboRanestadSurface,
 	TO get4x2Matrix,
         --TO singAboRanestadSurfacesStatistic,
         },
@@ -5997,6 +6313,47 @@ SeeAlso
 
 doc ///
 Key
+ specificAboRanestadSurface
+ (specificAboRanestadSurface,PolynomialRing, Ring, Number)
+
+Headline
+ Get the k-th specific Abo Ranestad surface 
+Usage
+ (X,adjL)specificAboRanestadSurface(P4,E,k);
+Inputs
+ P4:PolynomialRing
+   coordinateRinge of P4
+ E: Ring
+   the dula exterior algebra
+ k:Number
+  get example number k
+Outputs
+ X:Ideal
+  the ideal of a Abo-Ranestad surface
+ adjL: List
+   precomputed adjunction data 
+Description
+  Text
+    In the Tate resolution of an Abo-Ranestad surface there is a 4x2 matrix m4x2.
+    We compute a Abo-Ranestad surface of k-th given matrix
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4]
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,2);
+    L0
+    "elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;";
+    "numList==L0";
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
+    "minimalBetti J == B";    
+SeeAlso
+   aboRanestadSurfaceFromMatrix
+   adjunctionProcess
+   tateResolutionOfSurface
+///
+
+doc ///
+Key
  get4x2Matrix
  (get4x2Matrix, Matrix, Number)
  [get4x2Matrix,Special]
@@ -6673,40 +7030,57 @@ doc ///
 Key
  randomAboSurface
  randomSpecialAboSurface
+ randomAboSurfaceWithLargeHomSpace
+ randomAboSurfaceWithHomSpaceOfGivenDimension
  (randomAboSurface, Ring, Ring)
+ [randomAboSurfaceWithLargeHomSpace,Verbose]
+ [randomAboSurfaceWithLargeHomSpace,Count]
+ [randomAboSurfaceWithHomSpaceOfGivenDimension,Verbose]
+ [randomAboSurfaceWithHomSpaceOfGivenDimension,Count]
  [randomAboSurface,Verbose]
  [randomAboSurface,Count]
- [randomAboSurface,PrintConstructionData]
  (randomSpecialAboSurface, Ring, Ring)
  [randomSpecialAboSurface,Verbose]
  [randomSpecialAboSurface,Count]
  [randomSpecialAboSurface,PrintConstructionData]
+ [randomAboSurface,PrintConstructionData]
 Headline
  get random Abo surfaces
 Usage
  (X,m3x4)=randomAboSurface(P4,E)
- (X,m3x4)=randomSpexialAboSurface(P4,E)
+ (X,m3x4)=randomSpecialAboSurface(P4,E)
+ (X,m3x4,r)=randomAboSurfaceWithLargeHomSpace(P4,E,h)
+ (X,m3x4,r)=randomAboSurfaceWithLargeHomSpace(P4,E,h)
 Inputs
  P4:Ring
-  coordinate ring of P4 over a ground field of characteristic 3
+  coordinate ring of P4 over a small finite ground field.
  E: Ring
-  exterior algebra dual to P4.
+  exterior algebra dual to P4
+ h: ZZ
+  dimension of the desired Hom-space, or a lower bound for that
 Outputs
  X:Ideal
    of an Abo surface
  m3x4: Matrix
    3x4 matrix over the exterior algebra
+ r:ZZ
+  dimension of the Hom-space
+   
 Description
   Text
     The functions constracts a Abo surface by choosing randomly 3x4 matrices over the exterior
     algebra and testing whether they lead to a surface.
     
     In the case of randomSpecialAboSurface, the m3x4 Bordiga matrix has a rank 1 point.
+
+    The two more special version search for Abo surface with lower bound or precise 
+    dimension of the Hom space. These are search functions which take long.
+    
   Example
     kk=ZZ/7;
     P4=kk[x_0..x_4];
     E=kk[e_0..e_4,SkewCommutative=>true];    
-    setRandomSeed("carefully choosen randomSeed");
+    setRandomSeed("carefully choosen fast randomSeed");
     elapsedTime (X,m3x4)=randomAboSurface(P4,E);
     saturate minors(2,sub(m3x4,vars P4))
     setRandomSeed("same start");
