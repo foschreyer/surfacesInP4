@@ -39,7 +39,7 @@ tally apply(cRY,c->(dim c, degree c, degree (c+Y)))
 newPackage(
     "NongeneralTypeSurfacesInP4",
     Version => "0.1",
-    Date => "March 28, 2025",
+    Date => "April 28, 2025",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://add"},
