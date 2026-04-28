@@ -57,6 +57,7 @@ export {
     "randomEllipticAboSurface",
     "numericalFunctions",
     "specificAboRanestadSurface",
+    "specificEllipticAboSurfaceD12S13",
     "specificEllipticSurfaceD13S16",
     "specificAboSurface",
     "collectSpecialAboSurfaces",
@@ -3072,9 +3073,48 @@ collectSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mdKRs,P4,E,N) -> (
     mdKRs')
 *-
 
-specificAboSurface=method()
+specificEllipticAboSurfaceD12S13=method(Options=>{Verbose=>false})
 
-specificAboSurface(Ring,Ring,Number) := (P4,E,k) -> (
+specificEllipticAboSurfaceD12S13(Ring,Ring,Number) := o -> (P4,E,k) -> (
+    p:=char P4;
+    if not member(p,{31}) then return (<<"no example stored for p = "<<p<<flush<<endl;
+	return ideal 0_P4);
+    if p==31 then (
+	mdKRs := {(matrix {{6*E_0-4*E_2-11*E_4, 13*E_0-14*E_2+15*E_4, 15*E_0+11*E_2+8*E_4,
+			-15*E_0+E_2-15*E_4}, {-12*E_1+5*E_2-3*E_4, -15*E_1+11*E_2-6*E_4,
+      -14*E_1-14*E_2-13*E_4, -7*E_1-9*E_2-7*E_4}, {12*E_2-14*E_3+10*E_4,
+      11*E_2-10*E_3-3*E_4, 10*E_2+8*E_3-12*E_4, 8*E_2-8*E_3+3*E_4}},6,
+    ({1, 1, 1, 1, 2, 2, 4},new Tally from {(1,1,(0,6)) => 3, (2,2,(1,8,9)) => 1}))};
+    if o.Verbose then ( << "#mdKRs = " << #mdKRs <<endl);
+     if not k <#mdKRs then (<<"only "|#mdKRs|" examples stored"<<flush<<endl;return ideal 1_(P4));
+      mdKR:=mdKRs_k;
+      if o.Verbose then (
+      << "(K,R) = " << mdKR_2 <<", dim Hom = " <<mdKR_1 <<flush<<endl;);
+      m3x4:= mdKR_0;
+      X:=aboSurfaceFromMatrix(m3x4,P4);
+      return X)
+  )
+
+/// -* Test elliptic Abo surface *-
+kk=ZZ/31;
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+elapsedTime X=specificEllipticAboSurface(P4,E,0,Verbose=>true);
+K=canonicalDivisor X;
+cK=primaryDecomposition K;
+toString {1,1,1,1,2,2,4}
+tally apply(cK,c->(dim c, degree c, degree radical c, genus c,
+	selfIntersectionNumber(X,c)))
+
+R=residualInQuintics X;
+cR=primaryDecomposition R;
+toString tally apply(cR,c->(dim c-1, degree c,(dim(c+X)-1,degree(c+X))))
+///
+
+
+specificAboSurface=method(Options=>{Verbose=>false})
+
+specificAboSurface(Ring,Ring,Number) := o -> (P4,E,k) -> (
     p:=char P4;
     if not member(p,{7,11,19}) then return (<<"no example stored for p = "<<p<<flush<<endl;
 	return ideal 0_P4);
@@ -3099,15 +3139,26 @@ specificAboSurface(Ring,Ring,Number) := (P4,E,k) -> (
       7*E_0+8*E_1-9*E_2-E_3+9*E_4, -9*E_0-2*E_1+7*E_3-7*E_4}, {-5*E_0-2*E_1+6*E_2-5*E_3, 3*E_0+7*E_1+E_2+9*E_4,
       6*E_0-2*E_1+2*E_3+E_4, 9*E_0+5*E_1+3*E_2-E_3+E_4}, {6*E_0+6*E_1+6*E_2+2*E_3, 8*E_0+E_1-6*E_2-E_4,
       -7*E_0-3*E_1-7*E_2, 3*E_0-2*E_1-9*E_2+5*E_3-5*E_4}},2,({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
-      ((2,2),(1,11)) => 1})), (matrix {{5*E_0+4*E_1+2*E_3, 3*E_0-5*E_1-9*E_2-5*E_4, 5*E_1+4*E_2,
+      ((2,2),(1,11)) => 1})),(matrix {{5*E_0+4*E_1+2*E_3, 3*E_0-5*E_1-9*E_2-5*E_4, 5*E_1+4*E_2,
       -4*E_0+2*E_1-4*E_2-9*E_3+9*E_4}, {2*E_0+2*E_1-7*E_2-3*E_3, 5*E_0-3*E_1+4*E_2+5*E_4, 0,
       6*E_0+E_1-6*E_2-8*E_3+8*E_4}, {3*E_0+6*E_1+7*E_2+7*E_3, -2*E_0+2*E_1+6*E_2, 4*E_1+7*E_2,
       9*E_0-7*E_1-6*E_2-5*E_3+5*E_4}},3,({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5,
-      ((3,1),(2,5)) => 1})), (matrix {{6*E_0-E_1-8*E_2, -5*E_0+2*E_1+4*E_2, -7*E_1+2*E_2+3*E_3+3*E_4,
+      ((3,1),(2,5)) => 1})), 
+(matrix {{-E_0-4*E_2, 6*E_0+3*E_1+7*E_2-7*E_4, -9*E_0+9*E_2+E_3-E_4,
+      -6*E_0+E_1+3*E_2+8*E_3-8*E_4}, {-7*E_0+2*E_1+9*E_2-2*E_3,
+      -3*E_0+E_1+3*E_2+9*E_4, 9*E_0-8*E_1+E_2+5*E_3-5*E_4,
+      7*E_0-3*E_1+6*E_2+7*E_3-7*E_4}, {2*E_0+4*E_1+6*E_2-4*E_3,
+      4*E_0+2*E_2-4*E_4, -5*E_0-8*E_1-4*E_2-4*E_3+4*E_4,
+      -9*E_0+9*E_1-5*E_2-3*E_3+3*E_4}},4,({1,1,1,1,4,4},new Tally from {(2,1,(1,6))=>3,(2,2,(1,11))=>2})),
+(matrix {{6*E_0-E_1-8*E_2, -5*E_0+2*E_1+4*E_2, -7*E_1+2*E_2+3*E_3+3*E_4,
       4*E_0+9*E_1+2*E_2+6*E_3-6*E_4}, {5*E_0-6*E_1+8*E_2-5*E_3, -2*E_0-3*E_1-6*E_2, E_0-8*E_1-8*E_2+5*E_3+5*E_4,
       -3*E_0-8*E_1+7*E_2+5*E_3-5*E_4}, {9*E_0-8*E_1+4*E_2-2*E_3, E_0-8*E_1+3*E_2, -8*E_0+3*E_1-3*E_3-3*E_4,
       7*E_0+9*E_1+E_3-E_4}},5,({1, 1, 1, 1, 1, 7},new Tally from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 2,
-      ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1}))};); 
+      ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1}))
+
+};
+);
+ 
       if p==7 then (
        mdKRs= {(matrix {{3*E_0-E_3, 2*E_0+2*E_1-3*E_4, E_0+E_1-E_2-2*E_3+3*E_4, 2*E_0+3*E_2+3*E_3-3*E_4},
       {E_0-2*E_1-3*E_2+2*E_3, -2*E_0+E_1+2*E_2, -2*E_0+E_1-E_3-2*E_4, -2*E_0+2*E_1-3*E_2+3*E_3-3*E_4}, {-E_1+2*E_2,
@@ -3217,15 +3268,68 @@ specificAboSurface(Ring,Ring,Number) := (P4,E,k) -> (
       {-E_0+2*E_1-2*E_2+2*E_3, 0, 3*E_0+5*E_2, -5*E_0+4*E_1-2*E_2-5*E_3+5*E_4}, {-3*E_0+5*E_2-3*E_3,
       -5*E_0+4*E_1-4*E_2, 4*E_0-2*E_2-2*E_3+5*E_4, 5*E_0-E_2-5*E_3+5*E_4}},5,({1, 1, 1, 1, 1, 7},new Tally from
       {((2,1),(1,5)) => 2, ((2,4),(1,23)) => 1, ((3,1),(2,5)) => 1}))};);
-
-
-      if not k <#mdKRs then (<<"only "|#mdKRs|" examples stored"<<flush<<endl;return ideal 1_(P4));
+if o.Verbose then ( << "#mdKRs = " << #mdKRs <<endl);
+     if not k <#mdKRs then (<<"only "|#mdKRs|" examples stored"<<flush<<endl;return ideal 1_(P4));
       mdKR:=mdKRs_k;
-      << "(K,R) = " << mdKR_2 <<", dim Hom = " <<mdKR_1 <<flush<<endl;
+      if o.Verbose then (
+      << "(K,R) = " << mdKR_2 <<", dim Hom = " <<mdKR_1 <<flush<<endl;);
       m3x4:= mdKR_0;
       X:=aboSurfaceFromMatrix(m3x4,P4);
       return X)
-    
+///
+restart 
+needsPackage"NongeneralTypeSurfacesInP4"
+
+kk=ZZ/19
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+
+m3x4=matrix {{-E_0-4*E_2, 6*E_0+3*E_1+7*E_2-7*E_4, -9*E_0+9*E_2+E_3-E_4,
+      -6*E_0+E_1+3*E_2+8*E_3-8*E_4}, {-7*E_0+2*E_1+9*E_2-2*E_3,
+      -3*E_0+E_1+3*E_2+9*E_4, 9*E_0-8*E_1+E_2+5*E_3-5*E_4,
+      7*E_0-3*E_1+6*E_2+7*E_3-7*E_4}, {2*E_0+4*E_1+6*E_2-4*E_3,
+      4*E_0+2*E_2-4*E_4, -5*E_0-8*E_1-4*E_2-4*E_3+4*E_4,
+      -9*E_0+9*E_1-5*E_2-3*E_3+3*E_4}}
+
+
+betti(X=aboSurfaceFromMatrix(m3x4,P4))
+partitionOfCanonicalDivisorOfAboSurface X
+degree (K=canonicalDivisor X)
+cK=primaryDecomposition K;
+netList apply(cK,c->(dim c, degree c,degree radical c,genus radical c,
+	selfIntersectionNumber(X,radical c)))
+matrix apply(cK,c->apply(cK,d->(dim(c+d))))
+tally apply(decompose residualInQuintics X,c->(dim c, degree c, (dim(c+X),degree(c+X))))
+new Tally from {(2,1,(1,6))=>3,(2,2,(1,11))=>2}
+
+K={1,1,1,1,4,4},{(2,1,(1,6))=>3,(2,2,(1,11)=>2}
+matrix {{-E_0-4*E_2, 6*E_0+3*E_1+7*E_2-7*E_4, -9*E_0+9*E_2+E_3-E_4,
+      -6*E_0+E_1+3*E_2+8*E_3-8*E_4}, {-7*E_0+2*E_1+9*E_2-2*E_3,
+      -3*E_0+E_1+3*E_2+9*E_4, 9*E_0-8*E_1+E_2+5*E_3-5*E_4,
+      7*E_0-3*E_1+6*E_2+7*E_3-7*E_4}, {2*E_0+4*E_1+6*E_2-4*E_3,
+      4*E_0+2*E_2-4*E_4, -5*E_0-8*E_1-4*E_2-4*E_3+4*E_4,
+      -9*E_0+9*E_1-5*E_2-3*E_3+3*E_4}},4,({1,1,1,1,4,4},{(2,1,(1,6))=>3,(2,2,(1,11))=>2})
+
+k=0
+
+restart 
+needsPackage"NongeneralTypeSurfacesInP4"
+
+kk=ZZ/11
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+(X0=specificAboSurface(P4,E,0));
+elapsedTime tally apply(13,k->(elapsedTime X=specificAboSurface(P4,E,k);minimalBetti X))
+
+elapsedTime netList apply(8,k->(elapsedTime X=specificAboSurface(P4,E,k);<<endl;minimalBetti X))
+
+elapsedTime minimalBetti(X0=specificAboSurface(P4,E,k))
+elapsedTime minimalBetti(X7=specificAboSurface(P4,E,7))
+R=residualInQuintics X;
+cR=primaryDecomposition R;#cR
+tally apply(cR,c->(dim c,degree c,degree radical c,(dim(c+X),degree(c+X))))
+
+///
 
 
 
@@ -4725,6 +4829,7 @@ Headline => "surface of Kodaira dimension 1 (10 families)",
 	TO ellipticSurfaceD12S13,
 	TO specificEllipticSurfaceD13S16,
 	TO irregularEllipticSurfaceD12,
+	TO specificEllipticAboSurfaceD12S13,
         },
     PARA{},
      SUBSECTION "6-secants and adjunction",
@@ -6820,17 +6925,19 @@ doc ///
 Key
  specificAboSurface
  (specificAboSurface, Ring, Ring, Number)
+ [specificAboSurface, Verbose]
 Headline
  compute a smooth Abo surface of given data (m3x4,d,(K,R))
 Usage
  X = specificAboSurface(P4,E,k)
+ X = specificEllipticAboSurface(P4,E,k)
 Inputs
  P4:Ring
   coordinate ring of P4 over a ground field of characteristic 3
  E: Ring
   exterior algebra dual to P4.
  k: Number
-  a number between 0 and 6 specifies the m3x4 matrix of linear forms over E to use. 
+  a number which  specifies the m3x4 matrix of linear forms over E to use. 
 Outputs
  X:Ideal
   ideal of a Abo surface
@@ -6851,13 +6958,17 @@ Description
     kk=ZZ/19;
     P4=kk[x_0..x_4];
     E=kk[e_0..e_4,SkewCommutative=>true];
-    X=specificAboSurface(P4,E,3);
+    X=specificAboSurface(P4,E,1);
     minimalBetti X
     (d,sg)=(degree X, sectionalGenus X)
     Ksquare(d,sg,2)==-6   
     LeBarzN6(d,sg,2)==7
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;dim RX
+    RX==radical RX
+    tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
   Text
-    There are three (-1) lines and four 6-secant lines in this case.
+    There are two (-1) lines and five 6-secant lines in this case.
     
     The Tate resolution has a specific form
   Example
@@ -6871,6 +6982,7 @@ Description
 
     The (5,5) linked surface Y is an elliptic surface of degree 13 and sectional genus 16.
   Example
+    setRandomSeed("get a Smooth Surface");
     betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
     minimalBetti (Y=ci:X)
     RY=residualInQuintics Y;
@@ -6888,6 +7000,18 @@ Description
     LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
     betti(E1=D1:baseLocus)
     degree E1, genus E1, selfIntersectionNumber(Y,E1)
+  Text
+    The linked surface Y is a smooth elliptic surface blownup in 5
+    points which are (-1) lines on Y.
+  Example
+    kk=ZZ/31;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    X=specificAboSurface(P4,E,1,Verbose=>true);
+    minimalBetti X
+  Text
+    This surface is an non-minimal Elliptic surface with four (-1) lines and two (-1) conics.
+    The canonical divisor has in addition a degree 4 elliptic curve as a component.
 SeeAlso
    residualInQuintics
    tateResolutionOfSurface
@@ -6897,6 +7021,54 @@ SeeAlso
    canonicalDivisor
    tateResolutionOfSurface
 ///
+
+doc ///
+Key
+ specificEllipticAboSurfaceD12S13
+ (specificEllipticAboSurfaceD12S13, Ring, Ring, Number)
+ [specificEllipticAboSurfaceD12S13, Verbose]
+Headline
+ compute a specific  smooth elliptic Abo surface of given data (m3x4,d,(K,R))
+Usage
+
+ X = specificEllipticAboSurfaceD12S13(P4,E,k)
+Inputs
+ P4:Ring
+  coordinate ring of P4 over a ground field of characteristic 3
+ E: Ring
+  exterior algebra dual to P4.
+ k: Number
+  a number which  specifies the m3x4 matrix of linear forms over E to use. 
+Outputs
+ X:Ideal
+  ideal of a Abo surface
+Description
+  Text
+    In characteristic p=31 the function returns an non minimal elliptic surface with
+    six (-1) curves of degree {1,1,1,1,2,2}.
+    The canonical divisor has in addition a component which is an elliptic curve of degree 4.
+  Example
+    kk=ZZ/31;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    X=specificEllipticAboSurfaceD12S13(P4,E,1,Verbose=>true);
+    minimalBetti X
+  Text
+    This surface is an non-minimal Elliptic surface with four (-1) lines and two (-1) conics.
+    The canonical divisor has in addition a degree 4 elliptic curve as a component.
+SeeAlso
+   residualInQuintics
+   tateResolutionOfSurface
+   selfIntersectionNumber
+   LeBarzN6
+   Ksquare
+   canonicalDivisor
+   tateResolutionOfSurface
+///
+
+
+
+
 
 ///
 
