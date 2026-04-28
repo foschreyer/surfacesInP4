@@ -18,23 +18,6 @@ peek loadedFiles
 help adjunctionProcess
 ///
 
-///
-kk=ZZ/nextPrime 10^3
-P4=kk[x_0..x_4];
-E=kk[e_0..e_4,SkewCommutative=>true]
-elapsedTime (X,m3x4)=abo111333Surface(P4,E);
-R=residualInQuintics X;
-cR=decompose R;
-tally apply(cR,c->(dim c, degree c, degree (c+X)))
-ci=ideal(gens X*random(source gens X,P4^{2:-5}));
-Y=ci:X;
-degree Y, sectionalGenus Y
-betti tateResolutionOfSurface Y
-RY=residualInQuintics Y;
-cRY=decompose RY;
-tally apply(cRY,c->(dim c, degree c, degree (c+Y)))
-
-///
 
 newPackage(
     "NongeneralTypeSurfacesInP4",
@@ -52,7 +35,6 @@ newPackage(
     )
 
 export {
-    --"NongeneralTypeSuracesInP4",
     "tangentToMonad",
     "randomEllipticAboSurface",
     "numericalFunctions",
@@ -197,12 +179,29 @@ export {
 -* Code section *-
 -* numerical functions *-
 sectionalGenus=method()
+--  PURPOSE : Find the sectional genus of a variety
+--    INPUT : 'X', the ideal of a variety
+--   OUTPUT : an integer
+--  COMMENT : The function uses the command 'genera'
 sectionalGenus(Ideal):= X -> (genera X)_1
 
 chiI=method()
+--     PURPOSE : Find the Euler characteristic of the twisted sheaf I_X(m) on a surface 'X'
+--      INPUTS : 'm',the number of twists
+--               'd', the degree of 'X'
+--               'sg', the sectional genus of the surface 'X'
+--               'xO', the Euler characteristic of 'X' 
+--      OUTPUT : an integer
+-- DESCRIPTION : The function computes the difference between the dimensions of HH^0 OO_P4(m) and HH^0 OO_X(m)
+
 chiI(ZZ,ZZ,ZZ,ZZ) := (m,d,sg,xO) -> binomial(m+4,4)-(binomial(m+1,2)*d-m*(sg-1)+xO)
 
 chiO=method()
+--      PURPOSE : Find the Euler characteristic of the structure sheaf on a variety 
+--       INPUTS : 'X',the ideal of a variety
+--       OUTPUT : an integer
+--  DESCRIPTION : The function calculates the alternating sum of the dimensions of HH^i OO_X
+--      COMMENT : The function uses 'HH'
 chiO(Ideal) := X -> (
     Pn:= ring X;
     OX := sheaf(Pn^1/X);
@@ -210,6 +209,11 @@ chiO(Ideal) := X -> (
     )
 
 irregularity=method()
+--      PURPOSE : Find the irregularity of a surface 
+--        INPUT : 'X', the ideal of a surface
+--       OUTPUT : an integer
+--  DESCRIPTION : The function determines the irregularity by computing the dimension of HH^2(OO_X)
+--      COMMENT : The function uses 'HH'
 irregularity(Ideal) := X -> (
     if dim X !=3 then error "expected the ideal of a projective surface";
     Pn:= ring X;
@@ -217,6 +221,11 @@ irregularity(Ideal) := X -> (
     rank HH^1(OX))
 
 geometricGenus=method()
+--     PURPOSE : Find the geometric genus of a surface
+--       INPUT : 'X',the ideal of a surface
+--      OUTPUT : an integer
+-- DESCRIPTION : The function makes the structure sheaf OO_X of the surface
+--               and calculates the dimension of HH^2(OO_X)
 geometricGenus(Ideal) := X -> (
     if dim X !=3 then error "expected the ideal of a projective surface";
     Pn:= ring X;
@@ -245,26 +254,39 @@ chiNX(12,13,2)
 ///
 
 chiITable=method()
--- Input: d,sg xO ZZ values for the degree,the sectional genus and the eulerCharcteristic
--- Output: B BettiTally
---         plausible BettiTally
---         in case the ideal sheaf of X has natural cohomology
-
+--  PURPOSE : Find the Betti diagram of the Tate resolution of the ideal sheaf of a surface 'X',
+--            provided that 'X' has natural cohomology
+--   INPUTS : 'd', the degree of 'X'
+--            'sg', the sectional genus of 'X'
+--            'xO', the Euler characteristic of 'X'
+--   OUTPUT : a Betti tally
+--  COMMENT : The function uses 'BettiTally'
 chiITable(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
-    L:=apply(toList(-4..10),m->chiI(m,d,sg,xO));
+    -- 'L' is the list of the Euler characteristics of I_X(d), -4<=d<=8
+    L:=apply(toList(-4..8),m->chiI(m,d,sg,xO));
+    -- 'l' is the number of elements in 'L'
     l:=#L;
+    -- 'h3' is the positin of the first positive integer on 'L'
     h3:=position(L,h->h>0);
+    -- 'L3' is the list of integers from 'L'_0 to 'L'_{'h3'-1}
     L3:=L_{0..h3-1};
+    -- 'h2' is the position of the first negative integer on 'L' after 'h3' 
     h2:=position(L_{h3..l-1},h->h<0);
+    -- 'L2' is the list of integers from 'L'_{'h3'} to 'L'_{'h3'+'h2'-1}
     L2:=L_{h3..h3+h2-1};
+    -- 'h1' is the position of the first positive integer on 'L' after 'h2' 
     h1:=position(L_{h3+h2..l-1},h->h>0);
+    -- 'L1' is the list of integers from 'L'_{'h3'+'h2'} to 'L'_{'h3'+'h2'+'h1'-1}
     L1:=L_{h3+h2..h3+h2+h1-1};
-    L0:=L_{h3+h2+h1..l-1};	  
+    -- 'L0' is the list of the remaining integers
+    L0:=L_{h3+h2+h1..l-1};
+    -- 'Hi' is the list of tripes encoding columns, degrees, and rows together with the operation '=> L_i' 
     H3:=apply(#L3,i->(i-1,{-4+i},-4+i)=>-L3_i);
     H2:=apply(#L2,i->(i+h3-2,{-4+i+h3},-4+i+h3)=>L2_i);
     H1:=apply(#L1,i->(i+h3+h2-3,{-4+i+h3+h2},-4+i+h3+h2)=>-L1_i);
     H0:=apply(#L0,i->(i+h3+h2+h1-4,{-4+i+h3+h2+h1},-4+i+h3+h2+h1)=>L0_i);
     H4:={(-1,{-5},-5)=>1};
+    -- Use 'BettiTally' to display the Betti diagram 
     new BettiTally from (H4|H3|H2|H1|H0))
 
 /// -* Test chiTable *-
@@ -282,15 +304,29 @@ assert(A==B)
 
 
 HdotK=method()
+--  PURPOSE : Compute the intersection number of the hyperplane and canonical classes of a surface 'X' using the adjunction formula
+--   INPUTS : 'd',the degree of 'X'
+--            'sg', the sectional genus of 'X'
+--   OUTPUT : an integer
 HdotK(ZZ,ZZ) := (d,sg) -> 2*(sg-1)-d
    
 Ksquare=method()
+--  PURPOSE : Compute the self intersection number of the canonical classes of a surface 'X' using the double point formula
+--   INPUTS : 'd',the degree of 'X'
+--            'sg', the sectional genus of 'X'
+--            'xO', the Euler characteristic of 'X'
+--   OUTPUT : an integer
 -- H2+HK=2(sg-1)
 -- d^2-10d-5HK-2K2+12x==0
 Ksquare(ZZ,ZZ,ZZ) := (d,sg,xO) -> (HK:=2*(sg-1)-d;
     floor(1/2*(d^2-10*d-5*HK+12*xO)))
 
 LeBarzN6=method()
+--  PURPOSE : Compute the sum of the numbers of 6-secant lines and (-1)-lines of a surface 'X' using Le Barz's formula
+--   INPUTS : 'd',the degree of 'X'
+--            'sg', the sectional genus of 'X'
+--            'xO', the Euler characteristic of 'X'
+--   OUTPUT : an integer
 LeBarzN6(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
     delta:=binomial(d-1,2)-sg;
     t:= binomial(d-1,3)-sg*(d-3)+2*(xO-1);
@@ -302,39 +338,63 @@ LeBarzN6(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
     )
 
 residualInQuintics=method()
+--  PURPOSE : Find the residual scheme to a surface in the variety cut out by the quintic hyersrfaces containing the surface 
+--   INPUTS : 'X',the ideal of a surface
+--   OUTPUT : an ideal 
 residualInQuintics(Ideal) := X -> (
+    -- 'pos' is the list of positions of the generators whose degrees are less than 6 
     pos := positions(flatten (degrees gens X)_1,d->d<6);
+    -- 'X5' is the ideal generated by the generators of 'X' whose degree are less than 6
     X5 := ideal (gens X)_pos;
-    residual:= X5:X)
+    -- Return the ideal quotient of 'X5' by 'X' 
+    --residual:=
+    X5:X)
 
 canonicalDivisor=method()
--- Input: X, the homogeneous ideal of a smooth surface in P4 with pg>0
--- Output D, the homogeneous ideal of a canonical divisot D in |K|.
+-- PURPOSE : Find the ideal of a caninical divisor on a nonsingular surface in projective four-space 'P4'
+--   INPUT : 'X', the ideal of a nonsingular surface in 'P4' with a positive geometric genus
+--  OUTPUT : an ideal
 canonicalDivisor(Ideal) := X -> (
+    -- Check whether 'X' is a surface in P4
     if not (dim X==3 and codim X ==2) then
          error "expected the homogeneous ideal of a surface in P4";
+    -- Compute the Tate resolution of 'X' and its Betti diagram
     B := betti tateResolutionOfSurface X;
+    -- Compute the geometric genus of 'X'
+    -- (Is it slower to calculate rank HH^2 OO_X?) 
     pg:= B#(3,{0},0);
+    -- If 'pg' is zero, then return an error message
     if not pg >0 then error "expected a surface with geometric genus pg>0";
     P4 := ring X;
+    -- 'OmegaX' is the canonical sheaf on 'X' 
     omegaX := presentation trim Ext^1(X,P4^{-5});
+    -- Select a section of 'OmegaX' randomly
     rSect:= null;
     while ( -- avoid 0 section
     rSect=random(target omegaX, P4^{0});
     rSect==0) do ();
-    D:=ann coker (omegaX|rSect);
-    D)
+--    D:=ann coker (omegaX|rSect);
+--    D
+    ann coker (omegaX|rSect))
+
+
+
 
 selfIntersectionNumber=method()
---Input: X, the homogeneous ideal of a smooth surface
---       D, the ideal of an effective divisor
---Output D.D, the selfintersection number
+--     PURPOSE : Compute the self intersection number of a divisor on a surface in projective fourspace 'P4' using the adjunction formula
+--      INPUTS : 'X', the ideal of a surface
+--               'D', the ideal of an effective divisor on the surface 
+--      OUTPUT : an integer
+-- DESCRIPTION : The function computes '2D' and the genera 'g1' and 'g2' of 'D' and '2D', and it returns 'D'.'D' = 'g2'-1-(2'g1'-2) obtained by solving 2'g1'-2 ='D'.('D'+'K') and 2'g2'-2 = '2D'.('2D'+'K') for 'D'.'D'
 selfIntersectionNumber(Ideal,Ideal) := (X,D) -> (
+    -- Check whether 'X' is a surface in P4
     if not (dim X==3 and dim D == 2) then
          error "expected the ideal of an effective divisor on a surface";
+    -- Find '2D'
     twoD := saturate(D^2+X);
-    g2:=genus twoD; g1 := genus D;
-    --2g2-2=2D.(2D+K), 2g1-2=D.(D+K) => 2g2-2-2(2g1-2)=2D.D
+    -- Compute the genera of 'D' and '2D' 
+    g2 := genus twoD;
+    g1 := genus D;
     g2-1-(2*g1-2))
 ///
 kk=ZZ/nextPrime 10^4
@@ -693,22 +753,7 @@ twolines1:=saturate intersect(minus2line,line3);
    assert( (dim X, degree X, (genera X)_1)==(3,11,11));
    X)
 
-///
-kk=ZZ/nextPrime 10^3
-P4=kk[x_0..x_4]
-X= vBELSurface P4;
-degree X, sectionalGenus X
-minimalBetti X
-singX=saturate(X+minors(2,jacobian X))
-dim singX==-1
 
-
-r45=ideal (gens X)_{0..5};
-Rest=r45:X;
-degree Rest, dim Rest, genus Rest--two lines
-degree (Rest+X), dim (Rest+X)-- 6-secants
-degree (Rest+s2), dim (Rest+s2)-- lie in the quadric surface s2.
-///
 -- presumably not used
 randomSurfaceDegreeAndSectionalGenus=method()
 randomSurfaceDegreeAndSectionalGenus(Function,List) := (F,ringList) -> (
@@ -1342,32 +1387,7 @@ schreyerSurfaceWith2or3LinearSyzygies(Ring,ZZ) := opt -> (P4,s) -> (
     )
 
 
-///
-restart
-loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
-kk=ZZ/nextPrime 10^3;
-P4=kk[x_0..x_4]
-elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,3,Smooth=>true); -- 12.1562s elapsed
-minimalBetti X
-M=moduleFromSchreyerSurface X;
-minimalBetti M
-elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
-numList
 
-elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2,Smooth=>true); -- 12.1562s elapsed
-minimalBetti X
-M=moduleFromSchreyerSurface X;
-minimalBetti M
-elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
-numList
-
-elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2);
-minimalBetti X
-
-X=unirationalConstructionOfSchreyerSurface(P4);
-minimalBetti X
-
-///
 
 unirationalConstructionOfSchreyerSurface=method()
 unirationalConstructionOfSchreyerSurface(Ring) := P4 -> (
