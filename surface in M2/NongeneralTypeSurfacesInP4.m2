@@ -35,6 +35,7 @@ newPackage(
     )
 
 export {
+    "searchHMBundle",
     "tangentToMonad",
     "randomEllipticAboSurface",
     "numericalFunctions",
@@ -3296,459 +3297,8 @@ if o.Verbose then ( << "#mdKRs = " << #mdKRs <<endl);
       m3x4:= mdKR_0;
       X:=aboSurfaceFromMatrix(m3x4,P4);
       return X)
-///
-restart 
-needsPackage"NongeneralTypeSurfacesInP4"
-
-kk=ZZ/19
-P4=kk[x_0..x_4]
-E=kk[e_0..e_4,SkewCommutative=>true]
-
-m3x4=matrix {{-E_0-4*E_2, 6*E_0+3*E_1+7*E_2-7*E_4, -9*E_0+9*E_2+E_3-E_4,
-      -6*E_0+E_1+3*E_2+8*E_3-8*E_4}, {-7*E_0+2*E_1+9*E_2-2*E_3,
-      -3*E_0+E_1+3*E_2+9*E_4, 9*E_0-8*E_1+E_2+5*E_3-5*E_4,
-      7*E_0-3*E_1+6*E_2+7*E_3-7*E_4}, {2*E_0+4*E_1+6*E_2-4*E_3,
-      4*E_0+2*E_2-4*E_4, -5*E_0-8*E_1-4*E_2-4*E_3+4*E_4,
-      -9*E_0+9*E_1-5*E_2-3*E_3+3*E_4}}
 
 
-betti(X=aboSurfaceFromMatrix(m3x4,P4))
-partitionOfCanonicalDivisorOfAboSurface X
-degree (K=canonicalDivisor X)
-cK=primaryDecomposition K;
-netList apply(cK,c->(dim c, degree c,degree radical c,genus radical c,
-	selfIntersectionNumber(X,radical c)))
-matrix apply(cK,c->apply(cK,d->(dim(c+d))))
-tally apply(decompose residualInQuintics X,c->(dim c, degree c, (dim(c+X),degree(c+X))))
-new Tally from {(2,1,(1,6))=>3,(2,2,(1,11))=>2}
-
-K={1,1,1,1,4,4},{(2,1,(1,6))=>3,(2,2,(1,11)=>2}
-matrix {{-E_0-4*E_2, 6*E_0+3*E_1+7*E_2-7*E_4, -9*E_0+9*E_2+E_3-E_4,
-      -6*E_0+E_1+3*E_2+8*E_3-8*E_4}, {-7*E_0+2*E_1+9*E_2-2*E_3,
-      -3*E_0+E_1+3*E_2+9*E_4, 9*E_0-8*E_1+E_2+5*E_3-5*E_4,
-      7*E_0-3*E_1+6*E_2+7*E_3-7*E_4}, {2*E_0+4*E_1+6*E_2-4*E_3,
-      4*E_0+2*E_2-4*E_4, -5*E_0-8*E_1-4*E_2-4*E_3+4*E_4,
-      -9*E_0+9*E_1-5*E_2-3*E_3+3*E_4}},4,({1,1,1,1,4,4},{(2,1,(1,6))=>3,(2,2,(1,11))=>2})
-
-k=0
-
-restart 
-needsPackage"NongeneralTypeSurfacesInP4"
-
-kk=ZZ/11
-P4=kk[x_0..x_4]
-E=kk[e_0..e_4,SkewCommutative=>true]
-(X0=specificAboSurface(P4,E,0));
-elapsedTime tally apply(13,k->(elapsedTime X=specificAboSurface(P4,E,k);minimalBetti X))
-
-elapsedTime netList apply(8,k->(elapsedTime X=specificAboSurface(P4,E,k);<<endl;minimalBetti X))
-
-elapsedTime minimalBetti(X0=specificAboSurface(P4,E,k))
-elapsedTime minimalBetti(X7=specificAboSurface(P4,E,7))
-R=residualInQuintics X;
-cR=primaryDecomposition R;#cR
-tally apply(cR,c->(dim c,degree c,degree radical c,(dim(c+X),degree(c+X))))
-
-///
-
-
-
-///
-
-
-
-
-restart
-
-needsPackage"NongeneralTypeSurfacesInP4"
-setRandomSeed("A lot of surfaces")
-kk=ZZ/7
-E=kk[e_0..e_4,SkewCommutative=>true]
-P4=kk[x_0..x_4]
--- from Kristian
-mE3x4=matrix {{-e_0-2*e_1, -3*e_0+3*e_2-3*e_4, e_0+3*e_2-3*e_4, -e_0-2*e_2},
-       {-3*e_0-2*e_2+e_3, -2*e_0+2*e_2, 3*e_0-e_1-2*e_2+e_4,
-       -3*e_0+2*e_1-2*e_2}, {3*e_1, -2*e_2+e_4, -2*e_1-2*e_2, 3*e_1}}
-elapsedTime X=aboSurfaceFromMatrix(mE3x4,P4);
-minimalBetti X
-dim X, degree X, sectionalGenus X
-K=canonicalDivisor(X);
-
-partitionOfCanonicalDivisorOfAboSurface(X)
-cK=decompose K;
-tally apply(cK,c->(dim c, degree c, genus c, minimalBetti c,selfIntersectionNumber(X,c)))--,
-
-
-HdotK(12,13)
-Ksquare(12,13,2)
-betti(T=tateResolutionOfSurface X)
-betti (L=T.dd_4^{0..2}_{3})
-L1=trim ideal sub(L,vars P4)
-bordigaMatrix=sub(mE3x4,vars P4)
-bordiga=minors(3,bordigaMatrix);
-dim bordiga, degree bordiga
-singBordiga=saturate ideal singularLocus bordiga;
-degree singBordiga, dim singBordiga
-minimalBetti radical singBordiga
-cSingBordiga=primaryDecomposition singBordiga;
-apply(cSingBordiga,c->(dim c, degree c, genus c, trim radical c, degree radical c, genus radical c))
-apply(cSingBordiga,c->rank(bordigaMatrix%radical c))
-bordigaMatrix%L1
-saturate ideal singularLocus X
-
-degree K
-selfIntersectionNumber(X,cK_0)
-dim X, degree X, sectionalGenus X
-
-
-R=residualInQuintics X
-cR=primaryDecomposition R
-tally apply(cR, c-> (dim c, degree c, genus c, degree(c+X), minimalBetti c))
-dim R, degree R
-
-ci=ideal(gens X*random(source gens X,P4^{2:-5}));
-minimalBetti(Y=ci:X)
-dim Y, degree Y, sectionalGenus Y
-degree R
-Y9=Y:R;
-minimalBetti Y9
-dim singularLocus Y9,degree singularLocus Y9
-singY9=saturate ideal singularLocus Y9;
-betti singY9
-degree singY9
-decompose singY9
-dim (singR=ideal singularLocus R)
-degree singR
-
-decompose singR
-saturate singR==saturate
-trim sum cR
-
-elapsedTime cY9=decompose Y9;
-
-
-
-mKRs={}
---	elapsedTime mKRs1=collectSpecialAboSurfaces(mKRs,P4,E,15);
-
-elapsedTime mKRs2=collectAboSurfaces(mKRs,P4,E,20);
-#mKRs2
-
-
-
-
-restart
-
-needsPackage"NongeneralTypeSurfacesInP4"
-setRandomSeed("A lot of surfaces")
-
-
-kk=ZZ/19
-E=kk[e_0..e_4,SkewCommutative=>true]
-P4=kk[x_0..x_4]
-count=0;elapsedTime while (
-   m3x4=(diagonalMatrix{E_3,E_4,E_3+E_4}|map(E^3,E^{-1},0))+(random(E^3,E^{4:-1})%ideal(E_3,E_4));
-   d=testMatrix1(m3x4,P4)
-   ; d<6 ) do (count=count+1);(count,d)
-
-elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
-minimalBetti X
-ks=partitionOfCanonicalDivisorOfAboSurface X
-
-
-mKRs1={(matrix {{-5*e_1, -7*e_0-3*e_1+2*e_2-e_4, 3*e_0+4*e_1+3*e_2+9*e_3-7*e_4, -2*e_0+4*e_1+6*e_2+e_3-e_4}, {8*e_1,
-     2*e_0-6*e_1+7*e_2, -9*e_0+3*e_1-9*e_2-9*e_3+7*e_4, 6*e_0+9*e_1-7*e_2+6*e_3-6*e_4}, {4*e_1,
-     -5*e_0+4*e_1+7*e_2-7*e_4, -6*e_0+7*e_2+6*e_3+8*e_4, 4*e_0+3*e_1-8*e_2-6*e_3+6*e_4}},({1, 1, 2, 2, 2, 4},new
-     Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) => 1})), (matrix {{2*e_1-3*e_2-5*e_3, 4*e_1-6*e_2,
-     -5*e_0-4*e_1-e_2-9*e_3+4*e_4, -9*e_0+8*e_2+3*e_3-3*e_4}, {7*e_1+6*e_2+e_3, 3*e_1+5*e_2,
-     6*e_0+e_1+6*e_2+6*e_3-9*e_4, 7*e_0+5*e_1-e_2-4*e_3+4*e_4}, {9*e_1-8*e_2+9*e_3, -3*e_1-5*e_2,
-     5*e_0-2*e_1-5*e_2, 9*e_0+4*e_1-e_2+e_3-e_4}},({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1,
-     ((2,1),(1,6)) => 5, ((3,1),(2,5)) => 1})), (matrix {{e_0-5*e_1-6*e_2, 8*e_1-8*e_2, 8*e_0-3*e_2-6*e_3-7*e_4,
-     -6*e_0-6*e_1-e_2+5*e_3-5*e_4}, {-e_0+8*e_1+9*e_2-5*e_3, 9*e_1-9*e_2, -8*e_0+6*e_1-6*e_2-8*e_3-3*e_4,
-     6*e_0+6*e_1+4*e_2-e_3+e_4}, {7*e_0-7*e_1-9*e_2-5*e_3, -9*e_1+9*e_2, -e_0+e_1-8*e_2-9*e_3-e_4,
-     -4*e_0-5*e_1-e_2+5*e_3-5*e_4}},({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 3, ((3,1),(2,4)) => 1,
-     ((3,1),(2,5)) => 1})), (matrix {{-3*e_1-5*e_2-8*e_3, 8*e_1+6*e_2-6*e_4, 2*e_1+8*e_2-3*e_3+9*e_4,
-     -2*e_1-8*e_2-3*e_3+3*e_4}, {e_0-7*e_1-7*e_2+6*e_3, -9*e_1+e_2-2*e_4, -2*e_0-5*e_1-9*e_2-7*e_3+2*e_4,
-     -2*e_0-3*e_1+9*e_2-7*e_3+7*e_4}, {5*e_0+6*e_1-2*e_2-4*e_3, 9*e_1-3*e_2-8*e_4, 9*e_0-4*e_1+4*e_2+9*e_3-8*e_4,
-     9*e_0+8*e_1+4*e_2+9*e_3-9*e_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,2),(1,11)) => 1, ((3,2),(2,8)) =>
-     1})), (matrix {{-2*e_1-4*e_2+2*e_3, -5*e_0+e_1+e_2+7*e_4, 4*e_0-4*e_1+2*e_2+9*e_3+8*e_4,
-     -9*e_0+2*e_1-9*e_2-7*e_3+7*e_4}, {-7*e_1+3*e_3, 5*e_0-4*e_1+2*e_2+8*e_4, -4*e_0-9*e_1+2*e_2+e_3+3*e_4,
-     9*e_0-8*e_1-2*e_2+4*e_3-4*e_4}, {-2*e_1+e_2+6*e_3, 5*e_0-4*e_1-4*e_2-9*e_4, -4*e_0+5*e_1+5*e_2-e_3-3*e_4,
-     9*e_0+8*e_1+2*e_2-7*e_3+7*e_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4, ((2,2),(1,11)) =>
-     1}))}
-
-mKRs2 = {(matrix {{-5*e_1, -7*e_0-3*e_1+2*e_2-e_4, 3*e_0+4*e_1+3*e_2+9*e_3-7*e_4, -2*e_0+4*e_1+6*e_2+e_3-e_4}, {8*e_1,
-     2*e_0-6*e_1+7*e_2, -9*e_0+3*e_1-9*e_2-9*e_3+7*e_4, 6*e_0+9*e_1-7*e_2+6*e_3-6*e_4}, {4*e_1,
-     -5*e_0+4*e_1+7*e_2-7*e_4, -6*e_0+7*e_2+6*e_3+8*e_4, 4*e_0+3*e_1-8*e_2-6*e_3+6*e_4}},({1, 1, 2, 2, 2, 4},new
-     Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) => 1})), (matrix {{2*e_1-3*e_2-5*e_3, 4*e_1-6*e_2,
-     -5*e_0-4*e_1-e_2-9*e_3+4*e_4, -9*e_0+8*e_2+3*e_3-3*e_4}, {7*e_1+6*e_2+e_3, 3*e_1+5*e_2,
-     6*e_0+e_1+6*e_2+6*e_3-9*e_4, 7*e_0+5*e_1-e_2-4*e_3+4*e_4}, {9*e_1-8*e_2+9*e_3, -3*e_1-5*e_2,
-     5*e_0-2*e_1-5*e_2, 9*e_0+4*e_1-e_2+e_3-e_4}},({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1,
-     ((2,1),(1,6)) => 5, ((3,1),(2,5)) => 1})), (matrix {{e_0-5*e_1-6*e_2, 8*e_1-8*e_2, 8*e_0-3*e_2-6*e_3-7*e_4,
-     -6*e_0-6*e_1-e_2+5*e_3-5*e_4}, {-e_0+8*e_1+9*e_2-5*e_3, 9*e_1-9*e_2, -8*e_0+6*e_1-6*e_2-8*e_3-3*e_4,
-     6*e_0+6*e_1+4*e_2-e_3+e_4}, {7*e_0-7*e_1-9*e_2-5*e_3, -9*e_1+9*e_2, -e_0+e_1-8*e_2-9*e_3-e_4,
-     -4*e_0-5*e_1-e_2+5*e_3-5*e_4}},({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 3, ((3,1),(2,4)) => 1,
-     ((3,1),(2,5)) => 1})), (matrix {{-3*e_1-5*e_2-8*e_3, 8*e_1+6*e_2-6*e_4, 2*e_1+8*e_2-3*e_3+9*e_4,
-     -2*e_1-8*e_2-3*e_3+3*e_4}, {e_0-7*e_1-7*e_2+6*e_3, -9*e_1+e_2-2*e_4, -2*e_0-5*e_1-9*e_2-7*e_3+2*e_4,
-     -2*e_0-3*e_1+9*e_2-7*e_3+7*e_4}, {5*e_0+6*e_1-2*e_2-4*e_3, 9*e_1-3*e_2-8*e_4, 9*e_0-4*e_1+4*e_2+9*e_3-8*e_4,
-     9*e_0+8*e_1+4*e_2+9*e_3-9*e_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,2),(1,11)) => 1, ((3,2),(2,8)) =>
-     1})), (matrix {{-2*e_1-4*e_2+2*e_3, -5*e_0+e_1+e_2+7*e_4, 4*e_0-4*e_1+2*e_2+9*e_3+8*e_4,
-     -9*e_0+2*e_1-9*e_2-7*e_3+7*e_4}, {-7*e_1+3*e_3, 5*e_0-4*e_1+2*e_2+8*e_4, -4*e_0-9*e_1+2*e_2+e_3+3*e_4,
-     9*e_0-8*e_1-2*e_2+4*e_3-4*e_4}, {-2*e_1+e_2+6*e_3, 5*e_0-4*e_1-4*e_2-9*e_4, -4*e_0+5*e_1+5*e_2-e_3-3*e_4,
-     9*e_0+8*e_1+2*e_2-7*e_3+7*e_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4, ((2,2),(1,11)) =>
-     1})), (matrix {{8*e_0-5*e_1+7*e_2+4*e_3, 9*e_0-7*e_1+9*e_2-3*e_4, -e_0-7*e_1+e_2-3*e_3-4*e_4,
-     -2*e_0+9*e_1+2*e_2}, {5*e_0-8*e_1-9*e_2+8*e_3, -2*e_0-6*e_1+7*e_2-5*e_4, -2*e_0+4*e_1-e_2+8*e_3-2*e_4,
-     -4*e_0-7*e_1-5*e_2-4*e_3+4*e_4}, {9*e_0-7*e_1+8*e_2+8*e_3, 5*e_0+4*e_2+6*e_4, 6*e_0-8*e_1-4*e_2-4*e_3+e_4,
-     -9*e_0-e_1-e_2+4*e_3-4*e_4}},({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6)) => 4, ((2,4),(1,21)) => 1})),
-     (matrix {{-2*e_0-8*e_1-7*e_2+3*e_3, 7*e_0+e_1+8*e_2-8*e_4, -9*e_0-2*e_1+2*e_2+9*e_4,
-     -6*e_0-2*e_1+8*e_2+8*e_3-8*e_4}, {5*e_0+e_1-3*e_2-e_3, -4*e_0-e_1+2*e_2, 5*e_0+6*e_1-7*e_2,
-     -5*e_0-8*e_1-6*e_2-6*e_3+6*e_4}, {-5*e_0-e_1-7*e_2, 2*e_0-5*e_1+e_2-8*e_4, 9*e_0-e_1-4*e_2-3*e_4,
-     7*e_0+4*e_1-4*e_2+5*e_3-5*e_4}},({1, 1, 2, 2, 2, 4},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 5,
-     ((2,2),(1,11)) => 1})), (matrix {{4*e_0-e_1-7*e_2-5*e_3, -3*e_0-9*e_1-4*e_2, -3*e_0+6*e_1-8*e_2-7*e_4,
-     -4*e_0+3*e_1+2*e_2+2*e_3-2*e_4}, {3*e_0+3*e_1+4*e_2, e_0+3*e_1-5*e_2, -5*e_0+4*e_1-9*e_2-e_4,
-     9*e_0-6*e_1+9*e_2+e_3-e_4}, {5*e_0+3*e_1+3*e_2-2*e_3, 7*e_0+2*e_1+3*e_2, -e_0+3*e_2-3*e_4,
-     6*e_0+4*e_1-2*e_2-4*e_3+4*e_4}},({1, 1, 1, 1, 1, 7},new Tally from {((2,1),(1,5)) => 3, ((2,1),(1,6)) => 3,
-     ((3,1),(2,5)) => 1})), (matrix {{6*e_0+6*e_1-9*e_2-8*e_3, 9*e_0-4*e_1-6*e_2+6*e_4, 8*e_0-e_1-3*e_2+e_3+6*e_4,
-     -7*e_0-3*e_1+8*e_2-e_3+e_4}, {6*e_0+8*e_1-5*e_2+e_3, -5*e_0-8*e_1-5*e_2+6*e_4, -9*e_0-7*e_1+9*e_2-4*e_3-5*e_4,
-     3*e_0-7*e_1-8*e_2+7*e_3-7*e_4}, {-4*e_0+5*e_1+5*e_2-8*e_3, -8*e_0-6*e_1-7*e_2-9*e_4, -5*e_0+9*e_1-e_2,
-     4*e_1-5*e_2+6*e_3-6*e_4}},({1, 1, 2, 2, 3, 3},new Tally from {((2,1),(1,6)) => 5})),
-     (matrix {{-6*e_0-7*e_1+5*e_2+7*e_3, 4*e_0-2*e_1+2*e_2+2*e_4, -3*e_0-9*e_1+9*e_2-7*e_3+6*e_4, 5*e_0-8*e_1-5*e_2+9*e_3-9*e_4},
-	 {9*e_0-5*e_1+8*e_2-3*e_3, 2*e_0-e_1+5*e_2, -4*e_0+7*e_1+9*e_2+2*e_3+e_4,-2*e_0+5*e_1+7*e_2-2*e_3+2*e_4}, {8*e_0+7*e_1+2*e_2-8*e_3, -8*e_0+4*e_1+5*e_2+8*e_4,
-     -7*e_0-2*e_1-e_2-5*e_3+7*e_4, 9*e_1+6*e_2+8*e_3-8*e_4}},({1, 1, 2, 2, 3, 3},new Tally from {((2,1),(1,6)) =>
-     2, ((2,2),(1,10)) => 1, ((3,1),(2,4)) => 1})), (matrix {{0, -e_0+4*e_1+7*e_2-4*e_4,
-     8*e_0+7*e_1-9*e_2+9*e_3+4*e_4, -6*e_0+8*e_1+4*e_2+9*e_3-9*e_4}, {-3*e_0+2*e_1-6*e_2, -8*e_0+2*e_1-5*e_2+e_4,
-     9*e_0-7*e_1-9*e_2-9*e_3-4*e_4, -9*e_0-3*e_1+7*e_2-2*e_3+2*e_4}, {4*e_0-5*e_1-9*e_2+3*e_3, e_0-3*e_1+2*e_2+e_4,
-     e_0+9*e_1+8*e_2-2*e_3-3*e_4, 7*e_0+2*e_1-5*e_2+e_3-e_4}},({1, 2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) =>
-     1, ((2,1),(1,6)) => 6})), (matrix {{-2*e_0+6*e_1-e_2-3*e_3, -2*e_0+7*e_2-9*e_4, -4*e_0-3*e_1-2*e_3-6*e_4,
-     -9*e_0+8*e_2+6*e_3-6*e_4}, {-3*e_0-3*e_1+8*e_2-3*e_3, 5*e_0+6*e_1+3*e_2-2*e_4, 3*e_0+e_1+6*e_2+7*e_3+2*e_4,
-     8*e_0+2*e_1+8*e_2-5*e_3+5*e_4}, {-4*e_0-6*e_1-2*e_2+e_3, 7*e_0+9*e_1-8*e_2+9*e_4, 8*e_0+e_1+5*e_2+7*e_3+2*e_4,
-     -3*e_1+9*e_2+9*e_3-9*e_4}},({1, 1, 1, 2, 2, 3},new Tally from {((2,1),(1,6)) => 5})),
-   (matrix {{6*e_0-e_1-8*e_2, -5*e_0+2*e_1+4*e_2, -7*e_1+2*e_2+3*e_3+3*e_4, 4*e_0+9*e_1+2*e_2+6*e_3-6*e_4},
-     {5*e_0-6*e_1+8*e_2-5*e_3, -2*e_0-3*e_1-6*e_2, e_0-8*e_1-8*e_2+5*e_3+5*e_4, -3*e_0-8*e_1+7*e_2+5*e_3-5*e_4},
-     {9*e_0-8*e_1+4*e_2-2*e_3, e_0-8*e_1+3*e_2, -8*e_0+3*e_1-3*e_3-3*e_4, 7*e_0+9*e_1+e_3-e_4}},({1, 1, 1, 1, 1,
-     7},new Tally from {((2,1),(1,5)) => 2, ((2,1),(1,6)) => 2, ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1}))}
-
-mKRs3={(matrix {{0, -e_0+4*e_1+7*e_2-4*e_4, 8*e_0+7*e_1-9*e_2+9*e_3+4*e_4, -6*e_0+8*e_1+4*e_2+9*e_3-9*e_4},
-      {-3*e_0+2*e_1-6*e_2, -8*e_0+2*e_1-5*e_2+e_4, 9*e_0-7*e_1-9*e_2-9*e_3-4*e_4, -9*e_0-3*e_1+7*e_2-2*e_3+2*e_4},
-      {4*e_0-5*e_1-9*e_2+3*e_3, e_0-3*e_1+2*e_2+e_4, e_0+9*e_1+8*e_2-2*e_3-3*e_4, 7*e_0+2*e_1-5*e_2+e_3-e_4}},({1,
-      2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 6})), (matrix {{4*e_0+5*e_1+6*e_2+7*e_3,
-      -2*e_0+6*e_1+3*e_2+3*e_4, -5*e_0-9*e_1-4*e_2, 2*e_0+3*e_1+e_3-e_4}, {-5*e_0-9*e_1-8*e_2+8*e_3,
-      -6*e_0+6*e_1-2*e_2+6*e_4, 2*e_1-4*e_2+6*e_3-3*e_4, e_0-5*e_1+5*e_2-4*e_3+4*e_4}, {-3*e_0+2*e_1-4*e_3,
-      e_0+5*e_1+9*e_2-9*e_4, 3*e_0-2*e_2-e_3-9*e_4, 8*e_0-8*e_1-8*e_2-4*e_3+4*e_4}},({1, 2, 2, 2, 2, 3},new Tally
-      from {((1,1),(1,1)) => 1, ((2,1),(1,6)) => 6})), (matrix {{7*e_0-3*e_1+8*e_2-3*e_3, 5*e_0-4*e_1-5*e_2-6*e_4,
-      -8*e_0-2*e_1-7*e_2-6*e_3-2*e_4, 8*e_0+2*e_1-2*e_2+4*e_3-4*e_4}, {e_0-7*e_1+3*e_2-4*e_3,
-      -2*e_0-6*e_1-8*e_2+8*e_4, -8*e_0-2*e_1-7*e_2-6*e_3-2*e_4, -2*e_0-4*e_1-6*e_2+8*e_3-8*e_4},
-      {-4*e_0-5*e_1+6*e_2-4*e_3, 5*e_0-4*e_1+5*e_2-4*e_4, -4*e_0+3*e_1-8*e_2+e_3-6*e_4,
-      -6*e_0+2*e_1+8*e_2+7*e_3-7*e_4}},({1, 2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) =>
-      6})), (matrix {{5*e_0+6*e_1-3*e_2, 4*e_0-3*e_1-4*e_2-2*e_4, e_0-8*e_1-2*e_2+2*e_3-5*e_4,
-      -9*e_0+8*e_1+3*e_2-9*e_3+9*e_4}, {9*e_0+e_1+9*e_2+7*e_3, 6*e_0-9*e_1+e_2+5*e_4, e_0-6*e_1-6*e_2-7*e_3+8*e_4,
-      -7*e_0+8*e_1+6*e_2+9*e_3-9*e_4}, {4*e_0+e_1+9*e_2, 3*e_0+6*e_1+6*e_4, e_0-5*e_1-8*e_2-2*e_3+5*e_4,
-      8*e_0+7*e_1-8*e_2+2*e_3-2*e_4}},({1, 2, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) =>
-      6})), (matrix {{-9*e_0+7*e_1-7*e_2-2*e_3, 3*e_0-2*e_1-9*e_4, 6*e_0-2*e_1-3*e_2-5*e_3-2*e_4,
-      3*e_0+4*e_1-7*e_2-3*e_3+3*e_4}, {-8*e_0+5*e_1+6*e_2+8*e_3, 4*e_0-6*e_1+3*e_2-6*e_4,
-      -6*e_0-2*e_1-3*e_2-4*e_3+6*e_4, 5*e_0-9*e_1+9*e_2+7*e_3-7*e_4}, {4*e_0-7*e_1+4*e_2-6*e_3,
-      3*e_0-4*e_1-2*e_2+6*e_4, 5*e_0+3*e_1-5*e_2, -8*e_0-8*e_1+e_2-9*e_3+9*e_4}},({1, 1, 2, 2, 3, 3},new Tally from
-      {((2,1),(1,6)) => 5})), (matrix {{3*e_0-2*e_1-2*e_2-9*e_3, 4*e_0+4*e_1, 5*e_0+e_1+4*e_2-7*e_3+8*e_4,
-      6*e_0-6*e_3+6*e_4}, {-3*e_0-8*e_1+6*e_2-5*e_3, 3*e_0+e_1-2*e_2-e_4, -7*e_0-9*e_1-2*e_2+5*e_3-3*e_4,
-      2*e_0-2*e_3+2*e_4}, {8*e_0+e_1+e_2-5*e_3, 3*e_0-3*e_1-6*e_2-3*e_4, -e_0-4*e_1-5*e_2+7*e_3-8*e_4,
-      4*e_0-e_1+7*e_2-9*e_3+9*e_4}},({1, 1, 2, 2, 3, 3},new Tally from {((2,1),(1,6)) => 5})),
-(matrix {{-6*e_0-7*e_1+5*e_2+7*e_3, 4*e_0-2*e_1+2*e_2+2*e_4, -3*e_0-9*e_1+9*e_2-7*e_3+6*e_4,
-      5*e_0-8*e_1-5*e_2+9*e_3-9*e_4}, {9*e_0-5*e_1+8*e_2-3*e_3, 2*e_0-e_1+5*e_2, -4*e_0+7*e_1+9*e_2+2*e_3+e_4,
-      -2*e_0+5*e_1+7*e_2-2*e_3+2*e_4}, {8*e_0+7*e_1+2*e_2-8*e_3, -8*e_0+4*e_1+5*e_2+8*e_4,
-      -7*e_0-2*e_1-e_2-5*e_3+7*e_4, 9*e_1+6*e_2+8*e_3-8*e_4}},({1, 1, 2, 2, 3, 3},new Tally from {((2,1),(1,6)) =>
-      2, ((2,2),(1,10)) => 1, ((3,1),(2,4)) => 1})), (matrix {{6*e_0+6*e_1-9*e_2-8*e_3, 9*e_0-4*e_1-6*e_2+6*e_4,
-      8*e_0-e_1-3*e_2+e_3+6*e_4, -7*e_0-3*e_1+8*e_2-e_3+e_4}, {6*e_0+8*e_1-5*e_2+e_3, -5*e_0-8*e_1-5*e_2+6*e_4,
-      -9*e_0-7*e_1+9*e_2-4*e_3-5*e_4, 3*e_0-7*e_1-8*e_2+7*e_3-7*e_4}, {-4*e_0+5*e_1+5*e_2-8*e_3,
-      -8*e_0-6*e_1-7*e_2-9*e_4, -5*e_0+9*e_1-e_2, 4*e_1-5*e_2+6*e_3-6*e_4}},({1, 1, 2, 2, 3, 3},new Tally from
-      {((2,1),(1,6)) => 5})), (matrix {{-5*e_0-5*e_1+2*e_2+e_3, -7*e_1+9*e_2, -7*e_0+7*e_1+8*e_2-3*e_3+7*e_4,
-      4*e_0+9*e_1-e_2-6*e_3+6*e_4}, {6*e_0+9*e_1+9*e_2, -7*e_1+9*e_2, -3*e_0-3*e_1-5*e_2,
-      -e_0+2*e_1+8*e_2+e_3-e_4}, {5*e_0+2*e_1-3*e_3, -7*e_1+9*e_2, 7*e_0-e_1-4*e_2+5*e_3+e_4,
-      -4*e_0+4*e_1+4*e_2-5*e_3+5*e_4}},({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
-      1})), (matrix {{-2*e_0-8*e_1-7*e_2+3*e_3, 7*e_0+e_1+8*e_2-8*e_4, -9*e_0-2*e_1+2*e_2+9*e_4,
-      -6*e_0-2*e_1+8*e_2+8*e_3-8*e_4}, {5*e_0+e_1-3*e_2-e_3, -4*e_0-e_1+2*e_2, 5*e_0+6*e_1-7*e_2,
-      -5*e_0-8*e_1-6*e_2-6*e_3+6*e_4}, {-5*e_0-e_1-7*e_2, 2*e_0-5*e_1+e_2-8*e_4, 9*e_0-e_1-4*e_2-3*e_4,
-      7*e_0+4*e_1-4*e_2+5*e_3-5*e_4}},({1, 1, 2, 2, 2, 4},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) => 5,
-      ((2,2),(1,11)) => 1})), (matrix {{3*e_1-2*e_3, 3*e_0+e_1+7*e_2-2*e_4, -2*e_0-e_1+4*e_2+9*e_3+2*e_4,
-      -9*e_0+e_1-9*e_2-e_3+e_4}, {-2*e_0-6*e_1-7*e_2-7*e_3, 4*e_0-e_1+e_2-5*e_4, 9*e_0+6*e_1-e_2, -9*e_1-3*e_2},
-      {-4*e_0-9*e_1+5*e_2+3*e_3, -7*e_0-7*e_1+5*e_2, 5*e_0-8*e_1+4*e_2-2*e_3+8*e_4,
-      -3*e_0-8*e_1+9*e_2+6*e_3-6*e_4}},({1, 1, 2, 2, 2, 3},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,6)) =>
-      6})), (matrix {{-2*e_0+6*e_1+7*e_2-4*e_3, -3*e_0+3*e_1+8*e_2+7*e_4, -5*e_0-8*e_1+3*e_2-5*e_3+4*e_4,
-      -4*e_1-8*e_2+2*e_3-2*e_4}, {7*e_0+6*e_2+7*e_3, e_0-8*e_1+4*e_2-6*e_4, 8*e_0-e_1+7*e_2-6*e_3+e_4,
-      e_1+4*e_2+6*e_3-6*e_4}, {-7*e_0+8*e_1-8*e_2+4*e_3, -e_0-6*e_1+3*e_2+5*e_4, -8*e_0-5*e_1-8*e_2-3*e_3-9*e_4,
-      4*e_1+4*e_2+4*e_3-4*e_4}},({1, 1, 2, 2, 2, 2},new Tally from {((1,1),(0,6)) => 1, ((2,1),(1,5)) => 1,
-      ((2,1),(1,6)) => 3, ((3,1),(2,4)) => 1})), (matrix {{5*e_0+8*e_1-6*e_2-8*e_3, -6*e_0-3*e_1-3*e_2+3*e_4,
-      -5*e_0-2*e_1-3*e_2-9*e_3+3*e_4, 3*e_0-3*e_1+3*e_2}, {-7*e_0+7*e_1-8*e_2+4*e_3, -e_0-e_1-4*e_2-8*e_4,
-      4*e_0-6*e_1+9*e_2+5*e_3-8*e_4, -5*e_0-e_1-9*e_2}, {2*e_0+3*e_1+3*e_2-5*e_3, e_0-8*e_1-2*e_2+7*e_4,
-      -e_0-8*e_1+7*e_2+2*e_3-7*e_4, 5*e_0-8*e_1+3*e_2}},({1, 1, 2, 2, 2, 2},new Tally from {((1,1),(1,1)) => 1,
-      ((2,1),(1,6)) => 6})), (matrix {{2*e_0-6*e_1-5*e_2+e_3, -4*e_0+9*e_1+8*e_2+6*e_4,
-      -6*e_0+6*e_1-5*e_2-2*e_3-2*e_4, 4*e_0-8*e_1-7*e_2+2*e_3-2*e_4}, {7*e_0-8*e_1-5*e_2-4*e_3,
-      9*e_0-4*e_1+9*e_2-8*e_4, e_0-8*e_1+8*e_2-5*e_3-5*e_4, -4*e_0+2*e_1-6*e_2+5*e_3-5*e_4}, {e_0+5*e_1+3*e_2+e_3,
-      e_0-8*e_1-6*e_2-9*e_4, 5*e_0+6*e_1-8*e_2+e_3+e_4, -e_0-9*e_1+8*e_2+6*e_3-6*e_4}},({1, 1, 1, 3, 3, 3},new
-      Tally from {((2,1),(1,6)) => 4, ((2,4),(1,21)) => 1})), (matrix {{-7*e_0+6*e_1-6*e_2+4*e_3,
-      6*e_0+3*e_1+3*e_2+7*e_4, 9*e_0-2*e_1-5*e_2-e_3+9*e_4, 7*e_0+8*e_1+e_2+8*e_3-8*e_4}, {2*e_0-9*e_1+7*e_2+3*e_3,
-      9*e_0+5*e_1+2*e_2+6*e_4, 4*e_0+2*e_1+2*e_2+6*e_3+3*e_4, 3*e_0+3*e_1+7*e_2+4*e_3-4*e_4},
-      {2*e_0+9*e_1+4*e_2-5*e_3, 9*e_0+7*e_1-8*e_2+7*e_4, -8*e_0-5*e_1-4*e_2-4*e_3-2*e_4,
-      5*e_0+2*e_1+7*e_2-2*e_3+2*e_4}},({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6)) => 4, ((2,4),(1,21)) =>
-      1})), (matrix {{8*e_0-5*e_1+7*e_2+4*e_3, 9*e_0-7*e_1+9*e_2-3*e_4, -e_0-7*e_1+e_2-3*e_3-4*e_4,
-      -2*e_0+9*e_1+2*e_2}, {5*e_0-8*e_1-9*e_2+8*e_3, -2*e_0-6*e_1+7*e_2-5*e_4, -2*e_0+4*e_1-e_2+8*e_3-2*e_4,
-      -4*e_0-7*e_1-5*e_2-4*e_3+4*e_4}, {9*e_0-7*e_1+8*e_2+8*e_3, 5*e_0+4*e_2+6*e_4, 6*e_0-8*e_1-4*e_2-4*e_3+e_4,
-      -9*e_0-e_1-e_2+4*e_3-4*e_4}},({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6)) => 4, ((2,4),(1,21)) => 1})),
-      (matrix {{-9*e_0-6*e_1-7*e_2+3*e_3, -2*e_0-4*e_1-7*e_2-2*e_4, 2*e_0-8*e_1+6*e_2+2*e_3+7*e_4,
-      -4*e_0+4*e_2-7*e_3+7*e_4}, {-6*e_0+7*e_1-2*e_2-9*e_3, -7*e_0-3*e_1+e_2-5*e_4, e_0-5*e_1+6*e_2-3*e_3-e_4,
-      7*e_0+8*e_1-3*e_2-8*e_3+8*e_4}, {8*e_1-9*e_2-8*e_3, -7*e_0-8*e_1-8*e_2+e_4, -e_0-7*e_1-8*e_2-7*e_3+4*e_4,
-      -3*e_0+2*e_1+4*e_2-2*e_3+2*e_4}},({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6)) => 3, ((2,2),(1,12)) => 1,
-      ((2,3),(1,15)) => 1})), (matrix {{-5*e_0-5*e_1-5*e_2-8*e_3, -8*e_0-2*e_1+3*e_2-4*e_4,
-      7*e_0+8*e_1-9*e_2-e_3+9*e_4, -9*e_0-2*e_1+7*e_3-7*e_4}, {-5*e_0-2*e_1+6*e_2-5*e_3, 3*e_0+7*e_1+e_2+9*e_4,
-      6*e_0-2*e_1+2*e_3+e_4, 9*e_0+5*e_1+3*e_2-e_3+e_4}, {6*e_0+6*e_1+6*e_2+2*e_3, 8*e_0+e_1-6*e_2-e_4,
-      -7*e_0-3*e_1-7*e_2, 3*e_0-2*e_1-9*e_2+5*e_3-5*e_4}},({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
-      ((2,2),(1,11)) => 1})), (matrix {{-5*e_0-6*e_1+4*e_2-3*e_3, 4*e_0-3*e_1+4*e_2-5*e_4,
-      -3*e_0-e_1+8*e_2-8*e_3+3*e_4, -2*e_0-5*e_1-4*e_2+7*e_3-7*e_4}, {-9*e_0-7*e_1+4*e_2-5*e_3,
-      6*e_0-9*e_1-3*e_2+6*e_4, 3*e_0-5*e_1+9*e_2+9*e_3-e_4, 4*e_0-8*e_1-4*e_2-8*e_3+8*e_4},
-      {-2*e_0+9*e_1+2*e_2-6*e_3, 4*e_0-2*e_1+6*e_2-8*e_4, 2*e_0+5*e_1-6*e_2-7*e_3+5*e_4, -3*e_0+5*e_1-4*e_2}},({1,
-      1, 1, 2, 3, 3},new Tally from {((2,1),(1,6)) => 4, ((2,4),(1,21)) => 1})), (matrix {{5*e_0+4*e_1+2*e_3,
-      3*e_0-5*e_1-9*e_2-5*e_4, 5*e_1+4*e_2, -4*e_0+2*e_1-4*e_2-9*e_3+9*e_4}, {2*e_0+2*e_1-7*e_2-3*e_3,
-      5*e_0-3*e_1+4*e_2+5*e_4, 0, 6*e_0+e_1-6*e_2-8*e_3+8*e_4}, {3*e_0+6*e_1+7*e_2+7*e_3, -2*e_0+2*e_1+6*e_2,
-      4*e_1+7*e_2, 9*e_0-7*e_1-6*e_2-5*e_3+5*e_4}},({1, 1, 1, 2, 2, 5},new Tally from {((2,1),(1,5)) => 1,
-      ((2,1),(1,6)) => 5, ((3,1),(2,5)) => 1})), (matrix {{-7*e_0+9*e_1+5*e_2, 8*e_0-2*e_1-2*e_4, e_1+6*e_2,
-      8*e_0-8*e_1-3*e_2+e_3-e_4}, {-2*e_0+e_1-4*e_2+8*e_3, 5*e_0+4*e_1-6*e_2-9*e_4, e_1+6*e_2,
-      5*e_0-6*e_1-4*e_2-3*e_3+3*e_4}, {-e_0-3*e_1+7*e_2+e_3, -7*e_0-7*e_1+8*e_2+4*e_4, -3*e_1+e_2,
-      -7*e_0-4*e_1+2*e_2+8*e_3-8*e_4}},({1, 1, 1, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
-      1})), (matrix {{9*e_0+2*e_1+8*e_3, 3*e_0+e_1-9*e_2+e_4, e_0+3*e_1-5*e_2-6*e_3+6*e_4,
-      7*e_0+7*e_1+6*e_2+3*e_3-3*e_4}, {9*e_0-2*e_1-2*e_2+6*e_3, -3*e_0-e_1-2*e_2-6*e_4, 6*e_1+7*e_2-5*e_3+5*e_4,
-      4*e_0-e_1-9*e_2-9*e_3+9*e_4}, {-8*e_0+5*e_1-4*e_2-9*e_3, 9*e_0+3*e_1-6*e_2-3*e_4,
-      4*e_0-4*e_1-7*e_2+2*e_3-2*e_4, 8*e_0-6*e_1+3*e_2+6*e_3-6*e_4}},({1, 1, 1, 2, 2, 3},new Tally from
-      {((2,1),(1,6)) => 4, ((2,2),(1,11)) => 1})), (matrix {{-2*e_0+6*e_1-e_2-3*e_3, -2*e_0+7*e_2-9*e_4,
-      -4*e_0-3*e_1-2*e_3-6*e_4, -9*e_0+8*e_2+6*e_3-6*e_4}, {-3*e_0-3*e_1+8*e_2-3*e_3, 5*e_0+6*e_1+3*e_2-2*e_4,
-      3*e_0+e_1+6*e_2+7*e_3+2*e_4, 8*e_0+2*e_1+8*e_2-5*e_3+5*e_4}, {-4*e_0-6*e_1-2*e_2+e_3,
-      7*e_0+9*e_1-8*e_2+9*e_4, 8*e_0+e_1+5*e_2+7*e_3+2*e_4, -3*e_1+9*e_2+9*e_3-9*e_4}},({1, 1, 1, 2, 2, 3},new
-      Tally from {((2,1),(1,6)) => 5})), (matrix {{7*e_0-8*e_1-9*e_2+7*e_3, -4*e_0-e_1-7*e_2-e_4,
-      -6*e_0+4*e_1+9*e_3+8*e_4, 4*e_0+4*e_1+9*e_2+8*e_3-8*e_4}, {-9*e_0-2*e_1-5*e_2-7*e_3, -2*e_0+6*e_1+2*e_2-e_4,
-      -6*e_0-e_1+9*e_2-6*e_3+e_4, 5*e_0+2*e_2+3*e_3-3*e_4}, {8*e_0+3*e_1+3*e_2-9*e_3, -6*e_0-3*e_1-3*e_2+3*e_4,
-      6*e_1-7*e_2-e_3-3*e_4, 3*e_0-2*e_1+7*e_2-e_3+e_4}},({1, 1, 1, 2, 2, 3},new Tally from {((2,1),(1,6)) => 5})),
-      (matrix {{8*e_1+3*e_2, 2*e_0-5*e_2+2*e_4, -2*e_0-5*e_1+2*e_2-9*e_3-3*e_4, -8*e_1+8*e_2+7*e_3-7*e_4},
-      {e_1-2*e_2, 8*e_0+8*e_1+4*e_2, -8*e_0+5*e_1+2*e_2-e_3+6*e_4, -e_1-6*e_2+3*e_3-3*e_4}, {-e_1+2*e_2,
-      7*e_0+3*e_1-3*e_2-2*e_4, -7*e_0+2*e_1+3*e_2-4*e_3+5*e_4, -6*e_1+2*e_2-e_3+e_4}},({1, 1, 1, 1, 2, 5},new Tally
-      from {((2,1),(1,5)) => 1, ((2,1),(1,6)) => 5, ((3,1),(2,5)) => 1})), (matrix {{9*e_0+2*e_1-7*e_2,
-      -6*e_0-7*e_1+7*e_2+9*e_4, 2*e_1-5*e_2+2*e_3+e_4, 9*e_0+6*e_1+4*e_2+5*e_3-5*e_4}, {-4*e_0-7*e_1+4*e_2+e_3,
-      4*e_0-4*e_1+5*e_2-8*e_4, -3*e_0-5*e_1-3*e_2-5*e_3+7*e_4, 2*e_0-5*e_1+3*e_2-e_3+e_4}, {e_0-3*e_1-e_2-5*e_3,
-      -2*e_0-3*e_1+6*e_2-3*e_4, -5*e_0+e_1-3*e_2+e_3-9*e_4, 4*e_0-7*e_1+9*e_3-9*e_4}},({1, 1, 1, 1, 2, 3},new Tally
-      from {((2,1),(1,6)) => 4, ((2,2),(1,11)) => 1})), (matrix {{6*e_0-e_1-8*e_2, -5*e_0+2*e_1+4*e_2,
-      -7*e_1+2*e_2+3*e_3+3*e_4, 4*e_0+9*e_1+2*e_2+6*e_3-6*e_4}, {5*e_0-6*e_1+8*e_2-5*e_3, -2*e_0-3*e_1-6*e_2,
-      e_0-8*e_1-8*e_2+5*e_3+5*e_4, -3*e_0-8*e_1+7*e_2+5*e_3-5*e_4}, {9*e_0-8*e_1+4*e_2-2*e_3, e_0-8*e_1+3*e_2,
-      -8*e_0+3*e_1-3*e_3-3*e_4, 7*e_0+9*e_1+e_3-e_4}},({1, 1, 1, 1, 1, 7},new Tally from {((2,1),(1,5)) => 2,
-      ((2,1),(1,6)) => 2, ((2,2),(1,11)) => 1, ((3,1),(2,5)) => 1})), (matrix {{-e_1+9*e_2+5*e_3,
-      -7*e_0+9*e_1-4*e_2, 6*e_0+4*e_1-7*e_2+6*e_3+9*e_4, -5*e_0+9*e_1-7*e_2+5*e_3-5*e_4}, {e_0+e_1+3*e_2+7*e_3,
-      -9*e_0-2*e_1+3*e_2, 5*e_0-4*e_1, -6*e_0+8*e_1-5*e_2-3*e_3+3*e_4}, {-2*e_0-6*e_1-8*e_2+6*e_3,
-      -8*e_0-6*e_1+9*e_2, -8*e_0+9*e_1+7*e_2-6*e_3-9*e_4, 6*e_0+3*e_1-7*e_2-e_3+e_4}},({1, 1, 1, 1, 1, 7},new Tally
-      from {((2,1),(1,5)) => 3, ((2,1),(1,6)) => 3, ((3,1),(2,5)) => 1})), (matrix {{4*e_0-e_1-7*e_2-5*e_3,
-      -3*e_0-9*e_1-4*e_2, -3*e_0+6*e_1-8*e_2-7*e_4, -4*e_0+3*e_1+2*e_2+2*e_3-2*e_4}, {3*e_0+3*e_1+4*e_2,
-      e_0+3*e_1-5*e_2, -5*e_0+4*e_1-9*e_2-e_4, 9*e_0-6*e_1+9*e_2+e_3-e_4}, {5*e_0+3*e_1+3*e_2-2*e_3,
-      7*e_0+2*e_1+3*e_2, -e_0+3*e_2-3*e_4, 6*e_0+4*e_1-2*e_2-4*e_3+4*e_4}},({1, 1, 1, 1, 1, 7},new Tally from
-      {((2,1),(1,5)) => 3, ((2,1),(1,6)) => 3, ((3,1),(2,5)) => 1})), (matrix {{-3*e_0-2*e_1+4*e_2+7*e_3,
-      -4*e_0+3*e_1-8*e_2, 4*e_1-3*e_2+4*e_3+e_4, -7*e_0+7*e_1-6*e_2+9*e_3-9*e_4}, {-e_0-9*e_1-6*e_2+7*e_3,
-      7*e_0+9*e_1-5*e_2, 4*e_0+2*e_1+e_3+5*e_4, 2*e_1-9*e_2-7*e_3+7*e_4}, {-9*e_0-9*e_1+e_2+9*e_3,
-      7*e_0+9*e_1-5*e_2, 6*e_0+8*e_1+e_2-3*e_3+4*e_4, -5*e_0-9*e_1-e_2-7*e_3+7*e_4}},({1, 1, 1, 1, 1, 7},new Tally
-      from {((2,1),(1,5)) => 3, ((2,1),(1,6)) => 3, ((3,1),(2,5)) => 1}))}
-
-mKRs3Distinct=select(mKRs3,mKR->sum(mKR_1_0)==12);#mKRs3Distinct
-
-T=tally apply(mKRs3Distinct,mKR->mKR_1_0)
-pos=apply(keys T,p->position(mKRs3Distinct,mKR->mKR_1_0==p));
-exampleOfAbo=reverse sort(mKRs3Distinct_pos,mKR->mKR_1_0)
-exAbo=apply(exampleOfAbo,mKR->
-    (m3x4=mKR_0;
-    d=testMatrix2(m3x4,P4);
-    (m3x4,d,mKR_1))
-)
-toString exAbo
-mKRs3
-bordigaMatrices=apply(mKRs3,mKR->sub(mKR_0,vars P4));
-special1=select(bordigaMatrices,m->rank source gens trim minors(3,m%ideal(P4_0,P4_1,P4_2))==1)
-tally apply(bordigaMatrices,m->codim trim minors(3,m%ideal(P4_0,P4_1,P4_2)))
-
-
-tally apply(mKRs3,mKR->(mKR_1))
-mKRLinkage=select(mKRs3,mKR->max apply( keys mKR_1_1,k->k_0_0)<3);
-tally apply(mKRLinkage,mKR->(mKR_1_0,sum mKR_1_0,mKR_1_1))
-mKRs3=reverse sort(mKRs2,mKR->mKR_1_0);
-netList apply(mKRs3,mKR->(mKR_1_0,mKR_1_1))
-apply(mKRs3,mKR->(
-	m3x4=mKR_0;
-	
-	elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
-	<<"KX = " << mKR_1 <<flush<<endl;
-        d=testMatrix1(m3x4,P4);
-	<<" d = " << d <<flush<<endl;
-	betti (ci=ideal(gens X*random(source gens X, P4^{2:-5})));
-	Y=ci:X;
-       
-	--<< minimalBetti Y << flush<<endl;
-	assert((degree Y, sectionalGenus Y)==(13,16));
-	--betti tateResolutionOfSurface Y
-	betti(KY1=canonicalDivisor Y);
-	betti(KY2=canonicalDivisor Y);
-	betti(baseLocus=saturate(KY1+KY2));
-	<<"baseLocus = "<<(dim baseLocus, degree baseLocus)<<flush<<endl;
-	<< mKR_1_1 << flush<<endl;
-	
-	betti(E1=KY1:baseLocus);
-	<<"E1 = "<< (dim E1, degree E1, genus E1) <<flush<<endl;
-	e2=selfIntersectionNumber(Y,E1);
-	<<"E^2 = "<<e2 <<flush <<endl;
-	betti(E2=KY2:baseLocus);
-        <<"E1+E2 = "<< (dim (E1+E2), degree saturate (E1+E2)) << flush<<endl;
-	
-	(dim singularLocus Y,d,mKR_1,(dim E1, degree E1, genus E1),(dim (E1+E2), degree saturate (E1+E2))))
-)
-netList oo
-tally sort o9
-Ksquare(13,16,3)
-
-restart
-needsPackage"NongeneralTypeSurfacesInP4"
-setRandomSeed("A lot of surfaces")
-kk=ZZ/7
-E=kk[e_0..e_4,SkewCommutative=>true]
-P4=kk[x_0..x_4]
-mKRs={}
-
-
-elapsedTime mKRsp7=collectAboSurfaces(mKRs,P4,E,5);
-mKRp7=reverse sort(mKRsp7,mKR->mKR_1_0);
-tally apply(mKRp7,mKR->mKR_1)
-#keys tally
-netList apply(mKRp7,mKR->mKR_1)
-m3x4=(mKRp7_1)_0
-X=aboSurfaceFromMatrix(m3x4,P4);
-partitionOfCanonicalDivisorOfAboSurface X
-R=residualInQuintics X;
-Rt = tally numericalTypeOfResidualInQuintics(R,X)
-
-cR=primaryDecomposition R;
-apply(cR,c->(dim c, degree c, genus c, degree(c+X)))
-apply(cR,c->(dim c, degree c, genus c, minimalBetti c, degree(c+X),
-	degree radical c, genus radical c, degree(radical c+X)))
-    elapsedTime mKRs4=collectSpecialAboSurfaces(mKRs3,P4,E,30);
-#mKRs4
-mKRs5=reverse sort(mKRs4,mKR->mKR_1_0);
-tally apply(mKRs5,mKR->mKR_1)
-tally apply(mKRs5,mKR->mKR_1_0)
-toString mKRs5
-
-#mKRs
-tally apply(mKRs,mKR->(mKR_1_0,sum mKR_1_0))
-mKRlinkage=select(mKRs,mKR->max apply( keys mKR_1_1,k->k_0_0)<3);
-#mKRlinkage
-tally apply(mKRlinkage,mKR->(mKR_1_0,sum mKR_1_0,mKR_1_1))
-tally apply(mKRlinkage,mKR->(mKR_1_0,sum mKR_1_0))
-mKRNoLinkage=select(mKRs,mKR->max apply( keys mKR_1_1,k->k_0_0)==3);
-tally apply(mKRNoLinkage,mKR->(mKR_1_0,sum mKR_1_0,,mKR_1_1))
-m3x4=(first mKRs)_0
-X=aboSurfaceFromMatrix(m3x4,P4);
-minimalBetti X
-R=residualInQuintics X;
-degree R, dim R
-///
 
 
 -* from Hiro *-
@@ -4569,7 +4119,40 @@ h1minush2End=1-sub(xEnd1,{c1=>-1,c2=>4})
 h1minush2End=1-sub(xEnd1,{c1=>0,c2=>11})
 ///
 
+searchHMBundle=method()
+--Input: exterior algebra dual to P4
+--       over s small finite prime field, e.g. kk=ZZ/2
+searchHMBundle(Ring,ZZ) := (E,c) -> (
+    p:=char E;
+    Cs:={};
+    N:=0;M:=0;
+    A:=null; B:=null; B1 :=null; C:=null;
+    fC:=null;
+    scan(p^c,i->(
+	while (A=random(E^3,E^{2:-2});
+	    betti (B=syz(A,DegreeLimit=>5));
+	    B1=(B*random(source B, E^{5:-4}));
+	    rank source (syz(B1,DegreeLimit=>4))!=0) do ();
+	betti (C=syz(transpose B1,DegreeLimit=>0));
+	N=N+1;
+	betti (fC=res(coker transpose C,LengthLimit=>2));
+	if rank fC_0==5 and rank fC_2==5 then (
+	    M=M+1;fC=res(coker transpose C,LengthLimit=>4);
+	    if rank fC_4 <=14 then (print N;Cs=append(Cs,C)));
+	betti fC));
+    Cs)
 
+
+///
+p=2
+kk=ZZ/p
+E=kk[e_0..e_4,SkewCommutative=>true]
+13752.3/60/60 --for 2^21
+setRandomSeed("run 2^12")
+c=12
+elapsedTime MCs=searchHMBundle(E,c)
+///
+    
 -* Documentation section *-
 
 
@@ -9819,7 +9402,120 @@ SeeAlso
 ///
 
 
--* Test section *-
+doc ///
+Key
+ searchHMBundle
+ (searchHMBundle,Ring,ZZ)
+Headline
+ search a HM - bundle on P4
+Usage
+ Ms=searchHMBundle(E,c)
+Inputs
+ E:Ring
+  exterior algebra dual to the coordinate ring of P4
+ c:ZZ
+  search for example up to codim c
+Outputs
+ Ms:List
+   of 2x5 matries with quadratic entries in E
+Description
+  Text
+    Choosing randomly 3x2 matrices with entries of degree 2,
+    we check whether its syzygy matrix contains a 2x5 matrix leading to the
+    desired monad.
+  Example
+    kk=ZZ/2;
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    c=10;
+    setRandomSeed("do 2^c cases");
+    elapsedTime Ms=searchHMBundle(E,c) -- 11.3592s elapsed
+    11.3592*2^(20-c)/60/60	 
+  Text
+    There are 2*(5-3)+8+3+24 dimansional family of 3x2 submatices of the 5x2
+    Horrocks-Mumford matrix compared to 3*2*10-1 dimenensional family of all matrices.
+    So the codimsion is
+  Example
+    20==3*2*10-1-(2*(5-3)+8+3+24)
+  Text
+    Thus the runnig time tofind an example is about 3.5 hours to find an example
+    over ZZ/2.
+SeeAlso
+  
+///
+
+///
+kk=ZZ/2;
+    E=kk[e_0..e_4,SkewCommutative=>true];
+Ms={matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4,
+      e_0*e_2+e_1*e_3+e_2*e_3+e_0*e_4, e_1*e_3+e_2*e_4,
+      e_0*e_3+e_2*e_3, e_1*e_2+e_0*e_3+e_0*e_4+e_1*e_4},
+      {e_1*e_4+e_2*e_4, e_1*e_3+e_2*e_4+e_3*e_4,
+      e_1*e_2+e_0*e_3+e_2*e_3+e_1*e_4+e_2*e_4+e_3*e_4,
+      e_0*e_2+e_0*e_3+e_1*e_3+e_2*e_3+e_0*e_4+e_3*e_4,
+      e_0*e_1+e_1*e_3+e_2*e_3+e_2*e_4}},
+ matrix {{e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_3*e_4,
+      e_0*e_1+e_1*e_3+e_2*e_3+e_3*e_4, e_0*e_2+e_0*e_3+e_2*e_4,
+      e_1*e_3+e_0*e_4+e_1*e_4, e_2*e_3+e_0*e_4+e_2*e_4},
+      {e_0*e_3+e_1*e_3+e_0*e_4+e_1*e_4+e_2*e_4+e_3*e_4,
+      e_1*e_2+e_2*e_3, e_1*e_2+e_0*e_3+e_2*e_3+e_1*e_4,
+      e_0*e_2+e_1*e_2+e_1*e_3+e_2*e_3+e_1*e_4+e_2*e_4,
+      e_0*e_1+e_1*e_2+e_0*e_3+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4}},
+ matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_3*e_4,
+      e_0*e_2+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4+e_3*e_4,
+      e_0*e_3+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4,
+      e_1*e_2+e_0*e_3+e_1*e_3+e_2*e_4, e_0*e_3+e_2*e_3+e_0*e_4},
+      {e_1*e_4+e_3*e_4, e_0*e_4+e_1*e_4,
+      e_1*e_2+e_1*e_4+e_2*e_4+e_3*e_4,
+      e_0*e_2+e_1*e_3+e_0*e_4+e_1*e_4,
+      e_0*e_1+e_1*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4+e_3*e_4}}
+}
+
+betti(m2x5=Ms_2)
+betti(T=res(coker m2x5,LengthLimit=>5))
+betti (THM= res(coker transpose T.dd_5**E^{2},LengthLimit=>10)[5])
+basis(2,E)
+P=kk[p_0..p_9]
+basis(1,P)
+m5x5=genericSkewMatrix(P,p_0,5)
+EP=E**P
+J=ideal apply(subsets(toList(0..4),2),ij->(i=ij_0;j=ij_1;
+	sub(e_i*e_j,EP) - sub(m5x5_(i,j),EP)))
+m5x2P=sub(sub(THM.dd_0,EP)%J,P)
+P1xP4=kk[s,t,x_0..x_4,Degrees=>{2:{1,0},5:{0,1}}]
+m5x2P1xP4=matrix apply(5,i->apply(2,j->P1xP4_j*x_i))
+PP14=P**P1xP4
+J2=ideal(sub(m5x2P,PP14)-sub(m5x2P1xP4,PP14))
+m5x5P1xP4=sub(sub(m5x5,PP14)%J2,P1xP4)
+I=pfaffians(4,m5x5P1xP4);
+betti I
+tally degrees source gens I
+Is=saturate(saturate(I,ideal(P1xP4_0,P1xP4_1)),ideal apply(5,i->P1xP4_(i+2)));
+
+xx=matrix{apply(5,i->P1xP4_(i+2))}
+betti(relativeJacobian=diff(transpose xx,gens I))
+elapsedTime betti(singFibs=saturate(minors(3,relativeJacobian)+I,ideal xx))
+factor singFibs_30
+
+kk'=GF(2,8)
+char kk'
+P1xP4'=kk'[gens P1xP4,Degrees=>degrees P1xP4]
+P4'=kk'[x_0..x_4]
+csingFibs=decompose  ideal sub(singFibs_30,P1xP4');
+singFibers=apply(csingFibs,c->sub(saturate(c+sub(I,P1xP4'),ideal(P1xP4'_1,P1xP4'_0)),P4'));
+tally apply(singFibers,c->(
+	cc=decompose c;iMat=matrix apply(cc,d1->apply(cc,d2->degree saturate(d1+d2)));
+	cycle={0};
+	scan(4,s->(
+	cycle=append(cycle,first select(select(toList(0..4),j->not member(j,cycle)),
+		j->iMat_(last cycle,j)==1))));
+        (#cc,iMat^cycle_cycle)))	
+-- => the singular fibers consists of 12 pentagons of lines
+-- a pentagon of lines
+
+
+///
+
+    -* Test section *-
 TEST///
 
 ///
