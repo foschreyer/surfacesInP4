@@ -9481,7 +9481,8 @@ EP=E**P
 J=ideal apply(subsets(toList(0..4),2),ij->(i=ij_0;j=ij_1;
 	sub(e_i*e_j,EP) - sub(m5x5_(i,j),EP)))
 m5x2P=sub(sub(THM.dd_0,EP)%J,P)
-P1xP4=kk[s,t,x_0..x_4,Degrees=>{2:{1,0},5:{0,1}}]
+P1xP4=kk[s,t,x_0..x_4
+    ,Degrees=>{2:{1,0},5:{0,1}}]
 m5x2P1xP4=matrix apply(5,i->apply(2,j->P1xP4_j*x_i))
 PP14=P**P1xP4
 J2=ideal(sub(m5x2P,PP14)-sub(m5x2P1xP4,PP14))
@@ -9513,6 +9514,8 @@ tally apply(singFibers,c->(
 -- => the singular fibers consists of 12 pentagons of lines.
 -- => the surface of unstable plane of the bundle coincides with Shioda's modular surface
 -- => the bundle is projectively equivalent to the HM bundle
+
+
 
 
 ///
