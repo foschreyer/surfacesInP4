@@ -9503,14 +9503,16 @@ P4'=kk'[x_0..x_4]
 csingFibs=decompose  ideal sub(singFibs_30,P1xP4');
 singFibers=apply(csingFibs,c->sub(saturate(c+sub(I,P1xP4'),ideal(P1xP4'_1,P1xP4'_0)),P4'));
 tally apply(singFibers,c->(
-	cc=decompose c;iMat=matrix apply(cc,d1->apply(cc,d2->degree saturate(d1+d2)));
+	cc=decompose c;iMat=matrix apply(cc,d1->apply(cc,d2->
+		if d1 != d2 then degree saturate(d1+d2) else 0));
 	cycle={0};
 	scan(4,s->(
 	cycle=append(cycle,first select(select(toList(0..4),j->not member(j,cycle)),
 		j->iMat_(last cycle,j)==1))));
-        (#cc,iMat^cycle_cycle)))	
--- => the singular fibers consists of 12 pentagons of lines
--- a pentagon of lines
+        (#cc,diagonalMatrix toList(5:-2)+iMat^cycle_cycle)))	
+-- => the singular fibers consists of 12 pentagons of lines.
+-- => the surface of unstable plane of the bundle coincides with Shioda's modular surface
+-- => the bundle is projectively equivalent to the HM bundle
 
 
 ///
