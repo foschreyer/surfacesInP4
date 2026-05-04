@@ -3171,6 +3171,12 @@ specificAboSurface(Ring,Ring,Number) := o -> (P4,E,k) -> (
       7*E_0-3*E_1+6*E_2+7*E_3-7*E_4}, {2*E_0+4*E_1+6*E_2-4*E_3,
       4*E_0+2*E_2-4*E_4, -5*E_0-8*E_1-4*E_2-4*E_3+4*E_4,
       -9*E_0+9*E_1-5*E_2-3*E_3+3*E_4}},4,({1,1,1,1,4,4},new Tally from {(2,1,(1,6))=>3,(2,2,(1,11))=>2})),
+(matrix {{-6*E_1-9*E_2, -9*E_0+4*E_1+3*E_2+2*E_4,
+      -5*E_0-E_1-E_2-8*E_3+3*E_4, 4*E_0+8*E_1-9*E_2+7*E_3-7*E_4}, {-7*E_1-E_2,
+      -3*E_0+6*E_1+8*E_4, -8*E_0-3*E_1+2*E_2-7*E_3+5*E_4,
+      -5*E_0-9*E_1+E_2+E_3-E_4}, {-4*E_1-6*E_2, E_0-7*E_1+5*E_2+2*E_4,
+      9*E_0-E_1+9*E_2+7*E_3-5*E_4, 8*E_0-8*E_1+8*E_3-8*E_4}},4,({1,1,1,1,2,6},
+   new Tally from {(1,1,(0,5)) => 2, (1,1,(0,6)) => 4, (2,1,(1,5)) => 1})), 
 (matrix {{6*E_0-E_1-8*E_2, -5*E_0+2*E_1+4*E_2, -7*E_1+2*E_2+3*E_3+3*E_4,
       4*E_0+9*E_1+2*E_2+6*E_3-6*E_4}, {5*E_0-6*E_1+8*E_2-5*E_3, -2*E_0-3*E_1-6*E_2, E_0-8*E_1-8*E_2+5*E_3+5*E_4,
       -3*E_0-8*E_1+7*E_2+5*E_3-5*E_4}, {9*E_0-8*E_1+4*E_2-2*E_3, E_0-8*E_1+3*E_2, -8*E_0+3*E_1-3*E_3-3*E_4,
@@ -4125,21 +4131,24 @@ searchHMBundle=method()
 searchHMBundle(Ring,ZZ) := (E,c) -> (
     p:=char E;
     Cs:={};
-    N:=0;M:=0;
+    N:=0;M:=0;trials:= 0;
     A:=null; B:=null; B1 :=null; C:=null;
     fC:=null;
-    scan(p^c,i->(
+    count:=0;
+    while(N<2^c and #Cs<1) do ( 
 	while (A=random(E^3,E^{2:-2});
 	    betti (B=syz(A,DegreeLimit=>5));
 	    B1=(B*random(source B, E^{5:-4}));
-	    rank source (syz(B1,DegreeLimit=>4))!=0) do ();
+	    rank source (syz(B1,DegreeLimit=>4))!=0) do (trials=trials+1);
 	betti (C=syz(transpose B1,DegreeLimit=>0));
 	N=N+1;
 	betti (fC=res(coker transpose C,LengthLimit=>2));
 	if rank fC_0==5 and rank fC_2==5 then (
 	    M=M+1;fC=res(coker transpose C,LengthLimit=>4);
 	    if rank fC_4 <=14 then (print N;Cs=append(Cs,C)));
-	betti fC));
+	);
+    << "number of trials = " <<trials <<endl;
+    << "(N,M) = " <<(N,M) <<endl;
     Cs)
 
 
@@ -6623,6 +6632,71 @@ SeeAlso
    Ksquare
    canonicalDivisor
    tateResolutionOfSurface
+///
+
+/// -* check the order of the specific examples of Abo surfaces
+                   coincides with the order in the TeX file *-
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+
+    X=specificAboSurface(P4,E,0,Verbose=>true);-- 1,2,2,2,2,3
+    minimalBetti X
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,1,Verbose=>true);-- 1,1,2,2,3,3
+    minimalBetti X
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,2,Verbose=>true);-- 1,1,2,2,3,3
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,3,Verbose=>true);-- 1,1,2,2,2,4
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,4,Verbose=>true);-- 1,1,1,2,3,4
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,5,Verbose=>true);-- 1,1,1,2,2,5
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,6,Verbose=>true);-- 1,1,1,1,4,4
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
+
+    X=specificAboSurface(P4,E,7,Verbose=>true);-- 1,1,1,1,2,6
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree(c+X))))
+    toString oo
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,
+	    tally apply(decompose(c+X),d->(dim d-1,degree d)))
+	)
+
+    X=specificAboSurface(P4,E,8,Verbose=>true);-- 1,1,1,1,1,7
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree(c+X))))
+    toString oo
+    tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,
+	    tally apply(decompose(c+X),d->(dim d-1,degree d)))
+	)
+-* order as desired;
+ perhaps there is also a 1,1,1,1,3,5 case *-
+    
 ///
 
 doc ///
@@ -9444,6 +9518,16 @@ SeeAlso
 ///
 
 ///
+    kk=ZZ/2;
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    c=21;
+    setRandomSeed("do 2^c cases");
+    elapsedTime Ms=searchHMBundle(E,c)
+
+///
+
+
+///
 kk=ZZ/2;
     E=kk[e_0..e_4,SkewCommutative=>true];
 Ms={matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4,
@@ -9480,7 +9564,7 @@ m5x5=genericSkewMatrix(P,p_0,5)
 EP=E**P
 J=ideal apply(subsets(toList(0..4),2),ij->(i=ij_0;j=ij_1;
 	sub(e_i*e_j,EP) - sub(m5x5_(i,j),EP)))
-m5x2P=sub(sub(THM.dd_0,EP)%J,P)
+m5x2P=sub(sub(transpose m2x5,EP)%J,P)
 P1xP4=kk[s,t,x_0..x_4
     ,Degrees=>{2:{1,0},5:{0,1}}]
 m5x2P1xP4=matrix apply(5,i->apply(2,j->P1xP4_j*x_i))
@@ -9497,25 +9581,96 @@ betti(relativeJacobian=diff(transpose xx,gens I))
 elapsedTime betti(singFibs=saturate(minors(3,relativeJacobian)+I,ideal xx))
 factor singFibs_30
 
-kk'=GF(2,8)
+kk'=GF(2,24)
 char kk'
 P1xP4'=kk'[gens P1xP4,Degrees=>degrees P1xP4]
 P4'=kk'[x_0..x_4]
+E'=kk'[gens E,SkewCommutative=>true]
 csingFibs=decompose  ideal sub(singFibs_30,P1xP4');
-singFibers=apply(csingFibs,c->sub(saturate(c+sub(I,P1xP4'),ideal(P1xP4'_1,P1xP4'_0)),P4'));
-tally apply(singFibers,c->(
+csingFibs, #csingFibs
+singFibers=apply(csingFibs,c->trim sub(saturate(c+sub(I,P1xP4'),ideal(P1xP4'_1,P1xP4'_0)),P4'));
+tally apply(12,i -> betti res singFibers_i)
+elapsedTime sortedComponents=apply(singFibers,c->(
 	cc=decompose c;iMat=matrix apply(cc,d1->apply(cc,d2->
 		if d1 != d2 then degree saturate(d1+d2) else 0));
 	cycle={0};
 	scan(4,s->(
 	cycle=append(cycle,first select(select(toList(0..4),j->not member(j,cycle)),
 		j->iMat_(last cycle,j)==1))));
-        (#cc,diagonalMatrix toList(5:-2)+iMat^cycle_cycle)))	
+<< cycle <<endl;
+        cc_cycle));
+
+tally apply(sortedComponents,cc->(iMat-matrix apply(cc,d1-> apply(cc,d2 ->
+		if d1 != d2 then degree saturate(d1+d2) else 0));
+	(#cc,diagonalMatrix toList(5:-2)+iMat^cycle_cycle)))
 -- => the singular fibers consists of 12 pentagons of lines.
 -- => the surface of unstable plane of the bundle coincides with Shioda's modular surface
 -- => the bundle is projectively equivalent to the HM bundle
 
+pointsIdeals=apply(sortedComponents,cc->intersect(apply(4,i->cc_i+cc_(i+1))|{cc_4+cc_0}));
+p0=pointsIdeals_2
+degree p0, betti res p0
+tally apply(pointsIdeals,p->(degree p, betti res p))
+betti m2x5
+m2x5
+rows=positions(pointsIdeals,p->p==p0)
+unique apply(pointsIdeals,p0->positions(pointsIdeals,p->p==p0))
+st=(vars P1xP4')_{0,1}
+diff(transpose st, gens sum csingFibs_rows)
+cc=sortedComponents_2
+    qs=apply(4,i->syz transpose jacobian trim(cc_i+cc_(i+1)))|{syz transpose jacobian trim(cc_4+cc_0)};
+m=sub((qs_0|qs_1|qs_2|qs_3|qs_4),kk')
+vars P4'*m
+transpose inverse m == inverse transpose m
+    possible={transpose inverse m,transpose  m,inverse m,m}
+standardRow=ideal(E'_0*E'_2,E'_1*E'_3,E'_2*E'_4,E'_3*E'_0,E'_4*E'_1)
+standardRow1=ideal(E'_0*E'_1,E'_1*E'_2,E'_2*E'_3,E'_3*E'_4,E'_4*E'_0)
+standardRow2=ideal(E'_0*E'_3,E'_1*E'_4,E'_2*E'_0,E'_3*E'_1,E'_4*E'_2)
+singFibers_1
 
+trim sub(singFibers_0,vars P4'*transpose m)
+trim sub(singFibers_1,vars P4'*transpose m)
+trim sub(singFibers_2,vars P4'*transpose m)
+trim sub(singFibers_7,vars P4'*transpose m)
+decompose trim sub(singFibers_2,vars P4'*transpose m)
+
+tally apply(possible, m1->(autP4=vars E'*m1;
+	(sub(standardRow2,autP4)==ideal(sub(m2x5^{0},E')),
+	    standardRow2==ideal(sub(m2x5^{0},autP4)),
+	    standardRow2,ideal(sub(m2x5^{1},autP4)),
+	    sub(standardRow2,autP4)==ideal(sub(m2x5^{1},E')),
+	    sub(standardRow2,autP4)==ideal(sub(m2x5^{1}+m2x5^{0},E')),
+	    betti sub(standardRow2,autP4),betti ideal(sub(m2x5^{1}+m2x5^{0},E')))
+	)
+    )
+netList apply(possible, m1->(autP4=vars E'*m1;trim ideal sub(m2x5^{1}+m2x5^{0},autP4)))
+)))
+basis(2,E)
+vars P
+m5x5
+kk''=GF(2,4)
+P'=kk''[gens P]
+E''=kk''[gens E,SkewCommutative=>true]
+EP'=E''**P'
+coefficientRing E'
+J'=sub(J,EP')
+m5x2E
+m2x5P'=sub((sub(m2x5,EP')%J'),P')
+m5x5
+row0=m2x5P'^{0}
+row1=m2x5P'^{1}
+betti(ideal row1 +sub(pfaffians(4,m5x5),P'))
+tally apply(decompose (ideal row1 +sub(pfaffians(4,m5x5),P')),c->betti c)
+betti(ideal (row0+row1) +sub(pfaffians(4,m5x5),P'))
+tally apply(decompose (ideal(row0+row1) +sub(pfaffians(4,m5x5),P')),c->betti c)
+
+
+oE3=matrix{apply(5,i->E'_i*E'_((i+1)%5)*E'_((i+2)%5))}
+as=apply(5,i->transpose syz transpose syz(map(E'^1,,oE3_{i}*sub(sub(m2x5^{0},E'),autP4)),DegreeLimit=>5))
+n=sub(as_0||as_1||as_2||as_3||as_4,kk')
+inverse n
+pos2={n,inverse n, transpose n, transpose inverse n}
+apply(possible,m1->(autP4=vars E'*m1;apply(pos2,n1->sub(standardRow,autP4)==ideal(sub(m2x5^{0},E')*n1))))
 
 
 ///
