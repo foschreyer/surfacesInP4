@@ -55,7 +55,6 @@ export {
     "analyzeAboSurface",
     "collectAboSurfaces",
     "aboSurfaces",
-    "canonicalDivisorOfAboSurface",
     "randomAboSurface",
     "randomAboSurfaceWithLargeHomSpace",
     "randomAboSurfaceWithHomSpaceOfGivenDimension",
@@ -65,9 +64,10 @@ export {
     "testMatrix2",
     "WithM3x13",
     "WithX",
+    "abo112224Or111234Surface",
     "abo111333Surface",
     "abo111117Surface",
-    
+    "abo111144Surface",
     "symExtFunction",
     "sectionalGenus",
     "chiO",
@@ -1194,7 +1194,7 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
       *P4_4-P4_4^2)};
     adjTypes:={
       {(4,11,10), 5, (9,19,11), 1, (10,20,11), 0, (10,20,11), 0, (10,20,11)},
-      {(4,11,10), 4, (9,19,11), 1, (10,19,10), 0, (9,16,8), 0, (7,11,5)},
+      {(4, 11, 10), 4, (9, 19, 11), 1, (10, 19, 10), 0, (9, 16, 8), 0, (7, 11, 5), 5, (4, 4, 1)},
       {(4,11,10), 3, (9,19,11), 1, (10,18,9), 2, (8,12,5), 4, (4,4,1)},
       {(4,11,10), 3, (9,19,11), 2, (10,18,9), 0, (8,13,6), 3, (5,6,2)},
       {(4,11,10), 2, (9,19,11), 3, (10,17,8), 2, (7,10,4), 2, (3,3,1)},
@@ -1204,6 +1204,16 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
       {(4,11,10), 0, (9,19,11), 6, (10,15,6), 5, (5,5,1)}};
     (Ms,adjTypes)
     )
+///
+restart
+loadPackage"NongeneralTypeSurfacesInP4"
+kk=ZZ/3
+P4=kk[x_0..x_4]
+X=specificSchreyerSurface(P4,1);
+elapsedTime (L0,L1,L2,L3)=adjunctionProcess(X,5);
+L0
+///
+
 
 specificSchreyerSurface=method()
 --Input: k an integer
@@ -2013,6 +2023,177 @@ aboSurfaceFromMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     if opt.Verbose then <<"codim singX = " << cd << endl;
        not (cd ==5) ) do ();
     I)
+
+abo112224Or111234Surface=method(Options=>{Verbose=>false,Count=>false})
+  ---finds Abo surfaces with canonical divisor (1,1,1,1,4,4) from (3x5) matrices over P3, s.t. the Bordiga surface is smooth and has seven rank two planes meeting the 1x3 line
+abo112224Or111234Surface( Ring, Ring, ZZ):= opt -> (P4,P3,h) -> (
+ kk := coefficientRing P4;
+    e:= symbol e;
+     P3xP4 := P3**P4;
+    E := kk[e_0..e_4,SkewCommutative=>true];
+    m1x3 := matrix{{e_0,e_1,e_2}};
+       a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;rIs:=null;hdim:=null;
+    m3x5:=null;
+    while ( --get smooth surface
+   -- count1=1;	
+    while ( -- get surface of degree 12
+	 -- count=1;
+          while ( -- syz bb as desired
+	      while (
+		  --- A 3x5 matrix with 3x2 rigth submatrix of rank 1 along three lines in chain that contains at least 4 of the 3x5 matrix' rank 2 points, the middle line has three points where the 3x5 matrix has rank 2
+--m3x5=random(P3^3,P3^2)*matrix{ {P3_0},{P3_1}}|random(P3^3,P3^2)*matrix{ {P3_0},{P3_3}}|random(P3^3,P3^{1:-1})|matrix{ {0,P3_0},{P3_1,0},{P3_2,P3_3}};
+m3x5=transpose(transpose(random(P3^2,P3^3)*matrix{ {P3_0},{P3_2},{P3_3}})|matrix{ {0}})|random(P3^3,P3^3)*matrix{ {P3_0},{P3_2},{P3_3}}|random(P3^3,P3^2)*matrix{ {P3_1},{P3_2}}|matrix{ {0,P3_0},{P3_1,P3_2},{P3_2,P3_3}};
+m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*sub(transpose m3x5,P3xP4))),P4)), vars E);
+	      m4x4 = (transpose a1x4) | ( sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	      hdim=115-rIs;
+	 not (hdim>=h)) do (count=count+1);
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | ( m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	  	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do (count2=count2+1);
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+       if opt.Verbose then << "count= " <<count << endl;
+      if opt.Count then << "count1= " << count1 <<endl;
+        singX:= singularLocus I; 
+        not codim singX == 5) do ();
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I, m3x4, hdim))
+
+
+///-* Test abo112224Or111234AboSurface *-
+restart
+loadPackage "NongeneralTypeSurfacesInP4"
+
+kk=ZZ/19;
+P4=kk[x_0..x_4]
+P3=kk[y_0..y_3]
+P2=kk[z_0..z_2]
+E= kk[e_0..e_4,SkewCommutative=>true];
+
+h=2
+--- Homs is 2-dimensional  (at least 5 rank two points of 3x5 matrix are rank one points of right 3x2 submatrix)
+  setRandomSeed("get a 111234 surface in a minute");
+elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+minimalBetti X
+r
+partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 1, 2, 3, 4}
+-- Residual in quintics is five 6-secant lines and a 11-secant conic
+  setRandomSeed("get a 112224 surface in a minute");
+elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+minimalBetti X
+r
+partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
+///
+
+abo111144Surface=method(Options=>{Verbose=>false,Count=>false})
+  ---finds Abo surfaces with canonical divisor (1,1,1,1,4,4) from special (3x5) matrices over P3, s.t. the Bordiga surface is smooth and has seven rank two planes meeting the 1x3 line
+abo111144Surface( Ring, Ring):= opt -> (P4,P3) -> (
+ kk := coefficientRing P4;
+    e:= symbol e;
+     P3xP4 := P3**P4;
+    E := kk[e_0..e_4,SkewCommutative=>true];
+    m1x3 := matrix{{e_0,e_1,e_2}};
+       a:=symbol a;
+    b:=symbol b;
+    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
+    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
+    B := kk[bs,as];
+    ExB := E**B;
+    E2 := sub(basis(2,E),ExB);
+    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    E3 := sub(basis(3,E),ExB);
+    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
+    count:=1;count1:=1;count2:=1;
+    isSurface := false;
+    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
+    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
+    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
+    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;rIs:=null;
+    hdim:=null;m3x5:=null;
+    while ( --get smooth surface
+   -- count1=1;	
+    while ( -- get surface of degree 12
+	 -- count=1;
+          while ( -- syz bb as desired
+          --m3x5=transpose(matrix{{P3_0}+{P3_3}}|random(P3^1,P3^{2:-1}))|random(P3^3,P3^2)*matrix{{P3_2},{P3_3}}|random(P3^3,P3^2)*matrix{{P3_0},{P3_1}}|matrix{ {0,P3_2},{P3_0,0},{-P3_1,-P3_3}};
+              m3x5=transpose(matrix{{P3_1}+{P3_3}}|random(P3^1,P3^{2:-1}))|transpose(matrix{{P3_2}}|transpose(random(P3^2,P3^2)*matrix{{P3_2},{P3_3}}))|transpose(matrix{{P3_0}}|transpose(random(P3^2,P3^2)*matrix{{P3_0},{P3_1}}))|matrix{ {0,P3_2},{P3_0,0},{-P3_1,-P3_3}};
+              m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*sub(transpose m3x5,P3xP4))),P4)), vars E);
+	      m4x4 = (transpose a1x4) | ( sub(m3x4,ExB));
+	      c = m4x4*m4x3;
+	      Is = trim ideal sub(contract(E3,flatten c),B);
+	      rIs=rank source gens Is;
+	      hdim=115-rIs;
+	      sol = vars B%Is;
+	      randSols = sub(sol,random(kk^1,kk^130));
+	      a1x4s = sub(a1x4,vars E|randSols);
+	      m4x4s = (transpose a1x4s) | ( m3x4);
+	      bb = map(E^4,,m4x4s);
+	      tau = syz bb;
+	      not ((tally degrees source tau)_{3} == 3 and 
+		  (tally degrees source tau)_{4} == 5 )) do (count=count+1);
+          beta0 = bb;
+	  alpha' = submatrix(tau,,{0,1,2});
+	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
+	  beta = beilinson(beta0,P4);
+	  alpha = beilinson(alpha0,P4);
+	  F = prune homology(beta,alpha);
+	  delta = syz transpose presentation F;
+	  I = ideal (delta);
+          not (degree I == 12 and codim I == 2) )
+      do (count1=count1+1);
+      if opt.Verbose then << "count= " <<count << endl;
+      if opt.Count then << "count1= " << count1 <<endl;
+      singX:= singularLocus I; 
+      not codim singX == 5) do (count2=count2+1);
+      if opt.Count then << "count2= " << count2 <<endl;      
+      (I, m3x4, hdim))
+
+/// -* test abo111144Surface *-
+  kk=ZZ/nextPrime(10^3)
+P4=kk[x_0..x_4]
+P3=kk[y_0..y_3]
+P2=kk[z_0..z_2]
+E= kk[e_0..e_4,SkewCommutative=>true];
+  setRandomSeed("quitefastest");
+  elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3,Verbose=>true,Count=>true);
+  minimalBetti X
+  r
+  partitionOfCanonicalDivisorOfAboSurface X
+///
+
 
 abo111333Surface=method(Options=>{Verbose=>false})
 abo111333Surface(Ring,Ring) := opt -> (P4,E) -> (
@@ -3152,11 +3333,11 @@ specificAboSurface(Ring,Ring,Number) := o -> (P4,E,k) -> (
       4*E_0-8*E_1-7*E_2+2*E_3-2*E_4}, {7*E_0-8*E_1-5*E_2-4*E_3, 9*E_0-4*E_1+9*E_2-8*E_4,
       E_0-8*E_1+8*E_2-5*E_3-5*E_4, -4*E_0+2*E_1-6*E_2+5*E_3-5*E_4}, {E_0+5*E_1+3*E_2+E_3, E_0-8*E_1-6*E_2-9*E_4,
       5*E_0+6*E_1-8*E_2+E_3+E_4, -E_0-9*E_1+8*E_2+6*E_3-6*E_4}},1,({1, 1, 1, 3, 3, 3},new Tally from {((2,1),(1,6))
-      => 4, ((2,4),(1,21)) => 1})), (matrix {{-5*E_0-5*E_1+2*E_2+E_3, -7*E_1+9*E_2, -7*E_0+7*E_1+8*E_2-3*E_3+7*E_4,
-      4*E_0+9*E_1-E_2-6*E_3+6*E_4}, {6*E_0+9*E_1+9*E_2, -7*E_1+9*E_2, -3*E_0-3*E_1-5*E_2,
-      -E_0+2*E_1+8*E_2+E_3-E_4}, {5*E_0+2*E_1-3*E_3, -7*E_1+9*E_2, 7*E_0-E_1-4*E_2+5*E_3+E_4,
-      -4*E_0+4*E_1+4*E_2-5*E_3+5*E_4}},2,({1, 1, 2, 2, 2, 4},new Tally from {((2,1),(1,6)) => 6, ((3,1),(2,5)) =>
-      1})),  (matrix {{-5*E_0-5*E_1-5*E_2-8*E_3, -8*E_0-2*E_1+3*E_2-4*E_4,
+      => 4, ((2,4),(1,21)) => 1})),
+    (matrix {{-2*E_0+9*E_1+E_4, -6*E_2, 6*E_0+2*E_1+7*E_2, 6*E_0-7*E_1}, {-6*E_0-3*E_1,
+      E_2+E_3, -7*E_0+5*E_1+6*E_2+E_4, 7*E_0}, {4*E_1, 8*E_2, -9*E_1+6*E_2+E_3, -8*E_1+E_4}},2,
+     ({1,1,2,2,2,4}, new Tally from {(2,1,(1,6)) => 1, (2,2,(1,11)) => 1, (2,4,(1,24)) => 1})),
+  (matrix {{-5*E_0-5*E_1-5*E_2-8*E_3, -8*E_0-2*E_1+3*E_2-4*E_4,
       7*E_0+8*E_1-9*E_2-E_3+9*E_4, -9*E_0-2*E_1+7*E_3-7*E_4}, {-5*E_0-2*E_1+6*E_2-5*E_3, 3*E_0+7*E_1+E_2+9*E_4,
       6*E_0-2*E_1+2*E_3+E_4, 9*E_0+5*E_1+3*E_2-E_3+E_4}, {6*E_0+6*E_1+6*E_2+2*E_3, 8*E_0+E_1-6*E_2-E_4,
       -7*E_0-3*E_1-7*E_2, 3*E_0-2*E_1-9*E_2+5*E_3-5*E_4}},2,({1, 1, 1, 2, 3, 4},new Tally from {((2,1),(1,6)) => 4,
@@ -4085,12 +4266,59 @@ ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
 specificEllipticSurfaceD13S16=method()
 
 specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):=(P4,E,k) -> (
-    if not member(k,{1,2,4}) then (<< k <<"should be in "<<{1,2,4} <<flush<<endl;
+    if not member(k,{1,2,4,6}) then (<< k <<" should be in "<<{1,2,4,6} <<flush<<endl;
 	    return ideal 1_P4);
     X:=specificAboSurface(P4,E,k);
     betti(ci:=ideal(gens X*random(source gens X,P4^{2:-5})));
     Y:=ci:X;
     return Y)
+///
+
+
+
+kk=ZZ/19
+P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+Y=specificAboSurface(P4,E,1,Verbose=>true);
+X=specificEllipticSurfaceD13S16(P4,E,1);
+betti tateResolutionOfSurface X
+(d,sg)=(degree X, sectionalGenus X)
+LeBarzN6(d,sg,3)
+R=residualInQuintics X;
+cR=decompose R;
+tally apply(cR,c->(dim c, degree c,(dim(c+X),degree (c+X))))
+
+Y=specificAboSurface(P4,E,2,Verbose=>true);
+X=specificEllipticSurfaceD13S16(P4,E,2);
+R=residualInQuintics X;
+cR=decompose R;
+tally apply(cR,c->(dim c, degree c,(dim(c+X),degree (c+X))))
+
+Y=specificAboSurface(P4,E,4,Verbose=>true);
+X=specificEllipticSurfaceD13S16(P4,E,4);
+R=residualInQuintics X;
+cR=decompose R;
+tally apply(cR,c->(dim c, degree c,(dim(c+X),degree (c+X))))
+
+Y=specificAboSurface(P4,E,6,Verbose=>true);
+RY=residualInQuintics Y;
+tally apply(decompose RY,c->(dim c, degree c,(dim(c+Y),degree (c+Y))))
+X=specificEllipticSurfaceD13S16(P4,E,6);
+betti tateResolutionOfSurface X
+(d,s)=(degree X, sectionalGenus X)
+Ksquare(d,s,3)
+D=canonicalDivisor X;
+degree D
+degree RY
+E=D:RY;
+(dim E,degree E,genus E,selfIntersectionNumber(X,E))
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c, genus c, selfInterSectionNumber(X,c)))
+R=residualInQuintics X;
+cR=decompose R;
+tally apply(cR,c->(dim c, degree c,(dim(c+X),degree (c+X))))
+
+///
 
 ///
 kk=ZZ/19
@@ -4171,11 +4399,11 @@ beginDocumentation()
 document {
 Key => NongeneralTypeSurfacesInP4,
 Headline => "Construction of smooth non-general type surfaces in P4",
-   "In 1989 Elligsrud and Peskine proved a conjecture of Harstshorne and Lichtenbaum about smooth rational surfaces in P4. In fact, more generally:
+   "In 1989 Elligsrud and Peskine proved a conjecture of Hartshorne and Lichtenbaum about smooth rational surfaces in P4. In fact, more general:
     There are only finitely many components of the Hilbert scheme of surfaces in P4, whose general point correspond to a smooth 
     surface not of general type.
 
-   In that period there was a flurish of activities to construct such surfaces, in part using Computer Algebra. In this package we review
+   In that period there was a flourish of activities to construct such surfaces, in part using Computer Algebra. In this package we review
    those constructions, which after 30 years of Macaulay2 have become simpler and faster. Moreover we have discovered a few further 
    examples",
 
@@ -4287,11 +4515,11 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 
 document {
 Key => schreyerSurfaces,
-Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
+Headline => "functions concerning Schreyer surfaces (8 families)",
    "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11, sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
-   Repeating such search now, we found altogether 10 families. In the following we give an overview
-   of the functions used in that search.",
+   Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
+   In the following we give an overview of the functions used in that search.",
    
    PARA{},
      SUBSECTION "from modules to surfaces",
@@ -4321,9 +4549,9 @@ Headline => "functions concerning Schreyer surfaces (9 or 10 families)",
 
 document {
 Key => aboRanestadSurfaces,
-Headline => "functions concerning Abo-Ranestad surfaces ( 9 families)",
-   "[Abo-Ranestad,199x] discovered 4 families of rational surfaces X in P4 with d=12, sectional genus pi=13 via a search over a finite field.
-    Reviewing their construction we found altogether 9 families. 
+Headline => "functions concerning Abo-Ranestad surfaces ( 7 families)",
+   "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12, sectional genus pi=13 via a search over a finite field.
+    Reviewing their construction we found altogether 7 families. 
     Most of these components are unirational.",
    
    PARA{},
@@ -4353,13 +4581,13 @@ Key => K3surfaces,
 Headline => "Known families of K3 surfaces",
    "Various family of non-minmal K3 surfaces are known.
     We enumerate the families by the degree D, the sectional genus S and
-    their 6-secant behavious L. Note that a smooth surface in P4 is expected to have 
+    their 6-secant behaviour L. Note that a smooth surface in P4 is expected to have 
     finitely many 6-secants. If this number is finite, then Le Barz 6-secant formula
     computes sum of the number of 6-secants and the number of  of (-1) lines on the surface.
-    Since every 6-secant line is contained in the zero locus of the the ideal generated by the quintics
+    Since every 6-secant line is contained in the zero locus of the ideal generated by the quintics
     containg the surface, the number of 6-secant can often be determined from the equation
     of the surface, hence in that case we get information about the (-1)-Lines, ie. ,
-    the curve contacted by the first adjunction map.",
+    the curve contracted by the first adjunction map.",
     
    PARA{},
      SUBSECTION "K3 surfaces",
@@ -4404,11 +4632,13 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
 	TO analyzeAboSurface,
 	TO collectAboSurfaces,
 	TO specificAboSurface,
+	TO abo112224Or111234Surface,
         },
     PARA{},
      SUBSECTION "unirational or nearly unirational constructions",
      UL{
 	TO abo111333Surface,
+	TO abo111144Surface,
 	TO abo111117Surface,
 	},
     PARA{},
@@ -4902,7 +5132,7 @@ Outputs
   the ideal of an effective canonical divisor on X
 Description
   Text
-    If X is a smooth projective surface with pg>0, then X has an effective canonincal
+    If X is a smooth projective surface with pg>0, then X has an effective canonical
     divisor, which can be computed from the presentation matrix omegaX=Ext^1(X,P4^{-5}).
   Example
     kk=ZZ/nextPrime 10^4;
@@ -5010,7 +5240,7 @@ Description
 
     For details see [EFS].
     In case of a surface the interesting cohomology groups lie in the range d = -1..7.
-    From the betti table of T we can read of the dimension of certain cohomology group.
+    From the betti table of T we can read off the dimension of certain cohomology group.
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -5023,7 +5253,7 @@ Description
   Text
     For example, the entry 1 in homological degree -1 is $h^4(I_X(-5)) = h^4(O_{P4}(-5))=1$. 
     The entry 2 in homological degree 3 is $h^3(I_X)=h^2(O_X)=pg$.
-    $h^0(I_X(6))=33=5*8-9+2$ which we can read of betti numbers of the minimal free
+    $h^0(I_X(6))=33=5*8-9+2$ which we can read off betti numbers of the minimal free
     resolution of X.
 
     Note that it might be faster to compute the geometric genus pg and the irregularity q of a surface
@@ -5078,36 +5308,45 @@ Outputs
    which describes the first order deformation space for the monad of X
 Description
   Text
-    add some explanation
+    This command computes the dimension of the tangent space to the space 'V' of monads
+    of the form 'M' a*Omega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example
+    by taking the derivative of the composite of differentials 'alpha' and 'beta'.
+    The dimension of the space of isomophism classes of monads is at most
+    dim V-(a^2+b^2+c^2+5*b*c+d^2-1).
+    In the example below we have a=3, b=1, c=3, d=4
   Example
     kk=ZZ/19
     P4=kk[x_0..x_4]
     E=kk[e_0..e_4,SkewCommutative=>true]
-    minimalBetti(X=specificAboSurface(P4,E,1))
+    X=specificAboSurface(P4,E,1);
+    minimalBetti X
+    betti(T=tateResolutionOfSurface X)
+    a=3, b=1, c=3, d=4
     m=tangentToMonad X;
-    rank source m
-SeeAlso
-
-///
-
-
-
-///
- Example
-    sg=sectionalGenus X
-    d=degree X
-    xO=chiO(X)
-    Ksquare(d,sg,xO)==0
-    HdotK(d,sg)
-    LeBarzN6(d,sg,xO)
-    residual=residualInQuintics X;
-    dim residual,degree residual
-    primaryDecomposition residual
-    cH=primaryDecomposition saturate (X+ideal x_2)
-    tally apply(cH,c->(dim c, degree c, degree radical c, minimalBetti c))
+    V=source m
+    rank V - (a^2+b^2+5*b*c+c^2+d^2-1) == 36
   Text
-    Say something sensible.
+    So the rank 2 reflexive sheaf E depends on at most 36 parameters and
+    taking into acount h^0(E)=5
+    we have an atmost 34+4=40 dimensional family of surfaces. 
+    
+    On the other hand X is the blowup of a polarized K3 surface in 6 points. So we
+    get locqlly a family of dimension at least
+  Example
+    2*6+19-3*5+24==40
+  Text
+    Thus the space of monads for the ideal sheaf is smooth of the expected dimension 40
+    at the given point. 
+    A transversal slice defined over ZZ to the space of monads through the given point
+    over ZZ/19 defines
+    an number field K, a prime with residue field ZZ/19 and a smooth family of surface over an open
+    part of Spec O_K, which specializes to the given surface.
+    The fiber over the generic point of
+    Spec O_K is a lifting to characteristic 0.
 ///
+
+
+
 
 -* schreyer surfaces *-
 doc ///
@@ -5452,7 +5691,7 @@ isIsomorphic(coker m5x15,coker transpose fm5x15.dd_3)
 -- => m5x15 is the presentation matrix of the module of global sections of a 2-torsion bundle in E3
 E3=ann coker m5x15;
 minimalBetti E3
-minimalBetti E3
+
 
 E3+R==E3
 cub=ideal(gens E3*random(source gens E3,P4^{-3}));
@@ -5786,7 +6025,7 @@ Description
     (Ms,adjTypes)=exampleOfSchreyerSurfaces P4;
     netList adjTypes
   Text
-    The following command takes too much time
+    The following command takes too much time.
   Example
     #Ms
     "elapsedTime (adj',Ms')=collectSchreyerSurfaces(adjTypes,Ms,2,1);"  
@@ -5899,7 +6138,7 @@ Outputs
   a 4x2 matrix with linear entries over the exterior algebra
 Description
   Text
-    It the Tate resolution of an Abo-Ranestad surface their are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
+    It the Tate resolution of an Abo-Ranestad surface there are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
     with linear entries over the exterior algbra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
     and the type of the surface depends on how these images intersect in the Grassmannin G(2,5). It turns out that the number of
     (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
@@ -5932,7 +6171,7 @@ Description
   Text
     A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well.
     In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four intersction points in the Grassmannian G(2,5).
-    We can fource 2 more intersection points easily and can get a 7-th intersection point by a
+    We can force 2 more intersection points easily and can get a 7-th intersection point by a
     codimension 1 random search.
   Example
     elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
@@ -6158,7 +6397,7 @@ Description
     together with m3x1 leads to a smooth surface can be tested with testMatrix1.
 
     The resulting surfaces are all K3-surfaces blown-up in 6 points and the degree of the
-    six exceptional divisor form a partion of 12 into 6 parts. In the example below this is the partition
+    six exceptional divisor form a partition of 12 into 6 parts. In the example below this is the partition
     {1,2,2,2,3}.
     
   Example
@@ -6264,9 +6503,6 @@ Description
     setRandomSeed("really general");
     m3x4g=random(E^3,E^{4:-1});
     testMatrix1(m3x4g,P4)==5
-  Text
-    The second version checks whether the matrix can lead to a smooth surface
-    testMatrix(m3x4g,P4) -- does not seem to return anything
 SeeAlso
   aboSurfaceFromMatrix
   
@@ -6393,12 +6629,13 @@ Description
     Ksquare(d,sg,xO) , -#K
     HdotK(d,sg), sum K    
   Text
-    The partions of 12 into 6 parts are in bijections with partions of 6. From the
-    11 partions we have observed the following six
+    The partitions of 12 into 6 parts are in bijections with partitions of 6. From the
+    11 partions we have observed the following 9.
   Example
     #partitions(6)
-    #{{1, 1, 1, 1, 1, 7}, {1, 1, 1, 2, 3, 4}, {1, 1, 1, 3, 3, 3}, {1, 1, 2, 2, 2, 4},
-	{1, 1, 2, 2, 3, 3}, {1, 2, 2, 2, 2, 3}}
+    #{{1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 1, 3, 3, 3}, {1, 1, 2, 2, 2, 4},	
+      {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 4, 4}, {1, 1, 1, 1, 2, 6},
+      {1, 1, 1, 1, 1, 7}}
   Text
    In some cases the 6 points blown-up are initesimal near. We 
    think that these are boundary cases, which hence give no new families.
@@ -6409,7 +6646,112 @@ SeeAlso
   HdotK
 ///
 
+doc ///
+Key
+ abo112224Or111234Surface
+ (abo112224Or111234Surface,Ring,Ring,ZZ)
+ [abo112224Or111234Surface,Verbose]
+ [abo112224Or111234Surface,Count]
+Headline
+ get an Abo surface of type {1,1,2,2,2,4} or {1,1,1,2,3,4} 
+Usage
+ (X,m3x4,r) = abo1112224Or111234(P4,P3,h)
+Inputs
+  P4:Ring
+    coordinate ring of P4
+  P3: Ring
+    coordinate ring of P3
+  h:ZZ
+    desired dimension of the Hom space
+Outputs
+ X:Ideal
+  ideal of an Abo surface X
+ m3x4: Matrix
+  the 3x4 matrix of linear forms over the exterior algebra
+ r:ZZ
+  dimension of the relevant Hom space
+Description
+  Text
+    The function is a search in (we believe) codimension 2. It finds surfaces corresponding to two different components. 
+  Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4]
+    P3=kk[y_0..y_3]
+    h=2
+    setRandomSeed("get a 111234 surface in a minute");
+    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    r
+    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 1, 2, 3, 4}
+    setRandomSeed("get a 112224 surface in a minute");
+    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    r
+    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
+    R=residualInQuintics X;
+    cR=decompose R;
+    cR=select(cR,c-> dim c>1);
+    toString tally apply(cR,c->(dim c -1,degree c,(dim(X+c)-1,degree(X+c))))
+    (1,1,2,2,2,4),r,new Tally from {(1,1,(0,6)) => 1, (1,2,(0,11)) => 1, (1,4,(0,24)) => 1}
+SeeAlso
+  LeBarzN6
+  residualInQuintics
+  partitionOfCanonicalDivisorOfAboSurface
+  analyzeAboSurface
+  aboSurfaceFromMatrix
+///
 
+doc ///
+Key
+ abo111144Surface
+ (abo111144Surface,Ring,Ring)
+ [abo111144Surface,Verbose]
+ [abo111144Surface,Count]
+Headline
+ get an Abo surface whose canonical divisors partitions into components of degrees {1,1,1,3,3,3}
+ 
+Usage
+ (X,m3x4,r) = abo111144Surface(P4,P3)
+Inputs
+  P4:Ring
+    coordinate ring of P4
+  P3: Ring
+    coordinate ring of P3
+Outputs
+ X:Ideal
+  ideal of an Abo surface X
+ m3x4: Matrix
+  the 3x4 matrix of linear forms over the exterior algebra
+ r:ZZ
+  dimension of the relevant Hom space
+Description
+  Text
+    This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor (1,1,1,1,4,4)
+    from special (3x5) matrices over P3, s.t. the Bordiga surface is smooth and has seven rank two planes meeting the 1x3 line
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    P3=kk[y_0..y_3];
+    setRandomSeed("quite fast");
+    elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3);
+    r==4
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    R=residualInQuintics X;   
+    cResidual=decompose R;
+    tally apply(cResidual, c-> (dim c, degree c, (dim(c+X), degree (c+X))))	   
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) == -6    
+    numberOfMinusOneLines=#select(pK,d->d==1)
+    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and
+	    degree (c+X)==6*degree c),c->degree c)
+    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+  Text
+    In this example X has three 6-secant lines and two 11-secant conics
+SeeAlso
+  LeBarzN6
+  residualInQuintics
+  partitionOfCanonicalDivisorOfAboSurface
+  analyzeAboSurface
+  aboSurfaceFromMatrix
+///
 
 doc ///
 Key
@@ -6555,17 +6897,15 @@ Outputs
   ideal of a Abo surface
 Description
   Text
-    In characteristic p=19 the function returns one of 7 specific Abo surface
+    In characteristic p=19 the function returns one of 9 specific Abo surface
     corresponding to one of the following partitions
     of the canonical divisor:
-    
-    {1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 2, 2, 2, 4}, {1, 1, 1, 3, 3, 3},
-    
-    {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 1, 7}.
 
-    Other cases are p=11 and p=7. In characteristic 7 the example with k=1 has the partition 
-
-    {1, 1, 1, 1, 2, 6}.
+    {1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 1, 3, 3, 3}, {1, 1, 2, 2, 2, 4},	
+    {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 4, 4}, {1, 1, 1, 1, 2, 6},
+    {1, 1, 1, 1, 1, 7}
+   
+    Other cases are p=11 and p=7. 
   Example
     kk=ZZ/19;
     P4=kk[x_0..x_4];
@@ -6652,7 +6992,7 @@ SeeAlso
     RX=residualInQuintics X;
     tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
 
-    X=specificAboSurface(P4,E,2,Verbose=>true);-- 1,1,2,2,3,3
+    X=specificAboSurface(P4,E,2,Verbose=>true);-- 1,1,1,3,3,3
     pK=partitionOfCanonicalDivisorOfAboSurface X
     RX=residualInQuintics X;
     tally apply(select(primaryDecomposition RX,c->dim c>1),c->(dim c-1, degree c,(dim(c+X)-1,degree (c+X))))
@@ -6721,7 +7061,7 @@ Outputs
   ideal of a Abo surface
 Description
   Text
-    In characteristic p=31 the function returns an non minimal elliptic surface with
+    In characteristic p=31 the function returns a non minimal elliptic surface with
     six (-1) curves of degree {1,1,1,1,2,2}.
     The canonical divisor has in addition a component which is an elliptic curve of degree 4.
   Example
@@ -6922,7 +7262,7 @@ Description
     
     In the case of randomSpecialAboSurface, the m3x4 Bordiga matrix has a rank 1 point.
 
-    The two more special version search for Abo surface with lower bound or precise 
+    The two more special versions search for Abo surface with lower bound or precise 
     dimension of the Hom space. These are search functions which take long.
     
   Example
@@ -7340,7 +7680,7 @@ SeeAlso
    adjunctionProcessData
 ///
 
--* possibly to add to degree10pi8RanestadSurface documentation
+-* possibly to add to degree10pi8RanestadSurface documentation.
     "elapsedTime (L0,L1,L2,J)=adjunctionProcess(X);" -- 88.4042s elapsed
     "L0=={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}";
     "betti (fJ=res J) == new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 3, (1,{3},3) => 3, (2,{3},3) => 2,(2,{4},4) => 6, (3,{5},5) => 3}"
@@ -7351,7 +7691,7 @@ SeeAlso
    Text
     It follows that the last adjoint surface X3 -> B is a conic bundle over a kk-rational conic B subset P2
     with 8+4-2-1=9 singular fibers. The altogether 9+3=12 points blown up from a minimal ruled rational surface Y=X3min->P1
-    have to lie is special position. They satisfy conditions of expected codimension h^0(H)*h^1(H)=10 in the Hilbert scheme
+    have to lie in special position. They satisfy conditions of expected codimension h^0(H)*h^1(H)=10 in the Hilbert scheme
     of 12 points on Y. Thus up to projectivities we expect a (24-6-10=8)-dimensional family of such surface.
    Example
     "betti(N=Hom(X,P4^1/X))";
@@ -7721,7 +8061,7 @@ Description
     (L0,adjList,ptsList, J)=adjunctionProcess X;
     betti(T=tateResolutionOfSurface X)
   Text
-    Lebarz formula computes the number of 6-secant lines + the number of (-1) lines.
+    LeBarz formula computes the number of 6-secant lines + the number of (-1) lines.
   Example 
     LeBarzN6(degree X, sectionalGenus X,1)
     X5=ideal (gens X)_{0..14};
@@ -7738,8 +8078,8 @@ Description
     tally apply(cH,c->(dim c, degree radical c, degree c))
   Text
     H is a linear system of forms of degree which vanish in 10 points with
-    multiplicity 4. However over the field the 10 point spit into orbits
-    under Frobenius.
+    multiplicity 4. However over the field the 10 point split into orbits
+    under the Frobenius.
     In the second version of the function we start with
     a rational P2 - -> P4 defined by forms
     of degree 13 which vanishes on 10 randomly choosen
@@ -7830,7 +8170,7 @@ Outputs
   of a speciality one Alexander surface of degree 9 in P4
 Description
   Text
-    We construct a speciality 1 Alexander Surfac of degree 9 from its differential
+    We construct a speciality one Alexander Surface of degree 9 from its differential
     T.dd_4 of the Tate resolution.
   Example
     kk=ZZ/nextPrime 10^3;
@@ -7926,7 +8266,7 @@ Outputs
   of a vBEL surface in P4
 Description
   Text
-   The first version gives the oringinal vBEL surface defined over a field of characteristic 2.
+   The first version gives the original vBEL surface defined over a field of characteristic 2.
    The second version gives gives a construction of a vBEL surface building on a unirational liaison
    construction.
   Example
@@ -8013,6 +8353,7 @@ apply(5,i->(dim(line^i+Y),degree(line^i+Y)))
 degree Y,sectionalGenus Y
 intersect
 ///
+-*
 doc ///
 Key
  randomSurfaceDegreeAndSectionalGenus
@@ -8053,7 +8394,7 @@ Caveat
 SeeAlso
   
 ///
-
+*-
 
 doc ///
 Key
@@ -8151,7 +8492,6 @@ Description
    betti(T=tateResolutionOfSurface X)
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
-   Perhaps the code can be improved.
 References
   ADHPR
 SeeAlso
@@ -8182,8 +8522,7 @@ Description
    minimalBetti X
    betti(T=tateResolutionOfSurface X)
  Text
-   The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve .
-   Perhaps the code can be improved.
+   The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 Caveat
    The function can fail, in which case it returns null.
 References
@@ -8214,7 +8553,7 @@ Description
     Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
     Horrocks-Mumford bundle, which is a rank 2 vector bundle with
     Chern classes c1=-1 and c2=4.
-    Commesati found these surfaces already in 192x?.
+    Commesati found these surfaces already in 1919.
   Example
     kk=ZZ/nextPrime 10^4; 
     P4=kk[x_0..x_4];
@@ -8269,7 +8608,7 @@ Description
    minimalBetti X
  Text
    The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
-   Tate resolution, cf. [EFS,pp xxx].
+   Tate resolution, cf. [EFS,Example 7.1].
  Example
    H2cohomology=prune Ext^2(HMbundle,P4^{-5})
    H1cohomology=prune Ext^1(HMbundle,P4^{-5})
@@ -8721,7 +9060,7 @@ Description
    apply(primaryDecomposition(R+X),c->(dim c ,degree c, betti c))
  Text
    X contains a plane quintic curve with an additional point p in that plane.
-   Every line through p in that plaen is a 6-secant line.
+   Every line through p in that plane is a 6-secant line.
 References
   
 SeeAlso
@@ -8766,8 +9105,8 @@ Description
    minimalBetti D
    
  Text
-   Since K^2=0 and the canonicaal divisor connected this surface is minimal. The surface is elliptic fibration over P1 into
-   elliptic curves of degree 12. Perhaps use regular in codimension 1 from FastMinors
+   Since K^2=0 and the canonical divisor connected this surface is minimal. The surface is elliptic fibration over P1 into
+   elliptic curves of degree 12.
 References
   
 SeeAlso
@@ -8858,7 +9197,7 @@ Key
  irregularEllipticSurfaceD12
  (irregularEllipticSurfaceD12,PolynomialRing)
 Headline
- construct a regular elliptic surface of degree 12 and sectional genus 13
+ construct an irregular elliptic surface of degree 12 and sectional genus 13
 Usage
  X=irregularEllipticSurfaceD12 P4
 Inputs
@@ -8899,6 +9238,7 @@ SeeAlso
   HdotK
   Ksquare
 ///
+
 
 /// -- the linked surface
 betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
@@ -9039,8 +9379,6 @@ Description
   Text
    X is nonminimal with one exceptional line.
 References
-  Okonek
-  Iounescu
 
 SeeAlso
   
@@ -9129,7 +9467,7 @@ Key
  K3surfaceD10S9L1
  (K3surfaceD10S9L1, PolynomialRing)
 Headline
- construct a K3 surface of degree 10 and sectional genus 9 with 1 six-secant line
+ construct a K3 surface of degree 10 and sectional genus 9 with one 6-secant line
 Usage
  X=K3surfaceD10S9L1 P4
 Inputs
@@ -9167,7 +9505,7 @@ Key
  K3surfaceD10S9L3
  (K3surfaceD10S9L3, PolynomialRing)
 Headline
- construct a K3 surface of degree 10 and sectional genus 9 with 3 six-secant line
+ construct a K3 surface of degree 10 and sectional genus 9 with three 6-secant line
 Usage
  X=K3surfaceD10S9L3 P4
 Inputs
@@ -9192,7 +9530,6 @@ Description
    HdotK(10,9)
   Text
    X is non-minimal with no exceptional line and three exceptional conics.
-   The three 6-secant lines arize as follows:
   Example
    betti(X5=ideal (gens X)_{0..5})
    betti(plane=X5:X)
@@ -9215,7 +9552,7 @@ Key
  K3surfaceD11S11Ln
  (K3surfaceD11S11Ln, PolynomialRing,ZZ)
 Headline
- construct a K3 surface of degree 11, sectional genus 11 and precisely n six-secants lines (4 families)
+ construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines (4 families)
 Usage
  X=K3surfaceD11S11Ln(P4,n)
 Inputs
@@ -9225,10 +9562,10 @@ Inputs
    the number of desired six secant lines
 Outputs
  X:Ideal
-  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' six-secants lines
+  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' 6-secants lines
 Description
   Text
-   We construct an K3 surfaces of degree 11, sectional genus 11 and n six-secants lines
+   We construct an K3 surfaces of degree 11, sectional genus 11 and n 6-secants lines
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
@@ -9249,7 +9586,7 @@ Description
    betti(line=X5:X)
    dim line, degree line, degree (line+X)
   Text
-   In case n=2 there are 2 six secant lines:
+   In case n=2 there are two 6-secant lines:
   Example
    X=K3surfaceD11S11Ln(P4,2);
    minimalBetti X
@@ -9257,7 +9594,7 @@ Description
    betti(residual=X5:X)
    dim residual, degree residual, degree (residual+X)
   Text
-   In case n=3 there are 3 six secant lines:
+   In case n=3 there are three 6-secant lines:
   Example
    X=K3surfaceD11S11Ln(P4,3);
    minimalBetti X
@@ -9312,14 +9649,14 @@ Description
    degree D
    selfIntersectionNumber(X,D)
    LeBarzN6(d,sg,xO)==9
-   "elapsedTime cD=primaryDecomposition D;";
+   "elapsedTime cD=decompose D;";
    "tally apply(cD,c->(dim c, degree c, betti c, selfIntersectionNumber(X,c)))";
   Text
    X has no 6-secant line, since the ideal is generated by quintics.
    Thus there nine (-1) lines and a (-1) conic.
    The (-1) lines group in Frobenius orbits of x,y,z elements.  
 References
-
+  Popescu
   
 SeeAlso
   selfIntersectionNumber
