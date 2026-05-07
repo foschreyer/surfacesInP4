@@ -9,7 +9,9 @@ viewHelp "NongeneralTypeSurfacesInP4"
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
-installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)
+elapsedTime installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)  -- 1254.65s elapsed
+1254.6/60
+
 
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
@@ -6675,8 +6677,8 @@ Description
     The function is a search in (we believe) codimension 2. It finds surfaces corresponding to two different components. 
   Example
     kk=ZZ/19;
-    P4=kk[x_0..x_4]
-    P3=kk[y_0..y_3]
+    P4=kk[x_0..x_4];
+    P3=kk[y_0..y_3];
     h=2
     setRandomSeed("get a 111234 surface in a minute");
     elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
@@ -6686,11 +6688,7 @@ Description
     elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
     r
     partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
-    R=residualInQuintics X;
-    cR=decompose R;
-    cR=select(cR,c-> dim c>1);
-    toString tally apply(cR,c->(dim c -1,degree c,(dim(X+c)-1,degree(X+c))))
-    (1,1,2,2,2,4),r,new Tally from {(1,1,(0,6)) => 1, (1,2,(0,11)) => 1, (1,4,(0,24)) => 1}
+    
 SeeAlso
   LeBarzN6
   residualInQuintics
