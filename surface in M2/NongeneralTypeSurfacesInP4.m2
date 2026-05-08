@@ -4400,13 +4400,13 @@ beginDocumentation()
 document {
 Key => NongeneralTypeSurfacesInP4,
 Headline => "Construction of smooth non-general type surfaces in P4",
-   "In 1989 Elligsrud and Peskine proved a conjecture of Hartshorne and Lichtenbaum about smooth rational surfaces in P4. In fact, more general:
-    There are only finitely many components of the Hilbert scheme of surfaces in P4, whose general point correspond to a smooth 
+   "In 1989, Elligsrud and Peskine proved a conjecture of Hartshorne and Lichtenbaum about smooth rational surfaces in P4. In fact, more general:
+    There are only finitely many components of the Hilbert scheme of surfaces in P4, whose general point corresponds to a smooth 
     surface not of general type.
 
-   In that period there was a flourish of activities to construct such surfaces, in part using Computer Algebra. In this package we review
-   those constructions, which after 30 years of Macaulay2 have become simpler and faster. Moreover we have discovered a few further 
-   examples",
+   During that period, there was a flourish of activities to construct such surfaces, in part using Computer Algebra. In this package we review
+   those constructions, which, after 30 years of Macaulay2, have become simpler and faster. Moreover, we have discovered a few further 
+   examples.",
 
    PARA{},
      SUBSECTION "Rational surfaces",
@@ -4452,8 +4452,8 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 document {
 Key => unirationalFamiliesOfRationalSurfaces,
 Headline => "unirational families of rational surfaces",
-   "Most of the families constructed in [DES], [Popescu1] and before are actually unirational. We list the link to the corresponding functions.
-    An exception are certain families of Schreyer and Abo-Ranestad surfaces, where we only know that some of the families are unirational.",
+   "Most of the families constructed in [DES], [Popescu1] and earlier are actually unirational. We list the links to the corresponding functions.
+    Exceptions are certain families of Schreyer and Abo-Ranestad surfaces, where we only know that some of the families are unirational.",
    
    PARA{},
      SUBSECTION "non-degenerate rational surfaces in P4",
@@ -4517,13 +4517,13 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 document {
 Key => schreyerSurfaces,
 Headline => "functions concerning Schreyer surfaces (8 families)",
-   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11, sectional genus pi=10 via a search over a finite field
+   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
-   In the following we give an overview of the functions used in that search.",
+   In the following, we give an overview of the functions used in that search.",
    
    PARA{},
-     SUBSECTION "from modules to surfaces",
+     SUBSECTION "From modules to surfaces",
      UL{
         TO schreyerSurfaceFromModule,
 	TO moduleFromSchreyerSurface,
@@ -4531,13 +4531,13 @@ Headline => "functions concerning Schreyer surfaces (8 families)",
         TO specificSchreyerSurface
         },
     
-     SUBSECTION "search for modules",
+     SUBSECTION "Search for modules",
      UL{
         TO findRandomSmoothSchreyerSurface, 
         TO collectSchreyerSurfaces
         },
     
-     SUBSECTION "lift to characteristic zero and unirational or nearly unirational families",
+     SUBSECTION "Lift to characteristic zero and unirational or nearly unirational families",
      UL{
 	TO tangentDimension,
 	TO specialEnriquesSchreyerSurface, 
@@ -4550,26 +4550,26 @@ Headline => "functions concerning Schreyer surfaces (8 families)",
 
 document {
 Key => aboRanestadSurfaces,
-Headline => "functions concerning Abo-Ranestad surfaces ( 7 families)",
-   "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12, sectional genus pi=13 via a search over a finite field.
+Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
+   "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
     Reviewing their construction we found altogether 7 families. 
     Most of these components are unirational.",
    
    PARA{},
-     SUBSECTION "from matrices to surfaces",
+     SUBSECTION "From matrices to surfaces",
      UL{
         TO aboRanestadSurfaceFromMatrix,
 	TO matrixFromAboRanestadSurface       
         },
     
-     SUBSECTION "search for modules",
+     SUBSECTION "Search for modules",
      UL{
 	TO aboRanestadSurface,
 	TO specificAboRanestadSurface,
 	TO get4x2Matrix,
         },
     
-     SUBSECTION "lift to characteristic zero",
+     SUBSECTION "Lift to characteristic zero",
      UL{
 	TO veroneseImagesInG25
         }        
@@ -4578,14 +4578,14 @@ Headline => "functions concerning Abo-Ranestad surfaces ( 7 families)",
 document {
 Key => K3surfaces,
 Headline => "Known families of K3 surfaces",
-   "Various family of non-minmal K3 surfaces are known.
-    We enumerate the families by the degree D, the sectional genus S and
-    their 6-secant behaviour L. Note that a smooth surface in P4 is expected to have 
-    finitely many 6-secants. If this number is finite, then Le Barz 6-secant formula
-    computes sum of the number of 6-secants and the number of  of (-1) lines on the surface.
+   "Various families of non-minmal K3 surfaces are known.
+    We enumerate the families by the degree D, the sectional genus S, and
+    their 6-secant behavior L. Note that a smooth surface in P4 is expected to have 
+    finitely many 6-secants. If this number is finite, then Le Barz' 6-secant formula
+    computes the sum of the number of 6-secants and the number of  of (-1) lines on the surface.
     Since every 6-secant line is contained in the zero locus of the ideal generated by the quintics
-    containg the surface, the number of 6-secant can often be determined from the equation
-    of the surface, hence in that case we get information about the (-1)-Lines, ie. ,
+    containing the surface, the number of 6-secants can often be determined from the equation
+    of the surface. In that case we get information about the (-1)-Lines, i.e. ,
     the curve contracted by the first adjunction map.",
     
    PARA{},
@@ -4634,7 +4634,7 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
 	TO abo112224Or111234Surface,
         },
     PARA{},
-     SUBSECTION "unirational or nearly unirational constructions",
+     SUBSECTION "Unirational or nearly unirational constructions",
      UL{
 	TO abo111333Surface,
 	TO abo111144Surface,
@@ -4653,7 +4653,7 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
 
 document {
 Key => surfacesOfKodairaDimension1,
-Headline => "surface of Kodaira dimension 1 (10 families)",
+Headline => "surface of Kodaira dimension 1 (15 families)",
    "",
     
    PARA{},
@@ -4686,7 +4686,7 @@ document {
 Key => adjunctionProcessData,
 Headline => "explains the output of the function adjunctionProcess",
     "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces. 
-    Notice the typo: adjointMatrix should be adjunctionProcess",
+    Notice the typo: adjointMatrix should be adjunctionProcess.",
 help adjunctionProcess,                
 }
 
@@ -4723,9 +4723,9 @@ Description
 
     chi(I_X(m))=chi(O_P4(m))-chi(O_X(m))
 
-    one can compute chi(I_X(m)) from Riemann-Roch which depends only
+    one can compute chi(I_X(m)) usig Riemann-Roch which depends only
     degree d, the sectional genus sg, the Euler characteristic xO and m.
-    Assuming that I_X has natural cohomology for m in {-4..8} and m -> chi(I_X(m)) has enough
+    Assuming that I_X has natural cohomology for m in {-4..8} and that m -> chi(I_X(m)) has enough
     sign changes, we get a plausible table.
   Example    
     chiITable(11,10,1)
@@ -4814,12 +4814,12 @@ Outputs
   the genus of a hyperplane section
 Description
   Text
-    Let H denite the hyperplane class and K the canonical divisor class on a smooth projective surface.
+    Let H denote the hyperplane class and K the canonical divisor class on a smooth projective surface.
     By the adjunction formula
 
     2sg-2=H.(H+K)
 
-    one can compute H.K form the degree d=H.H and the sectional genus sg.
+    one can compute H.K from the degree d=H.H and the sectional genus sg.
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -4858,7 +4858,7 @@ Description
   
       d^2-10d-5HK+2K2+12chi(O_X)==0
 
-   In general for a surface in P5 the right hand side in this formula describes
+   In general for a surface in P5 the right-hand side in this formula gives
    the number of non Cohen-Macaulay double points of the image under a projection from a
    point p in P5 \setminus X. Hence the name.
   Example
@@ -4914,7 +4914,7 @@ Description
 
      chi(O_X)=sum_{i=0}^{dim X} (-1)^i*h^i(O_X).
   
-   This quantity coincides with 1+ (genera X)_0 by Hirzebruch-Riemann-Roch.
+   This quantity coincides with 1+ (genera X)_0 by the Hirzebruch-Riemann-Roch Theorem.
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -4947,7 +4947,7 @@ Outputs
   the dimension of the cohomology group H^1(O_X)
 Description
   Text
-    Using sheaf cohomology we can compute this quantity for a smooth projective surface.    
+    Using sheaf cohomology, we can compute the irregularity for a smooth projective surface.    
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -4980,7 +4980,7 @@ Outputs
   the dimension of the cohomology group H^2(O_X)
 Description
   Text
-    Using sheaf cohomology we can compute this quantity for a smooth projective surface.    
+    Using sheaf cohomology,' we can compute this quantity for a smooth projective surface.    
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -5003,7 +5003,7 @@ Key
  LeBarzN6
  (LeBarzN6,ZZ,ZZ,ZZ)
 Headline
- compute the value of Le Barz formula for 6-secants lines
+ compute the value of Le Barz' formula for 6-secants lines
 Usage
  N6 = LeBarzN6(d,sg,xO)
 Inputs
@@ -5018,8 +5018,8 @@ Outputs
   the expected number of 6-secant line plus the number (-1) lines.
 Description
   Text
-    If there only finitly many 6-secant lines then LeBarz formula computes
-    the sum of the number of 6-secants lines (with multiplicities) and the nmber of (-1)
+    If there are only finitely many 6-secant lines then Le Barz' formula computes
+    the sum of the number of 6-secants lines (with multiplicities) and the number of (-1)
     lines.
   Example
     kk=ZZ/nextPrime 10^4
@@ -5036,13 +5036,13 @@ Description
     d+3*HK+2*K2==10
   Text
    Since the homogeneous ideal of this surface is generated by qunitics, there are no
-   6-secant lines by Bezout. Thus there is a (-1) line, which will be blown down by the first
+   6-secant lines by Bezout. Thus, there is a (-1) line, which will be blown down by the first
    adjunction map. The image of the adjunction map defined by |H+K| is a
-   surface X1 in P^{sg-1} of degree (H+K)^2=10, K1^2=K2+1=0 and sectional
-   genus sg1=6 since
+   surface X1 in P^{sg-1} of degree (H+K)^2=10, K1^2=K^2+1=0 and sectional
+   genus sg1=6, since
    2sg1-2=(H+K).(H+2K)=10. It follows that X1 is a minimal Enriques surface.
 
-   On the other hand the surface
+   On the other hand the following surface has the same numerical invariants as the Enriques surface.
   Example
    X=nonspecialAlexanderSurface P4;
    d=degree X
@@ -5050,7 +5050,7 @@ Description
    xO=1+(genera X)_0
    minimalBetti X
   Text
-   has the same numerical invariants and visibly a 6-secant line.
+   However, it has visibly a 6-secant line.
   Example
    L=residualInQuintics X
    dim L, degree L
@@ -5066,7 +5066,7 @@ Key
  residualInQuintics
  (residualInQuintics,Ideal)
 Headline
- compute the residual scheme of X in the ideal generated by the quintics
+ compute the residual scheme to X in the ideal generated by the quintics
 Usage
  Z = residualInQuintics X
 Inputs
@@ -5077,10 +5077,10 @@ Outputs
   the residual ideal in the ideal generated by the quintics in X
 Description
   Text
-    If an ideal of a surface in P4 has 6-secant lines,
-    then any such line is contained in vanishing loci of the residual ideal
-    Z by Bezout. This allows us frequently to compute the number of 6-secant lines
-    and hence the number of (-1) lines by LeBarz 6-secant formula.
+    If a surface in P4 has 6-secant lines,
+    then any such line is contained in the vanishing locus of the residual ideal
+    Z by Bezout. This allows us to compute the number of 6-secant lines
+    and hence the number of (-1) lines via Le 'Barz' 6-secant formula.
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -5094,7 +5094,7 @@ Description
     dim Z, degree Z
     tally apply(decompose Z,L->(dim L, degree L, degree (L+X)))
   Text
-    Thus there are two 6-secant lines and by Le Barz 6-secant formula,
+    Thus, there are two 6-secant lines and by Le Barz' 6-secant formula,
     the first adjunction map defined by
     |H+K| contracts five (-1) lines.
   Example
@@ -5105,7 +5105,7 @@ Description
     "sectionalGenus J==1";
     K2==8-5-14-1   
   Text
-   Thus this surface arizes as a blow-up of a Del Pezzo surface of degree 8
+   Therefore, this surface arises as a blow-up of a Del Pezzo surface of degree 8
    in 14+5 points.
 References
    \textit{P. Le Barz}, Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981) Zbl 0492.14045) 
@@ -5120,7 +5120,7 @@ Key
  canonicalDivisor
  (canonicalDivisor,Ideal)
 Headline
- compute a canonical divisor on a surface with pg>0
+ compute a canonical divisor on a surface with positive geometric genus,,
 Usage
  D = canonicalDivisor X
 Inputs
@@ -5148,9 +5148,8 @@ Description
     sectionalGenus X == 6
     Ksquare(d,sg,xO)
   Text
-    Thus X is the projection from the tangent plane at a point p in a 
+    Thus, X is the projection from the tangent plane at a point p on a 
     minimal K3 surface X2 in P7 of degree 12=8+4. 
-    (Check this again!)
 References
    
 SeeAlso
@@ -5166,7 +5165,7 @@ Key
  selfIntersectionNumber
  (selfIntersectionNumber,Ideal,Ideal)
 Headline
- compute the self intersection number of an effective divisor on a smooth surface
+ compute the self-intersection number of an effective divisor on a smooth surface
 Usage
  DdotD = selfIntersectionNumber(X,D)
 Inputs
@@ -5179,12 +5178,12 @@ Outputs
     the self intersection number of D on X
 Description
   Text
-    The self intersection number of effective divisor can be compute from the genus g1 of D
+    The self-intersection number of an effective divisor can be computed from the genus g1 of D
     and the genus g2 of 2D, since
     
     2g1-2=D.(D+K) and 2g2-2 = 2D.(2D+K)
 
-    holds.
+    hold.
   Example
     kk=ZZ/nextPrime 10^4;
     P4=kk[x_0..x_4];
@@ -5200,7 +5199,7 @@ Description
     sectionalGenus X == 6
     Ksquare(d,sg,xO)
   Text
-    Thus X is the projection from the tangent plane at a point p of
+    Thus, X is the projection from the tangent plane at a point p of
     a minimal K3 surface X2 in P7 of degree 12=8+4. 
 References
    
@@ -5232,13 +5231,13 @@ Outputs
 Description
   Text
     The Tate resolution T of a coherent sheaf F on a projective space P^n is an infinite
-    exact complex of free modules over an exterior algebra E encoding the cohomology groups of
+    exact complex of free modules over an exterior algebra E that encodes the cohomology groups of
     F:
 
     T^d(F) = sum_{i=0}^n Hom_kk(E,H^i(Pn,F(d-i))).
 
     For details see [EFS].
-    In case of a surface the interesting cohomology groups lie in the range d = -1..7.
+    In the case of a surface the interesting cohomology groups lie in the range d = -1..7.
     From the betti table of T we can read off the dimension of certain cohomology group.
   Example
     kk=ZZ/nextPrime 10^4
@@ -5256,16 +5255,16 @@ Description
     resolution of X.
 
     Note that it might be faster to compute the geometric genus pg and the irregularity q of a surface
-    by using the Tate resolution instead of sheaf cohomology.
+    by using the Tate resolution rather than sheaf cohomology.
     
     If the homogeneous ideal is generated by forms of degree <=6, then the truncation used in the computation
-    can be choosen to be 6. If there are larger degree generators we might need a larger truncation.
+    can be choosen to be 6. If there are generatorsog higher degree, we might need a larger truncation.
   Example
     X=irregularEllipticSurfaceD12 P4;
     minimalBetti X
     betti tateResolutionOfSurface(X,7)
   Text
-    So the irregularity of this surface is q=1 and the geometricGenus is pg=3.
+    The irregularity of this surface is q=1 and the geometric genus is pg=3.
     It is a minimal elliptic surface.
   Example
     sg=sectionalGenus X
@@ -5365,7 +5364,7 @@ Outputs
 Description
   Text
     The H^1-module of a Schreyer surface is a finite length module
-    with Hilbert function (1,5,5) with at least two extra syzygies.
+    with Hilbert function (1,5,5) and at least two extra syzygies.
   Example
     P4=ZZ/3[x_0..x_4];
     (Ms,Types)=exampleOfSchreyerSurfaces P4;
@@ -5393,7 +5392,7 @@ Outputs
 Description
   Text
     The H^1-module of a Schreyer surface is a finite length module
-    with Hilbert function (1,5,5) with at least two extra syzygies.
+    with Hilbert function (1,5,5) and at least two extra syzygies.
   Example
     P4=ZZ/3[x_0..x_4];
     (Ms,Types)=exampleOfSchreyerSurfaces P4;
@@ -5424,7 +5423,7 @@ Outputs
   the ideal of a smooth Schreyer surface
 Description
   Text
-    The construction is a 2 step liaison construction.
+    The construction uses a 2-step liaison.
     The desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
     A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
@@ -5452,7 +5451,7 @@ Description
     tally apply(cZ,c->(dim c, degree c, minimalBetti c))
   Text
     The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
-    in two (common) points.     
+    at two (common) points.     
   Example    
     intersectionOftheTwoComponentsOfZ=sum(cZ);
     apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
@@ -5485,7 +5484,7 @@ Outputs
   the ideal of a smooth Schreyer surface
 Description
   Text
-    The construction is a 2 step liaison construction.
+    The construction uses a 2-step liaison.
     In case of s=2, the desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
     A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
@@ -5511,7 +5510,7 @@ Description
     tally apply(cZ,c->(dim c, degree c, minimalBetti c))
   Text
     The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
-    in two (common) points.     
+    at two (common) points.     
   Example    
     intersectionOftheTwoComponentsOfZ=sum(cZ);
     apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
@@ -5525,7 +5524,7 @@ Description
     cI_0
     syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
   Text
-    In case s=3 the residualInQuintics scheme consists of 5 planes.
+    In case s=3, the residual scheme to the surface in the quintics consists of 5 planes.
   Example
     elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,3);
     minimalBetti X
@@ -5588,7 +5587,7 @@ Description
     LeBarzN6(11,10,1)==10
   Text
     Each of the five planes intersects X in a plane quartic curve and three points.
-    The sixSecants are the five intersection lines of the planes and the five lines spanned by two of
+    The 6-secants are the five intersection lines of the planes and the five lines spanned by two of
     the special points in each plane.
 ///
 
@@ -7029,9 +7028,8 @@ Key
  (specificEllipticAboSurfaceD12S13, Ring, Ring, Number)
  [specificEllipticAboSurfaceD12S13, Verbose]
 Headline
- compute a specific  smooth elliptic Abo surface of given data (m3x4,d,(K,R))
+ compute a specific  smooth elliptic Abo surface
 Usage
-
  X = specificEllipticAboSurfaceD12S13(P4,E,k)
 Inputs
  P4:Ring
@@ -7053,9 +7051,14 @@ Description
     P4=kk[x_0..x_4];
     E=kk[e_0..e_4,SkewCommutative=>true];
     X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
+    (d,sg)=(degree X, sectionalGenus X)
+    betti tateResolutionOfSurface X
     minimalBetti X
+    K=canonicalDivisor X;
+    cK=decompose K;
+    tally apply(cK,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
   Text
-    This surface is an non-minimal Elliptic surface with four (-1) lines and two (-1) conics.
+    This surface is an non-minimal elliptic surface with four (-1) lines and two (-1) conics.
     The canonical divisor has in addition a degree 4 elliptic curve as a component.
 SeeAlso
    residualInQuintics
@@ -9107,7 +9110,7 @@ Key
  specificEllipticSurfaceD13S16
  (specificEllipticSurfaceD13S16,PolynomialRing,Ring, ZZ)
 Headline
- construct a specific elliptic surface via linkage form a Abo surface (3 families)
+ construct a specific elliptic surface via linkage form a Abo surface (4 families)
 Usage
  X=specificEllipticSurfaceD13S16(P4,E,k)
 Inputs
@@ -9124,7 +9127,7 @@ Description
   Text
    We construct a specific elliptic surface of degree 13 sectional genus 16 from
    a specficAboSurface of number k via linkage. The function needs the ground field
-   kk=ZZ/19 and a number k in {1,2,4}.
+   kk=ZZ/19 and a number k in {1,2,4,6}.
   Example
    kk=ZZ/19; 
    P4=kk[x_0..x_4];
