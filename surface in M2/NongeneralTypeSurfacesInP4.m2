@@ -100,17 +100,10 @@ export {
     "degree10pi9RanestadSurface",
     "degree10DESSurface",
     "popescuSurface",
-    "popescuSurfaces",
-    "randomRationalSurface",
-    "randomSurfaceDegreeAndSectionalGenus",
     "enriquesSurfaceOfDegree9",
     "enriquesSurfaceOfDegree10",
     "enriquesSurfaceD11S10",
     "horrocksMumfordSurface",
-    "ellipticSurface",
-    "unirationalFamilies",
-    "constructionsViaFiniteFieldSearches",
-    "extensionToCharacteristicZero",
     "unirationalFamiliesOfRationalSurfaces",
     "schreyerSurfaces",
     "schreyerSurface",
@@ -121,7 +114,6 @@ export {
     "exampleOfSchreyerSurfaces",
     "specificSchreyerSurface",
     "findRandomSchreyerSurface",
-    "singSchreyerSurfacesStatistic",
     "findRandomSmoothSchreyerSurface",
     "collectSchreyerSurfaces",
     "tangentDimension",
@@ -133,10 +125,8 @@ export {
     "prepareAboRanestadSurfaces",
     "aboRanestadSurface",
     "collectSmoothAboRanestadSurfaces",
-    "singAboRanestadSurfacesStatistic",
     "aboRanestadSurfaceFromMatrix",
     "matrixFromAboRanestadSurface",
-    "tangentComputation",
     "get4x2Matrix",
     "Smooth",
     "Special",
@@ -1044,31 +1034,7 @@ minimalBetti M
 tangentDimension M
 ///
 
-///
-singSchreyerSurfacesStatistic=method()
--- maybe not used
 
-singSchreyerSurfacesStatistic(Ring,Number) := (P4,N) -> (
-    Ms:={};L:={};X:=null;M:=null;Rdata:=null;R:=null;
-    singX:=null;hypX:=null;X5:=null;
-    count:=0;
-    while (
-	elapsedTime X=findRandomSchreyerSurface(P4);
-	M= moduleFromSchreyerSurface(X);
-	Ms=append(Ms,M);
-	X5=ideal (gens X)_{0..4};
-	R=X5:X;
-	hypX=X+ideal jacobian X;
-	singX=X+minors(2,jacobian X);
-	elapsedTime Rdata=(minimalBetti M, dim R, degree R, minimalBetti R,
-	    dim singX, degree singX, dim (R+singX));
-	<<Rdata<<endl;
-	L=append(L,Rdata);
-	count=count+1;
-	count<N) do ();
-    --<<tally L <<endl;
-    L)
-///
 
 collectSchreyerSurfaces=method()
 -- Input: adjTypes, List of adjunction types
@@ -4601,12 +4567,10 @@ Headline => "functions concerning Abo-Ranestad surfaces ( 7 families)",
 	TO aboRanestadSurface,
 	TO specificAboRanestadSurface,
 	TO get4x2Matrix,
-        --TO singAboRanestadSurfacesStatistic,
         },
     
      SUBSECTION "lift to characteristic zero",
      UL{
-	--TO tangentComputation,
 	TO veroneseImagesInG25
         }        
 }
@@ -4704,9 +4668,9 @@ Headline => "surface of Kodaira dimension 1 (10 families)",
 	TO ellipticSurfaceD12S14L0,
 	TO ellipticSurfaceD12S14Linfinite,
 	TO ellipticSurfaceD12S13,
+	TO irregularEllipticSurfaceD12,	
+	TO specificEllipticAboSurfaceD12S13,	
 	TO specificEllipticSurfaceD13S16,
-	TO irregularEllipticSurfaceD12,
-	TO specificEllipticAboSurfaceD12S13,
         },
     PARA{},
      SUBSECTION "6-secants and adjunction",
@@ -6737,7 +6701,7 @@ Key
  [abo111144Surface,Verbose]
  [abo111144Surface,Count]
 Headline
- get an Abo surface whose canonical divisors partitions into components of degrees {1,1,1,3,3,3}
+ get an Abo surface whose canonical divisors partitions into components of degrees {1,1,1,1,4,4}
  
 Usage
  (X,m3x4,r) = abo111144Surface(P4,P3)
