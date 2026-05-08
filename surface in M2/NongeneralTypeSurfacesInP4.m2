@@ -13,6 +13,8 @@ elapsedTime installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)  -- 12
 1254.6/60
 
 
+
+
 viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfaceInP4"
 path
@@ -104,14 +106,11 @@ export {
     "enriquesSurfaceOfDegree9",
     "enriquesSurfaceOfDegree10",
     "enriquesSurfaceD11S10",
-    "k3Surfaces",
     "horrocksMumfordSurface",
     "ellipticSurface",
     "unirationalFamilies",
     "constructionsViaFiniteFieldSearches",
     "extensionToCharacteristicZero",
-    "LabBookProtocol",
-    "knownExamples",
     "unirationalFamiliesOfRationalSurfaces",
     "schreyerSurfaces",
     "schreyerSurface",
@@ -142,7 +141,6 @@ export {
     "Smooth",
     "Special",
     "NumberOfRank1Points",
-    "KodairaDimension",
     "veroneseImagesInG25",
     "vBELSurface",
     "quinticEllipticScroll",
@@ -844,6 +842,41 @@ tangentToMonad(Ideal) := X -> (
 	c_(0,0)..c_(ncolsBeta-1,ncolsAlpha-1),
 	d_(0,0)..d_(ncolsBeta'-1,ncolsAlpha-1),
 	e_0..e_4,
+	Degrees=>{n1:1,n2:2,n3:1,n4:2,5:1},
+	SkewCommutative => true];
+    salpha := substitute(alpha,R);
+    sbeta := substitute(beta,R);
+    beta' := matrix table(nrowsBeta,ncolsBeta,(i,j)->a_(i,j)) | matrix table(nrowsBeta,ncolsBeta',(i,j)->b_(i,j));
+    alpha' := matrix table(ncolsBeta,ncolsAlpha,(i,j)->c_(i,j)) || matrix table(ncolsBeta',ncolsAlpha,(i,j)->d_(i,j));
+    gamma := map(flatten (sbeta*alpha'+beta'*salpha));
+    delta := map(E^{nrowsBeta*ncolsAlpha:-3},,sub(contract(matrix{{a_(0,0)..a_(nrowsBeta-1,ncolsBeta-1),
+			b_(0,0)..b_(nrowsBeta-1,ncolsBeta'-1),
+			c_(0,0)..c_(ncolsBeta-1,ncolsAlpha-1),
+			d_(0,0)..d_(ncolsBeta'-1,ncolsAlpha-1)}},transpose gamma),E));
+    mu := syz(delta);
+    super basis(6,image mu)
+    )
+
+tangentToMonad(Matrix,Matrix) := (alpha,beta) -> (
+    E := ring alpha;
+    KK := coefficientRing E;
+    nrowsBeta := (tally degrees target beta)_{-4};
+    ncolsBeta := (tally degrees source beta)_{-3};
+    ncolsBeta' := (tally degrees source beta)_{-2};
+    ncolsAlpha := (tally degrees source alpha)_{-1};
+    n1 := nrowsBeta*ncolsBeta;
+    n2 := nrowsBeta*ncolsBeta';
+    n3 := ncolsBeta*ncolsAlpha;
+    n4 := ncolsBeta'*ncolsAlpha;
+    a := symbol a;
+    b := symbol b;
+    c := symbol c;
+    d := symbol d;
+    R := KK[a_(0,0)..a_(nrowsBeta-1,ncolsBeta-1),
+	b_(0,0)..b_(nrowsBeta-1,ncolsBeta'-1),
+	c_(0,0)..c_(ncolsBeta-1,ncolsAlpha-1),
+	d_(0,0)..d_(ncolsBeta'-1,ncolsAlpha-1),
+	E_0..E_4,
 	Degrees=>{n1:1,n2:2,n3:1,n4:2,5:1},
 	SkewCommutative => true];
     salpha := substitute(alpha,R);
@@ -3303,7 +3336,7 @@ specificEllipticAboSurfaceD12S13(Ring,Ring,Number) := o -> (P4,E,k) -> (
 kk=ZZ/31;
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
-elapsedTime X=specificEllipticAboSurface(P4,E,0,Verbose=>true);
+elapsedTime X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
 K=canonicalDivisor X;
 cK=primaryDecomposition K;
 toString {1,1,1,1,2,2,4}
@@ -6879,13 +6912,12 @@ Key
  (specificAboSurface, Ring, Ring, Number)
  [specificAboSurface, Verbose]
 Headline
- compute a smooth Abo surface of given data (m3x4,d,(K,R))
+ compute a specific smooth Abo surface
 Usage
  X = specificAboSurface(P4,E,k)
- X = specificEllipticAboSurface(P4,E,k)
 Inputs
  P4:Ring
-  coordinate ring of P4 over a ground field of characteristic 3
+  coordinate ring of P4 over a ground field of small characteristic p
  E: Ring
   exterior algebra dual to P4.
  k: Number
@@ -6918,9 +6950,8 @@ Description
     RX==radical RX
     tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
   Text
-    There are two (-1) lines and five 6-secant lines in this case.
-    
-    The Tate resolution has a specific form
+    There are two (-1) lines and five 6-secant lines in this case.    
+    The Tate resolution has a specific form:
   Example
     betti(T=tateResolutionOfSurface X)
     m3x4=T.dd_5^{0..2}_{4..7}
@@ -6938,7 +6969,7 @@ Description
     RY=residualInQuintics Y;
     degree RY
     RY==canonicalDivisor X
-    saturate ideal singularLocus (P4/Y)== ideal 1_P4
+    "saturate ideal singularLocus (P4/Y) == ideal 1_P4";
     D1=canonicalDivisor Y;
     D2=canonicalDivisor Y;
     betti(baseLocus=saturate (D1+D2))
@@ -6953,15 +6984,6 @@ Description
   Text
     The linked surface Y is a smooth elliptic surface blownup in 5
     points which are (-1) lines on Y.
-  Example
-    kk=ZZ/31;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    X=specificAboSurface(P4,E,1,Verbose=>true);
-    minimalBetti X
-  Text
-    This surface is an non-minimal Elliptic surface with four (-1) lines and two (-1) conics.
-    The canonical divisor has in addition a degree 4 elliptic curve as a component.
 SeeAlso
    residualInQuintics
    tateResolutionOfSurface
