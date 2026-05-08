@@ -6676,15 +6676,17 @@ Description
     P4=kk[x_0..x_4];
     P3=kk[y_0..y_3];
     h=2
-    setRandomSeed("get a 111234 surface in a minute");
-    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
-    r
-    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 1, 2, 3, 4}
     setRandomSeed("get a 112224 surface in a minute");
     elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
-    r
     partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
-    
+    r
+  Text
+    Starting with a different random seed we find a surface of the second type.
+  Example
+    setRandomSeed("get a 111234 surface in a minute");
+    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 1, 2, 3, 4} 
+    r
 SeeAlso
   LeBarzN6
   residualInQuintics
