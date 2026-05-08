@@ -9,10 +9,10 @@ viewHelp "NongeneralTypeSurfacesInP4"
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
-elapsedTime installPackage("NongeneralTypeSurfacesInP4")--,MakePDF=>true)  -- 1254.65s elapsed
+elapsedTime installPackage("NongeneralTypeSurfacesInP4",MakePDF=>true)  -- 1254.65s elapsed
 1254.6/60
 
-
+viewHelp MakePDF
 
 
 viewHelp "NongeneralTypeSurfacesInP4"
