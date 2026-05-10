@@ -10026,7 +10026,8 @@ Ms={matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4,
       e_0*e_3+e_1*e_3+e_3*e_4, e_0*e_2+e_1*e_2+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4+e_3*e_4,
       e_0*e_1+e_1*e_2+e_1*e_4}}
 }
-
+-- 6819.37s elapsed for c=20
+ 
 betti(m2x5=Ms_2)
 betti(T=res(coker m2x5,LengthLimit=>5))
 betti (THM= res(coker transpose T.dd_5**E^{2},LengthLimit=>10)[5])
