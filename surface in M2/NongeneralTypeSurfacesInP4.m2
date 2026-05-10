@@ -39,6 +39,7 @@ newPackage(
     )
 
 export {
+    "varietyOfUnstablePlanes",
     "searchHMBundle",
     "tangentToMonad",
     "randomEllipticAboSurface",
@@ -4380,6 +4381,64 @@ searchHMBundle(Ring,ZZ) := (E,c) -> (
     << "(N,M) = " <<(N,M) <<endl;
     Cs)
 
+
+
+varietyOfUnstablePlanes=method(Options=>{Verbose=>1})
+
+varietyOfUnstablePlanes(Matrix) := o -> m2x5 -> (
+    E:= ring m2x5;
+    kk:=coefficientRing E;
+    p:=symbol p;
+    P:=kk[p_0..p_9];
+    m5x5:=genericSkewMatrix(P,p_0,5);
+    EP:=E**P;
+    J:=ideal apply(subsets(toList(0..4),2),ij->(i:=ij_0;j:=ij_1;
+	sub(E_i*E_j,EP) - sub(m5x5_(i,j),EP)));
+    m5x2P:=sub(sub(transpose m2x5,EP)%J,P);
+    s:= symbol s;t := symbol t; x := symbol x;
+    P1xP4:=kk[s,t,x_0..x_4,Degrees=>{2:{1,0},5:{0,1}}];
+    m5x2P1xP4:=matrix apply(5,i->apply(2,j->P1xP4_j*x_i));
+    PP14:=P**P1xP4;
+    J2:=ideal(sub(m5x2P,PP14)-sub(m5x2P1xP4,PP14));
+    m5x5P1xP4:=sub(sub(m5x5,PP14)%J2,P1xP4);
+    I:=pfaffians(4,m5x5P1xP4);
+    Is:=saturate(saturate(I,ideal(P1xP4_0,P1xP4_1)),ideal apply(5,i->P1xP4_(i+2)));
+    dim Is == 2+2;
+    xx:=matrix{apply(5,i->P1xP4_(i+2))};
+    betti(relativeJacobian:=diff(transpose xx,gens I));
+    betti(singFibs:=saturate(minors(3,relativeJacobian)+I,ideal xx));
+    if o.Verbose >1 then (
+	<<"singularFibers = " <<factor singFibs_30 <<endl);   
+    kk':=GF(char kk,8);
+    P1xP4':=kk'[gens P1xP4,Degrees=>degrees P1xP4];
+    P4':=kk'[x_0..x_4];
+    csingFibs:=decompose  ideal sub(singFibs_30,P1xP4');
+    singFibers:=apply(csingFibs,c->trim sub(saturate(c+sub(I,P1xP4'),ideal(P1xP4'_1,P1xP4'_0)),P4'));
+    elapsedTime sortedComponentsPlusImats:=apply(singFibers,c->(
+	cc:=decompose c;iMat:=matrix apply(cc,d1->apply(cc,d2->
+		if d1 != d2 then degree saturate(d1+d2) else 0));
+	cycle:={0};
+	scan(4,s->(
+	cycle=append(cycle,first select(select(toList(0..4),j->not member(j,cycle)),
+		j->iMat_(last cycle,j)==1))));
+        (cc_cycle,iMat^cycle_cycle)));
+     if o.Verbose >0 then (
+	 <<"number of components and intersection matrices = "
+	 <<tally apply(sortedComponentsPlusImats,cc->(
+	    (#cc_0,diagonalMatrix toList(5:-2)+cc_1)))<<endl;
+    
+<<"-- => the singular fibers consists of 12 pentagons of lines.
+-- => the surface of unstable plane of the bundle coincides with Shioda's modular surface
+-- => the bundle is projectively equivalent to the HM bundle"<<endl;);
+   sortedComponents:= apply(sortedComponentsPlusImats,cc->cc_0);
+   pointsIdeals:=apply(sortedComponents,cc->intersect(apply(4,i->cc_i+cc_(i+1))|{cc_4+cc_0}));
+   if o.Verbose>0 then (
+       <<"number and betti table of singular points = "
+       <<tally apply(pointsIdeals,p->(degree p, betti res p)) <<endl;
+       <<"pairs of singular fibers = "
+       <<unique apply(pointsIdeals,p0->positions(pointsIdeals,p->p==p0)) <<endl;
+       );
+    sortedComponents) 
 
 ///
 p=2
@@ -9843,17 +9902,100 @@ SeeAlso
   
 ///
 
+doc ///
+Key
+ varietyOfUnstablePlanes
+ (varietyOfUnstablePlanes,Matrix)
+ [varietyOfUnstablePlanes,Verbose]
+Headline
+ investigate the variety of unstable planes of the bundle corresponding m2x5
+Usage
+ pentagons=varietyOfUnstablePlanes(m2x5)
+Inputs
+ m2x5:Matrix
+  2x5 matrix with entries od=f degree in an exterior algebra dual to the coordinate ring of P4
+Outputs
+ pentagons:List
+   list of pentagons
+Description
+  Text
+    The matrix m2x5 defines a vector bundle of rank 2 and chern polynomial
+    1-t+4t^2. The functions computes partial information about the variety
+    of unstable planes, which following [BHM] is the interesction of a
+    the Grassmannian G(2,5) with a P1xP4 in P9. By [DS] this variety should coincide with
+    Shioda's modular variety. We verify some of the assertians. In particular,
+    that the singular fibers are 12 pentagons, which come in pairs.
+  Example
+    kk=ZZ/2;
+    E=kk[e_0..e_4,SkewCommutative=>true];
+  Text
+    The following matrix was found using searchHMBundle.
+  Example
+    m2x5=matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_3*e_4,
+      e_0*e_2+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4+e_3*e_4,
+      e_0*e_3+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4,
+      e_1*e_2+e_0*e_3+e_1*e_3+e_2*e_4, e_0*e_3+e_2*e_3+e_0*e_4},
+      {e_1*e_4+e_3*e_4, e_0*e_4+e_1*e_4,
+      e_1*e_2+e_1*e_4+e_2*e_4+e_3*e_4,
+      e_0*e_2+e_1*e_3+e_0*e_4+e_1*e_4,
+      e_0*e_1+e_1*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4+e_3*e_4}};
+  Text
+    It defines a vector bundle defined over ZZ/2 since its Tate resolution
+    has the right shape.
+  Example
+    T=res(coker m2x5,LengthLimit=>5);
+    betti (T'= res(coker transpose T.dd_5**E^{2},LengthLimit=>10)[5])
+  Text
+    Its variety of unstable is as expected.
+  Example
+    pentagons=varietyOfUnstablePlanes(m2x5,Verbose=>2);	 
+    fiveLines=pentagons_0;
+    betti res (pent_0=intersect(fiveLines))
+    betti res (pent_1=intersect(pentagons_1))
+    fivePoints=pent_0+pent_1;
+    (dim fivePoints,degree fivePoints) == (1,5)
+    betti res fivePoints 
+  Text
+    This function is incomplete. Ideally we would like to compute a coordinate change
+    of P4 and and basis change of source and target of the 2x5 matrix which moves
+    the matrix to the Horrocks Mumford matrix.
+    
+SeeAlso
+  horrocksMumfordSurface
+  searchHMBundle
+///
+
+///
+pts=apply(decompose fivePoints, c->syz transpose jacobian c)
+aut=pts_0|pts_1|pts_2|pts_3|pts_4
+kk'=coefficientRing ring aut
+aut=sub(aut,kk')
+E'=kk'[gens E,SkewCommutative=>true]
+m2x5'=sub(m2x5,E')
+apply(5,i->(
+entry=(m2x5'*inverse aut)_(1,i);
+betti syz(map(E'^1,,entry*vars E'),DegreeLimit=>3)))
+
+
+///
+
+
 ///
     kk=ZZ/2;
     E=kk[e_0..e_4,SkewCommutative=>true];
-    c=21;
-    setRandomSeed("do 2^c cases");
-    elapsedTime Ms=searchHMBundle(E,c)
+    c=20;
+    setRandomSeed("do 2^c cases once more");
+    elapsedTime Ms=searchHMBundle(E,c);#Ms
+    
 
 ///
 
+  
 
-///
+/// -* Test unstable planes *-
+restart
+needsPackage "NongeneralTypeSurfacesInP4"
+
 kk=ZZ/2;
     E=kk[e_0..e_4,SkewCommutative=>true];
 Ms={matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4,
@@ -9877,70 +10019,24 @@ Ms={matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4,
       {e_1*e_4+e_3*e_4, e_0*e_4+e_1*e_4,
       e_1*e_2+e_1*e_4+e_2*e_4+e_3*e_4,
       e_0*e_2+e_1*e_3+e_0*e_4+e_1*e_4,
-      e_0*e_1+e_1*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4+e_3*e_4}}
+      e_0*e_1+e_1*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4+e_3*e_4}},
+ matrix {{e_0*e_1+e_0*e_3+e_2*e_3+e_1*e_4+e_3*e_4, e_0*e_2+e_1*e_2+e_1*e_3+e_1*e_4+e_2*e_4,
+      e_1*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4, e_1*e_2+e_0*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_3*e_4,
+      e_1*e_2+e_2*e_3+e_3*e_4}, {e_1*e_4+e_2*e_4+e_3*e_4, e_1*e_3+e_2*e_4,
+      e_0*e_3+e_1*e_3+e_3*e_4, e_0*e_2+e_1*e_2+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4+e_3*e_4,
+      e_0*e_1+e_1*e_2+e_1*e_4}}
 }
 
 betti(m2x5=Ms_2)
 betti(T=res(coker m2x5,LengthLimit=>5))
 betti (THM= res(coker transpose T.dd_5**E^{2},LengthLimit=>10)[5])
 basis(2,E)
-P=kk[p_0..p_9]
-basis(1,P)
-m5x5=genericSkewMatrix(P,p_0,5)
-EP=E**P
-J=ideal apply(subsets(toList(0..4),2),ij->(i=ij_0;j=ij_1;
-	sub(e_i*e_j,EP) - sub(m5x5_(i,j),EP)))
-m5x2P=sub(sub(transpose m2x5,EP)%J,P)
-P1xP4=kk[s,t,x_0..x_4
-    ,Degrees=>{2:{1,0},5:{0,1}}]
-m5x2P1xP4=matrix apply(5,i->apply(2,j->P1xP4_j*x_i))
-PP14=P**P1xP4
-J2=ideal(sub(m5x2P,PP14)-sub(m5x2P1xP4,PP14))
-m5x5P1xP4=sub(sub(m5x5,PP14)%J2,P1xP4)
-I=pfaffians(4,m5x5P1xP4);
-betti I
-tally degrees source gens I
-Is=saturate(saturate(I,ideal(P1xP4_0,P1xP4_1)),ideal apply(5,i->P1xP4_(i+2)));
+pentagons=varietyOfUnstablePlanes(m2x5,Verbose=>2);
 
-xx=matrix{apply(5,i->P1xP4_(i+2))}
-betti(relativeJacobian=diff(transpose xx,gens I))
-elapsedTime betti(singFibs=saturate(minors(3,relativeJacobian)+I,ideal xx))
-factor singFibs_30
 
-kk'=GF(2,24)
-char kk'
-P1xP4'=kk'[gens P1xP4,Degrees=>degrees P1xP4]
-P4'=kk'[x_0..x_4]
-E'=kk'[gens E,SkewCommutative=>true]
-csingFibs=decompose  ideal sub(singFibs_30,P1xP4');
-csingFibs, #csingFibs
-singFibers=apply(csingFibs,c->trim sub(saturate(c+sub(I,P1xP4'),ideal(P1xP4'_1,P1xP4'_0)),P4'));
-tally apply(12,i -> betti res singFibers_i)
-elapsedTime sortedComponents=apply(singFibers,c->(
-	cc=decompose c;iMat=matrix apply(cc,d1->apply(cc,d2->
-		if d1 != d2 then degree saturate(d1+d2) else 0));
-	cycle={0};
-	scan(4,s->(
-	cycle=append(cycle,first select(select(toList(0..4),j->not member(j,cycle)),
-		j->iMat_(last cycle,j)==1))));
-<< cycle <<endl;
-        cc_cycle));
+///
 
-tally apply(sortedComponents,cc->(iMat-matrix apply(cc,d1-> apply(cc,d2 ->
-		if d1 != d2 then degree saturate(d1+d2) else 0));
-	(#cc,diagonalMatrix toList(5:-2)+iMat^cycle_cycle)))
--- => the singular fibers consists of 12 pentagons of lines.
--- => the surface of unstable plane of the bundle coincides with Shioda's modular surface
--- => the bundle is projectively equivalent to the HM bundle
-
-pointsIdeals=apply(sortedComponents,cc->intersect(apply(4,i->cc_i+cc_(i+1))|{cc_4+cc_0}));
-p0=pointsIdeals_2
-degree p0, betti res p0
-tally apply(pointsIdeals,p->(degree p, betti res p))
-betti m2x5
-m2x5
-rows=positions(pointsIdeals,p->p==p0)
-unique apply(pointsIdeals,p0->positions(pointsIdeals,p->p==p0))
+///   
 st=(vars P1xP4')_{0,1}
 diff(transpose st, gens sum csingFibs_rows)
 cc=sortedComponents_2
