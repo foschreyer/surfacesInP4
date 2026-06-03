@@ -4684,7 +4684,9 @@ Headline => "Known families of K3 surfaces",
 document {
 Key => aboSurfaces,
 Headline => "functions for investigating Abo surfaces, (9 families)",
-   "",
+   "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
+characteristic 2 has a Tate resolution for the ideal sheaf o shape",
+
     
    PARA{},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
@@ -4764,7 +4766,9 @@ help symExt,
 
 -- numerical functions
  -*
-  Example    
+  Example 
+restart
+needsPackage "NongeneralTypeSurfacesInP4"   
     chiITable(11,10,1)
     chiITable(12,13,1)
     chiITable(12,13,2)
@@ -4807,7 +4811,7 @@ Description
     Assuming that I_X has natural cohomology for m in {-4..8} and that m -> chi(I_X(m)) has enough
     sign changes, we get a plausible table.
   CannedExample
-    i2 :     chiITable(11,10,1)
+    i2 : chiITable(11,10,1)
 
                  -1  0  1  2 3 4  5  6  7   8
     o2 = total: 104 61 30 10 3 5 10 32 84 170
@@ -4819,7 +4823,7 @@ Description
 
      o2 : BettiTally
 
-     i3 :     chiITable(12,13,1)
+     i3 : chiITable(12,13,1)
 
                   -1  0  1  2 3 4 5  6  7   8
      o3 = total: 122 73 37 13 4 4 8 29 77 158
@@ -4831,7 +4835,7 @@ Description
 
      o3 : BettiTally
 
-     i4 :     chiITable(12,13,2)
+     i4 : chiITable(12,13,2)
  
                   -1  0  1  2 3 4 5  6  7   8
      o4 = total: 123 74 38 14 4 4 8 28 76 157
@@ -4843,7 +4847,7 @@ Description
 
      o4 : BettiTally
 
-     i5 :     B=chiITable(12,13,3)    
+     i5 : B=chiITable(12,13,3)    
 
                   -1  0  1  2 3 4 5  6  7   8
      o5 = total: 124 75 39 15 4 4 8 27 75 156
@@ -4855,7 +4859,7 @@ Description
 
      o5 : BettiTally
 
-     i6 :     kk=ZZ/nextPrime 10^4
+     i6 : kk=ZZ/nextPrime 10^4
 
      o6 = kk
 
@@ -4867,17 +4871,17 @@ Description
 
      o7 : PolynomialRing
 
-     i8 :     X=ellipticSurfaceD12S13 P4;
+     i8 : X=ellipticSurfaceD12S13 P4;
 
      o8 : Ideal of P4
 
-     i9 :     (degree X,sectionalGenus X)
+     i9 : (degree X,sectionalGenus X)
 
      o9 = (12, 13)
 
      o9 : Sequence
 
-     i10 :     B'=betti tateResolutionOfSurface(X,7)
+     i10 : B'=betti tateResolutionOfSurface(X,7)
 
                    -1  0  1  2 3 4 5  6  7   8
      o10 = total: 124 75 39 15 4 4 8 27 75 156
@@ -4899,7 +4903,7 @@ Description
 
      o12 : List
 
-     i13 :     B#(keyWithZeroValue_0)
+     i13 : B#(keyWithZeroValue_0)
 
      o13 = 0
   Text
@@ -8403,6 +8407,15 @@ Description
    elapsedTime minimalBetti(X=popescuSurface(P4,E,2))
    R=residualInQuintics X; 
    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
+  Text
+   Refernence:
+      "\bib{Pop93}{article}{
+      author={Popescu, S.},
+      TITLE ={ Surfaces of degree $\ge 11$ in the Projective} 
+      Fourspace},
+      journal= {Dissertation, Universit\"at des Saarlandes}, 
+      date={1993},
+    }"
 
     
 SeeAlso
@@ -10249,7 +10262,7 @@ assert(all(decompose R,c->(dim c==2 and 6*degree c==degree (c+X))))
 assert(degree R + (L_0)_1==LeBarzN6(degree X, sectionalGenus X,1))
 ///
 
-TEST /// -* canonical Divisor on Abo surface,HdotK, selfIntersectionNumber, 
+TEST /// -* canonical divisor on Abo surface, HdotK, selfIntersectionNumber, 
            partitionOfCanonicalDivisorOfAboSurface *-
 kk=ZZ/19
 P4=kk[x_0..x_4]
@@ -10275,6 +10288,9 @@ installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
+check "NongeneralTypeSurfacesInP4"
+
+
 kk=ZZ/19
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
@@ -10293,14 +10309,13 @@ betti(T2=res(coker transpose T1.dd_3,LengthLimit=>8))
 -(3*1+3*4)+(5*6+2*4)-15
 
 
+-* problem 9.5 rational surface of degree 14 *-
 kk=ZZ/2
 E=kk[e_0..e_4,SkewCommutative=>true]
 chiITable(14,18,1)
 k2=Ksquare(14,18,1)
 2*(-k2+9)-35
-LeBarzN6(14,18,1)
-HdotK(14,18)
-
+LeBarzN6(14,1
 sv=syz vars E
 mats1={
 matrix {{e_0+e_1+e_4, e_0+e_3, e_1+e_3+e_4, e_2+e_3, e_0+e_2, e_1+e_3+e_4, e_1+e_2+e_3}, {e_0+e_3, e_3, e_0+e_4, e_3+e_4, e_1+e_2+e_4, e_0+e_1+e_2+e_3+e_4, e_0}, {e_2, e_2, e_2+e_3, e_0+e_2, e_0+e_1+e_2+e_3, e_1+e_4, e_0+e_2+e_3+e_4}, {e_1+e_3+e_4, e_0+e_1+e_3+e_4, e_0+e_2+e_3, e_0+e_1+e_3+e_4, e_2+e_3, e_0+e_1+e_4, e_0+e_2+e_4}, {e_0+e_3+e_4, e_3, e_0+e_1, e_1+e_3, e_1+e_4, e_0+e_1+e_2+e_3, e_2+e_3}, {e_0+e_2, e_1, e_1+e_2, e_2, e_1+e_2+e_4, e_1+e_2+e_3+e_4, e_0}},
@@ -10341,18 +10356,18 @@ o49 = Tally{(total: 6 7 18 49 94 154 231, total: 7 6 11 35 82 160 279) => 4}
 
 *-
 
-kk=ZZ/nextPrime 10^4
-P4=kk[x_0..x_4]
-coordinatePlanes=apply(subsets(toList(0..4),2),ij->ideal(x_(ij_0),x_(ij_1)))
-X=intersect coordinatePlanes
-minimalBetti X
-(d,sg)=(degree X, sectionalGenus X)
-betti (tateResolutionOfSurface X)
+-* vectorbundle c1=0,c2=11  *-
+needsPackage "NongeneralTypeSurfacesInP4"
+kk=ZZ/3
+E=kk[e_0..e_4,SkewCommutative=>true]
+n45=0;elapsedTime while (
+      n20=0;elapsedTime while (
+	m1=matrix apply(11,i->apply(11,j->sum(5,k->(if random 100 <10 then random(kk) else 0_kk)*E_k)));
+	m=m1-transpose m1;
+	betti (fm=res(coker m, LengthLimit=>2,DegreeLimit=>3));
+	flatten degrees fm_2 =!= toList(20:3)) do (n20=n20+1);
+    <<"n20 = "<<n20<<" "<<betti fm<<endl;
+    fm=res(coker m, LengthLimit=>2,DegreeLimit=>4);
+    rank fm_2 =!= 20 ) do n45=n45+1;
 
-pairs1=flatten apply(subsets(toList(0..4),2),ij->
-    apply(subsets(select(toList(0..4),k->not member(k,ij)),2),kl->(kl,ij)))
-planes=apply(pairs1,(kl,ij)->ideal (x_(kl_0)+x_(kl_1),x_(ij_0)+x_(ij_1)))
-X=intersect planes
-(d,sg)=(degree X, sectionalGenus X)
-minimalBetti X
-decompose X
+n20,n45 betti (fm=res(coker m, LengthLimit=>4,DegreeLimit=>5))
