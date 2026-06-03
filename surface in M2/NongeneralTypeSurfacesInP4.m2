@@ -8,6 +8,7 @@ viewHelp "NongeneralTypeSurfacesInP4"
 
 check "NongeneralTypeSurfacesInP4"
 
+
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
@@ -27,7 +28,7 @@ help adjunctionProcess
 
 newPackage(
     "NongeneralTypeSurfacesInP4",
-    Version => "0.1",
+    Version => "0.8",
     Date => "April 28, 2025",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
@@ -37,7 +38,8 @@ newPackage(
     AuxiliaryFiles => false,
     DebuggingMode => true,
     PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition","Varieties","FastMinors"},
-    Keywords => {"Algebraic Geometry"}
+    Keywords => {"Algebraic Geometry"},
+    HomePage =>  "todo",
     )
 
 export {
@@ -4800,7 +4802,7 @@ Description
 
     chi(I_X(m))=chi(O_P4(m))-chi(O_X(m))
 
-    one can compute chi(I_X(m)) usig Riemann-Roch which depends only
+    one can compute chi(I_X(m)) using Riemann-Roch which depends only
     degree d, the sectional genus sg, the Euler characteristic xO and m.
     Assuming that I_X has natural cohomology for m in {-4..8} and that m -> chi(I_X(m)) has enough
     sign changes, we get a plausible table.
