@@ -10357,17 +10357,40 @@ o49 = Tally{(total: 6 7 18 49 94 154 231, total: 7 6 11 35 82 160 279) => 4}
 *-
 
 -* vectorbundle c1=0,c2=11  *-
-needsPackage "NongeneralTypeSurfacesInP4"
+restart
+--needsPackage "NongeneralTypeSurfacesInP4"
 kk=ZZ/3
-E=kk[e_0..e_4,SkewCommutative=>true]
+
+r0=2
+m0 = matrix {{0, -e_0, 0, e_3+e_4, -e_2+e_4, -e_1, 0, 0, 0, -e_0+e_3, -e_2}, {e_0, 0, -e_0, 0, -e_2, 0, 0,
+      0, -e_4, 0, e_0-e_2+e_4}, {0, e_0, 0, 0, 0, e_0, e_3, 0, 0, -e_3, -e_3+e_4}, {-e_3-e_4, 0, 0, 0, 0,
+      -e_3, -e_0+e_3, 0, 0, 0, 0}, {e_2-e_4, e_2, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {e_1, 0, -e_0, e_3, 0, 0,
+      e_4, -e_2, e_3, 0, e_0-e_2}, {0, 0, -e_3, e_0-e_3, 0, -e_4, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, e_2, 0,
+      0, 0, e_0, 0}, {0, e_4, 0, 0, 0, -e_3, 0, 0, 0, 0, 0}, {e_0-e_3, 0, e_3, 0, 0, 0, 0, -e_0, 0, 0, 0},
+      {e_2, -e_0+e_2-e_4, e_3-e_4, 0, 0, -e_0+e_2, 0, 0, 0, 0, 0}}
+betti (fm0=res(coker m0,LengthLimit=>12,DegreeLimit=>4))
+-*
+              0  1  2  3   4   5   6   7   8    9   10   11   12
+o15 = total: 11 11 22 60 127 237 403 641 969 1407 1977 2703 3611
+          0: 11 11  .  .   .   .   .   .   .    .    .    .    .
+          1:  .  . 20 47  82 129 188 260 346  447  564  698  850
+          2:  .  .  2 13  45 108 215 381 623  960 1413 2005 2761
+*-
+
 n45=0;elapsedTime while (
       n20=0;elapsedTime while (
-	m1=matrix apply(11,i->apply(11,j->sum(5,k->(if random 100 <10 then random(kk) else 0_kk)*E_k)));
-	m=m1-transpose m1;
+	   m1=matrix apply(11,i->apply(11,j->sum(5,k->(if random 100 <10 then random(kk) else 0_kk)*E_k)));
+	      m=m1-transpose m1;
 	betti (fm=res(coker m, LengthLimit=>2,DegreeLimit=>3));
 	flatten degrees fm_2 =!= toList(20:3)) do (n20=n20+1);
-    <<"n20 = "<<n20<<" "<<betti fm<<endl;
-    fm=res(coker m, LengthLimit=>2,DegreeLimit=>4);
+    <<" m = " <<m<<endl;
+    <<"n20 = "<<n20<<" "<<betti (fm=res(coker m,LengthLimit=>2,DegreeLimit=>4)); <<endl;
+    r1=#flatten degrees fm_2-20;
+    if r1<r0 then (r0=r1; m0=m);
+    <<"r0 = "<<r0<<endl;
     rank fm_2 =!= 20 ) do n45=n45+1;
 
+
 n20,n45 betti (fm=res(coker m, LengthLimit=>4,DegreeLimit=>5))
+m0=m
+betti fm
