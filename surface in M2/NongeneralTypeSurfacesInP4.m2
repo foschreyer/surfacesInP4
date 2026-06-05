@@ -8879,7 +8879,13 @@ Description
    betti tateResolutionOfSurface(Y,7)
 References
    Horrocks-Mumford
-   BHM
+   
+ \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735--755
+
+ \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
+ 
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
    
 SeeAlso
   horrocksMumfordSurface
@@ -8955,7 +8961,9 @@ Description
   Text
    X is a non-minimal abelian surface. It contains twenty five (-1) lines.
 References
-   Popescu   
+    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+      
 SeeAlso
   horrocksMumfordSurface
   abelianSurfaceD15
