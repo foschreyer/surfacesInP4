@@ -7874,10 +7874,14 @@ Description
    The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
 References
-  Ranestad,
+   
 
   \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
 
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+fourspace, Thesis, Univ. of Oslo, (1988)
+
+  
 SeeAlso
    enriquesSurfaceOfDegree10
    adjunctionProcessData
@@ -7945,6 +7949,7 @@ Description
     The first adjunction maps blows down 4 (-1) lines. Hence the self-intersection number of the
     canonical divisor on Y is K_Y^2=K_X^2+4=0. Moreover H_Y.K_Y=0. So K_Y is numerically
     trivial and Y is a minimal Enriques surface.
+
     
 SeeAlso
     degree10pi8RanestadSurface
@@ -8232,6 +8237,10 @@ Description
     betti(T=tateResolutionOfSurface X)
     betti(T.dd_4)
     degree X, sectionalGenus X
+
+    References
+     \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+fourspace, Thesis, Univ. of Oslo, (1988)
 ///
 
 doc ///
@@ -8442,14 +8451,12 @@ Description
    R=residualInQuintics X; 
    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
   Text
-   Refernence:
-      "\bib{Pop93}{article}{
-      author={Popescu, S.},
-      TITLE ={ Surfaces of degree $\ge 11$ in the Projective} 
-      Fourspace},
-      journal= {Dissertation, Universit\"at des Saarlandes}, 
-      date={1993},
-    }"
+   References
+     \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace,
+     Dissertation, Universit\"at des Saarlandes, 
+      (1993)
+    
 
     
 SeeAlso
@@ -8991,7 +8998,8 @@ Description
  Text
    The surface is ACM. We use its Hilbert-Burch matrix.
 References
-  
+      \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -9022,6 +9030,11 @@ Description
  Text
    The surface is ACM. We use its Hilbert-Burch matrix.
 References
+
+    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+
   
 SeeAlso
   tateResolutionOfSurface
@@ -9066,7 +9079,9 @@ Description
  Text
    X is a minimal elliptic surface.
 References
-  
+   \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in
+$\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
+
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9592,6 +9607,9 @@ Description
    X is nonminimal with one exceptional line.
 References
 
+    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+
 SeeAlso
   
 ///
@@ -9627,8 +9645,9 @@ Description
   Text
    X is non-minimal with one exceptional curve of degree 2.
 References
-  Okonek
-  Iounescu
+     \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
 
 SeeAlso
   
@@ -9666,8 +9685,8 @@ Description
   Text
    X is non-minimal with five exceptional lines.
 References
-  Okonek
-  Iounescu
+  \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in
+$\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
 
 SeeAlso
   
@@ -9705,9 +9724,7 @@ Description
   Text
    X is non-minimal with two exceptional lines and three exceptional conics.
 References
-  Okonek
-  Iounescu
-
+ 
 SeeAlso
   
 ///
@@ -9754,6 +9771,8 @@ Description
 
   
 References
+ \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+fourspace, Thesis, Univ of Oslo, (1988) 
 
 SeeAlso
   
