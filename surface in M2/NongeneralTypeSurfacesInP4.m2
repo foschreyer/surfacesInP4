@@ -8453,9 +8453,7 @@ Description
   Text
    References
      \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace,
-     Dissertation, Universit\"at des Saarlandes, 
-      (1993)
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
     
 
     
@@ -9122,7 +9120,9 @@ Description
  Text
    X is non-minimal elliptic surface blown-up in three points.
 References
-  
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+fourspace, Thesis, Univ of Oslo, (1988)
+
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9165,7 +9165,9 @@ Description
  Text
    X is elliptic surface blown-up with two (-1) lines.
 References
-  
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+fourspace, Thesis, Univ of Oslo, (1988)
+
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9207,7 +9209,8 @@ Description
  Text
    X is an elliptic surface blown-up with three (-1) lines and one (-1) conic.
 References
-  
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9244,8 +9247,10 @@ Description
    degree D,HdotK(12,14)
    selfIntersectionNumber(X,D),Ksquare(12,14,3)   
  Text
-   X is an non-minimal elliptic surface with four (-1) lines and one further (-1) curve.
+   X is an non-minimal elliptic surface with four (-1) lines and one  (-1) conic curve.
 References
+\textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   tateResolutionOfSurface
@@ -9289,7 +9294,8 @@ Description
    X contains a plane quintic curve with an additional point p in that plane.
    Every line through p in that plane is a 6-secant line.
 References
-  
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   residualInQuintics
@@ -9722,9 +9728,11 @@ Description
    LeBarzN6(10,9,2)
    HdotK(10,9)
   Text
-   X is non-minimal with two exceptional lines and three exceptional conics.
+   X is non-minimal with two exceptional lines and an exceptional rational quartic curve.
 References
- 
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+  
 SeeAlso
   
 ///
@@ -9845,7 +9853,8 @@ Description
    of larger degree as in the following pattern (e1,e2,e3,..)
    (4,0,0,0,1), (3,0,2), (2,2,1), (1,4)
 References
-  Popescu
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
 ///
@@ -9887,7 +9896,8 @@ Description
    Thus there nine (-1) lines and a (-1) conic.
    The (-1) lines group in Frobenius orbits of x,y,z elements.  
 References
-  Popescu
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   selfIntersectionNumber
@@ -9979,7 +9989,8 @@ Description
    Thus there are ten (-1) lines and a (-1) septic.
    The (-1) lines group in Frobenius orbits of x,y,z elements.  
 References
-
+\textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   selfIntersectionNumber
@@ -10023,18 +10034,19 @@ Description
    tally apply(cResidual,c->(dim c, degree c, degree radical c, dim(c+X), degree(c+X), degree radical(c+X)))
    cResidual
   Text
-    There are 4 planes containg a plane sextic curve. Any line in one of
+    There are 4 planes containing a plane sextic curve. Any line in one of
     the planes is a 6-secant line, and Le Barz secant formula does not apply.
   Example
    "elapsedTime cD=primaryDecomposition D;";
    "tally apply(cD,c->(dim c, degree c, betti c, selfIntersectionNumber(X,c)))";
   Text
-   By [Popescu?] we know that X is the blow-up of an minimal K3 surface in 11 points embedded
-   by (Hmin;);
+   By [Popescu?] we know that X is the blow-up of an minimal K3 surface in 15 points embedded
+   by (Hmin;4,2^4,1^10);
    
    
 References
-
+\textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   selfIntersectionNumber
