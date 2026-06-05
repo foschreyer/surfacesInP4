@@ -7666,7 +7666,7 @@ Description
     singularFibers=trim sub(saturate(singFibration,ideal sub(vars P4,P4xP1)),P1)
     degree singularFibers
   Text
-    The are 7 singular fibers,
+    There are 7 singular fibers,
     which fits with Ksquare=1==8-7
 ///
 
@@ -7701,6 +7701,13 @@ Description
     minimalBetti Y
     P2=kk[y_0..y_2];
     minimalBetti veroneseSurface(P4,P2)
+
+    References
+        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+
+     
 ///
 
 doc ///
@@ -7728,6 +7735,14 @@ Description
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD7(P4,P2))
     degree X, sectionalGenus X
+
+    References
+        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+    \textit{Okonek, Ch.} \"Uber $2$-codimensionale Untermannigfaltigkeiten vom
+Grad $7$ in $\Pn 4$ und $\Pn 5$, Math. Z., 187, (1983), 209-219
+
+
 ///
 ///
 apply((toList(-4..8),m->chiI(m,8,5,1)))
@@ -7762,6 +7777,12 @@ Description
     minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
     degree X, sectionalGenus X
 
+    References
+        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+       \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+
+  
 ///
 
 ///
@@ -7809,6 +7830,11 @@ Description
     degree X, sectionalGenus X
     betti(T=tateResolutionOfSurface X)
     betti(T.dd_4)
+
+    References
+       \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
+
+   
 ///
 
 doc ///
@@ -7848,7 +7874,10 @@ Description
    The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
 References
-  Ranestad, DES
+  Ranestad,
+
+  \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
+
 SeeAlso
    enriquesSurfaceOfDegree10
    adjunctionProcessData
