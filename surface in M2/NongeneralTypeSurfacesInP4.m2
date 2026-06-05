@@ -7579,6 +7579,11 @@ Description
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     minimalBetti(X=bordigaSurface P4)
+
+    References
+     \textit{Bordiga, G.} La superficie del 6d ordine, con 10 rette, nello spazio P4; e le sue proiezioni nello
+spazio ordinario, Mem. Atti. Accad. Naz. Lincei., 4, (1887), 182-203
+
 ///
 
 doc ///
