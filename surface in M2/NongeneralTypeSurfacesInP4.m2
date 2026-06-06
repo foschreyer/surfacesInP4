@@ -12,7 +12,7 @@ check "NongeneralTypeSurfacesInP4"
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 needsPackage ("NongeneralTypeSurfacesInP4")
-elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 1254.65s elapsed
+elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 1042.03s elapsed
 1254.6/60
 
 
