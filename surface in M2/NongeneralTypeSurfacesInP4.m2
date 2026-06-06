@@ -12,7 +12,7 @@ check "NongeneralTypeSurfacesInP4"
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
-elapsedTime installPackage("NongeneralTypeSurfacesInP4",MakePDF=>true)  -- 1254.65s elapsed
+elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 1254.65s elapsed
 1254.6/60
 
 viewHelp MakePDF
@@ -8745,30 +8745,7 @@ References
 SeeAlso
   tateResolutionOfSurface
 ///
-
-doc ///
-Key
- abelianSurfaceD10
- horrocksMumfordSurface 
- (horrocksMumfordSurface,PolynomialRing)
- (abelianSurfaceD10,PolynomialRing)
-Headline
- construct a nonsingular abelian surface of degree 10 and sectional genus 6 
-Usage
- X=abelianSurfaceD10 P4
- X=horrocksMumfordSurface P4
-Inputs
- P4:PolynomialRing
-  coordinate ring of P4
-Outputs
- X:Ideal
-  of a abelian surface of degree 10, a Horrocks-Mumford surface. 
-Description
-  Text
-    Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
-    Horrocks-Mumford bundle, which is a rank 2 vector bundle with
-    Chern classes c1=-1 and c2=4.
-    Commesati found these surfaces already in 1919.
+-* for CannedExample in abelianSurfaceD10
   Example
     kk=ZZ/nextPrime 10^4; 
     P4=kk[x_0..x_4];
@@ -8829,6 +8806,270 @@ Description
     H1cohomology=prune Ext^1(HMbundle,P4^{-5})
     apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
     betti F'
+
+
+*-
+
+
+doc ///
+Key
+ abelianSurfaceD10
+ horrocksMumfordSurface 
+ (horrocksMumfordSurface,PolynomialRing)
+ (abelianSurfaceD10,PolynomialRing)
+Headline
+ construct a nonsingular abelian surface of degree 10 and sectional genus 6 
+Usage
+ X=abelianSurfaceD10 P4
+ X=horrocksMumfordSurface P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a abelian surface of degree 10, a Horrocks-Mumford surface. 
+Description
+  Text
+    Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
+    Horrocks-Mumford bundle, which is a rank 2 vector bundle with
+    Chern classes c1=-1 and c2=4.
+    Commesati found these surfaces already in 1919.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;
+    i2 : P4=kk[x_0..x_4];
+    i3 : X=abelianSurfaceD10 P4;
+
+    o3 : Ideal of P4
+    i4 : betti(fX=res X)
+
+                0  1  2  3 4
+    o4 = total: 1 18 35 20 2
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  3  .  . .
+             5: . 15 35 20 .
+             6: .  .  .  . 2
+
+    o4 : BettiTally
+    i5 : (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 6)
+
+    o5 : Sequence
+    i6 : betti(T=tateResolutionOfSurface(X,7))
+
+                -1  0  1 2 3  4  5  6  7   8
+    o6 = total: 81 45 20 7 6 10 13 32 85 175
+            -4:  1  .  . . .  .  .  .  .   .
+            -3: 80 45 20 5 1  .  .  .  .   .
+            -2:  .  .  . 2 .  .  .  .  .   .
+            -1:  .  .  . . 5 10 10  2  .   .
+             0:  .  .  . . .  .  3 30 85 175
+
+    o6 : BettiTally
+    i7 : k2=Ksquare(10,6,0)
+
+    o7 = 0
+    i8 : LeBarzN6(10,6,0)==25
+
+    o8 = true
+    i9 : tally apply(decompose residualInQuintics(X),c->(dim c-1, degree c,
+             (dim(c+X)-1 ,degree(c+X))))
+
+    o9 = Tally{(1, 1, (0, 6)) => 5 }
+               (1, 4, (0, 24)) => 5
+
+    o9 : Tally
+
+  Text
+    X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of
+    degree 15. The six secant lines are  twentyfive  (-1)-lines of X'.
+    X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of degree 15. The six secant lines are twentyfive (-1)-lines of X'.
+  CannedExample
+    i10 : ci=ideal(gens X*random(source gens X,P4^{2:-5}));
+
+    o10 : Ideal of P4
+    i11 : X'=ci:X;
+
+    o11 : Ideal of P4
+    i12 : minimalBetti X'
+
+                 0 1  2  3 4
+    o12 = total: 1 8 15 10 2
+              0: 1 .  .  . .
+              1: . .  .  . .
+              2: . .  .  . .
+              3: . .  .  . .
+              4: . 3  .  . .
+              5: . .  .  . .
+              6: . 5 15 10 2
+
+    o12 : BettiTally
+    i13 : betti tateResolutionOfSurface(X',7)
+
+                  -1   0  1  2  3  4 5  6  7   8
+    o13 = total: 171 105 55 22 11 10 8 17 50 115
+             -4:   1   .  .  .  .  . .  .  .   .
+             -3: 170 105 55 20  1  . .  .  .   .
+             -2:   .   .  .  2 10 10 5  .  .   .
+             -1:   .   .  .  .  .  . .  2  .   .
+              0:   .   .  .  .  .  . 3 15 50 115
+
+    o13 : BettiTally
+    i14 : (d',sg')=(degree X',sectionalGenus X')
+
+    o14 = (15, 21)
+
+    o14 : Sequence
+    i15 : Ksquare(d',sg',0)==-25
+
+    o15 = true
+    i16 : LeBarzN6(d',sg',0)==LeBarzN6(d,sg,0)
+
+    o16 = true
+    i17 : saturate residualInQuintics(X')
+
+    o17 = ideal 1
+
+    o17 : Ideal of P4
+  Text
+    The surface X is the zero loci of a vector bundle, whose
+    module of global sections is
+  CannedExample
+    i18 : HMBundle=coker transpose (syz transpose fX.dd_3)_{0..18};
+    i19 : minimalBetti HMBundle
+
+                  0  1  2 3
+    o19 = total: 19 35 20 2
+               5:  4  .  . .
+               6: 15 35 20 .
+               7:  .  .  . 2
+
+     o19 : BettiTally
+  Text
+    In the code we use the Horrocks-Mumford bundle to get X. 
+    The construction of the Horrocks-Mumford bundle uses a monad:In the code we use the Horrocks-Mumford bundle to get X. The construction of the Horrocks-Mumford bundle uses a monad:
+  CannedExample
+    i20 : e=symbol e;
+    i21 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i22 : alphad= map(E^{5:0},E^{2:-2},{{e_4*e_1,e_2*e_3},{e_0*e_2,e_3*e_4},{e_1*e_3,e_4*e_0},{e_2*e_4,e_0*e_1},{e_3*e_0,e_1*e_2}});
+
+                  5      2
+    o22 : Matrix E  <-- E
+  Text
+    The matrix
+  CannedExample
+    i23 : diagonalMatrix{1,-1}*transpose alphad
+    
+    o23 = | e_1e_4 -e_0e_2 -e_1e_3 -e_2e_4 e_0e_3 |
+          | e_2e_3 e_3e_4  -e_0e_4 e_0e_1  e_1e_2 |
+                  2      5
+    o23 : Matrix E  <-- E                 
+  Text
+    is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
+  CannedExample
+    i24 : F=res( coker alphad,LengthLimit=>7);
+    i25 : betti (F'=res(coker transpose F.dd_6,LengthLimit=>10)[5]**E^{0})
+
+                  -5 -4 -3 -2 -1 0 1  2  3  4   5
+    o25 = total: 100 37 14 10  5 2 5 10 14 37 100
+             -4: 100 35  4  .  . . .  .  .  .   .
+             -3:   .  2 10 10  5 . .  .  .  .   .
+             -2:   .  .  .  .  . 2 .  .  .  .   .
+             -1:   .  .  .  .  . . 5 10 10  2   .
+              0:   .  .  .  .  . . .  .  4 35 100
+
+    o25 : BettiTally
+  Text
+    The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
+    is the module of global sections of the Horrocks-Mumford bundle.
+  CannedExample
+    i26 : HMbundle= (prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4)))**P4^{-4}
+
+    o26 = cokernel {7} | -x_1x_4 x_3^2 0     x_1x_3  x_4^2 0      0     x_2x_3  x_1^2 -x_2x_4 x_0^2   x_0x_2  0     0    -x_0x_3 0    0     0    0      0    0      0      x_2^2 0      0    0      0       x_0x_4 x_1x_2 x_0x_1 0      0    0       0      x_3x_4 |
+                   {7} | x_2x_3  0     x_4^2 -x_0x_4 0     x_0x_3 x_1^2 0       0     x_0x_1  0       -x_3x_4 x_2^2 0    x_1x_2  0    x_3^2 0    0      0    x_0x_2 x_1x_4 0     0      0    0      -x_2x_4 0      0      0      x_0^2  0    -x_1x_3 0      0      |
+                   {7} | 0       0     0     0       0     0      0     0       0     0       -x_1x_4 0       0     0    0       0    0     0    x_2x_4 0    0      x_2x_3 0     x_1x_3 0    0      0       0      x_4^2  0      0      0    0       0      x_1^2  |
+                   {7} | 0       0     0     0       0     0      0     -x_1x_4 0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    x_3x_4 x_3^2   0      0      0      x_2x_3 0    x_2^2   x_1x_2 0      |
+                   {8} | -x_0    -x_1  x_3   0       0     0      x_2   0       0     0       0       0       0     0    0       0    0     0    -x_1   0    0      0      -x_4  -x_4   0    -x_2   0       0      0      0      0      0    0       -x_3   0      |
+                   {8} | 0       -x_4  0     0       0     -x_1   0     0       0     0       0       0       0     0    0       x_0  0     0    -x_4   0    0      -x_3   0     0      0    0      0       x_2    0      0      0      0    0       0      0      |
+                   {8} | 0       0     -x_2  0       0     0      0     -x_4    0     0       0       0       0     0    0       0    0     x_0  0      0    x_1    0      0     0      0    0      0       -x_3   0      0      0      0    0       x_2    0      |
+                   {8} | 0       0     0     -x_2    x_1   0      0     0       0     0       0       0       0     0    0       0    0     x_4  0      -x_3 0      0      0     0      x_1  -x_0   0       0      0      0      0      0    0       0      0      |
+		   {8} | 0       0     0     0       -x_3  0      0     x_0     -x_2  0       0       0       0     0    0       -x_2 0     0    0      0    0      0      0     0      -x_3 0      x_1     0      0      0      0      0    x_4     0      0      |
+		   {8} | 0       0     0     0       0     x_2    0     0       0     0       x_4     0       0     0    0       0    0     0    0      x_4  0      0      0     -x_3   0    0      -x_0    0      0      0      0      0    0       0      -x_1   |
+		   {8} | 0       0     0     0       0     x_4    -x_3  -x_1    0     0       0       0       0     x_0  0       0    0     0    0      0    0      0      0     0      0    x_3    0       0      0      -x_2   0      0    0       0      0      |
+		   {8} | 0       0     0     0       0     0      0     0       -x_4  -x_3    -x_2    0       0     -x_1 0       -x_4 0     0    0      -x_2 0      0      0     0      0    0      0       0      0      0      0      0    0       x_0    0      |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       -x_1    -x_3  -x_3 0       0    0     0    -x_0   0    0      0      0     0      -x_2 0      0       0      0      0      -x_4   x_4  0       0      0      |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       -x_4  -x_4 0       0    -x_1  -x_1 0      0    0      x_0    0     0      0    0      0       0      -x_3   0      0      0    0       0      -x_2   |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    -x_4    x_3  x_2   x_2  0      0    0      0      0     x_0    0    0      0       0      0      0      0      x_1  0       0      0      |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    x_2    x_1  -x_3   0      0     0      0    0      0       0      x_4    0      0      0    x_0     0      0      |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    -x_4   -x_2   -x_1  -x_1   x_0  0      0       0      0      x_3    0      0    0       0      0      |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    -x_4   -x_3    -x_1   -x_0   0      0      -x_2 0       0      0      |
+		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    0      0       0      0      -x_4   -x_3   x_3  -x_2    -x_1   -x_0   |
+
+                               19
+    o26 : P4-module, quotient of P4
+    i27 : minimalBetti HMbundle
+
+                  0  1  2 3
+    o27 = total: 19 35 20 2
+              7:  4  .  . .
+              8: 15 35 20 .
+              9:  .  .  . 2
+
+    o27 : BettiTally
+    i28 : minimalBetti X
+
+                 0  1  2  3 4
+    o28 = total: 1 18 35 20 2
+              0: 1  .  .  . .
+	      1: .  .  .  . .
+	      2: .  .  .  . .
+	      3: .  .  .  . .
+	      4: .  3  .  . .
+	      5: . 15 35 20 .
+	      6: .  .  .  . 2
+
+    o28 : BettiTally
+
+  Text
+    The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
+    Tate resolution, cf. [EFS,Example 7.1].
+  CannedExample
+    i29 : H2cohomology=prune Ext^2(HMbundle,P4^{-5})
+
+    o29 = cokernel {-2} | x_4 x_3 x_2 x_1 x_0 0   0   0   0   0   |
+                   {-2} | 0   0   0   0   0   x_4 x_3 x_2 x_1 x_0 |
+
+                                   2
+    o29 : P4-module, quotient of P4
+    i30 : H1cohomology=prune Ext^1(HMbundle,P4^{-5})
+
+    o30 = cokernel | x_3 x_0  0   0   x_1  0   0   0    0    x_2 0    0    0   x_4 0   |
+                   | 0   -x_4 x_1 x_2 0    0   0   0    -x_3 0   0    x_0  0   0   0   |
+		   | 0   0    0   x_4 -x_2 x_0 0   x_1  0    0   x_3  0    0   0   0   |
+		   | 0   0    0   0   0    0   x_4 -x_3 x_2  x_0 0    0    0   0   x_1 |
+		   | 0   0    0   0   0    0   0   0    0    0   -x_4 -x_3 x_2 x_1 x_0 |
+
+		                   5
+    o30 : P4-module, quotient of P4
+    i31 : apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
+
+    o31 = {10, 10, 2, 0, 0, 0}
+
+    o31 : List
+    i32 : betti F'
+
+                  -5 -4 -3 -2 -1 0 1  2  3  4   5
+    o32 = total: 100 37 14 10  5 2 5 10 14 37 100
+             -4: 100 35  4  .  . . .  .  .  .   .
+             -3:   .  2 10 10  5 . .  .  .  .   .
+             -2:   .  .  .  .  . 2 .  .  .  .   .
+	     -1:   .  .  .  .  . . 5 10 10  2   .
+	      0:   .  .  .  .  . . .  .  4 35 100
+
+    o32 : BettiTally
 
 References
   Horrocks-Mumford,Barth-Hulek-Moore,Comessati,Decker-Schreyer,Eisenbud-Floystad-Schreyer
