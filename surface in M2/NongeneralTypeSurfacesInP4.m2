@@ -7579,6 +7579,11 @@ Description
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     minimalBetti(X=bordigaSurface P4)
+
+References
+     \textit{Bordiga, G.} La superficie del 6d ordine, con 10 rette, nello spazio P4; e le sue proiezioni nello
+      spazio ordinario, Mem. Atti. Accad. Naz. Lincei., 4, (1887), 182-203
+
 ///
 
 doc ///
@@ -7661,7 +7666,7 @@ Description
     singularFibers=trim sub(saturate(singFibration,ideal sub(vars P4,P4xP1)),P1)
     degree singularFibers
   Text
-    The are 7 singular fibers,
+    There are 7 singular fibers,
     which fits with Ksquare=1==8-7
 ///
 
@@ -7696,6 +7701,13 @@ Description
     minimalBetti Y
     P2=kk[y_0..y_2];
     minimalBetti veroneseSurface(P4,P2)
+
+References
+        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+
+     
 ///
 
 doc ///
@@ -7723,6 +7735,14 @@ Description
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD7(P4,P2))
     degree X, sectionalGenus X
+
+References
+        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+    \textit{Okonek, Ch.} \"Uber $2$-codimensionale Untermannigfaltigkeiten vom
+      Grad $7$ in $\Pn 4$ und $\Pn 5$, Math. Z., 187, (1983), 209-219
+
+
 ///
 ///
 apply((toList(-4..8),m->chiI(m,8,5,1)))
@@ -7757,6 +7777,12 @@ Description
     minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
     degree X, sectionalGenus X
 
+References
+        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+       \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+
+  
 ///
 
 ///
@@ -7804,6 +7830,11 @@ Description
     degree X, sectionalGenus X
     betti(T=tateResolutionOfSurface X)
     betti(T.dd_4)
+
+References
+       \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
+
+   
 ///
 
 doc ///
@@ -7843,7 +7874,13 @@ Description
    The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
 References
-  Ranestad, DES
+   
+
+  \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
+
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
+
+  
 SeeAlso
    enriquesSurfaceOfDegree10
    adjunctionProcessData
@@ -7911,6 +7948,7 @@ Description
     The first adjunction maps blows down 4 (-1) lines. Hence the self-intersection number of the
     canonical divisor on Y is K_Y^2=K_X^2+4=0. Moreover H_Y.K_Y=0. So K_Y is numerically
     trivial and Y is a minimal Enriques surface.
+
     
 SeeAlso
     degree10pi8RanestadSurface
@@ -8198,6 +8236,9 @@ Description
     betti(T=tateResolutionOfSurface X)
     betti(T.dd_4)
     degree X, sectionalGenus X
+References
+     \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+      fourspace, Thesis, Univ. of Oslo, (1988)
 ///
 
 doc ///
@@ -8408,14 +8449,10 @@ Description
    R=residualInQuintics X; 
    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
   Text
-   Refernence:
-      "\bib{Pop93}{article}{
-      author={Popescu, S.},
-      TITLE ={ Surfaces of degree $\ge 11$ in the Projective} 
-      Fourspace},
-      journal= {Dissertation, Universit\"at des Saarlandes}, 
-      date={1993},
-    }"
+   References
+     \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+    
 
     
 SeeAlso
@@ -8840,7 +8877,13 @@ Description
    betti tateResolutionOfSurface(Y,7)
 References
    Horrocks-Mumford
-   BHM
+   
+ \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735--755
+
+ \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
+ 
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
    
 SeeAlso
   horrocksMumfordSurface
@@ -8916,7 +8959,9 @@ Description
   Text
    X is a non-minimal abelian surface. It contains twenty five (-1) lines.
 References
-   Popescu   
+    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+      
 SeeAlso
   horrocksMumfordSurface
   abelianSurfaceD15
@@ -8957,7 +9002,8 @@ Description
  Text
    The surface is ACM. We use its Hilbert-Burch matrix.
 References
-  
+      \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -8988,6 +9034,11 @@ Description
  Text
    The surface is ACM. We use its Hilbert-Burch matrix.
 References
+
+    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+
   
 SeeAlso
   tateResolutionOfSurface
@@ -9032,7 +9083,9 @@ Description
  Text
    X is a minimal elliptic surface.
 References
-  
+   \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in
+   $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
+
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9073,7 +9126,9 @@ Description
  Text
    X is non-minimal elliptic surface blown-up in three points.
 References
-  
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+    fourspace, Thesis, Univ of Oslo, (1988)
+
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9116,7 +9171,9 @@ Description
  Text
    X is elliptic surface blown-up with two (-1) lines.
 References
-  
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+   fourspace, Thesis, Univ of Oslo, (1988)
+
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9158,7 +9215,8 @@ Description
  Text
    X is an elliptic surface blown-up with three (-1) lines and one (-1) conic.
 References
-  
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9195,8 +9253,10 @@ Description
    degree D,HdotK(12,14)
    selfIntersectionNumber(X,D),Ksquare(12,14,3)   
  Text
-   X is an non-minimal elliptic surface with four (-1) lines and one further (-1) curve.
+   X is an non-minimal elliptic surface with four (-1) lines and one  (-1) conic curve.
 References
+     \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   tateResolutionOfSurface
@@ -9240,7 +9300,8 @@ Description
    X contains a plane quintic curve with an additional point p in that plane.
    Every line through p in that plane is a 6-secant line.
 References
-  
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   residualInQuintics
@@ -9558,6 +9619,9 @@ Description
    X is nonminimal with one exceptional line.
 References
 
+    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+
 SeeAlso
   
 ///
@@ -9593,8 +9657,9 @@ Description
   Text
    X is non-minimal with one exceptional curve of degree 2.
 References
-  Okonek
-  Iounescu
+     \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+
+      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
 
 SeeAlso
   
@@ -9632,8 +9697,8 @@ Description
   Text
    X is non-minimal with five exceptional lines.
 References
-  Okonek
-  Iounescu
+  \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in
+   $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
 
 SeeAlso
   
@@ -9669,11 +9734,11 @@ Description
    LeBarzN6(10,9,2)
    HdotK(10,9)
   Text
-   X is non-minimal with two exceptional lines and three exceptional conics.
+   X is non-minimal with two exceptional lines and an exceptional rational quartic curve.
 References
-  Okonek
-  Iounescu
-
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+  
 SeeAlso
   
 ///
@@ -9720,6 +9785,8 @@ Description
 
   
 References
+ \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
+   fourspace, Thesis, Univ of Oslo, (1988) 
 
 SeeAlso
   
@@ -9792,7 +9859,8 @@ Description
    of larger degree as in the following pattern (e1,e2,e3,..)
    (4,0,0,0,1), (3,0,2), (2,2,1), (1,4)
 References
-  Popescu
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
 ///
@@ -9887,7 +9955,8 @@ Description
     X has no 6-secant line, since the ideal is generated by quintics.
     Thus there nine (-1) lines and a (-1) conic. 
 References
-  Popescu
+  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   selfIntersectionNumber
@@ -10135,7 +10204,8 @@ Description
     we expect that the minimal K3 surface is special, moving in a 19-3 dimensional family.
   
 References
-
+      \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   selfIntersectionNumber
@@ -10267,12 +10337,13 @@ Description
 
    o16 : List
   Text
-   By [Popescu?] we know that X is the blow-up of an minimal K3 surface in 15 points embedded
-   by (Hmin;);
+    There are 4 planes containing a plane sextic curve. Any line in one of
+    the planes is a 6-secant line, and Le Barz secant formula does not apply.
    
    
 References
-
+    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
+      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
   
 SeeAlso
   selfIntersectionNumber
@@ -10294,7 +10365,7 @@ Key
  searchHMBundle
  (searchHMBundle,Ring,ZZ)
 Headline
- search a HM - bundle on P4
+ search a Horrocks-Mumford bundle on P4
 Usage
  Ms=searchHMBundle(E,c)
 Inputs
@@ -10315,11 +10386,11 @@ Description
     i2 : E=kk[e_0..e_4,SkewCommutative=>true];
     i3 : c=10;
     i4 : setRandomSeed("do 2^c cases");
-    -- setting random seed to 1127965201797969169793845
+     -- setting random seed to 1127965201797969169793845
     i5 : elapsedTime Ms=searchHMBundle(E,c) -- 11.3592s elapsed
-    -- 11.8393s elapsed
-    number of trials = 2221
-    (N,M) = (1024, 35)
+     -- 11.8393s elapsed
+       number of trials = 2221
+       (N,M) = (1024, 35)
 
     o5 = {}
 
@@ -10329,18 +10400,18 @@ Description
     o6 = 3.231061333333333
 
     o6 : RR (of precision 53)
-	 
+    
   Text
     There are 2*(5-3)+8+3+24 dimansional family of 3x2 submatices of the 5x2
     Horrocks-Mumford matrix compared to 3*2*10-1 dimenensional family of all matrices.
     So the codimsion is
-  Example
-    20==3*2*10-1-(2*(5-3)+8+3+24)
-  Text
-    Thus the runnig time tofind an example is about 3.5 hours to find an example
+    20=3*2*10-1-(2*(5-3)+8+3+24)
+    Thus the runnig time to find an example is about 3.5 hours
     over ZZ/2.
+
 SeeAlso
-  
+  horrocksMumfordSurface
+  varietyOfUnstablePlanes
 ///
 
 doc ///
@@ -10354,7 +10425,7 @@ Usage
  pentagons=varietyOfUnstablePlanes(m2x5)
 Inputs
  m2x5:Matrix
-  2x5 matrix with entries od=f degree in an exterior algebra dual to the coordinate ring of P4
+  2x5 matrix with entries of degree in an exterior algebra dual to the coordinate ring of P4
 Outputs
  pentagons:List
    list of pentagons
