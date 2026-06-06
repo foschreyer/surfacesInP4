@@ -11,18 +11,11 @@ check "NongeneralTypeSurfacesInP4"
 
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
-loadPackage ("NongeneralTypeSurfacesInP4")--,Reload=>true)
+needsPackage ("NongeneralTypeSurfacesInP4")
 elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 1254.65s elapsed
 1254.6/60
 
-viewHelp MakePDF
 
-
-viewHelp "NongeneralTypeSurfacesInP4"
-check "NongeneralTypeSurfaceInP4"
-path
-peek loadedFiles
-help adjunctionProcess
 ///
 
 
@@ -8060,7 +8053,6 @@ o145 = Tally{(total: 1 12 40 56 35 8, total: 1 7 16 16 7 1) => 2}
 ///
 
 /// -* surface of degree 10 sectional genus 8 and xO=1 in the intersection of the two components *-
-needsPackage "NongeneralTypeSurfacesInP4"
 kk=ZZ/nextPrime 10^4
 P4=kk[x_0..x_4]
 m2x5=transpose matrix apply(5,i->{x_i,(2*i+1) *x_i})
@@ -8132,24 +8124,8 @@ sub(sm,matrix{{0_P4,0,0,0,0}})
 -- for write up
 binomial(9+2,2)-6-14*3-5*1
 3^14, 3^8
-restart
-needsPackage "NongeneralTypeSurfacesInP4"
-setRandomSeed ("random")
-P4=ZZ/3[x_0..x_4]
-elapsedTime tally apply(10,c->(X=findRandomSmoothSchreyerSurface P4;
-	<<"c = "<<c<<flush <<endl;betti X))
-elapsedTime X=findRandomSchreyerSurface P4;
-P4=ZZ/2[x_0..x_4]
-elapsedTime tally apply(10,c->(X=findRandomSmoothSchreyerSurface P4;
-	<<"c = "<<c<<flush <<endl;betti X))
-P4=ZZ/5[x_0..x_4]
-elapsedTime tally apply(10,c->(X=findRandomSmoothSchreyerSurface P4;
-	<<"c = "<<c<<flush <<endl;betti X))
-2^15
-kk=ZZ/nextPrime 10^4
-P4=kk[x_0..x_4]
-X=vBELSurface P4;
-tex minimalBetti X
+
+
 ///
 
 doc ///
@@ -8568,48 +8544,7 @@ apply(5,i->(dim(line^i+Y),degree(line^i+Y)))
 degree Y,sectionalGenus Y
 intersect
 ///
--*
-doc ///
-Key
- randomSurfaceDegreeAndSectionalGenus
- (randomSurfaceDegreeAndSectionalGenus, Function, List)
-Headline
- construct of a random rational surface of a given type
-Usage
- dsg = randomSurfaceDegreeAndSectionalGenus(F,ringList)
-Inputs
- F:Function
-     which produces a surface in P4
- ringList:List
-    {P4,E,P2} of the coordinate ring of P4, the corresponding exterior algebra and the coordinate ring  of P2
-Outputs
-  dsg:List
-    of the degree d and the sectional genus of the surface
-Description
-  Text
-   The unirational components of the Hilbert scheme of smooth surfaces in P4 uses in the construction
-   P4, or P4 and E ,or P4 and P2. This functions calls the corresponding function of the construction
-   The function computes examples of the desired surface and prints
-   some numerical information. It returns the degree and the sectional genus 
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];    
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    P2=kk[y_0..y_2];
-    ringList={P4,E,P2};
-    Fs={bordigaSurface,ionescuOkonekSurfaceD7,okonekSurfaceD8S6,ionescuOkonekSurfaceD8S5,specialityOneAlexanderSurface}
-    elapsedTime dges=apply(Fs,F->randomSurfaceDegreeAndSectionalGenus(F,ringList))
-    Fs1={degree10pi8RanestadSurface,degree10pi9RanestadSurface,degree10DESSurface};
-    --apply(Fs1,F->elapsedTime randomSurfaceDegreeAndSectionalGenus(F,ringList))   
-  Text
-    The last command should not be executed since it takes too much time.
 
-Caveat
-   
-SeeAlso
-  
-///
-*-
 
 doc ///
 Key
@@ -8745,6 +8680,7 @@ References
 SeeAlso
   tateResolutionOfSurface
 ///
+
 -* for CannedExample in abelianSurfaceD10
   Example
     kk=ZZ/nextPrime 10^4; 
