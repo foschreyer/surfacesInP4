@@ -5043,7 +5043,7 @@ Description
     K2=Ksquare(d,sg,xO)
     d^2-10*d-5*HK-2*K2+12*xO==0
 References
-   Hartshorne, Appendix A
+   \textit{Hartshorne, R.}, Algebraic Geometry , GTM 52, Springer (1977), Appendix A
 SeeAlso
    HdotK
    sectionalGenus
@@ -5083,7 +5083,7 @@ Description
     pg=geometricGenus X
     1-q+pg==chiO(X)
 References
-   Hartshorne, V
+   \textit{Hartshorne, R.}, Algebraic Geometry , GTM 52, Springer (1977)
 SeeAlso
    irregularity
    geometricGenus
@@ -5116,7 +5116,7 @@ Description
     pg=geometricGenus X
     1-q+pg==chiO(X)
 References
-   Hartshorne, V
+   \textit{Hartshorne, R.}, Algebraic Geometry , GTM 52, Springer (1977)
 SeeAlso
    chiO
    geometricGenus
@@ -5149,7 +5149,7 @@ Description
     q=irregularity X   
     1-q+pg==chiO(X)
 References
-   Hartshorne, V
+   \textit{Hartshorne, R.}, Algebraic Geometry , GTM 52, Springer (1977), V
 SeeAlso
    chiO
    irregularity
@@ -5214,7 +5214,7 @@ Description
    dim L, degree L
    dim (X+L),degree (X+L)
 References
-    \textit{P. Le Barz}, Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981) Zbl 0492.14045) 
+   \textit{P. Le Barz}, Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981) Zbl 0492.14045) 
 SeeAlso
    residualInQuintics
 ///
@@ -5278,7 +5278,7 @@ Key
  canonicalDivisor
  (canonicalDivisor,Ideal)
 Headline
- compute a canonical divisor on a surface with positive geometric genus,,
+ compute a canonical divisor on a surface with positive geometric genus
 Usage
  D = canonicalDivisor X
 Inputs
@@ -5309,7 +5309,7 @@ Description
     Thus, X is the projection from the tangent plane at a point p on a 
     minimal K3 surface X2 in P7 of degree 12=8+4. 
 References
-   
+   \textit{Hartshorne, R.}, Algebraic Geometry , GTM 52, Springer (1977)
 SeeAlso
    chiO
    sectionalGenus
@@ -5360,7 +5360,7 @@ Description
     Thus, X is the projection from the tangent plane at a point p of
     a minimal K3 surface X2 in P7 of degree 12=8+4. 
 References
-   
+   \textit{Hartshorne, R.}, Algebraic Geometry , GTM 52, Springer (1977) (V.1.5)
 SeeAlso
    chiO
    sectionalGenus
@@ -5438,10 +5438,8 @@ Description
     tally apply(cH,c->(dim c, degree c, degree radical c, minimalBetti c))
   Text
     Say something sensible.
-
-    
 References
-  \textit{D. Eisenbud, G. Floystad, F.-O. Schreyer} Sheaf cohomology and free resolutions over exterior algebras, Trans. Am. Math. Soc. 355, No. 11, 4397-4426 (2003; Zbl 1063.14021)
+   \textit{D. Eisenbud, G. Floystad, F.-O. Schreyer} Sheaf cohomology and free resolutions over exterior algebras, Trans. Am. Math. Soc. 355, No. 11, 4397-4426 (2003; Zbl 1063.14021)
 SeeAlso
    geometricGenus
    irregularity
@@ -5559,6 +5557,9 @@ Description
     minimalBetti X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
+References
+   \textit{Schreyer, F.-O.}, Small fields in constructive algebraic geometry, in Moduli of Vector bundles, Sanda 1994, Lecture Notes in Pure and Appl. Math., 179, (1996), 221-228 
+
 ///
 
 
@@ -6439,7 +6440,7 @@ Inputs
  P4:PolynomialRing
    coordinateRinge of P4
  E: Ring
-   the dula exterior algebra
+   the dual exterior algebra
  k:Number
   get example number k
 Outputs
@@ -6778,9 +6779,8 @@ Outputs
   the homogeneous ideal of the canonical divisor
 Description
   Text
-    The canonical divisor of an Abo surface that is a non-minimal K3-surface is a collection of
-    six (-1)-curves
-    of total degree 12. Which degrees occur depends on the surface.
+    The canonical divisor of an Abo surface that is a non-minimal K3-surface, is a collection of
+    six (-1)-curves of total degree 12. Which degrees occur depends on the surface.
   Example
     kk=ZZ/nextPrime 10^4;
     P4=kk[x_0..x_4];
@@ -6940,7 +6940,7 @@ Outputs
 Description
   Text
     This gives an (apparently) unirational construction of Abo surfaces with 111333 partition
-    of the canonicl divisor. This function constructs a 3x4 matrix m3x4 with linear entries
+    of the canonical divisor. This function constructs a 3x4 matrix m3x4 with linear entries
     from E whose column space contains 7 rank-two planes meeting a specific line and returns
     aboSurfaceFromMatrix(m3x4,P4).
   Example
@@ -7036,7 +7036,9 @@ Description
     All the lines in the plane through the point. Thus, LeBarz's 6-secant formula does not apply.
     There are three additional 6-secants lines one of which is L1.
 
-    The 5-secant lines are contained in every quintic, because each intersects the plane at a point. 
+    The 5-secant lines are contained in every quintic, because each intersects the plane at a point.
+References
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)    
 SeeAlso
   LeBarzN6
   partitionOfCanonicalDivisorOfAboSurface
@@ -7121,6 +7123,9 @@ Description
   Text
     The linked surface Y is a smooth elliptic surface blown-up in 5
     points, which are (-1)-lines on Y.
+References
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
+
 SeeAlso
    residualInQuintics
    tateResolutionOfSurface
@@ -7214,7 +7219,7 @@ Inputs
   a number which  specifies the m3x4 matrix of linear forms over E to use. 
 Outputs
  X:Ideal
-  ideal of a Abo surface
+  ideal of an Abo surface
 Description
   Text
     In characteristic p=31 the function returns a non minimal elliptic surface with
@@ -7234,6 +7239,9 @@ Description
   Text
     This surface is a non-minimal elliptic surface with four (-1)-lines and two (-1)-conics.
     The canonical divisor also has a degree 4 elliptic curve as a component.
+References
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
+
 SeeAlso
    residualInQuintics
    tateResolutionOfSurface
@@ -7438,7 +7446,8 @@ Description
     elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
     pt=saturate minors(2,sub(m3x4s,vars P4))
     sub(m3x4s,vars P4)%pt
-       
+References
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)       
 SeeAlso
    residualInQuintics
    partitionOfCanonicalDivisorOfAboSurface
@@ -7515,6 +7524,9 @@ Description
     dim(E'+E)
   Text
     The divisor 2E moves in a pencil.
+References
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
+    
 SeeAlso
    residualInQuintics
    
@@ -7572,10 +7584,8 @@ Description
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     minimalBetti(X=bordigaSurface P4)
-
 References
-     \textit{Bordiga, G.} La superficie del 6d ordine, con 10 rette, nello spazio P4; e le sue proiezioni nello
-      spazio ordinario, Mem. Atti. Accad. Naz. Lincei., 4, (1887), 182-203
+   \textit{Bordiga, G.} La superficie del 6d ordine, con 10 rette, nello spazio P4; e le sue proiezioni nello spazio ordinario, Mem. Atti. Accad. Naz. Lincei., 4, (1887), 182-203
 
 ///
 
@@ -7694,11 +7704,9 @@ Description
     minimalBetti Y
     P2=kk[y_0..y_2];
     minimalBetti veroneseSurface(P4,P2)
-
 References
-        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
-      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+   \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
 
      
 ///
@@ -7728,14 +7736,9 @@ Description
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD7(P4,P2))
     degree X, sectionalGenus X
-
 References
-        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
-    \textit{Okonek, Ch.} \"Uber $2$-codimensionale Untermannigfaltigkeiten vom
-      Grad $7$ in $\Pn 4$ und $\Pn 5$, Math. Z., 187, (1983), 209-219
-
-
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+   \textit{Okonek, Ch.} \"Uber $2$-codimensionale Untermannigfaltigkeiten vom Grad $7$ in $\Pn 4$ und $\Pn 5$, Math. Z., 187, (1983), 209-219
 ///
 ///
 apply((toList(-4..8),m->chiI(m,8,5,1)))
@@ -7769,13 +7772,9 @@ Description
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
     degree X, sectionalGenus X
-
 References
-        \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
-       \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
-
-  
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+   \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
 ///
 
 ///
@@ -7823,11 +7822,8 @@ Description
     degree X, sectionalGenus X
     betti(T=tateResolutionOfSurface X)
     betti(T.dd_4)
-
 References
-       \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
-
-   
+   \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237 
 ///
 
 doc ///
@@ -7867,13 +7863,8 @@ Description
    The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
 References
-   
-
-  \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
-
+   \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
    \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
-
-  
 SeeAlso
    enriquesSurfaceOfDegree10
    adjunctionProcessData
@@ -7941,8 +7932,9 @@ Description
     The first adjunction maps blows down 4 (-1) lines. Hence the self-intersection number of the
     canonical divisor on Y is K_Y^2=K_X^2+4=0. Moreover H_Y.K_Y=0. So K_Y is numerically
     trivial and Y is a minimal Enriques surface.
-
-    
+References
+   \textit{Brivio,S.}, Smooth Enriques surfaces in $\Pn 4$ and exceptional bundles, Math. Z., 213, (1993), 509-521
+   \textit{Decker, W., Ein, L., Schreyer, F-O.}, Construction of surfaces in $\Pn 4$, J. Algebraic Geom., 2,  (1993), 185-237
 SeeAlso
     degree10pi8RanestadSurface
     adjunctionProcessData
@@ -8124,8 +8116,6 @@ sub(sm,matrix{{0_P4,0,0,0,0}})
 -- for write up
 binomial(9+2,2)-6-14*3-5*1
 3^14, 3^8
-
-
 ///
 
 doc ///
@@ -8172,7 +8162,11 @@ Description
   Text
     The first adjunction maps blows down 5 (-1) lines. The second a (-1) conic.
     The second adjoint surface X2 is a minimal Enriques surface of degree 20
-    in a P10.    
+    in a P10.
+References
+   \textit{Decker, W., Ein, L., Schreyer, F-O.}, Construction of surfaces in $\Pn 4$, J. Algebraic Geom., 2,  (1993), 185-237
+   \textit{Schreyer, F.-O.}, Small fields in constructive algebraic geometry, in Moduli of Vector bundles, Sanda 1994, Lecture Notes in Pure and Appl. Math., 179, (1996), 221-228 
+
 SeeAlso
     specialEnriquesSchreyerSurface
     specificSchreyerSurface
@@ -8202,7 +8196,7 @@ Outputs
   of a degree 10 sectional genus 9 Ranestad surface in P4
 Description
   Text
-    We construct the surface from a carefully choosen differential T.dd_4
+    We construct the surface from a carefully chosen differential T.dd_4
     of the Tate resolution.
   Example
     kk=ZZ/nextPrime 10^3;
@@ -8213,8 +8207,7 @@ Description
     betti(T.dd_4)
     degree X, sectionalGenus X
 References
-     \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
-      fourspace, Thesis, Univ. of Oslo, (1988)
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
 ///
 
 doc ///
@@ -8279,7 +8272,10 @@ Description
     tally apply(cH,c->(dim c, degree radical c, degree c))
   Text
     This times the ideal H decomposes in to 10 points of degree 1 defined ove kk
-    and an embedded (y_0..y_2)-primary ideal. 
+    and an embedded (y_0..y_2)-primary ideal.
+References
+   \textit{Alexander, J.}, Surfaces rationelles non-speciales dans $\Pn 4 $, Math. Z., 200, (1988), 87-110
+   \textit{Decker, W., Ein, L., Schreyer, F-O.}, Construction of surfaces in $\Pn 4$, J. Algebraic Geom., 2,  (1993), 185-237
 SeeAlso
    enriquesSurfaceOfDegree9
    tateResolutionOfSurface
@@ -8327,7 +8323,9 @@ Description
   Text
     The self-intersection number of the canonical divisor on the first adjoint surface Y
     is K_Y^2=K_X^2+1=0. Moreover H_Y.K_Y =0. Hence K_Y is numerically trivial
-    and Y is a minimal Enriques surface. 
+    and Y is a minimal Enriques surface.
+References
+   \textit {Aure, A., Ranestad, K.}, The Smooth Surfaces of Degree $9$ in $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179,(1992), 32-46
 SeeAlso
    nonspecialAlexanderSurface
    adjunctionProcessData
@@ -8369,8 +8367,10 @@ Description
     betti res(coker random(target T.dd_4,source T.dd_4),LengthLimit=>4)
     betti res(coker transpose random(target T.dd_4,source T.dd_4),LengthLimit=>5)
   Text
-    Thus a random choice of the differential T.dd_4 leads to a surface and the component of the Hilbert scheme is unirational
-    
+    Thus a random choice of the differential T.dd_4 leads to a surface and the component of the Hilbert scheme is unirational.
+References
+   \textit{Alexander, J.}, Speciality one rational surfaces in $\Pn 4$}, LNS,London Math. Soc., LNS, 179, (1992), 1-23
+   \textit{Decker, W., Ein, L., Schreyer, F-O.}, Construction of surfaces in $\Pn 4$, J. Algebraic Geom., 2,  (1993), 185-237
 ///
 
 doc ///
@@ -8425,12 +8425,8 @@ Description
    R=residualInQuintics X; 
    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
   Text
-   References
-     \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-    
-
-    
+References
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   adjunctionProcessData
   residualInQuintics
@@ -8487,6 +8483,9 @@ Description
    LeBarzN6(11,11,1)
   Text
    X has two 6-secant lines and five (-1)-lines.
+References
+   \textit{Graf von Bothmer, H-C., Erdenberger, C.,Ludwig, K.}, A new family of rational surfaces in $\Pn 4$, J. Symbolic Comput., 39,  (2005), 51-60
+   \textit{Graf von Bothmer, H-C., Ranestad, K.},  Classification of rational surfaces of degree 11 and sectional genus 11 in $\Pn 4$, Math. Scand., 104, (2009), 60-94
 SeeAlso
   adjunctionProcessData
 
@@ -8610,9 +8609,7 @@ Description
   These surface where overlooked by Okonek and Ionescu respectively in their classification of low
   degree smooth projective surfaces.
 References
-  Okonek
-  Iounescu
-  Abo et al
+   \textit{Abo, H., Decker, W., Sasakura, N.},  An elliptic conic bundle arising from a stable rank-3 vector bundle,  Math. Z., 229, (1998), 725-741
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -8643,7 +8640,8 @@ Description
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 References
-  ADHPR
+   \textit{Serrano, F.}, Divisors on bielliptic surfaces and embeddings in $\Pn 4$, Math. Z., 203, (1990), 527-533
+   \textit{Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K.  Syzygies of abelian and bielliptic surfaces in. $\Pn 4$, Int. J. of Math., 8, (1997),  849-919
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -8655,13 +8653,13 @@ Key
 Headline
  construct a bielliptic surface of degree 15 
 Usage
- X=biellipticSurfaceD10 P4
+ X=biellipticSurfaceD15 P4
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
 Outputs
  X:Ideal
-  of a bielliptic surface of degree 10 
+  of a bielliptic surface of degree 15 
 Description
   Text
   Example
@@ -8676,7 +8674,7 @@ Description
 Caveat
    The function can fail, in which case it returns null.
 References
-  ADHPR
+   \textit{Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K.  Syzygies of abelian and bielliptic surfaces in. $\Pn 4$, Int. J. of Math., 8, (1997),  849-919
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -8763,7 +8761,7 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of a abelian surface of degree 10, a Horrocks-Mumford surface. 
+  of an abelian surface of degree 10, a Horrocks-Mumford surface. 
 Description
   Text
     Horrocks and Mumford rediscovered these surfaces as the zero locus of sections of the
@@ -9008,7 +9006,11 @@ Description
     o32 : BettiTally
 
 References
-  Horrocks-Mumford,Barth-Hulek-Moore,Comessati,Decker-Schreyer,Eisenbud-Floystad-Schreyer
+   \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735-755
+   \textit{Comessatti, A.}, Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
+   \textit{Decker, W., Schreyer, F-O.}, On the uniqueness of the {Horrocks}-{Mumford}-bundle, Math. Ann., 273,(1986),415-443
+   \textit{Eisenbud, D., Fl\o ystad, G., Schreyer, F-O.}, Sheaf cohomology and free resolutions over exterior algebras ,Trans. Amer. Math. Soc., 355,(2003), 4397-4426
+   \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
 SeeAlso
   searchHMBundle
 ///
@@ -9054,15 +9056,9 @@ Description
    (degree Y, sectionalGenus Y) == (10,6)
    betti tateResolutionOfSurface(Y,7)
 References
-   Horrocks-Mumford
-   
- \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735--755
-
- \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
- 
-   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-   
+   \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735--755
+   \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993) 
 SeeAlso
   horrocksMumfordSurface
   adjunctionProcessData
@@ -9137,9 +9133,7 @@ Description
   Text
    X is a non-minimal abelian surface. It contains twenty five (-1) lines.
 References
-    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-      
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)    
 SeeAlso
   horrocksMumfordSurface
   abelianSurfaceD15
@@ -9180,8 +9174,7 @@ Description
  Text
    The surface is ACM. We use its Hilbert-Burch matrix.
 References
-      \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -9212,12 +9205,8 @@ Description
  Text
    The surface is ACM. We use its Hilbert-Burch matrix.
 References
-
-    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
-      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
-
-  
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+   \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -9261,9 +9250,7 @@ Description
  Text
    X is a minimal elliptic surface.
 References
-   \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in
-   $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
-
+   \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9304,9 +9291,7 @@ Description
  Text
    X is non-minimal elliptic surface blown-up in three points.
 References
-   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
-    fourspace, Thesis, Univ of Oslo, (1988)
-
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ of Oslo, (1988)
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9349,8 +9334,7 @@ Description
  Text
    X is elliptic surface blown-up with two (-1) lines.
 References
-   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
-   fourspace, Thesis, Univ of Oslo, (1988)
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ of Oslo, (1988)
 
 SeeAlso
   tateResolutionOfSurface
@@ -9393,13 +9377,12 @@ Description
  Text
    X is an elliptic surface blown-up with three (-1) lines and one (-1) conic.
 References
-  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
   HdotK
-  Ksquare
+  Ksquare          
   LeBarzN6
 ///
 
@@ -9433,9 +9416,7 @@ Description
  Text
    X is an non-minimal elliptic surface with four (-1) lines and one  (-1) conic curve.
 References
-     \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   canonicalDivisor
@@ -9478,8 +9459,7 @@ Description
    X contains a plane quintic curve with an additional point p in that plane.
    Every line through p in that plane is a 6-secant line.
 References
-  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   residualInQuintics
@@ -9525,7 +9505,7 @@ Description
    Since K^2=0 and the canonical divisor connected this surface is minimal. The surface is elliptic fibration over P1 into
    elliptic curves of degree 12.
 References
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   tateResolutionOfSurface
   selfIntersectionNumber
@@ -9592,7 +9572,7 @@ Description
     X contains four (-1) lines and a (-1) degree 4 rational normal curve. The canonical divisor E
     of the minimal surface has genus 1 and self-intersection number 0. Thus X is an elliptic surface.
 References
-  
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
 SeeAlso
   tateResolutionOfSurface
   selfIntersectionNumber
@@ -9647,7 +9627,7 @@ Description
     The canonical divisor is the pullback of a divisor of degree 3 on the albanese curve, which is
     an elliptic curve. This fits with pg=3.
 References
-  
+   \textit{Abo, H., Ranestad, K.},  Irregular elliptic surfaces of degree 12 in projective fourspace, Math. Nach., 278, (2005), 511-524
 SeeAlso
   tateResolutionOfSurface
   selfIntersectionNumber
@@ -9757,8 +9737,6 @@ Description
    oX=chiO(X)
    Ksquare(d,sg,oX)
    betti tateResolutionOfSurface X
-  Text
-   X is nonminimal with one exceptional line.
 References
 
 SeeAlso
@@ -9796,10 +9774,7 @@ Description
   Text
    X is nonminimal with one exceptional line.
 References
-
-    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
-
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
 SeeAlso
   
 ///
@@ -9835,10 +9810,8 @@ Description
   Text
    X is non-minimal with one exceptional curve of degree 2.
 References
-     \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
-
-      \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
-
+   \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
+   \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
 SeeAlso
   
 ///
@@ -9875,9 +9848,7 @@ Description
   Text
    X is non-minimal with five exceptional lines.
 References
-  \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in
-   $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
-
+   \textit{Aure, A., Ranestad, K} The Smooth Surfaces of Degree $9$ in $\Pn 4$, LNS,London Math. Soc.,Cambridge Univ. Press, 179, (1992) 32-46
 SeeAlso
   
 ///
@@ -9914,12 +9885,10 @@ Description
   Text
    X is non-minimal with two exceptional lines and an exceptional rational quartic curve.
 References
-  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 SeeAlso
   
-///
+///        
 
 doc ///
 Key
@@ -9960,12 +9929,8 @@ Description
   Text
    The plane intersects X in a quartic curve and three points. The three lines through
    two of these points are the thee 6-secant lines.
-
-  
 References
- \textit{Ranestad, K} On smooth surfaces of degree ten in the projective
-   fourspace, Thesis, Univ of Oslo, (1988) 
-
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ of Oslo, (1988) 
 SeeAlso
   
 ///
@@ -10037,9 +10002,7 @@ Description
    of larger degree as in the following pattern (e1,e2,e3,..)
    (4,0,0,0,1), (3,0,2), (2,2,1), (1,4)
 References
-  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 SeeAlso
 ///
 -*
@@ -10133,9 +10096,7 @@ Description
     X has no 6-secant line, since the ideal is generated by quintics.
     Thus there nine (-1) lines and a (-1) conic. 
 References
-  \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993) 
 SeeAlso
   selfIntersectionNumber
   LeBarzN6
@@ -10229,10 +10190,9 @@ Description
 
   Text
    X has no 6-secant line, since the ideal is generated by quintics.
-   Thus there 10 (-1) lines and a (-1) quartic. 
+   Thus there ten (-1) lines and one (-1) quartic. 
 References
-
-  
+   \textit{Decker, W., Ein, L., Schreyer, F-O.}, Construction of surfaces in $\Pn 4$, J. Algebraic Geom., 2,  (1993), 185-237
 SeeAlso
   selfIntersectionNumber
   LeBarzN6
@@ -10382,9 +10342,7 @@ Description
     we expect that the minimal K3 surface is special, moving in a 19-3 dimensional family.
   
 References
-      \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
   selfIntersectionNumber
   residualInQuintics
@@ -10520,9 +10478,7 @@ Description
    
    
 References
-    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective 
-      Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
-  
+   \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 SeeAlso
   selfIntersectionNumber
   residualInQuintics
@@ -10586,7 +10542,6 @@ Description
     20=3*2*10-1-(2*(5-3)+8+3+24)
     Thus the runnig time to find an example is about 3.5 hours
     over ZZ/2.
-
 SeeAlso
   horrocksMumfordSurface
   varietyOfUnstablePlanes
