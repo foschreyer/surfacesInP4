@@ -12,9 +12,7 @@ check "NongeneralTypeSurfacesInP4"
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 needsPackage ("NongeneralTypeSurfacesInP4")
-elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 1042.03s elapsed
-1254.6/60
-
+elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 855.314s elapsed 
 
 ///
 
@@ -2087,7 +2085,7 @@ m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*su
       if opt.Count then << "count1= " << count1 <<endl;
         singX:= singularLocus I; 
         not codim singX == 5) do ();
-      if opt.Count then << "count2= " << count2 <<endl;      
+      --if opt.Count then << "count2= " << count2 <<endl;      
       (I, m3x4, hdim))
 
 
@@ -4262,12 +4260,12 @@ ellipticSurfaceD12S14Linfinite(PolynomialRing):=P4 -> (
     assert(dim X==3 and degree X==12 and sectionalGenus X==14);
     X)
 
-specificEllipticSurfaceD13S16=method()
+specificEllipticSurfaceD13S16=method(Options=>{Verbose=>false})
 
-specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):=(P4,E,k) -> (
+specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):= o -> (P4,E,k) -> (
     if not member(k,{1,2,4,6}) then (<< k <<" should be in "<<{1,2,4,6} <<flush<<endl;
 	    return ideal 1_P4);
-    X:=specificAboSurface(P4,E,k);
+    X:=specificAboSurface(P4,E,k,Verbose=>o.Verbose);
     betti(ci:=ideal(gens X*random(source gens X,P4^{2:-5})));
     Y:=ci:X;
     return Y)
@@ -6533,6 +6531,35 @@ dim E1, degree E1, genus E1, selfIntersectionNumber(Y,E1)
 
 
 -* Abo surfaces *-
+-* for CannedExample in aboSurfaceFromMatrix
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
+      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
+      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
+      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+    elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
+    (d,sg)=(degree X, sectionalGenus X)
+    B=betti tateResolutionOfSurface X
+    xO=chiO(X)
+    Ksquare(d,sg,xO)==-6
+    HdotK(d,sg)==12
+    LeBarzN6(d,sg,xO)
+    minimalBetti X
+    residual=residualInQuintics X;
+    dim residual, degree residual
+    cResidual=primaryDecomposition residual;
+    tally apply(cResidual,c->(dim c, degree c, dim (c+X), degree (c+X)))
+    D=canonicalDivisor X;
+    degree D
+    selfIntersectionNumber(X,D)
+    cD=primaryDecomposition D;#cD
+    tally apply(cD,c->(Oc=sheaf(P4^1/c); r=rank HH^0(Oc);
+	(dim c,degree c,r)))
+    partits=partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true)
+*-
 
 doc ///
 Key
@@ -6561,38 +6588,122 @@ Description
     it is a 6-points blow-up of a minimal modeland the degrees of the
     six exceptional divisors form a partition of 12 into 6 parts. In the example below, this is the partition
     {1,2,2,2,3}.
-    
-  Example
-    kk=ZZ/19
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
-      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
-      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
-      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
-    elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
-    (d,sg)=(degree X, sectionalGenus X)
-    B=betti tateResolutionOfSurface X
-    xO=chiO(X)
-    Ksquare(d,sg,xO)==-6
-    HdotK(d,sg)==12
-    LeBarzN6(d,sg,xO)
-    minimalBetti X
-    residual=residualInQuintics X;
-    dim residual, degree residual
-    cResidual=primaryDecomposition residual;
-    tally apply(cResidual,c->(dim c, degree c, dim (c+X), degree (c+X)))
-    D=canonicalDivisor X;
-    degree D
-    selfIntersectionNumber(X,D)
-    cD=primaryDecomposition D;#cD
-    tally apply(cD,c->(Oc=sheaf(P4^1/c); r=rank HH^0(Oc);
-	(dim c,degree c,r)))
-    partits=partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true)
+  CannedExample
+    i1 : kk=ZZ/19
+
+    o1 = kk
+
+    o1 : QuotientRing
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
+
+    o3 = E
+
+    o3 : PolynomialRing, 5 skew commutative variable(s)
+    i4 : m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
+	    -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
+	    -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
+	    9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+
+    o4 = | 7e_0+3e_1-7e_2-8e_3 -4e_0+3e_1-7e_2-8e_4 5e_0+6e_1+2e_2+9e_3-4e_4
+         | e_0-5e_1-e_2+7e_3   -e_0-4e_1+7e_2-2e_4  -e_0-8e_1+2e_3-3e_4     
+         | 8e_0-2e_1+3e_2+6e_3 9e_0-2e_1-e_2-e_4    9e_0-9e_1+7e_2+e_3+8e_4 
+      ------------------------------------------------------------------------
+          -6e_0-7e_1+3e_3-3e_4      |
+          -7e_0+3e_1-9e_2+6e_3-6e_4 |
+          -e_0+7e_1-8e_2+8e_3-8e_4  |
+
+    3      4
+    o4 : Matrix E  <-- E
+    i5 : elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
+    -- 22.7432s elapsed
+
+    o5 : Ideal of P4
+    i6 : (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (12, 13)
+
+    o6 : Sequence
+    i7 : B=betti tateResolutionOfSurface X
+
+                 -1  0  1  2 3 4 5  6  7
+    o7 = total: 123 74 38 14 4 4 8 28 76
+            -4:   1  .  .  . . . .  .  .
+            -3: 122 74 38 14 1 . .  .  .
+	    -2:   .  .  .  . 3 1 .  .  .
+	    -1:   .  .  .  . . 3 4  .  .
+	     0:   .  .  .  . . . 4 28 76
+
+    o7 : BettiTally
+    i8 : xO=chiO(X)
+
+    o8 = 2
+    i9 : Ksquare(d,sg,xO)==-6
+
+    o9 = true
+    i10 : HdotK(d,sg)==12
+
+    o10 = true
+    i11 : LeBarzN6(d,sg,xO)
+
+    o11 = 7
+    i12 : minimalBetti X
+
+                 0  1  2  3 4
+    o12 = total: 1 12 24 17 4
+              0: 1  .  .  . .
+	      1: .  .  .  . .
+	      2: .  .  .  . .
+	      3: .  .  .  . .
+	      4: .  4  .  . .
+	      5: .  8 24 17 4
+
+    o12 : BettiTally
+    i13 : residual=residualInQuintics X;
+
+    o13 : Ideal of P4
+    i14 : dim residual, degree residual
+
+    o14 = (3, 1)
+
+    o14 : Sequence
+    i15 : cResidual=primaryDecomposition residual;
+    i16 : tally apply(cResidual,c->(dim c, degree c, dim (c+X), degree (c+X)))
+
+    o16 = Tally{(1, 3, 1, 1) => 1}
+                (2, 1, 1, 6) => 3
+                (3, 1, 2, 4) => 1
+
+    o16 : Tally
+    i17 : D=canonicalDivisor X;
+
+    o17 : Ideal of P4
+    i18 : degree D
+
+    o18 = 12
+    i19 : selfIntersectionNumber(X,D)
+
+    o19 = -6
+    i20 : cD=primaryDecomposition D;#cD
+
+    o21 = 4
+    i22 : tally apply(cD,c->(Oc=sheaf(P4^1/c); r=rank HH^0(Oc);
+	    (dim c,degree c,r)))
+
+    o22 = Tally{(2, 1, 1) => 1}
+                (2, 3, 1) => 1
+		(2, 4, 2) => 2
+
+    o22 : Tally
+    i23 : partits=partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true)
+
+    o23 = {1, 2, 2, 2, 2, 3}
+
+    o23 : List
   Text
     X=X_min(p1..p6) is a minimal K3 surface blown up in 6 points embedded by the
     linear system H = |(Hmin;3,2^4,1)|. The four (-1)-conics decompose into two Frobenius orbits
-    of length 2 and 2.
+    of length 2 and 2 in this specific example.
 SeeAlso
    partitionOfCanonicalDivisorOfAboSurface
    canonicalDivisor
@@ -6809,6 +6920,26 @@ SeeAlso
   HdotK
 ///
 
+-* for CannedExample for abo112224Or111234Surface
+ Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    P3=kk[y_0..y_3];
+    h=2
+    setRandomSeed("get a 112224 surface in a minute");
+    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
+    r
+  Text
+    Starting with a different random seed we find a surface of the second type.
+  Example
+    setRandomSeed("get a 111234 surface in a minute");
+    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    partitionOfCanonicalDivisorOfAboSurface X
+ == {1, 1, 1, 2, 3, 4} 
+    r
+*-
+
 doc ///
 Key
  abo112224Or111234Surface
@@ -6835,24 +6966,54 @@ Outputs
   dimension of the relevant Hom space
 Description
   Text
-    The function performs a search in a particular linear family of matrices. It finds matrices, we believe in codimesion 2,
-    yielding smooth surfaces two corresponding 
-  Example
-    kk=ZZ/19;
-    P4=kk[x_0..x_4];
-    P3=kk[y_0..y_3];
-    h=2
-    setRandomSeed("get a 112224 surface in a minute");
-    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
-    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
-    r
+    The function performs a search in a particular linear family of matrices.
+    It finds matrices, we believe in codimesion 2, yielding smooth surfaces of two differnt components.
+  CannedExample
+    i1 : kk=ZZ/19;
+    i2 : P4=kk[x_0..x_4];
+    i3 : P3=kk[y_0..y_3];
+    i4 : h=2
+
+    o4 = 2
+    i5 : setRandomSeed("get a 112224 surface in a minute");
+    -- setting random seed to 14159357386601842985588153711132785285518962237126256200051594324
+    i6 : elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    count= 14
+    count1= 1
+    -- 10.6815s elapsed
+    i7 : partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
+
+    o7 = true
+    i8 : r
+
+    o8 = 2
   Text
     Starting with a different random seed we find a surface of the second type.
-  Example
-    setRandomSeed("get a 111234 surface in a minute");
-    elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
-    partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 1, 2, 3, 4} 
-    r
+  CannedExample
+    i9 : setRandomSeed("get a 111234 surface in a minute");
+    -- setting random seed to 14159357386601842973017755919588831059697681095951739912610164124
+    i10 : elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
+    count= 221
+    count1= 1
+    count= 412
+    count1= 3
+    count= 708
+    count1= 4
+    -- 54.3289s elapsed
+    i11 : partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 1, 2, 3, 4}
+
+    o11 = true
+    i12 : r
+
+    o12 = 2
+  Text
+    The additional output under the Verbose=>true print the number of trails = count
+    to get a matrix with HomSpace of dimension h which lead to a surface.
+    With Option count=>true we print count1 which is 
+    the number of times we got a not necessarily smooth surface.
+    
+    The codimension 2 believe is supported by the fact on average the value of count
+    increases by approximately 180. 
 SeeAlso
   LeBarzN6
   residualInQuintics
@@ -7383,7 +7544,19 @@ elapsedTime apply(7,k->minimalBetti (X=specificAboSurface(P4,E,k)))
 
 
 ///
-
+-* for CannedExample randomAboSurface
+  Example
+    kk=ZZ/7;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];    
+    setRandomSeed("carefully choosen fast randomSeed");
+    elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+    saturate minors(2,sub(m3x4,vars P4))
+    setRandomSeed("same start");
+    elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
+    pt=saturate minors(2,sub(m3x4s,vars P4))
+    sub(m3x4s,vars P4)%pt
+*-
 
 doc ///
 Key
@@ -7434,18 +7607,39 @@ Description
 
     The two more specialized versions search for Abo surfaces with a lower bound or precise 
     dimension of the Hom space. These are search functions can take a long time.
-    
-  Example
-    kk=ZZ/7;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];    
-    setRandomSeed("carefully choosen fast randomSeed");
-    elapsedTime (X,m3x4)=randomAboSurface(P4,E);
-    saturate minors(2,sub(m3x4,vars P4))
-    setRandomSeed("same start");
-    elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
-    pt=saturate minors(2,sub(m3x4s,vars P4))
-    sub(m3x4s,vars P4)%pt
+  CannedExample
+    i1 : kk=ZZ/7;
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : setRandomSeed("carefully choosen fast randomSeed");
+    -- setting random seed to 1374551163826207026669476597251851023179306320125668960254614211770
+    i5 : elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+    -- 37.8333s elapsed
+    i6 : saturate minors(2,sub(m3x4,vars P4))
+
+    o6 = ideal 1
+
+    o6 : Ideal of P4
+    i7 : setRandomSeed("same start");
+    -- setting random seed to 126835971200444596612
+    i8 : elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
+    -- 21.6516s elapsed
+    i9 : pt=saturate minors(2,sub(m3x4s,vars P4))
+
+    o9 = ideal (x , x , x , x )
+                 4   3   2   1
+
+    o9 : Ideal of P4
+    i10 : sub(m3x4s,vars P4)%pt
+
+    o10 = | -2x_0 0 x_0 -3x_0 |
+          | 0     0 0   0     |
+          | 0     0 0   0     |
+
+                   3       4
+    o10 : Matrix P4  <-- P4
+
+
 References
    \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)       
 SeeAlso
@@ -9386,12 +9580,34 @@ SeeAlso
   LeBarzN6
 ///
 
+-* for CannedExample in ellipticSurfaceD12S14L0
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   setRandomSeed("fix decomposition of the canonical divisors");
+   elapsedTime X=ellipticSurfaceD12S14L0 P4;
+   (degree X, sectionalGenus X)==(12,14)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=1+(genera X)_0
+   D1=saturate canonicalDivisor X;
+   degree D1,HdotK(12,14)
+   selfIntersectionNumber(X,D1),Ksquare(12,14,3)
+   D2=saturate canonicalDivisor X;
+   E=saturate(D1+D2);
+   degree E
+   cE=decompose E;
+   tally apply(cE,c->(degree c, genus c, selfIntersectionNumber(X,c)))
+   Dmin=D1:E;
+   HH^0 (sheaf (P4^1/Dmin))
+*-
+
 doc ///
 Key
  ellipticSurfaceD12S14L0
  (ellipticSurfaceD12S14L0,PolynomialRing)
 Headline
- construct an elliptic su4rface of degree 12, sectional genus 14 and no 6-secant line
+ construct an elliptic surface of degree 12, sectional genus 14 and no 6-secant line
 Usage
  X=ellipticSurfaceD12S12L0 P4
 Inputs
@@ -9402,19 +9618,105 @@ Outputs
   of an elliptic surface of degree 12 and sectional genus 14 
 Description
   Text
+    We construct an elliptic surface of degree 12, sectional genus 14 and no 6-secant line.
+  CannedExample
+   i1 : kk=ZZ/nextPrime 10^3;
+   i2 : P4=kk[x_0..x_4];
+   i3 : setRandomSeed("fix decomposition of the canonical divisors");
+     -- setting random seed to 156513424253060481162377452610506080227701333709335531157084021625895990393353946085745
+   i4 : elapsedTime X=ellipticSurfaceD12S14L0 P4;
+     -- .853767s elapsed
+
+   o4 : Ideal of P4
+   i5 : (degree X, sectionalGenus X)==(12,14)
+
+   o5 = true
+   i6 : minimalBetti X
+
+               0 1  2 3 4
+   o6 = total: 1 8 11 5 1
+            0: 1 .  . . .
+	    1: . .  . . .
+	    2: . .  . . .
+	    3: . .  . . .
+	    4: . 8  7 1 .
+	    5: . .  4 4 1
+
+   o6 : BettiTally
+   i7 : betti(T=tateResolutionOfSurface X)
+
+                -1  0  1  2 3 4 5  6  7
+   o7 = total: 128 78 41 16 5 3 9 33 82
+           -4:   1  .  .  . . . .  .  .
+	   -3: 127 78 41 16 2 . .  .  .
+	   -2:   .  .  .  . 3 2 .  .  .
+	   -1:   .  .  .  . . 1 1  .  .
+	    0:   .  .  .  . . . 8 33 82
+
+   o7 : BettiTally
+   i8 : pg=1+(genera X)_0
+
+   o8 = 3
+   i9 : D1=saturate canonicalDivisor X;
+
+   o9 : Ideal of P4
+   i10 : degree D1,HdotK(12,14)
+
+   o10 = (14, 14)
+
+   o10 : Sequence
+   i11 : selfIntersectionNumber(X,D1),Ksquare(12,14,3)
+
+   o11 = (-5, -5)
+
+   o11 : Sequence
+   i12 : D2=saturate canonicalDivisor X;
+
+   o12 : Ideal of P4
+   i13 : E=saturate(D1+D2);
+
+   o13 : Ideal of P4
+   i14 : degree E
+
+   o14 = 6
+   i15 : cE=decompose E;
+   i16 : tally apply(cE,c->(degree c, genus c, selfIntersectionNumber(X,c)))
+
+   o16 = Tally{(1, 0, -1) => 4}
+               (2, 0, -1) => 1
+
+   o16 : Tally
+   i17 : Dmin=D1:E;
+
+   o17 : Ideal of P4
+   i18 : HH^0 (sheaf (P4^1/Dmin))
+
+           1
+   o18 = kk
+
+   o18 : kk-module, free
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
+   setRandomSeed("fix decomposition of the canonical divisors");
    elapsedTime X=ellipticSurfaceD12S14L0 P4;
    (degree X, sectionalGenus X)==(12,14)
    minimalBetti X
    betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   D=saturate canonicalDivisor X;
-   degree D,HdotK(12,14)
-   selfIntersectionNumber(X,D),Ksquare(12,14,3)   
+   pg=1+(genera X)_0
+   D1=saturate canonicalDivisor X;
+   degree D1,HdotK(12,14)
+   selfIntersectionNumber(X,D1),Ksquare(12,14,3)
+   D2=saturate canonicalDivisor X;
+   E=saturate(D1+D2);
+   degree E
+   cE=decompose E;
+   tally apply(cE,c->(degree c, genus c, selfIntersectionNumber(X,c)))
+   Dmin=D1:E;
+   HH^0 (sheaf (P4^1/Dmin))
  Text
-   X is an non-minimal elliptic surface with four (-1) lines and one  (-1) conic curve.
+   X is an non-minimal elliptic surface with four (-1)-lines and one  (-1)-conic curve.
+   X has a fibration into a pencil of elliptic curves of degree 8.
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
@@ -9425,6 +9727,43 @@ SeeAlso
   LeBarzN6
 ///
 
+-* for CannedExample in specificEllipticSurfaceD13S16
+ Example
+   kk=ZZ/19; 
+   P4=kk[x_0..x_4];
+   E=kk[e_0..e_4,SkewCommutative=>true];
+   setRandomSeed("faily fast");
+   X=specificEllipticSurfaceD13S16(P4,E,2,Verbose=>true);
+  Text
+   The printed information is the partition type of canonical divisor of the specific Abo surface used and
+   its redidualInQuintics decomposition. Which in this case consists of four 6-secant lines and
+   a rational normal curve of degree 4 which is 21-secant.
+  Example
+   minimalBetti X
+   betti(T=tateResolutionOfSurface(X))
+   (d,sg)=(degree X, sectionalGenus X)
+   Ksquare(d,sg,3)
+   HdotK(d,sg)
+   K1=canonicalDivisor X;
+   K2=canonicalDivisor X;
+   betti(baseLocus=saturate (K1+K2))
+   cBaseLocus=decompose baseLocus;
+   minimalBetti last cBaseLocus
+   tally apply(cBaseLocus,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+  Text
+   Note that the exceptional curves of X coincide with the residualInQuintics curves of
+   the used Abo surface.
+  Example
+   E1=K1:baseLocus;
+   dim E1, degree E1, genus E1, selfIntersectionNumber(X,E1)
+   R=residualInQuintics X;
+   tally apply(decompose R,c->(dim c, degree c, genus c, degree (c+X)))
+  Text
+    X contains four (-1) lines and a (-1) degree 4 rational normal curve. The canonical divisor E
+    of the minimal surface has genus 1 and self-intersection number 0. Thus X is an elliptic surface.
+
+
+*-
 
 doc ///
 Key
@@ -9519,6 +9858,7 @@ doc ///
 Key
  specificEllipticSurfaceD13S16
  (specificEllipticSurfaceD13S16,PolynomialRing,Ring, ZZ)
+ [specificEllipticSurfaceD13S16,Verbose]
 Headline
  construct a specific elliptic surface via linkage form a Abo surface (4 families)
 Usage
@@ -9538,39 +9878,114 @@ Description
    We construct a specific elliptic surface of degree 13 sectional genus 16 from
    a specficAboSurface of number k via linkage. The function needs the ground field
    kk=ZZ/19 and a number k in {1,2,4,6}.
-  Example
-   kk=ZZ/19; 
-   P4=kk[x_0..x_4];
-   E=kk[e_0..e_4,SkewCommutative=>true];
-   setRandomSeed("faily fast");
-   X=specificEllipticSurfaceD13S16(P4,E,2);
+  CannedExample
+   i1 : kk=ZZ/19;
+   i2 : P4=kk[x_0..x_4];
+   i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+   i4 : setRandomSeed("faily fast");
+   -- setting random seed to 112617642158795623495
+   i5 : X=specificEllipticSurfaceD13S16(P4,E,2,Verbose=>true);
+   (K,R) = ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }), dim Hom = 1
+                                      ((2, 4), (1, 21)) => 1
+
+   o5 : Ideal of P4
+
   Text
    The printed information is the partition type of canonical divisor of the specific Abo surface used and
-   its redidualInQuintics decomposition. Which in this case consists of four 6-secant lines and
+   its redidualInQuintics decomposition, which in this case consists of four 6-secant lines and
    a rational normal curve of degree 4 which is 21-secant.
-  Example
-   minimalBetti X
-   betti(T=tateResolutionOfSurface(X))
-   (d,sg)=(degree X, sectionalGenus X)
-   Ksquare(d,sg,3)
-   HdotK(d,sg)
-   K1=canonicalDivisor X;
-   K2=canonicalDivisor X;
-   betti(baseLocus=saturate (K1+K2))
-   cBaseLocus=decompose baseLocus;
-   minimalBetti last cBaseLocus
-   tally apply(cBaseLocus,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+  CannedExample
+   i6 : minimalBetti X
+
+               0  1  2  3 4
+   o6 = total: 1 12 22 14 3
+            0: 1  .  .  . .
+	    1: .  .  .  . .
+	    2: .  .  .  . .
+	    3: .  .  .  . .
+	    4: .  3  .  . .
+	    5: .  9 22 14 3
+
+   o6 : BettiTally
+   i7 : betti(T=tateResolutionOfSurface(X))
+
+                -1  0  1  2 3 4 5  6  7
+   o7 = total: 142 87 46 18 6 4 6 24 68
+           -4:   1  .  .  . . . .  .  .
+	   -3: 141 87 46 18 2 . .  .  .
+	   -2:   .  .  .  . 4 3 .  .  .
+	   -1:   .  .  .  . . 1 3  .  .
+	    0:   .  .  .  . . . 3 24 68
+
+   o7 : BettiTally
+   i8 : (d,sg)=(degree X, sectionalGenus X)
+
+   o8 = (13, 16)
+
+   o8 : Sequence
+   i9 : Ksquare(d,sg,3)
+
+   o9 = -5
+   i10 : HdotK(d,sg)
+
+   o10 = 17
+   i11 : K1=canonicalDivisor X;
+
+   o11 : Ideal of P4
+   i12 : K2=canonicalDivisor X;
+
+   o12 : Ideal of P4
+   i13 : betti(baseLocus=saturate (K1+K2))
+
+                0 1
+   o13 = total: 1 9
+             0: 1 .
+             1: . .
+	     2: . 6
+	     3: . 3
+
+   o13 : BettiTally
+   i14 : cBaseLocus=decompose baseLocus;
+   i15 : minimalBetti last cBaseLocus
+
+                0 1 2 3
+   o15 = total: 1 6 8 3
+             0: 1 . . .
+	     1: . 6 8 3
+
+   o15 : BettiTally
+   i16 : tally apply(cBaseLocus,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+
+   o16 = Tally{(2, 1, 0, -1) => 1 }
+               (2, 3, -2, -3) => 1
+                (2, 4, 0, -1) => 1
+
+   o16 : Tally
   Text
    Note that the exceptional curves of X coincide with the residualInQuintics curves of
    the used Abo surface.
-  Example
-   E1=K1:baseLocus;
-   dim E1, degree E1, genus E1, selfIntersectionNumber(X,E1)
-   R=residualInQuintics X;
-   tally apply(decompose R,c->(dim c, degree c, genus c, degree (c+X)))
-  Text
+  CannedExample
+   i17 : E1=K1:baseLocus;
+
+   o17 : Ideal of P4
+   i18 : dim E1, degree E1, genus E1, selfIntersectionNumber(X,E1)
+
+   o18 = (2, 9, 1, 0)
+
+   o18 : Sequence
+   i19 : R=residualInQuintics X;
+
+   o19 : Ideal of P4
+   i20 : tally apply(decompose R,c->(dim c, degree c, genus c, degree (c+X)))
+
+   o20 = Tally{(2, 3, -2, 18) => 1}
+   (2, 9, -2, 48) => 1
+
+   o20 : Tally
+ Text
     X contains four (-1) lines and a (-1) degree 4 rational normal curve. The canonical divisor E
     of the minimal surface has genus 1 and self-intersection number 0. Thus X is an elliptic surface.
+   
 References
    \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
 SeeAlso
