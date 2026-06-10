@@ -9962,7 +9962,7 @@ Key
 Headline
  construct an elliptic surface of degree 12, sectional genus 14 and infinitly many 6-secant line
 Usage
- X=ellipticSurfaceD12S12Linfinite P4
+ X=ellipticSurfaceD12S14Linfinite P4
 Inputs
  P4:PolynomialRing
   coordinate ring of P4
@@ -10194,6 +10194,26 @@ SeeAlso
 -*
 regularInCodimension(1,P4/D)
 *-
+-*  For cannedExample in irregularEllipticSurfaceD12
+ Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4];
+   setRandomSeed("fix a fast canonical divisor");
+   X=irregularEllipticSurfaceD12 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface(X,7))
+   Ksquare(d,sg,3)
+   "D=saturate canonicalDivisor X;";
+   HdotK(d,sg)
+   "degree D==HdotK(d,sg)";
+   "betti(fD=res D)";
+   "M=(coker transpose fD.dd_4)**P4^{-5}";
+   "hilbertFunction(0,M)+1==3 -- the number of connected components of D";
+   "selfIntersectionNumber(X,D)==0";   
+
+
+*-
 doc ///
 Key
  irregularEllipticSurfaceD12
@@ -10210,24 +10230,48 @@ Outputs
   of a irregular elliptic surface of degree 12 sectional genus 13
 Description
   Text
-   We construct a irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
-  Example
-   kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4];
-   setRandomSeed("fix a fast canonical divisor");
-   X=irregularEllipticSurfaceD12 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface(X,7))
-   Ksquare(d,sg,3)
-   "D=saturate canonicalDivisor X;";
-   HdotK(d,sg)
-   "degree D==HdotK(d,sg)";
-   "betti(fD=res D)";
-   "M=(coker transpose fD.dd_4)**P4^{-5}";
-   "hilbertFunction(0,M)+1==3 -- the number of connected components of D";
-   "selfIntersectionNumber(X,D)==0";   
-  Text
+   We construct an irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^4; 
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    setRandomSeed("fix a fast canonical divisor");
+ -- setting random seed to 134812755737665017156720934136292209881691405812662541386
+    i5 :    X=irregularEllipticSurfaceD12 P4;
+
+    o5 : Ideal of P4
+    i6 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (12, 13)
+    o6 : Sequence
+    i7 :    minimalBetti X
+
+                0 1  2 3 4
+    o7 = total: 1 9 15 9 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . .  . . .
+             4: . 5  2 . .
+             5: . 4 10 4 .
+             6: . .  3 5 2
+    o7 : BettiTally
+    i8 :    betti(T=tateResolutionOfSurface(X,7))
+
+                 -1  0  1  2 3 4  5  6  7   8
+    o8 = total: 124 75 39 16 6 5 10 29 75 156
+            -4:   1  .  .  . . .  .  .  .   .
+            -3: 123 75 39 15 3 .  .  .  .   .
+            -2:   .  .  .  1 2 1  .  .  .   .
+            -1:   .  .  .  . 1 4  5  2  .   .
+             0:   .  .  .  . . .  5 27 75 156
+    o8 : BettiTally
+    i9 :    Ksquare(d,sg,3)
+
+    o9 = 0
+    i10 :    HdotK(d,sg)
+
+    o10 = 12
+    Text
     Since K^2=0 this surface is minimal. X is fibered in elliptic curves of degree 4=12/3
     The canonical divisor is the pullback of a divisor of degree 3 on the albanese curve, which is
     an elliptic curve. This fits with pg=3.
@@ -10457,8 +10501,19 @@ References
 SeeAlso
   
 ///
-
-
+-* for CannedExample in K3surfaceD10S9L1
+ Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD10S9L1 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+*-
 doc ///
 Key
  K3surfaceD10S9L1
@@ -10475,18 +10530,44 @@ Outputs
   of a K3 surface of degree 9
 Description
   Text
-   We construct an K3 surface of degree 10 and sectional genus 9 with one 6-secant line
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   X=K3surfaceD10S9L1 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   OX=sheaf(P4^1/X);
-   apply(3,i->HH^i(OX))
-   Ksquare(degree X,sectionalGenus X,2)
-   LeBarzN6(10,9,2)
-   HdotK(10,9)
+   We construct a K3 surface of degree 10 and sectional genus 9 with one 6-secant line
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=K3surfaceD10S9L1 P4;
+   
+    o4 : Ideal of P4
+    i5 : (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 9)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0  1  2  3 4
+    o6 = total: 1 11 18 10 2
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  1  .  . .
+             4: .  9 15  7 1
+             5: .  1  3  3 1
+    o6 : BettiTally
+    i7 :    OX=sheaf(P4^1/X);
+    i8 :    apply(3,i->HH^i(OX))
+
+            1       1
+    o8 = {kk , 0, kk }
+    o8 : List
+    i9 :    Ksquare(degree X,sectionalGenus X,2)
+
+    o9 = -3
+    i10 :    LeBarzN6(10,9,2)
+
+    o10 = 3
+    i11 :    HdotK(10,9)
+
+    o11 = 6
+
   Text
    X is non-minimal with two exceptional lines and an exceptional rational quartic curve.
 References
@@ -10494,25 +10575,9 @@ References
 SeeAlso
   
 ///        
-
-doc ///
-Key
- K3surfaceD10S9L3
- (K3surfaceD10S9L3, PolynomialRing)
-Headline
- construct a K3 surface of degree 10 and sectional genus 9 with three 6-secant line
-Usage
- X=K3surfaceD10S9L3 P4
-Inputs
- P4:PolynomialRing
-  coordinate ring of P4
-Outputs
- X:Ideal
-  of a K3 surface of degree 9
-Description
-  Text
-   We construct an K3 surface of degree 10 and sectional genus 9
-  Example
+-*
+for CannedExample in K3surfaceD10S9L3
+ Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
    X=K3surfaceD10S9L3 P4;
@@ -10531,35 +10596,105 @@ Description
    dim plane == 3
    dim  (plane+X), degree radical (plane+X)
    tally apply(primaryDecomposition (plane+X),c->(dim c, degree radical c))
+*-
+doc ///
+Key
+ K3surfaceD10S9L3
+ (K3surfaceD10S9L3, PolynomialRing)
+Headline
+ construct a K3 surface of degree 10 and sectional genus 9 with three 6-secant line
+Usage
+ X=K3surfaceD10S9L3 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 9
+Description
+  Text
+   We construct an K3 surface of degree 10 and sectional genus 9
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=K3surfaceD10S9L3 P4;
+
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 9)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 15 9 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . 2  . . .
+             4: . 4  7 2 .
+             5: . 3  8 7 2
+    o6 : BettiTally
+    i7 :    OX=sheaf(P4^1/X);
+    i8 :    apply(3,i->HH^i(OX))
+
+            1       1
+    o8 = {kk , 0, kk }
+    o8 : List
+    i9 : Ksquare(degree X,sectionalGenus X,2)
+
+    o9 = -3
+    i10 :    LeBarzN6(10,9,2)
+
+    o10 = 3
+    i11 :    HdotK(10,9)
+
+    o11 = 6
+  Text
+   X is non-minimal with no exceptional line and three exceptional conics.
+  CannedExample
+    
+    i12 :    betti(X5=ideal (gens X)_{0..5})
+
+                 0 1
+    o12 = total: 1 6
+              0: 1 .
+              1: . .
+              2: . .
+              3: . 2
+              4: . 4
+    o12 : BettiTally
+    i13 :    betti(plane=X5:X)
+
+                 0 1
+    o13 = total: 1 2
+              0: 1 2
+    o13 : BettiTally
+    i14 :    dim plane == 3
+
+    o14 = true
+    i15 :    dim  (plane+X), degree radical (plane+X)
+
+    o15 = (2, 4)
+    o15 : Sequence
+    i16 :    tally apply(primaryDecomposition (plane+X),c->(dim c, degree radical c))
+
+    o16 = Tally{(1, 1) => 1}
+                (1, 2) => 1
+                (2, 4) => 1
+    o16 : Tally
   Text
    The plane intersects X in a quartic curve and three points. The three lines through
    two of these points are the thee 6-secant lines.
 References
    \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ of Oslo, (1988) 
 SeeAlso
-  
-///
+  ///
 
-doc ///
-Key
- K3surfaceD11S11Ln
- (K3surfaceD11S11Ln, PolynomialRing,ZZ)
-Headline
- construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines (4 families)
-Usage
- X=K3surfaceD11S11Ln(P4,n)
-Inputs
- P4:PolynomialRing
-  coordinate ring of P4
- n: ZZ
-   the number of desired six secant lines
-Outputs
- X:Ideal
-  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' 6-secants lines
-Description
-  Text
-   We construct an K3 surfaces of degree 11, sectional genus 11 and n 6-secants lines
-  Example
+
+-*
+for CannedExample of K3surfaceD11S11n
+ Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
    X=K3surfaceD11S11Ln(P4,0);
@@ -10602,6 +10737,179 @@ Description
    Ksquare(11,11,2)
    LeBarzN6(11,11,2)
    HdotK(11,11)
+*-
+
+doc ///
+Key
+ K3surfaceD11S11Ln
+ (K3surfaceD11S11Ln, PolynomialRing,ZZ)
+Headline
+ construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines (4 families)
+Usage
+ X=K3surfaceD11S11Ln(P4,n)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ n: ZZ
+   the number of desired six secant lines
+Outputs
+ X:Ideal
+  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' 6-secants lines
+Description
+  Text
+   We construct an K3 surfaces of degree 11, sectional genus 11 and n 6-secants lines
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=K3surfaceD11S11Ln(P4,0);
+
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (11, 11)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 13 7 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . .  . . .
+             4: . 9  8 . .
+             5: . .  5 7 2
+    o6 : BettiTally
+  Text
+   X has no 6-secant line, since the ideal is generated by quintics.
+  CannedExample  
+    i7 :    X=K3surfaceD11S11Ln(P4,1);
+
+    o7 : Ideal of P4
+    i8 :    minimalBetti X
+
+                0  1  2 3 4
+    o8 = total: 1 10 15 8 2
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: .  9  9 1 .
+             5: .  1  6 7 2
+    o8 : BettiTally
+  Text
+   In case n=1 there is precisely one 6-secant line:
+  CannedExample
+    
+    i9 :    betti(X5=ideal (gens X)_{0..8})
+
+                0 1
+    o9 = total: 1 9
+             0: 1 .
+             1: . .
+             2: . .
+             3: . .
+             4: . 9
+    o9 : BettiTally
+   i10 :    betti(line=X5:X)
+
+                0 1
+   o10 = total: 1 3
+             0: 1 3
+   o10 : BettiTally
+   i11 :    dim line, degree line, degree (line+X)
+
+   o11 = (2, 1, 6)
+   o11 : Sequence
+  Text
+   In case n=2 there are two 6-secant lines:
+  CannedExample   
+   i12 :    X=K3surfaceD11S11Ln(P4,2);
+   
+   o12 : Ideal of P4
+   i13 : minimalBetti X
+                0  1  2 3 4
+   o13 = total: 1 11 17 9 2
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: .  9 10 2 .
+             5: .  2  7 7 2
+   o13 : BettiTally
+   i14 : betti(X5=ideal (gens X)_{0..8})
+                0 1
+   o14 = total: 1 9
+             0: 1 .
+             1: . .
+             2: . .
+             3: . .
+             4: . 9
+   o14 : BettiTally
+   i15 : betti(residual=X5:X)
+                0 1
+   o15 = total: 1 5
+             0: 1 1
+             1: . 4
+   o15 : BettiTally
+   i16 :  dim residual, degree residual, degree (residual+X)
+
+   o16 = (2, 2, 12)
+   o16 : Sequence
+  Text
+   In case n=3 there are three 6-secant lines:
+  CannedExample   
+   i17 :    X=K3surfaceD11S11Ln(P4,3);
+   
+   o17 : Ideal of P4
+   i18 : minimalBetti X
+                0  1  2  3 4
+   o18 = total: 1 12 19 10 2
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  9 11  3 .
+             5: .  3  8  7 2
+   o18 : BettiTally
+   i19 :    betti(X5=ideal (gens X)_{0..8})
+
+                0 1
+   o19 = total: 1 9
+             0: 1 .
+             1: . .
+             2: . .
+             3: . .
+             4: . 9
+   o19 : BettiTally
+   i20 :    betti(plane=X5:X)
+
+                0 1
+   o20 = total: 1 2
+             0: 1 2
+   o20 : BettiTally
+   i21 :    dim plane, degree (plane+X)
+
+   o21 = (3, 4)
+   o21 : Sequence
+   i22 :    tally apply(primaryDecomposition(plane+X),c->(dim c, degree radical(c+X)))
+
+   o22 = Tally{(1, 1) => 3}
+               (2, 4) => 1
+
+   o22 : Tally
+  Text
+   So the plane intersects X in a plane quartic and 3 points.
+   The three 6-secant lines are the lines in the plane joining 2 of the three points.
+  CannedExample
+   
+   i23 :    Ksquare(11,11,2)
+
+   o23 = -5
+   i24 :    LeBarzN6(11,11,2)
+
+   o24 = 4
+   i25 :    HdotK(11,11)
+   o25 = 9
   Text
    Summary: X is a K3 surface with precisely e1=(4-n) exceptional lines and further exceptional curves
    of larger degree as in the following pattern (e1,e2,e3,..)
@@ -10610,7 +10918,7 @@ References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 SeeAlso
 ///
--*
+-* for CannedExample of K3surfaceD11S12
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
@@ -10645,7 +10953,7 @@ Outputs
   of a K3 surface of degree 11 and sectional genus 12 
 Description
   Text
-   We construct an K3 surfaces of degree 11 and sectional genus 12 
+   We construct a K3 surface of degree 11 and sectional genus 12 
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -10699,7 +11007,7 @@ Description
 
   Text
     X has no 6-secant line, since the ideal is generated by quintics.
-    Thus there nine (-1) lines and a (-1) conic. 
+    Thus there are nine (-1) lines and a (-1) conic. 
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993) 
 SeeAlso
