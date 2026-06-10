@@ -4773,7 +4773,7 @@ needsPackage "NongeneralTypeSurfacesInP4"
     keyWithZeroValue=select(keys B,k->not member(k,keys B'))
     B#(keyWithZeroValue_0)
   *-  
-doc ///
+doc///
 Key
  chiITable
  (chiITable,ZZ,ZZ,ZZ)
@@ -4925,7 +4925,7 @@ elapsedTime tally apply(p^3,c->(
 	betti(hom=Hom(coker m2x5,coker m5x3,DegreeLimit=>4))))
 ///
 
-doc ///
+doc///
 Key
  sectionalGenus
  (sectionalGenus, Ideal)
@@ -4954,7 +4954,7 @@ SeeAlso
    genera
 ///
 
-doc ///
+doc///
 Key
  HdotK
  (HdotK, ZZ,ZZ)
@@ -4988,7 +4988,7 @@ SeeAlso
 ///
 
 
-doc ///
+doc///
 Key
  Ksquare
  (Ksquare,ZZ,ZZ,ZZ)
@@ -5050,7 +5050,7 @@ SeeAlso
    geometricGenus
 ///
 
-doc ///
+doc///
 Key
  chiO
  (chiO,Ideal)
@@ -5087,7 +5087,7 @@ SeeAlso
    geometricGenus
 ///
 
-doc ///
+doc///
 Key
  irregularity
  (irregularity,Ideal)
@@ -5120,7 +5120,7 @@ SeeAlso
    geometricGenus
 ///
 
-doc ///
+doc///
 Key
  geometricGenus
  (geometricGenus,Ideal)
@@ -5154,7 +5154,7 @@ SeeAlso
 ///
 
 
-doc ///
+doc///
 Key
  LeBarzN6
  (LeBarzN6,ZZ,ZZ,ZZ)
@@ -5217,7 +5217,7 @@ SeeAlso
    residualInQuintics
 ///
 
-doc ///
+doc///
 Key
  residualInQuintics
  (residualInQuintics,Ideal)
@@ -5271,7 +5271,7 @@ SeeAlso
    Ksquare
 ///
 
-doc ///
+doc///
 Key
  canonicalDivisor
  (canonicalDivisor,Ideal)
@@ -5316,7 +5316,7 @@ SeeAlso
 ///
 
 
-doc ///
+doc///
 Key
  selfIntersectionNumber
  (selfIntersectionNumber,Ideal,Ideal)
@@ -5368,7 +5368,7 @@ SeeAlso
 
 
 
-doc ///
+doc///
 Key
  tateResolutionOfSurface
  (tateResolutionOfSurface,Ideal)
@@ -5444,7 +5444,7 @@ SeeAlso
    chiO
 ///
 
-doc ///
+doc///
 Key
  tangentToMonad
  (tangentToMonad,Ideal)
@@ -5501,7 +5501,7 @@ Description
 
 
 -* schreyer surfaces *-
-doc ///
+doc///
 Key
  moduleFromSchreyerSurface
  (moduleFromSchreyerSurface, Ideal)
@@ -5529,7 +5529,7 @@ Description
     minimalBetti M
 ///
 
-doc ///
+doc///
 Key
  schreyerSurfaceFromModule
  (schreyerSurfaceFromModule, Ideal)
@@ -5563,7 +5563,7 @@ References
 
 
 
-doc ///
+doc///
 Key
  schreyerSurfaceWith2LinearSyzygies
  (schreyerSurfaceWith2LinearSyzygies, Ring)
@@ -5622,7 +5622,7 @@ Description
     syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
 ///
 
-doc ///
+doc///
 Key
  schreyerSurfaceWith2or3LinearSyzygies
  (schreyerSurfaceWith2or3LinearSyzygies, Ring, ZZ)
@@ -5750,7 +5750,7 @@ LeBarzN6(11,10,1)
     tally apply(sixSecants, l-> (dim l, degree (l+X)))
 ///
 
-doc ///
+doc///
 Key
  unirationalConstructionOfSchreyerSurface
  (unirationalConstructionOfSchreyerSurface, Ring)
@@ -5792,7 +5792,7 @@ Description
 ///
 
 
-doc ///
+doc///
 Key
  specialEnriquesSchreyerSurface
  (specialEnriquesSchreyerSurface, Ring)
@@ -5889,7 +5889,7 @@ betti basis(2,T)
 binomial(13,2)
 ///
 
-doc ///
+doc///
 Key
  specificSchreyerSurface
  (specificSchreyerSurface, Ring, Number)
@@ -5951,7 +5951,7 @@ SeeAlso
 
 
 
-doc ///
+doc///
 Key
  exampleOfSchreyerSurfaces
  (exampleOfSchreyerSurfaces, Ring)
@@ -6028,7 +6028,7 @@ o46 = |({0, 0, 1, 5}, (10, 20, 11), Tally{(1, 1, (0, 6)) => 1 })|
 ///
 
 
-doc ///
+doc///
 Key
  schreyerSurface
  (schreyerSurface, Ring, Number)
@@ -6070,7 +6070,7 @@ SeeAlso
 ///
 
 
-doc ///
+doc///
 Key
  findRandomSchreyerSurface
  (findRandomSchreyerSurface, Ring)
@@ -6110,7 +6110,7 @@ SeeAlso
    findRandomSmoothSchreyerSurface
 ///
 
-doc ///
+doc///
 Key
  findRandomSmoothSchreyerSurface
  (findRandomSmoothSchreyerSurface, Ring, Number)
@@ -6146,7 +6146,7 @@ SeeAlso
 ///
 
 
-doc ///
+doc///
 Key
  collectSchreyerSurfaces
  (collectSchreyerSurfaces, List, List, Number, Number)
@@ -6191,7 +6191,7 @@ SeeAlso
 ///
 
 
-doc ///
+doc///
 Key
  tangentDimension
  (tangentDimension, Ideal)
@@ -6226,7 +6226,7 @@ Description
 
 -* Abo-Ranestad surfaces *-
 
-doc ///
+doc///
 Key
  veroneseImagesInG25
  (veroneseImagesInG25, Matrix)
@@ -6271,7 +6271,7 @@ SeeAlso
 
 
 
-doc ///
+doc///
 Key
  aboRanestadSurface
  (aboRanestadSurface, Ring, Number)
@@ -6350,7 +6350,7 @@ SeeAlso
    adjunctionProcessData
 ///
 
-doc ///
+doc///
 Key
  matrixFromAboRanestadSurface
  (matrixFromAboRanestadSurface, Ideal)
@@ -6384,7 +6384,7 @@ SeeAlso
    aboRanestadSurfaceFromMatrix
 ///
 
-doc ///
+doc///
 Key
  aboRanestadSurfaceFromMatrix
  (aboRanestadSurfaceFromMatrix, Ring, Matrix)
@@ -6425,7 +6425,7 @@ SeeAlso
    matrixFromAboRanestadSurface
 ///
 
-doc ///
+doc///
 Key
  specificAboRanestadSurface
  (specificAboRanestadSurface,PolynomialRing, Ring, Number)
@@ -6466,7 +6466,7 @@ SeeAlso
    tateResolutionOfSurface
 ///
 
-doc ///
+doc///
 Key
  get4x2Matrix
  (get4x2Matrix, Matrix, Number)
@@ -6561,7 +6561,7 @@ dim E1, degree E1, genus E1, selfIntersectionNumber(Y,E1)
     partits=partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true)
 *-
 
-doc ///
+doc///
 Key
  aboSurfaceFromMatrix
  (aboSurfaceFromMatrix,Matrix,Ring)
@@ -6714,7 +6714,7 @@ SeeAlso
    LeBarzN6   
 ///
 
-doc ///
+doc///
 Key
  testMatrix
  (testMatrix,Matrix,Ring)
@@ -6805,7 +6805,7 @@ elapsedTime (singX=singularLocus X; dim singX==0)
 ///
 
 
-doc ///
+doc///
 Key
  analyzeAboSurface
  (analyzeAboSurface,Ideal)
@@ -6869,7 +6869,7 @@ SeeAlso
   residualInQuintics
 ///
 
-doc ///
+doc///
 Key
  partitionOfCanonicalDivisorOfAboSurface
  (partitionOfCanonicalDivisorOfAboSurface,Ideal)
@@ -6940,7 +6940,7 @@ SeeAlso
     r
 *-
 
-doc ///
+doc///
 Key
  abo112224Or111234Surface
  (abo112224Or111234Surface,Ring,Ring,ZZ)
@@ -7022,7 +7022,7 @@ SeeAlso
   aboSurfaceFromMatrix
 ///
 
-doc ///
+doc///
 Key
  abo111144Surface
  (abo111144Surface,Ring,Ring)
@@ -7077,7 +7077,7 @@ SeeAlso
   aboSurfaceFromMatrix
 ///
 
-doc ///
+doc///
 Key
  abo111333Surface
  (abo111333Surface,Ring,Ring)
@@ -8019,6 +8019,22 @@ Description
 References
    \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237 
 ///
+-*for CannedExample of degree10pi8RanestadSurface
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=degree10pi8RanestadSurface P4)
+    betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    LeBarzN6(d,sg,1)==6
+    Ksquare(d,sg,1)==-4
+    residual=residualInQuintics X;
+    dim residual, degree residual, betti residual
+    tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
+	    degree (c+X), betti saturate (c+X),
+	    tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
+
+*-
 
 doc ///
 Key
@@ -8038,21 +8054,74 @@ Description
   Text
     We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
     with Hilbert function (2,5,3).
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    minimalBetti(X=degree10pi8RanestadSurface P4)
-    betti(T=tateResolutionOfSurface X)
-    (d,sg)=(degree X, sectionalGenus X)
-    LeBarzN6(d,sg,1)==6
-    Ksquare(d,sg,1)==-4
-    residual=residualInQuintics X;
-    dim residual, degree residual, betti residual
-    tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
-	    degree (c+X), betti saturate (c+X),
-	    tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     minimalBetti(X=degree10pi8RanestadSurface P4)
+
+                0  1  2  3 4
+    o4 = total: 1 14 24 14 3
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: . 10 13  4 .
+             5: .  4 11 10 3
+    o4 : BettiTally
+    i5 :     betti(T=tateResolutionOfSurface X)
+
+                -1  0  1 2 3 4  5  6  7
+    o5 = total: 90 52 25 8 3 5 13 41 98
+            -4:  1  .  . . . .  .  .  .
+            -3: 89 52 25 8 . .  .  .  .
+            -2:  .  .  . . 1 .  .  .  .
+            -1:  .  .  . . 2 5  3  .  .
+             0:  .  .  . . . . 10 41 98
+    o5 : BettiTally
+    i6 :     (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (10, 8)
+    o6 : Sequence
+    i7 :     LeBarzN6(d,sg,1)==6
+
+    o7 = true
+    i8 :     Ksquare(d,sg,1)==-4
+
+    o8 = true
+    i9 :     residual=residualInQuintics X;
+
+    o9 : Ideal of P4
+
+    i10 :     dim residual, degree residual, betti residual
+
+                        0 1
+    o10 = (3, 1, total: 1 6)
+                     0: 1 .
+                     1: . 6
+    o10 : Sequence
+    i11 :     tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
+          	    degree (c+X), betti saturate (c+X),
+      	        tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
+
+                              0 1            0 1
+    o11 = Tally{(2, 1, total: 1 3, 6, total: 1 4, Tally{(1, 1) => 2}) => 1}
+                           0: 1 3         0: 1 3        (1, 2) => 2
+                                          1: . .
+                                          2: . .
+                                          3: . .
+                                          4: . .
+                                          5: . 1
+                              0 1            0 1
+                (3, 1, total: 1 2, 4, total: 1 5, Tally{(1, 1) => 3}) => 1
+                           0: 1 2         0: 1 2        (2, 4) => 1
+                                          1: . .
+                                          2: . .
+                                          3: . .
+                                          4: . .
+                                          5: . 3
+    o11 : Tally
   Text
-   There are 4 6-secant lines, 3 of them are in the plane which which intersects X
+   There are four 6-secant lines, three of them are in the plane which which intersects X
    in a plane quartic and three points. Hence there X contains two (-1)-lines.
    The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
@@ -8086,7 +8155,25 @@ SeeAlso
      Hilbert-Burch homomorphism on dim G(2,4)=4 further parameters.
      This gives the same number 8 of parameters up to projectivities.
 *-     
-
+-*
+ Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    minimalBetti(X=enriquesSurfaceOfDegree10 P4)
+    betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    LeBarzN6(d,sg,1)==6
+    Ksquare(d,sg,1)==-4
+    HdotK(d,sg)==4
+    R=residualInQuintics X;
+    dim R,degree R
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+    numList
+    minimalBetti Y
+    2*sectionalGenus Y- 2== degree Y
+    fourPoints=saturate L2_0;
+    dim fourPoints,degree fourPoints
+*-
 doc ///
 Key
  enriquesSurfaceOfDegree10
@@ -8105,23 +8192,75 @@ Description
   Text
     We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
     with Hilbert function (2,5,3).
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    minimalBetti(X=enriquesSurfaceOfDegree10 P4)
-    betti(T=tateResolutionOfSurface X)
-    (d,sg)=(degree X, sectionalGenus X)
-    LeBarzN6(d,sg,1)==6
-    Ksquare(d,sg,1)==-4
-    HdotK(d,sg)==4
-    R=residualInQuintics X;
-    dim R,degree R
-    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
-    numList
-    minimalBetti Y
-    2*sectionalGenus Y- 2== degree Y
-    fourPoints=saturate L2_0;
-    dim fourPoints,degree fourPoints
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     minimalBetti(X=enriquesSurfaceOfDegree10 P4)
+
+                0  1  2  3 4
+    o4 = total: 1 12 21 13 3
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: . 10 11  3 .
+             5: .  2 10 10 3
+    o4 : BettiTally
+    i5 :     betti(T=tateResolutionOfSurface X)
+
+                -1  0  1 2 3 4  5  6  7
+    o5 = total: 90 52 25 8 3 5 13 41 98
+            -4:  1  .  . . . .  .  .  .
+            -3: 89 52 25 8 . .  .  .  .
+            -2:  .  .  . . 1 .  .  .  .
+            -1:  .  .  . . 2 5  3  .  .
+             0:  .  .  . . . . 10 41 98
+    o5 : BettiTally
+    i6 :     (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (10, 8)
+    o6 : Sequence
+    i7 :     LeBarzN6(d,sg,1)==6
+
+    o7 = true
+    i8 :     Ksquare(d,sg,1)==-4
+
+    o8 = true
+    i9 :     HdotK(d,sg)==4
+
+    o9 = true
+    i10 :     R=residualInQuintics X;
+
+    o10 : Ideal of P4
+    i11 :     dim R,degree R
+
+    o11 = (2, 2)
+    o11 : Sequence
+    i12 :     elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+      -- 32.723s elapsed
+    i13 :     numList
+
+    o13 = {(4, 10, 8), 4, (7, 14, 8)}
+    o13 : List
+    i14 :     minimalBetti Y
+
+                 0  1  2  3  4 5
+    o14 = total: 1 12 40 56 35 8
+              0: 1  .  .  .  . .
+              1: .  7  5  .  . .
+              2: .  5 35 56 35 8
+    o14 : BettiTally
+    i15 :     2*sectionalGenus Y- 2== degree Y
+
+    o15 = true
+    i16 :     fourPoints=saturate L2_0;
+
+    o16 : Ideal of kk[a ..a ]
+                       0   7
+    i17 :     dim fourPoints,degree fourPoints
+
+    o17 = (1, 4)
+    o17 : Sequence
   Text
     The first adjunction maps blows down 4 (-1) lines. Hence the self-intersection number of the
     canonical divisor on Y is K_Y^2=K_X^2+4=0. Moreover H_Y.K_Y=0. So K_Y is numerically
@@ -8312,6 +8451,31 @@ binomial(9+2,2)-6-14*3-5*1
 3^14, 3^8
 ///
 
+-*
+  Example
+    kk=ZZ/3;
+    P4=kk[x_0..x_4];
+    elapsedTime minimalBetti(X=enriquesSurfaceD11S10(P4))
+    betti(T=tateResolutionOfSurface X)
+    (d,sg)=(degree X, sectionalGenus X)
+    LeBarzN6(d,sg,1)==10
+    Ksquare(d,sg,1)==-6
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    dim R,degree R,degree(R+X)
+
+ Example
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,4);
+    -- 48.7283s elapsed;
+    numList=={(4, 11, 10), 5, (9, 19, 11), 1, (10, 20, 11), 0, (10, 20, 11), 0, (10, 20, 11)}
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 25, (2,{3},3) => 80,
+      (2,{4},4) => 10, (3,{4},4) => 80, (3,{5},5) => 112, (4,{6},6) => 350,
+      (5,{7},7) => 400, (6,{8},8) => 245, (7,{9},9) => 80, (8,{10},10) => 11}
+    degree Y==20
+    minimalBetti Y == B
+    2*sectionalGenus Y- 2== degree Y
+*-
+
 doc ///
 Key
  enriquesSurfaceD11S10
@@ -8330,29 +8494,79 @@ Description
   Text
     One family of the surface found as "schreyerSurface"  is actually
     an Enriques surface. An example is the first surface in the list of precomputed
-    schreyer surfaces.
-  Example
-    kk=ZZ/3;
-    P4=kk[x_0..x_4];
-    minimalBetti(X=enriquesSurfaceD11S10(P4))
-    betti(T=tateResolutionOfSurface X)
-    (d,sg)=(degree X, sectionalGenus X)
-    LeBarzN6(d,sg,1)==10
-    Ksquare(d,sg,1)==-6
-    X5=ideal (gens X)_{0..4};
-    R=X5:X;
-    dim R,degree R,degree(R+X)
+    Schreyer surfaces.
+  CannedExample
+    i2 :     kk=ZZ/3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     elapsedTime minimalBetti(X=enriquesSurfaceD11S10(P4))
+         -- 5.08479s elapsed
+
+                0  1  2  3 4
+    o4 = total: 1 12 26 20 5
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  5  .  . .
+             5: .  7 26 20 5
+    o4 : BettiTally
+    i5 :     betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4  5  6  7
+    o5 = total: 104 61 30 10 3 5 10 32 84
+            -4:   1  .  .  . . .  .  .  .
+            -3: 103 61 30 10 . .  .  .  .
+            -2:   .  .  .  . 2 .  .  .  .
+            -1:   .  .  .  . 1 5  5  .  .
+             0:   .  .  .  . . .  5 32 84
+    o5 : BettiTally
+    i6 :     (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (11, 10)
+    o6 : Sequence
+    i7 :     LeBarzN6(d,sg,1)==10
+
+    o7 = true
+    i8 :     Ksquare(d,sg,1)==-6
+
+    o8 = true
+    i9 :     X5=ideal (gens X)_{0..4};
+
+    o9 : Ideal of P4
+    i10 :     R=X5:X;
+
+    o10 : Ideal of P4
+    i11 :     dim R,degree R,degree(R+X)
+
+    o11 = (2, 5, 30)
+    o11 : Sequence
   Text
     There are 5 six-secant lines, hence by Le Barz formula five (-1) lines. Indeed:
-  Example
-    "elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,4); -- 48.7283s elapsed;";
-    "numList=={(4, 11, 10), 5, (9, 19, 11), 1, (10, 20, 11), 0, (10, 20, 11), 0, (10, 20, 11)}";
-    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 25, (2,{3},3) => 80,
-      (2,{4},4) => 10, (3,{4},4) => 80, (3,{5},5) => 112, (4,{6},6) => 350,
-      (5,{7},7) => 400, (6,{8},8) => 245, (7,{9},9) => 80, (8,{10},10) => 11}
-    "degree Y==20";
-    "minimalBetti Y == B";
-    "2*sectionalGenus Y- 2== degree Y";
+  CannedExample
+    i12 :     elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,4);
+      -- 43.1492s elapsed
+    i13 :     numList=={(4, 11, 10), 5, (9, 19, 11), 1, (10, 20, 11), 0, (10, 20, 11), 0, (10, 20, 11)}
+
+    o13 = true
+    i14 :     B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 25, (2,{3},3) => 80,
+                (2,{4},4) => 10, (3,{4},4) => 80, (3,{5},5) => 112, (4,{6},6) => 350,
+                (5,{7},7) => 400, (6,{8},8) => 245, (7,{9},9) => 80, (8,{10},10) => 11}
+
+                 0  1  2   3   4   5   6  7  8
+    o14 = total: 1 25 90 192 350 400 245 80 11
+              0: 1  .  .   .   .   .   .  .  .
+              1: . 25 80  80   .   .   .  .  .
+              2: .  . 10 112 350 400 245 80 11
+    o14 : BettiTally
+    i15 :     degree Y==20
+
+    o15 = true
+    i16 :     minimalBetti Y == B
+
+    o16 = true
+    i17 :     2*sectionalGenus Y- 2== degree Y
+
+    o17 = true
   Text
     The first adjunction maps blows down 5 (-1) lines. The second a (-1) conic.
     The second adjoint surface X2 is a minimal Enriques surface of degree 20
@@ -8403,6 +8617,32 @@ Description
 References
    \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
 ///
+-*
+ Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4))
+    elapsedTime (L0,adjList,ptsList, J)=adjunctionProcess X;
+    betti(T=tateResolutionOfSurface X)
+ Example 
+    LeBarzN6(degree X, sectionalGenus X,1)
+    X5=ideal (gens X)_{0..14};
+    L=X5:X -- L is the six secant line
+    degree(L+X)==6
+ Example 
+   elapsedTime (L0,adjList,ptsList,J)=adjunctionProcess(X);
+    ring J
+    betti(H=parametrization(ring J,adjList))
+    cH=primaryDecomposition ideal H;
+    tally apply(cH,c->(dim c, degree radical c, degree c))
+  Example
+    P2=kk[y_0..y_2];
+    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
+    (L0,adjList,ptsList,J)=adjunctionProcess(X);
+    betti(H=parametrization(ring J,adjList))
+    cH=primaryDecomposition ideal H;
+    tally apply(cH,c->(dim c, degree radical c, degree c))
+*-
 
 doc ///
 Key
@@ -8427,28 +8667,87 @@ Description
     We construct a nonspecial Alexander surface of degree 9 from its rational parametrization,
     or what is faster from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module has
     a special presentation which gives rize to a six secant line
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4))
-    (L0,adjList,ptsList, J)=adjunctionProcess X;
-    betti(T=tateResolutionOfSurface X)
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4))
+     -- .051949s elapsed
+
+                0  1  2  3 4
+    o4 = total: 1 16 29 18 4
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: . 15 26 15 3
+             5: .  1  3  3 1
+    o4 : BettiTally
+    i5 :     elapsedTime (L0,adjList,ptsList, J)=adjunctionProcess X;
+    i6 :     betti(T=tateResolutionOfSurface X)
+     -- 1.08535s elapsed
+
+                -1  0  1 2 3 4  5  6   7
+    o6 = total: 76 43 20 6 3 5 16 50 112
+            -4:  1  .  . . . .  .  .   .
+            -3: 75 43 20 6 . .  .  .   .
+            -2:  .  .  . . . .  .  .   .
+            -1:  .  .  . . 3 5  1  .   .
+             0:  .  .  . . . . 15 50 112
+    o6 : BettiTally
   Text
     LeBarz formula computes the number of 6-secant lines + the number of (-1) lines.
-  Example 
-    LeBarzN6(degree X, sectionalGenus X,1)
-    X5=ideal (gens X)_{0..14};
-    L=X5:X -- L is the six secant line
-    degree(L+X)==6
+  CannedExample
+    i7 :     LeBarzN6(degree X, sectionalGenus X,1)
+
+    o7 = 1
+    i8 :     X5=ideal (gens X)_{0..14};
+
+    o8 : Ideal of P4
+    i9 :     L=X5:X -- L is the six secant line
+
+    o9 = ideal (x , x , x )
+                 2   1   0
+    o9 : Ideal of P4
+    i10 :     degree(L+X)==6
+
+    o10 = true
   Text
     We can obtain information about this surface
     from the adjunctionProcess.
-  Example 
-    (L0,adjList,ptsList,J)=adjunctionProcess(X);
-    ring J
-    betti(H=parametrization(ring J,adjList))
-    cH=primaryDecomposition ideal H;
-    tally apply(cH,c->(dim c, degree radical c, degree c))
+  CannedExample
+    i11 :    elapsedTime (L0,adjList,ptsList,J)=adjunctionProcess(X);
+     -- 1.12776s elapsed
+    i12 :     ring J
+
+    o12 = kk[b ..b ]
+              0   2
+    o12 : PolynomialRing
+    i13 :     betti(H=parametrization(ring J,adjList))
+
+                 0 1
+    o13 = total: 1 5
+              0: 1 .
+              1: . .
+              2: . .
+              3: . .
+              4: . .
+              5: . .
+              6: . .
+              7: . .
+              8: . .
+              9: . .
+             10: . .
+             11: . .
+             12: . 5
+    o13 : BettiTally
+    i14 :     cH=primaryDecomposition ideal H;
+    i15 :     tally apply(cH,c->(dim c, degree radical c, degree c))
+
+    o15 = Tally{(0, 1, 916) => 1}
+                (1, 1, 10) => 1
+                (1, 4, 40) => 1
+                (1, 5, 50) => 1
+    o15 : Tally
   Text
     H is a linear system of forms of degree which vanish in 10 points with
     multiplicity 4. However over the field the 10 point split into orbits
@@ -8457,13 +8756,45 @@ Description
     a rational P2 - -> P4 defined by forms
     of degree 13 which vanishes on 10 randomly choosen
     points with multiplicity 4.
-  Example
-    P2=kk[y_0..y_2];
-    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
-    (L0,adjList,ptsList,J)=adjunctionProcess(X);
-    betti(H=parametrization(ring J,adjList))
-    cH=primaryDecomposition ideal H;
-    tally apply(cH,c->(dim c, degree radical c, degree c))
+  CannedExample
+    i16 :     P2=kk[y_0..y_2];
+    i17 :     elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
+     -- 5.86527s elapsed
+
+                 0  1  2  3 4
+    o17 = total: 1 16 29 18 4
+              0: 1  .  .  . .
+              1: .  .  .  . .
+              2: .  .  .  . .
+              3: .  .  .  . .
+              4: . 15 26 15 3
+              5: .  1  3  3 1
+    o17 : BettiTally
+    i18 :     (L0,adjList,ptsList,J)=adjunctionProcess(X);
+    i19 :     betti(H=parametrization(ring J,adjList))
+
+                 0 1
+    o19 = total: 1 5
+              0: 1 .
+              1: . .
+              2: . .
+              3: . .
+              4: . .
+              5: . .
+              6: . .
+              7: . .
+              8: . .
+              9: . .
+             10: . .
+             11: . .
+             12: . 5
+    o19 : BettiTally
+    i20 :     cH=primaryDecomposition ideal H;
+    i21 :  tally apply(cH,c->(dim c, degree radical c, degree c))
+
+    o21 = Tally{(0, 1, 2969) => 1}
+                  (1, 1, 10) => 10
+    o21 : Tally
   Text
     This times the ideal H decomposes in to 10 points of degree 1 defined ove kk
     and an embedded (y_0..y_2)-primary ideal.
@@ -8566,6 +8897,28 @@ References
    \textit{Alexander, J.}, Speciality one rational surfaces in $\Pn 4$}, LNS,London Math. Soc., LNS, 179, (1992), 1-23
    \textit{Decker, W., Ein, L., Schreyer, F-O.}, Construction of surfaces in $\Pn 4$, J. Algebraic Geom., 2,  (1993), 185-237
 ///
+-* For CannedExample of popescuSurface
+ Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   E=kk[e_0..e_4,SkewCommutative=>true];
+   minimalBetti(X=popescuSurface(P4,E,0))
+   (d,sg)=(degree X, sectionalGenus X) 
+   betti(T=tateResolutionOfSurface X)
+ Example
+   elapsedTime minimalBetti(X=popescuSurface(P4,E,1))
+   L=residualInQuintics X;
+   degree L, degree(L+X)
+   elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
+   numList_1
+ Example
+   LeBarzN6(d,sg,1)==6+1
+ Example
+   elapsedTime minimalBetti(X=popescuSurface(P4,E,2))
+   R=residualInQuintics X; 
+   tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
+
+*-
 
 doc ///
 Key
@@ -8591,34 +8944,99 @@ Description
    number of 6-secant lines.
    One has to choose the differential T.dd_4 suitable.
    In the first case X has no 6-secant, since the ideal is generated by quintics. 
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   E=kk[e_0..e_4,SkewCommutative=>true];
-   minimalBetti(X=popescuSurface(P4,E,0))
-   (d,sg)=(degree X, sectionalGenus X) 
-   betti(T=tateResolutionOfSurface X)
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :    minimalBetti(X=popescuSurface(P4,E,0))
+
+                0  1  2 3 4
+    o5 = total: 1 10 14 6 1
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: . 10 12 3 .
+             5: .  .  2 3 1
+    o5 : BettiTally
+    i6 :    (d,sg)=(degree X, sectionalGenus X) 
+
+    o6 = (11, 11)
+    o6 : Sequence
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4  5  6  7
+    o7 = total: 108 64 32 11 3 3 11 38 91
+            -4:   1  .  .  . . .  .  .  .
+            -3: 107 64 32 11 . .  .  .  .
+            -2:   .  .  .  . 3 1  .  .  .
+            -1:   .  .  .  . . 2  1  .  .
+             0:   .  .  .  . . . 10 38 91
+    o7 : BettiTally
+
   Text
    In the second case there is a unique 6-secant line.
-  Example
-   elapsedTime minimalBetti(X=popescuSurface(P4,E,1))
-   L=residualInQuintics X;
-   degree L, degree(L+X)
-   elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
-   numList_1
+  CannedExample
+    i8 :    elapsedTime minimalBetti(X=popescuSurface(P4,E,1))
+     -- .582183s elapsed
+
+                0  1  2 3 4
+    o8 = total: 1 11 16 7 1
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: . 10 13 4 .
+             5: .  1  3 3 1
+    o8 : BettiTally
+    i9 :    L=residualInQuintics X;
+
+    o9 : Ideal of P4
+    i10 :    degree L, degree(L+X)
+
+    o10 = (1, 6)
+    o10 : Sequence
+    i11 :    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,1);
+     -- 9.37388s elapsed
+    i12 :    numList_1
+
+    o12 = 6
+
   Text
    The entry numList_1 is the number of (-1) lines on X. Thus we must have
-  Example
-   LeBarzN6(d,sg,1)==6+1
+  CannedExample
+    i13 :    LeBarzN6(d,sg,1)==6+1
+
+    o13 = true
   Text
    In the third case there is a pencil of 6-secant line. Every line in
    the plane through the point is a 6-secant line,
    since the plane intersects the surface in a plane quintic curve.
-  Example
-   elapsedTime minimalBetti(X=popescuSurface(P4,E,2))
-   R=residualInQuintics X; 
-   tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
+  CannedExample
+    i14 :    elapsedTime minimalBetti(X=popescuSurface(P4,E,2))
+     -- .526975s elapsed
+ 
+                 0  1  2  3 4
+    o14 = total: 1 12 19 10 2
+              0: 1  .  .  . .
+              1: .  .  .  . .
+              2: .  .  .  . .
+              3: .  .  .  . .
+              4: . 10 14  6 1
+              5: .  2  5  4 1
+
+    o14 : BettiTally
+    i15 :    R=residualInQuintics X; 
+
+    o15 : Ideal of P4
+    i16 :    tally apply(primaryDecomposition (R+X),c->(dim c,degree radical c,degree(c+R)))
+
+    o16 = Tally{(1, 1, 2) => 1}
+                (2, 5, 5) => 1
+    o16 : Tally
+
   Text
+   
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
@@ -8626,7 +9044,33 @@ SeeAlso
   residualInQuintics
 
 ///
-
+-*
+ Example
+   P4=ZZ/2[x_0..x_4]; P2=ZZ/2[u_0..u_2];
+   elapsedTime minimalBetti(X=vBELSurface(P4,P2))
+   ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
+   Y=ci:X;
+   setRandomSeed("fast decomposition")
+   elapsedTime cY=decompose Y;
+   tally apply(cY, c-> (dim c, degree c, minimalBetti c))
+   betti(T=tateResolutionOfSurface X)
+  Text
+   The linked surface consists of a plane, a quadric surface and a Bordiga surface.
+   The unirational construction is a reversal of this linkage.
+  Example
+   kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
+   minimalBetti(X=vBELSurface P4)
+   betti tateResolutionOfSurface X
+   elapsedTime (L0,L1,L2,J)=adjunctionProcess(X);
+   L0
+   X45=ideal (gens X)_{0..5};
+   R=X45:X;
+   dim R, degree R
+   cR=decompose R;
+   tally apply(cR,c->(dim c, degree c, betti c))
+   tally apply(cR,c->degree(c+X))
+   LeBarzN6(11,11,1)
+*-
 doc ///
 Key
  vBELSurface
@@ -8650,31 +9094,114 @@ Description
    The first version gives the original vBEL surface defined over a field of characteristic 2.
    The second version gives gives a construction of a vBEL surface building on a unirational liaison
    construction.
-  Example
-   P4=ZZ/2[x_0..x_4]; P2=ZZ/2[u_0..u_2];
-   minimalBetti(X=vBELSurface(P4,P2))
-   ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
-   Y=ci:X;
-   setRandomSeed("fast decomposition")
-   cY=decompose Y;
-   tally apply(cY, c-> (dim c, degree c, minimalBetti c))
-   betti(T=tateResolutionOfSurface X)
-  Text
+  CannedExample
+    i2 :    P4=ZZ/2[x_0..x_4]; P2=ZZ/2[u_0..u_2];
+    i4 :    elapsedTime minimalBetti(X=vBELSurface(P4,P2))
+      -- 1.33181s elapsed
+
+                0 1  2 3 4
+    o4 = total: 1 8 13 8 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . 1  . . .
+             4: . 5  4 . .
+             5: . 2  9 8 2
+    o4 : BettiTally
+    i5 :    ci=ideal ((gens X)_{0}|(gens X)*random(source gens X,P4^{-5}));
+
+    o5 : Ideal of P4
+    i6 :    Y=ci:X;
+
+    o6 : Ideal of P4
+    i7 :    setRandomSeed("fast decomposition")
+       -- setting random seed to 1219499381431827880741147639187005567
+
+    o7 = 1219499381431827880741147639187005567
+    i8 :    elapsedTime cY=decompose Y;
+       -- .397658s elapsed
+    i9 :    tally apply(cY, c-> (dim c, degree c, minimalBetti c))
+
+                             0 1 2
+    o9 = Tally{(3, 1, total: 1 2 1) => 1}
+                          0: 1 2 1
+                             0 1 2
+               (3, 2, total: 1 2 1) => 1
+                          0: 1 1 .
+                          1: . 1 1
+                             0 1 2
+               (3, 6, total: 1 4 3) => 1
+                          0: 1 . .
+                          1: . . .
+                          2: . 4 3
+    o9 : Tally
+    i10 :    betti(T=tateResolutionOfSurface X)
+
+                  -1  0  1  2 3 4  5  6  7
+    o10 = total: 108 64 32 11 3 4 12 38 91
+             -4:   1  .  .  . . .  .  .  .
+             -3: 107 64 32 11 . .  .  .  .
+             -2:   .  .  .  . 3 1  .  .  .
+             -1:   .  .  .  . . 2  2  .  .
+              0:   .  .  .  . . 1 10 38 91
+    o10 : BettiTally
+ Text
    The linked surface consists of a plane, a quadric surface and a Bordiga surface.
    The unirational construction is a reversal of this linkage.
-  Example
-   kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
-   minimalBetti(X=vBELSurface P4)
-   betti tateResolutionOfSurface X
-   (L0,L1,L2,J)=adjunctionProcess(X);
-   L0
-   X45=ideal (gens X)_{0..5};
-   R=X45:X;
-   dim R, degree R
-   cR=decompose R;
-   tally apply(cR,c->(dim c, degree c, betti c))
-   tally apply(cR,c->degree(c+X))
-   LeBarzN6(11,11,1)
+ CannedExample
+    i11 :    kk=ZZ/nextPrime 10^3; P4=kk[x_0..x_4];
+    i13 :    minimalBetti(X=vBELSurface P4)
+
+                 0 1  2 3 4
+    o13 = total: 1 8 13 8 2
+              0: 1 .  . . .
+              1: . .  . . .
+              2: . .  . . .
+              3: . 1  . . .
+              4: . 5  4 . .
+              5: . 2  9 8 2
+    o13 : BettiTally
+    i14 :    betti tateResolutionOfSurface X
+
+                  -1  0  1  2 3 4  5  6  7
+    o14 = total: 108 64 32 11 3 4 12 38 91
+             -4:   1  .  .  . . .  .  .  .
+             -3: 107 64 32 11 . .  .  .  .
+             -2:   .  .  .  . 3 1  .  .  .
+             -1:   .  .  .  . . 2  2  .  .
+              0:   .  .  .  . . 1 10 38 91
+    o14 : BettiTally
+    i15 :    elapsedTime (L0,L1,L2,J)=adjunctionProcess(X);
+     -- 13.611s elapsed
+    i16 :    L0
+
+    o16 = {(4, 11, 11), 5, (10, 18, 9), 14, (8, 8, 1)}
+    o16 : List
+    i17 :    X45=ideal (gens X)_{0..5};
+
+    o17 : Ideal of P4
+    i18 :    R=X45:X;
+
+    o18 : Ideal of P4
+    i19 :    dim R, degree R
+
+    o19 = (2, 2)
+    o19 : Sequence
+    i20 :    cR=decompose R;
+    i21 :    tally apply(cR,c->(dim c, degree c, betti c))
+
+                              0 1
+    o21 = Tally{(2, 1, total: 1 3) => 2}
+                           0: 1 3
+    o21 : Tally
+    i22 :    tally apply(cR,c->degree(c+X))
+
+    o22 = Tally{6 => 2}
+    o22 : Tally
+    i23 :    LeBarzN6(11,11,1)
+
+    o23 = 7
+
   Text
    X has two 6-secant lines and five (-1)-lines.
 References
@@ -8807,7 +9334,15 @@ References
 SeeAlso
   tateResolutionOfSurface
 ///
-
+-* for CannedExample of biellipticSurfaceD10
+ Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=biellipticSurfaceD10 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+*-
 doc ///
 Key
  biellipticSurfaceD10
@@ -8824,13 +9359,40 @@ Outputs
   of a bielliptic surface of degree 10 
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   elapsedTime X=biellipticSurfaceD10 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
+   We construct a bielliptic surface of degree 10 
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=biellipticSurfaceD10 P4;
+       -- 45.9089s elapsed
+
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 6)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0  1  2  3  4
+    o6 = total: 1 26 55 40 10
+             0: 1  .  .  .  .
+             1: .  .  .  .  .
+             2: .  .  .  .  .
+             3: .  .  .  .  .
+             4: .  1  .  .  .
+             5: . 25 55 40 10
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                -1  0  1 2 3  4  5  6  7
+    o7 = total: 81 45 20 6 5 10 11 30 85
+            -4:  1  .  . . .  .  .  .  .
+            -3: 80 45 20 5 .  .  .  .  .
+            -2:  .  .  . 1 .  .  .  .  .
+            -1:  .  .  . . 5 10 10  .  .
+             0:  .  .  . . .  .  1 30 85
+    o7 : BettiTally
+
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 References
@@ -8839,7 +9401,15 @@ References
 SeeAlso
   tateResolutionOfSurface
 ///
-
+-* for CannedExample of biellipticSurfaceD15
+  Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4];
+   elapsedTime X=biellipticSurfaceD15 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+*-
 doc ///
 Key
  biellipticSurfaceD15
@@ -8856,13 +9426,40 @@ Outputs
   of a bielliptic surface of degree 15 
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4];
-   elapsedTime X=biellipticSurfaceD15 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
+    We construct a nonminimal bielliptic surface of degree 15
+  CannedExample
+     i2 :    kk=ZZ/nextPrime 10^4; 
+     i3 :    P4=kk[x_0..x_4];
+     i4 :    elapsedTime X=biellipticSurfaceD15 P4;
+        -- 11.3729s elapsed
+
+     o4 : Ideal of P4
+     i5 : (d,sg)=(degree X, sectionalGenus X)
+
+     o5 = (15, 21)
+     o5 : Sequence
+     i6 :    minimalBetti X
+
+                 0  1  2 3
+     o6 = total: 1 11 15 5
+              0: 1  .  . .
+              1: .  .  . .
+              2: .  .  . .
+              3: .  .  . .
+              4: .  1  . .
+              5: . 10 15 5
+     o6 : BettiTally
+     i7 :    betti(T=tateResolutionOfSurface X)
+
+                  -1   0  1  2  3  4 5  6  7
+     o7 = total: 171 105 55 21 10 10 6 15 50
+             -4:   1   .  .  .  .  . .  .  .
+             -3: 170 105 55 20  .  . .  .  .
+             -2:   .   .  .  1 10 10 5  .  .
+             -1:   .   .  .  .  .  . .  .  .
+              0:   .   .  .  .  .  . 1 15 50
+     o7 : BettiTally
+     
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 Caveat
@@ -9452,6 +10049,23 @@ SeeAlso
   Ksquare
 ///
 
+-* For CannedEcample of ellipticSurfaceD10S9
+ Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   setRandomSeed(" fix the decomposition of the canonicalDivisor");
+   elapsedTime X=ellipticSurfaceD10S9 P4;
+   (degree X, sectionalGenus X)==(10,9)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+   Ksquare(10,9,2)
+   D=saturate canonicalDivisor X;
+   apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+*-
+
 doc ///
 Key
  ellipticSurfaceD10S9
@@ -9468,20 +10082,60 @@ Outputs
   of an elliptic surface of degree 10 and sectional genus 9 
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   setRandomSeed(" fix the decomposition of the canonicalDivisor");
-   elapsedTime X=ellipticSurfaceD10S9 P4;
-   (degree X, sectionalGenus X)==(10,9)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   LeBarzN6(10,9,2)
-   HdotK(10,9)
-   Ksquare(10,9,2)
-   D=saturate canonicalDivisor X;
-   apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+   We construct an elliptic surface of degree 10 and sectional genus 9
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    setRandomSeed(" fix the decomposition of the canonicalDivisor");
+       -- setting random seed to 51670537354572222457359509835439844926907858937134012131891195733955819925382916224591497751
+    i5 :    elapsedTime X=ellipticSurfaceD10S9 P4;
+       -- .421647s elapsed
+
+    o5 : Ideal of P4
+    i6 :    (degree X, sectionalGenus X)==(10,9)
+
+    o6 = true
+    i7 :    minimalBetti X
+
+                0  1  2 3 4
+    o7 = total: 1 10 15 7 1
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  1  . . .
+             4: .  9 14 5 .
+             5: .  .  1 2 1
+
+    o7 : BettiTally
+    i8 :    betti(T=tateResolutionOfSurface X)
+
+                -1  0  1  2 3 4  5  6   7
+    o8 = total: 95 56 28 10 3 4 15 46 104
+            -4:  1  .  .  . . .  .  .   .
+            -3: 94 56 28 10 1 .  .  .   .
+            -2:  .  .  .  . 1 .  .  .   .
+            -1:  .  .  .  . 1 3  1  .   .
+             0:  .  .  .  . . 1 14 46 104
+    o8 : BettiTally
+    i9 :    pg=rank HH^2(sheaf(P4/X))
+
+    o9 = 1
+    i10 :    LeBarzN6(10,9,2)
+
+    o10 = 3
+    i11 :    HdotK(10,9)
+
+    o11 = 6
+    i12 :    Ksquare(10,9,2)
+
+    o12 = -3
+    i13 :    D=saturate canonicalDivisor X;
+
+    o13 : Ideal of P4
+    i14 :    apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+
+    o14 = {(2, 3, 1, 0), (2, 3, -2, -3)}
+    o14 : List
  Text
    X is non-minimal elliptic surface blown-up in three points.
 References
@@ -9493,6 +10147,25 @@ SeeAlso
   Ksquare
   LeBarzN6
 ///
+
+-*
+For CannedExample of ellipticSurfaceD10S10
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD10S10 P4;
+   (degree X, sectionalGenus X)==(10,10)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   LeBarzN6(10,10,3)   
+   D=saturate canonicalDivisor X;
+   tally apply(primaryDecomposition D,c->
+       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+   HdotK(10,10)==2+6
+   Ksquare(10,10,3)==-2
+
+*-
 
 doc ///
 Key
@@ -9510,21 +10183,66 @@ Outputs
   of an elliptic surface of degree 10 and sectional genus 10 
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   elapsedTime X=ellipticSurfaceD10S10 P4;
-   (degree X, sectionalGenus X)==(10,10)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   LeBarzN6(10,10,3)
-   
-   D=saturate canonicalDivisor X;
-   tally apply(primaryDecomposition D,c->
-       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
-   HdotK(10,10)==2+6
-   Ksquare(10,10,3)==-2
+    We construct an elliptic surface of degree 10 and sectional genus 10 and pg=2.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=ellipticSurfaceD10S10 P4;
+      -- .0825116s elapsed
+
+    o4 : Ideal of P4
+    i5 :    (degree X, sectionalGenus X)==(10,10)
+
+    o5 = true
+    i6 :    minimalBetti X
+
+                0 1 2 3 4
+    o6 = total: 1 6 9 5 1
+             0: 1 . . . .
+             1: . . . . .
+             2: . . . . .
+             3: . 3 . . .
+             4: . 3 9 5 1
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4  5  6   7
+    o7 = total: 100 60 31 12 3 4 18 51 110
+            -4:   1  .  .  . . .  .  .   .
+            -3:  99 60 31 12 2 .  .  .   .
+            -2:   .  .  .  . 1 .  .  .   .
+            -1:   .  .  .  . . 1  .  .   .
+             0:   .  .  .  . . 3 18 51 110
+
+    o7 : BettiTally
+    i8 :    pg=rank HH^2(sheaf(P4/X))
+
+    o8 = 2
+    i9 :    LeBarzN6(10,10,3)
+
+    o9 = 2
+    i10 :    D=saturate canonicalDivisor X;
+
+    o10 : Ideal of P4
+    i11 :    tally apply(primaryDecomposition D,c->
+             (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+
+                                  0 1 2 3 4
+    o11 = Tally{(2, 2, -1, total: 1 5 8 5 1, -2) => 1}
+                               0: 1 1 . . .
+                               1: . 4 8 5 1
+                                 0 1 2 3 4
+                (2, 6, 1, total: 1 5 9 6 1, 0) => 1
+                              0: 1 . . . .
+                              1: . 3 . . .
+                              2: . 2 9 6 1
+    o11 : Tally
+    i12 :    HdotK(10,10)==2+6
+
+    o12 = true
+    i13 :    Ksquare(10,10,3)==-2
+
+    o13 = true
  Text
    X is elliptic surface blown-up with two (-1) lines.
 References
@@ -9537,6 +10255,25 @@ SeeAlso
   Ksquare
   LeBarzN6
 ///
+
+
+-* For CannedExample of ellipticSurfaceD11S12
+Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD11S12 P4;
+   (degree X, sectionalGenus X)==(11,12)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   D=saturate canonicalDivisor X;
+   tally apply(primaryDecomposition D,c->
+       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+   LeBarzN6(11,12,3)==3
+   HdotK(11,12)==3+6+2
+   Ksquare(11,12,3)
+
+*-
 
 doc ///
 Key
@@ -9551,24 +10288,73 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of an elliptic surface of degree 11 and sectional genus 12 
+  of an elliptic surface of degree 11 and sectional genus 12.
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   elapsedTime X=ellipticSurfaceD11S12 P4;
-   (degree X, sectionalGenus X)==(11,12)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   D=saturate canonicalDivisor X;
-   tally apply(primaryDecomposition D,c->
-       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
-   LeBarzN6(11,12,3)==3
-   HdotK(11,12)==3+6+2
-   Ksquare(11,12,3)
- Text
+    We construct an elliptic surface of degree 11 and sectional genus 12 and pg=2.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=ellipticSurfaceD11S12 P4;
+       -- .093704s elapsed
+
+    o4 : Ideal of P4
+    i5 :    (degree X, sectionalGenus X)==(11,12)
+
+    o5 = true
+    i6 :    minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 13 6 1
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . 1  . . .
+             4: . 8 13 6 1
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4  5  6  7
+    o7 = total: 114 69 36 14 4 3 13 42 96
+            -4:   1  .  .  . . .  .  .  .
+            -3: 113 69 36 14 2 .  .  .  .
+            -2:   .  .  .  . 2 1  .  .  .
+            -1:   .  .  .  . . 1  .  .  .
+             0:   .  .  .  . . 1 13 42 96
+    o7 : BettiTally
+    i8 :    pg=rank HH^2(sheaf(P4/X))
+
+    o8 = 2
+    i9 :    D=saturate canonicalDivisor X;
+
+    o9 : Ideal of P4
+    i10 :    tally apply(primaryDecomposition D,c->
+             (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+
+                                 0 1  2 3 4
+    o10 = Tally{(2, 6, 1, total: 1 6 11 8 2, 0) => 1}
+                              0: 1 1  . . .
+                              1: . .  . . .
+                              2: . 2  2 . .
+                              3: . 3  9 8 2
+                                 0 1 2 3
+                (2, 1, 0, total: 1 3 3 1, -1) => 3
+                              0: 1 3 3 1
+                                 0 1 2 3
+                (2, 2, 0, total: 1 3 3 1, -1) => 1
+                              0: 1 2 1 .
+                              1: . 1 2 1
+    o10 : Tally
+    i11 :    LeBarzN6(11,12,3)==3
+
+    o11 = true
+    i12 :    HdotK(11,12)==3+6+2
+
+    o12 = true
+    i13 :    Ksquare(11,12,3)
+
+     o13 = -4
+   Text
    X is an elliptic surface blown-up with three (-1) lines and one (-1) conic.
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
@@ -9579,6 +10365,7 @@ SeeAlso
   Ksquare          
   LeBarzN6
 ///
+
 
 -* for CannedExample in ellipticSurfaceD12S14L0
   Example
@@ -9695,26 +10482,7 @@ Description
    o18 = kk
 
    o18 : kk-module, free
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   setRandomSeed("fix decomposition of the canonical divisors");
-   elapsedTime X=ellipticSurfaceD12S14L0 P4;
-   (degree X, sectionalGenus X)==(12,14)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=1+(genera X)_0
-   D1=saturate canonicalDivisor X;
-   degree D1,HdotK(12,14)
-   selfIntersectionNumber(X,D1),Ksquare(12,14,3)
-   D2=saturate canonicalDivisor X;
-   E=saturate(D1+D2);
-   degree E
-   cE=decompose E;
-   tally apply(cE,c->(degree c, genus c, selfIntersectionNumber(X,c)))
-   Dmin=D1:E;
-   HH^0 (sheaf (P4^1/Dmin))
- Text
+  Text
    X is an non-minimal elliptic surface with four (-1)-lines and one  (-1)-conic curve.
    X has a fibration into a pencil of elliptic curves of degree 8.
 References
@@ -9727,61 +10495,8 @@ SeeAlso
   LeBarzN6
 ///
 
--* for CannedExample in specificEllipticSurfaceD13S16
- Example
-   kk=ZZ/19; 
-   P4=kk[x_0..x_4];
-   E=kk[e_0..e_4,SkewCommutative=>true];
-   setRandomSeed("faily fast");
-   X=specificEllipticSurfaceD13S16(P4,E,2,Verbose=>true);
-  Text
-   The printed information is the partition type of canonical divisor of the specific Abo surface used and
-   its redidualInQuintics decomposition. Which in this case consists of four 6-secant lines and
-   a rational normal curve of degree 4 which is 21-secant.
-  Example
-   minimalBetti X
-   betti(T=tateResolutionOfSurface(X))
-   (d,sg)=(degree X, sectionalGenus X)
-   Ksquare(d,sg,3)
-   HdotK(d,sg)
-   K1=canonicalDivisor X;
-   K2=canonicalDivisor X;
-   betti(baseLocus=saturate (K1+K2))
-   cBaseLocus=decompose baseLocus;
-   minimalBetti last cBaseLocus
-   tally apply(cBaseLocus,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
-  Text
-   Note that the exceptional curves of X coincide with the residualInQuintics curves of
-   the used Abo surface.
-  Example
-   E1=K1:baseLocus;
-   dim E1, degree E1, genus E1, selfIntersectionNumber(X,E1)
-   R=residualInQuintics X;
-   tally apply(decompose R,c->(dim c, degree c, genus c, degree (c+X)))
-  Text
-    X contains four (-1) lines and a (-1) degree 4 rational normal curve. The canonical divisor E
-    of the minimal surface has genus 1 and self-intersection number 0. Thus X is an elliptic surface.
-
-
-*-
-
-doc ///
-Key
- ellipticSurfaceD12S14Linfinite
- (ellipticSurfaceD12S14Linfinite,PolynomialRing)
-Headline
- construct an elliptic surface of degree 12, sectional genus 14 and infinitly many 6-secant line
-Usage
- X=ellipticSurfaceD12S12Linfinite P4
-Inputs
- P4:PolynomialRing
-  coordinate ring of P4
-Outputs
- X:Ideal
-  of an elliptic surface of degree 12 and sectional genus 14 
-Description
-  Text
-  Example
+-* for CannedExample of ellipticSurfaceD12S14Linfinite
+Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
    elapsedTime X=ellipticSurfaceD12S14Linfinite P4;
@@ -9794,6 +10509,84 @@ Description
    R=residualInQuintics X;
    dim R, degree R ,betti R, degree (R+X)
    apply(primaryDecomposition(R+X),c->(dim c ,degree c, betti c))
+*-
+
+doc ///
+Key
+ ellipticSurfaceD12S14Linfinite
+ (ellipticSurfaceD12S14Linfinite,PolynomialRing)
+Headline
+ construct an elliptic surface of degree 12, sectional genus 14 and infinitly many 6-secant line
+Usage
+ X=ellipticSurfaceD12S14Linfinite P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an elliptic surface of degree 12 and sectional genus 14 
+Description
+  Text
+   We construct a regular elliptic surface of degree 12, sectional genus 14 and pg=2.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=ellipticSurfaceD12S14Linfinite P4;
+        -- 2.22857s elapsed
+
+    o4 : Ideal of P4
+    i5 :    (degree X, sectionalGenus X)==(12,14)
+
+    o5 = true
+    i6 :    minimalBetti X
+
+                0  1  2 3 4
+    o6 = total: 1 10 14 6 1
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: .  8  9 2 .
+             5: .  2  5 4 1
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4 5  6  7
+    o7 = total: 128 78 41 16 5 3 9 33 82
+            -4:   1  .  .  . . . .  .  .
+            -3: 127 78 41 16 2 . .  .  .
+            -2:   .  .  .  . 3 2 .  .  .
+            -1:   .  .  .  . . 1 1  .  .
+             0:   .  .  .  . . . 8 33 82
+    o7 : BettiTally
+    i8 :    LeBarzN6(12,14,3)
+
+    o8 = 4
+    i9 :    HdotK(12,14)
+
+    o9 = 14
+    i10 :    Ksquare(12,14,3)
+
+    o10 = -5
+    i11 :    R=residualInQuintics X;
+
+    o11 : Ideal of P4
+    i12 :    dim R, degree R ,betti R, degree (R+X)
+
+                        0 1
+    o12 = (3, 1, total: 1 2, 5)
+                     0: 1 2
+    o12 : Sequence
+    i13 :    apply(primaryDecomposition(R+X),c->(dim c ,degree c, betti c))
+
+                         0 1                 0 1
+    o13 = {(2, 5, total: 1 3), (1, 1, total: 1 4)}
+                      0: 1 2              0: 1 4
+                      1: . .
+                      2: . .
+                      3: . .
+                      4: . 1
+    o13 : List
  Text
    X contains a plane quintic curve with an additional point p in that plane.
    Every line through p in that plane is a 6-secant line.
@@ -9805,6 +10598,25 @@ SeeAlso
   Ksquare
   LeBarzN6
 ///
+-* for CannedExample of ellipticSurfaceD12S13
+ Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4];
+   X=ellipticSurfaceD12S13 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   Ksquare(d,sg,3)
+   D=saturate canonicalDivisor X; 
+   HdotK(d,sg)
+   degree D
+   rank HH^0 sheaf(P4^1/D)
+   selfIntersectionNumber(X,D)
+   genus D
+   singD=singularLocus(P4/D); dim singD==0 -- 9.57484s elapsed
+   minimalBetti D
+
+*-
 
 doc ///
 Key
@@ -9823,23 +10635,72 @@ Outputs
 Description
   Text
    We construct a regular elliptic surface of degree 12, sectional genus 13 and pg=2.
-  Example
-   kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4];
-   X=ellipticSurfaceD12S13 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   Ksquare(d,sg,3)
-   D=saturate canonicalDivisor X; 
-   HdotK(d,sg)
-   degree D
-   rank HH^0 sheaf(P4^1/D)
-   selfIntersectionNumber(X,D)
-   genus D
-   singD=singularLocus(P4/D); dim singD==0 -- 9.57484s elapsed
-   minimalBetti D
-   
+ 
+  CannedExample 
+    i2 :    kk=ZZ/nextPrime 10^4; 
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=ellipticSurfaceD12S13 P4;
+
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (12, 13)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0  1  2  3 4
+    o6 = total: 1 15 30 21 5
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  3  .  . .
+             5: . 12 30 21 5
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4 5  6  7
+    o7 = total: 124 75 39 15 4 4 8 27 75
+            -4:   1  .  .  . . . .  .  .
+            -3: 123 75 39 15 2 . .  .  .
+            -2:   .  .  .  . 2 . .  .  .
+            -1:   .  .  .  . . 4 5  .  .
+             0:   .  .  .  . . . 3 27 75
+    o7 : BettiTally
+    i8 :    Ksquare(d,sg,3)
+
+    o8 = 0
+    i9 :    D=saturate canonicalDivisor X; 
+
+    o9 : Ideal of P4
+   i10 :    HdotK(d,sg)
+
+   o10 = 12
+   i11 :    degree D
+
+   o11 = 12
+   i12 :    rank HH^0 sheaf(P4^1/D)
+
+   o12 = 1
+   i13 :    selfIntersectionNumber(X,D)
+
+   o13 = 0
+   i14 :    genus D
+
+   o14 = 1
+   i15 :    singD=singularLocus(P4/D); dim singD==0 -- 9.57484s elapsed
+
+   o16 = true
+   i17 :    minimalBetti D
+
+                0 1  2  3 4
+   o17 = total: 1 8 21 20 6
+             0: 1 .  .  . .
+             1: . 1  .  . .
+             2: . .  .  . .
+             3: . 7  4  . .
+             4: . . 17 20 6
+   o17 : BettiTally
  Text
    Since K^2=0 and the canonical divisor connected this surface is minimal. The surface is elliptic fibration over P1 into
    elliptic curves of degree 12.
@@ -9860,7 +10721,7 @@ Key
  (specificEllipticSurfaceD13S16,PolynomialRing,Ring, ZZ)
  [specificEllipticSurfaceD13S16,Verbose]
 Headline
- construct a specific elliptic surface via linkage form a Abo surface (4 families)
+ construct a specific elliptic surface via linkage form an Abo surface (4 families)
 Usage
  X=specificEllipticSurfaceD13S16(P4,E,k)
 Inputs
@@ -9979,7 +10840,7 @@ Description
    i20 : tally apply(decompose R,c->(dim c, degree c, genus c, degree (c+X)))
 
    o20 = Tally{(2, 3, -2, 18) => 1}
-   (2, 9, -2, 48) => 1
+               (2, 9, -2, 48) => 1
 
    o20 : Tally
  Text
@@ -10004,6 +10865,26 @@ SeeAlso
 -*
 regularInCodimension(1,P4/D)
 *-
+-*  For CannedExample of irregularEllipticSurfaceD12
+ Example
+   kk=ZZ/nextPrime 10^4; 
+   P4=kk[x_0..x_4];
+   setRandomSeed("fix a fast canonical divisor");
+   X=irregularEllipticSurfaceD12 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface(X,7))
+   Ksquare(d,sg,3)
+   "D=saturate canonicalDivisor X;";
+   HdotK(d,sg)
+   "degree D==HdotK(d,sg)";
+   "betti(fD=res D)";
+   "M=(coker transpose fD.dd_4)**P4^{-5}";
+   "hilbertFunction(0,M)+1==3 -- the number of connected components of D";
+   "selfIntersectionNumber(X,D)==0";   
+
+
+*-
 doc ///
 Key
  irregularEllipticSurfaceD12
@@ -10020,24 +10901,48 @@ Outputs
   of a irregular elliptic surface of degree 12 sectional genus 13
 Description
   Text
-   We construct a irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
-  Example
-   kk=ZZ/nextPrime 10^4; 
-   P4=kk[x_0..x_4];
-   setRandomSeed("fix a fast canonical divisor");
-   X=irregularEllipticSurfaceD12 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface(X,7))
-   Ksquare(d,sg,3)
-   "D=saturate canonicalDivisor X;";
-   HdotK(d,sg)
-   "degree D==HdotK(d,sg)";
-   "betti(fD=res D)";
-   "M=(coker transpose fD.dd_4)**P4^{-5}";
-   "hilbertFunction(0,M)+1==3 -- the number of connected components of D";
-   "selfIntersectionNumber(X,D)==0";   
-  Text
+   We construct an irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^4; 
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    setRandomSeed("fix a fast canonical divisor");
+ -- setting random seed to 134812755737665017156720934136292209881691405812662541386
+    i5 :    X=irregularEllipticSurfaceD12 P4;
+
+    o5 : Ideal of P4
+    i6 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (12, 13)
+    o6 : Sequence
+    i7 :    minimalBetti X
+
+                0 1  2 3 4
+    o7 = total: 1 9 15 9 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . .  . . .
+             4: . 5  2 . .
+             5: . 4 10 4 .
+             6: . .  3 5 2
+    o7 : BettiTally
+    i8 :    betti(T=tateResolutionOfSurface(X,7))
+
+                 -1  0  1  2 3 4  5  6  7   8
+    o8 = total: 124 75 39 16 6 5 10 29 75 156
+            -4:   1  .  .  . . .  .  .  .   .
+            -3: 123 75 39 15 3 .  .  .  .   .
+            -2:   .  .  .  1 2 1  .  .  .   .
+            -1:   .  .  .  . 1 4  5  2  .   .
+             0:   .  .  .  . . .  5 27 75 156
+    o8 : BettiTally
+    i9 :    Ksquare(d,sg,3)
+
+    o9 = 0
+    i10 :    HdotK(d,sg)
+
+    o10 = 12
+    Text
     Since K^2=0 this surface is minimal. X is fibered in elliptic curves of degree 4=12/3
     The canonical divisor is the pullback of a divisor of degree 3 on the albanese curve, which is
     an elliptic curve. This fits with pg=3.
@@ -10098,7 +11003,7 @@ kk=ZZ/nextPrime 10^4;
    minimalBetti Y
    betti tateResolutionOfSurface(Y,8)
    Ksquare(13,16,2)
-   cY=decompose Y
+   cY=decompose Y;
    netList apply(cY,c->(dim c,degree c, sectionalGenus c))
    Y1=cY_1;
    dim singularLocus(P4/Y1)
@@ -10267,8 +11172,19 @@ References
 SeeAlso
   
 ///
-
-
+-* for CannedExample in K3surfaceD10S9L1
+ Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   X=K3surfaceD10S9L1 P4;
+   (d,sg)=(degree X, sectionalGenus X)
+   minimalBetti X
+   OX=sheaf(P4^1/X);
+   apply(3,i->HH^i(OX))
+   Ksquare(degree X,sectionalGenus X,2)
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+*-
 doc ///
 Key
  K3surfaceD10S9L1
@@ -10285,18 +11201,44 @@ Outputs
   of a K3 surface of degree 9
 Description
   Text
-   We construct an K3 surface of degree 10 and sectional genus 9 with one 6-secant line
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   X=K3surfaceD10S9L1 P4;
-   (d,sg)=(degree X, sectionalGenus X)
-   minimalBetti X
-   OX=sheaf(P4^1/X);
-   apply(3,i->HH^i(OX))
-   Ksquare(degree X,sectionalGenus X,2)
-   LeBarzN6(10,9,2)
-   HdotK(10,9)
+   We construct a K3 surface of degree 10 and sectional genus 9 with one 6-secant line
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=K3surfaceD10S9L1 P4;
+   
+    o4 : Ideal of P4
+    i5 : (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 9)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0  1  2  3 4
+    o6 = total: 1 11 18 10 2
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  1  .  . .
+             4: .  9 15  7 1
+             5: .  1  3  3 1
+    o6 : BettiTally
+    i7 :    OX=sheaf(P4^1/X);
+    i8 :    apply(3,i->HH^i(OX))
+
+            1       1
+    o8 = {kk , 0, kk }
+    o8 : List
+    i9 :    Ksquare(degree X,sectionalGenus X,2)
+
+    o9 = -3
+    i10 :    LeBarzN6(10,9,2)
+
+    o10 = 3
+    i11 :    HdotK(10,9)
+
+    o11 = 6
+
   Text
    X is non-minimal with two exceptional lines and an exceptional rational quartic curve.
 References
@@ -10305,24 +11247,9 @@ SeeAlso
   
 ///        
 
-doc ///
-Key
- K3surfaceD10S9L3
- (K3surfaceD10S9L3, PolynomialRing)
-Headline
- construct a K3 surface of degree 10 and sectional genus 9 with three 6-secant line
-Usage
- X=K3surfaceD10S9L3 P4
-Inputs
- P4:PolynomialRing
-  coordinate ring of P4
-Outputs
- X:Ideal
-  of a K3 surface of degree 9
-Description
-  Text
-   We construct an K3 surface of degree 10 and sectional genus 9
-  Example
+-*
+for CannedExample in K3surfaceD10S9L3
+ Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
    X=K3surfaceD10S9L3 P4;
@@ -10341,35 +11268,103 @@ Description
    dim plane == 3
    dim  (plane+X), degree radical (plane+X)
    tally apply(primaryDecomposition (plane+X),c->(dim c, degree radical c))
+*-
+doc ///
+Key
+ K3surfaceD10S9L3
+ (K3surfaceD10S9L3, PolynomialRing)
+Headline
+ construct a K3 surface of degree 10 and sectional genus 9 with three 6-secant line
+Usage
+ X=K3surfaceD10S9L3 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 9
+Description
+  Text
+   We construct an K3 surface of degree 10 and sectional genus 9
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=K3surfaceD10S9L3 P4;
+
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 9)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 15 9 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . 2  . . .
+             4: . 4  7 2 .
+             5: . 3  8 7 2
+    o6 : BettiTally
+    i7 :    OX=sheaf(P4^1/X);
+    i8 :    apply(3,i->HH^i(OX))
+
+            1       1
+    o8 = {kk , 0, kk }
+    o8 : List
+    i9 : Ksquare(degree X,sectionalGenus X,2)
+
+    o9 = -3
+    i10 :    LeBarzN6(10,9,2)
+
+    o10 = 3
+    i11 :    HdotK(10,9)
+
+    o11 = 6
+  Text
+   X is non-minimal with no exceptional line and three exceptional conics.
+  CannedExample
+    i12 :    betti(X5=ideal (gens X)_{0..5})
+
+                 0 1
+    o12 = total: 1 6
+              0: 1 .
+              1: . .
+              2: . .
+              3: . 2
+              4: . 4
+    o12 : BettiTally
+    i13 :    betti(plane=X5:X)
+
+                 0 1
+    o13 = total: 1 2
+              0: 1 2
+    o13 : BettiTally
+    i14 :    dim plane == 3
+
+    o14 = true
+    i15 :    dim  (plane+X), degree radical (plane+X)
+
+    o15 = (2, 4)
+    o15 : Sequence
+    i16 :    tally apply(primaryDecomposition (plane+X),c->(dim c, degree radical c))
+
+    o16 = Tally{(1, 1) => 1}
+                (1, 2) => 1
+                (2, 4) => 1
+    o16 : Tally
   Text
    The plane intersects X in a quartic curve and three points. The three lines through
    two of these points are the thee 6-secant lines.
 References
    \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ of Oslo, (1988) 
 SeeAlso
-  
-///
 
-doc ///
-Key
- K3surfaceD11S11Ln
- (K3surfaceD11S11Ln, PolynomialRing,ZZ)
-Headline
- construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines (4 families)
-Usage
- X=K3surfaceD11S11Ln(P4,n)
-Inputs
- P4:PolynomialRing
-  coordinate ring of P4
- n: ZZ
-   the number of desired six secant lines
-Outputs
- X:Ideal
-  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' 6-secants lines
-Description
-  Text
-   We construct an K3 surfaces of degree 11, sectional genus 11 and n 6-secants lines
-  Example
+///
+-*
+for CannedExample of K3surfaceD11S11n
+ Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
    X=K3surfaceD11S11Ln(P4,0);
@@ -10412,6 +11407,177 @@ Description
    Ksquare(11,11,2)
    LeBarzN6(11,11,2)
    HdotK(11,11)
+*-
+doc///
+Key
+ K3surfaceD11S11Ln
+ (K3surfaceD11S11Ln, PolynomialRing,ZZ)
+Headline
+ construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines (4 families)
+Usage
+ X=K3surfaceD11S11Ln(P4,n)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+ n: ZZ
+   the number of desired six secant lines
+Outputs
+ X:Ideal
+  of a K3 surface of degree 11, sectional genus 11 and precisely 'n' 6-secants lines
+Description
+  Text
+   We construct an K3 surfaces of degree 11, sectional genus 11 and n 6-secants lines
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    X=K3surfaceD11S11Ln(P4,0);
+
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (11, 11)
+    o5 : Sequence
+    i6 :    minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 13 7 2
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . .  . . .
+             4: . 9  8 . .
+             5: . .  5 7 2
+    o6 : BettiTally
+  Text
+   X has no 6-secant line, since the ideal is generated by quintics.
+  CannedExample  
+    i7 :    X=K3surfaceD11S11Ln(P4,1);
+
+    o7 : Ideal of P4
+    i8 :    minimalBetti X
+
+                0  1  2 3 4
+    o8 = total: 1 10 15 8 2
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: .  9  9 1 .
+             5: .  1  6 7 2
+    o8 : BettiTally
+  Text
+   In case n=1 there is precisely one 6-secant line:
+  CannedExample    
+    i9 :    betti(X5=ideal (gens X)_{0..8})
+
+                0 1
+    o9 = total: 1 9
+             0: 1 .
+             1: . .
+             2: . .
+             3: . .
+             4: . 9
+    o9 : BettiTally
+   i10 :    betti(line=X5:X)
+
+                0 1
+   o10 = total: 1 3
+             0: 1 3
+   o10 : BettiTally
+   i11 :    dim line, degree line, degree (line+X)
+
+   o11 = (2, 1, 6)
+   o11 : Sequence
+  Text
+   In case n=2 there are two 6-secant lines:
+  CannedExample   
+   i12 :    X=K3surfaceD11S11Ln(P4,2);
+   
+   o12 : Ideal of P4
+   i13 : minimalBetti X
+                0  1  2 3 4
+   o13 = total: 1 11 17 9 2
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  .  . . .
+             4: .  9 10 2 .
+             5: .  2  7 7 2
+   o13 : BettiTally
+   i14 : betti(X5=ideal (gens X)_{0..8})
+                0 1
+   o14 = total: 1 9
+             0: 1 .
+             1: . .
+             2: . .
+             3: . .
+             4: . 9
+   o14 : BettiTally
+   i15 : betti(residual=X5:X)
+                0 1
+   o15 = total: 1 5
+             0: 1 1
+             1: . 4
+   o15 : BettiTally
+   i16 :  dim residual, degree residual, degree (residual+X)
+
+   o16 = (2, 2, 12)
+   o16 : Sequence
+  Text
+   In case n=3 there are three 6-secant lines:
+  CannedExample   
+   i17 :    X=K3surfaceD11S11Ln(P4,3);
+   
+   o17 : Ideal of P4
+   i18 : minimalBetti X
+                0  1  2  3 4
+   o18 = total: 1 12 19 10 2
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  9 11  3 .
+             5: .  3  8  7 2
+   o18 : BettiTally
+   i19 :    betti(X5=ideal (gens X)_{0..8})
+
+                0 1
+   o19 = total: 1 9
+             0: 1 .
+             1: . .
+             2: . .
+             3: . .
+             4: . 9
+   o19 : BettiTally
+   i20 :    betti(plane=X5:X)
+
+                0 1
+   o20 = total: 1 2
+             0: 1 2
+   o20 : BettiTally
+   i21 :    dim plane, degree (plane+X)
+
+   o21 = (3, 4)
+   o21 : Sequence
+   i22 :    tally apply(primaryDecomposition(plane+X),c->(dim c, degree radical(c+X)))
+
+   o22 = Tally{(1, 1) => 3}
+               (2, 4) => 1
+
+   o22 : Tally
+  Text
+   So the plane intersects X in a plane quartic and 3 points.
+   The three 6-secant lines are the lines in the plane joining 2 of the three points.
+  CannedExample   
+   i23 :    Ksquare(11,11,2)
+
+   o23 = -5
+   i24 :    LeBarzN6(11,11,2)
+
+   o24 = 4
+   i25 :    HdotK(11,11)
+
+   o25 = 9
   Text
    Summary: X is a K3 surface with precisely e1=(4-n) exceptional lines and further exceptional curves
    of larger degree as in the following pattern (e1,e2,e3,..)
@@ -10420,7 +11586,7 @@ References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 SeeAlso
 ///
--*
+-* for CannedExample of K3surfaceD11S12
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
@@ -10437,8 +11603,6 @@ SeeAlso
    "elapsedTime cD=decompose D;";
    "tally apply(cD,c->(dim c, degree c, betti c, selfIntersectionNumber(X,c)))";
 *-
-
-
 doc///
 Key
  K3surfaceD11S12
@@ -10455,7 +11619,7 @@ Outputs
   of a K3 surface of degree 11 and sectional genus 12 
 Description
   Text
-   We construct an K3 surfaces of degree 11 and sectional genus 12 
+   We construct a K3 surface of degree 11 and sectional genus 12 
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -10509,16 +11673,15 @@ Description
 
   Text
     X has no 6-secant line, since the ideal is generated by quintics.
-    Thus there nine (-1) lines and a (-1) conic. 
+    Thus there are nine (-1) lines and a (-1) conic. 
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993) 
 SeeAlso
   selfIntersectionNumber
   LeBarzN6
   canonicalDivisor
+  
 ///
-
-
 -* for CannedExample K3SurfaceD12
 Example
    kk=ZZ/nextPrime 10^3;
@@ -10909,7 +12072,7 @@ SeeAlso
     11.3592*2^(20-c)/60/60
 *-
 
-doc ///
+doc///
 Key
  searchHMBundle
  (searchHMBundle,Ring,ZZ)
@@ -10962,7 +12125,7 @@ SeeAlso
   varietyOfUnstablePlanes
 ///
 
-doc ///
+doc///
 Key
  varietyOfUnstablePlanes
  (varietyOfUnstablePlanes,Matrix)
