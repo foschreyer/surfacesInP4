@@ -9452,6 +9452,23 @@ SeeAlso
   Ksquare
 ///
 
+-* For CannedEcample of ellipticSurfaceD10S9
+ Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   setRandomSeed(" fix the decomposition of the canonicalDivisor");
+   elapsedTime X=ellipticSurfaceD10S9 P4;
+   (degree X, sectionalGenus X)==(10,9)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   LeBarzN6(10,9,2)
+   HdotK(10,9)
+   Ksquare(10,9,2)
+   D=saturate canonicalDivisor X;
+   apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+*-
+
 doc ///
 Key
  ellipticSurfaceD10S9
@@ -9468,20 +9485,60 @@ Outputs
   of an elliptic surface of degree 10 and sectional genus 9 
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   setRandomSeed(" fix the decomposition of the canonicalDivisor");
-   elapsedTime X=ellipticSurfaceD10S9 P4;
-   (degree X, sectionalGenus X)==(10,9)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   LeBarzN6(10,9,2)
-   HdotK(10,9)
-   Ksquare(10,9,2)
-   D=saturate canonicalDivisor X;
-   apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+   We construct an elliptic surface of degree 10 and sectional genus 9
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    setRandomSeed(" fix the decomposition of the canonicalDivisor");
+       -- setting random seed to 51670537354572222457359509835439844926907858937134012131891195733955819925382916224591497751
+    i5 :    elapsedTime X=ellipticSurfaceD10S9 P4;
+       -- .421647s elapsed
+
+    o5 : Ideal of P4
+    i6 :    (degree X, sectionalGenus X)==(10,9)
+
+    o6 = true
+    i7 :    minimalBetti X
+
+                0  1  2 3 4
+    o7 = total: 1 10 15 7 1
+             0: 1  .  . . .
+             1: .  .  . . .
+             2: .  .  . . .
+             3: .  1  . . .
+             4: .  9 14 5 .
+             5: .  .  1 2 1
+
+    o7 : BettiTally
+    i8 :    betti(T=tateResolutionOfSurface X)
+
+                -1  0  1  2 3 4  5  6   7
+    o8 = total: 95 56 28 10 3 4 15 46 104
+            -4:  1  .  .  . . .  .  .   .
+            -3: 94 56 28 10 1 .  .  .   .
+            -2:  .  .  .  . 1 .  .  .   .
+            -1:  .  .  .  . 1 3  1  .   .
+             0:  .  .  .  . . 1 14 46 104
+    o8 : BettiTally
+    i9 :    pg=rank HH^2(sheaf(P4/X))
+
+    o9 = 1
+    i10 :    LeBarzN6(10,9,2)
+
+    o10 = 3
+    i11 :    HdotK(10,9)
+
+    o11 = 6
+    i12 :    Ksquare(10,9,2)
+
+    o12 = -3
+    i13 :    D=saturate canonicalDivisor X;
+
+    o13 : Ideal of P4
+    i14 :    apply(primaryDecomposition D,c->(dim c,degree c,genus c,selfIntersectionNumber(X,c)))
+
+    o14 = {(2, 3, 1, 0), (2, 3, -2, -3)}
+    o14 : List
  Text
    X is non-minimal elliptic surface blown-up in three points.
 References
@@ -9493,6 +9550,25 @@ SeeAlso
   Ksquare
   LeBarzN6
 ///
+
+-*
+For CannedExample of ellipticSurfaceD10S10
+  Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD10S10 P4;
+   (degree X, sectionalGenus X)==(10,10)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   LeBarzN6(10,10,3)   
+   D=saturate canonicalDivisor X;
+   tally apply(primaryDecomposition D,c->
+       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+   HdotK(10,10)==2+6
+   Ksquare(10,10,3)==-2
+
+*-
 
 doc ///
 Key
@@ -9510,21 +9586,66 @@ Outputs
   of an elliptic surface of degree 10 and sectional genus 10 
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   elapsedTime X=ellipticSurfaceD10S10 P4;
-   (degree X, sectionalGenus X)==(10,10)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   LeBarzN6(10,10,3)
-   
-   D=saturate canonicalDivisor X;
-   tally apply(primaryDecomposition D,c->
-       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
-   HdotK(10,10)==2+6
-   Ksquare(10,10,3)==-2
+    We construct an elliptic surface of degree 10 and sectional genus 10 and pg=2.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=ellipticSurfaceD10S10 P4;
+      -- .0825116s elapsed
+
+    o4 : Ideal of P4
+    i5 :    (degree X, sectionalGenus X)==(10,10)
+
+    o5 = true
+    i6 :    minimalBetti X
+
+                0 1 2 3 4
+    o6 = total: 1 6 9 5 1
+             0: 1 . . . .
+             1: . . . . .
+             2: . . . . .
+             3: . 3 . . .
+             4: . 3 9 5 1
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4  5  6   7
+    o7 = total: 100 60 31 12 3 4 18 51 110
+            -4:   1  .  .  . . .  .  .   .
+            -3:  99 60 31 12 2 .  .  .   .
+            -2:   .  .  .  . 1 .  .  .   .
+            -1:   .  .  .  . . 1  .  .   .
+             0:   .  .  .  . . 3 18 51 110
+
+    o7 : BettiTally
+    i8 :    pg=rank HH^2(sheaf(P4/X))
+
+    o8 = 2
+    i9 :    LeBarzN6(10,10,3)
+
+    o9 = 2
+    i10 :    D=saturate canonicalDivisor X;
+
+    o10 : Ideal of P4
+    i11 :    tally apply(primaryDecomposition D,c->
+             (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+
+                                  0 1 2 3 4
+    o11 = Tally{(2, 2, -1, total: 1 5 8 5 1, -2) => 1}
+                               0: 1 1 . . .
+                               1: . 4 8 5 1
+                                 0 1 2 3 4
+                (2, 6, 1, total: 1 5 9 6 1, 0) => 1
+                              0: 1 . . . .
+                              1: . 3 . . .
+                              2: . 2 9 6 1
+    o11 : Tally
+    i12 :    HdotK(10,10)==2+6
+
+    o12 = true
+    i13 :    Ksquare(10,10,3)==-2
+
+    o13 = true
  Text
    X is elliptic surface blown-up with two (-1) lines.
 References
@@ -9537,6 +9658,25 @@ SeeAlso
   Ksquare
   LeBarzN6
 ///
+
+
+-* For CannedExample of ellipticSurfaceD11S12
+Example
+   kk=ZZ/nextPrime 10^3;
+   P4=kk[x_0..x_4];
+   elapsedTime X=ellipticSurfaceD11S12 P4;
+   (degree X, sectionalGenus X)==(11,12)
+   minimalBetti X
+   betti(T=tateResolutionOfSurface X)
+   pg=rank HH^2(sheaf(P4/X))
+   D=saturate canonicalDivisor X;
+   tally apply(primaryDecomposition D,c->
+       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+   LeBarzN6(11,12,3)==3
+   HdotK(11,12)==3+6+2
+   Ksquare(11,12,3)
+
+*-
 
 doc ///
 Key
@@ -9551,24 +9691,73 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of an elliptic surface of degree 11 and sectional genus 12 
+  of an elliptic surface of degree 11 and sectional genus 12.
 Description
   Text
-  Example
-   kk=ZZ/nextPrime 10^3;
-   P4=kk[x_0..x_4];
-   elapsedTime X=ellipticSurfaceD11S12 P4;
-   (degree X, sectionalGenus X)==(11,12)
-   minimalBetti X
-   betti(T=tateResolutionOfSurface X)
-   pg=rank HH^2(sheaf(P4/X))
-   D=saturate canonicalDivisor X;
-   tally apply(primaryDecomposition D,c->
-       (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
-   LeBarzN6(11,12,3)==3
-   HdotK(11,12)==3+6+2
-   Ksquare(11,12,3)
- Text
+    We construct an elliptic surface of degree 11 and sectional genus 12 and pg=2.
+  CannedExample
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=ellipticSurfaceD11S12 P4;
+       -- .093704s elapsed
+
+    o4 : Ideal of P4
+    i5 :    (degree X, sectionalGenus X)==(11,12)
+
+    o5 = true
+    i6 :    minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 13 6 1
+             0: 1 .  . . .
+             1: . .  . . .
+             2: . .  . . .
+             3: . 1  . . .
+             4: . 8 13 6 1
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4  5  6  7
+    o7 = total: 114 69 36 14 4 3 13 42 96
+            -4:   1  .  .  . . .  .  .  .
+            -3: 113 69 36 14 2 .  .  .  .
+            -2:   .  .  .  . 2 1  .  .  .
+            -1:   .  .  .  . . 1  .  .  .
+             0:   .  .  .  . . 1 13 42 96
+    o7 : BettiTally
+    i8 :    pg=rank HH^2(sheaf(P4/X))
+
+    o8 = 2
+    i9 :    D=saturate canonicalDivisor X;
+
+    o9 : Ideal of P4
+    i10 :    tally apply(primaryDecomposition D,c->
+             (dim c,degree c,genus c,minimalBetti c,selfIntersectionNumber(X,c)))
+
+                                 0 1  2 3 4
+    o10 = Tally{(2, 6, 1, total: 1 6 11 8 2, 0) => 1}
+                              0: 1 1  . . .
+                              1: . .  . . .
+                              2: . 2  2 . .
+                              3: . 3  9 8 2
+                                 0 1 2 3
+                (2, 1, 0, total: 1 3 3 1, -1) => 3
+                              0: 1 3 3 1
+                                 0 1 2 3
+                (2, 2, 0, total: 1 3 3 1, -1) => 1
+                              0: 1 2 1 .
+                              1: . 1 2 1
+    o10 : Tally
+    i11 :    LeBarzN6(11,12,3)==3
+
+    o11 = true
+    i12 :    HdotK(11,12)==3+6+2
+
+    o12 = true
+    i13 :    Ksquare(11,12,3)
+
+     o13 = -4
+   Text
    X is an elliptic surface blown-up with three (-1) lines and one (-1) conic.
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
@@ -9579,6 +9768,7 @@ SeeAlso
   Ksquare          
   LeBarzN6
 ///
+
 
 -* for CannedExample in ellipticSurfaceD12S14L0
   Example
