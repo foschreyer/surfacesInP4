@@ -8106,6 +8106,8 @@ Description
     minimalBetti Y
     P2=kk[y_0..y_2];
     minimalBetti veroneseSurface(P4,P2)
+  Text
+    X is linked (3,3) to a Veronese surface.  
 References
    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
    \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
@@ -8132,12 +8134,17 @@ Outputs
 Description
   Text
     We construct a Ionescu-Okonek surface from its rational parametrization.
+    X=P2(6;2^6,1^5);
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD7(P4,P2))
     degree X, sectionalGenus X
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+    numList
+  Text
+    X is rational, the second adjoint is a Del Pezzo surface of degree 3.
 References
    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
    \textit{Okonek, Ch.} \"Uber $2$-codimensionale Untermannigfaltigkeiten vom Grad $7$ in $\Pn 4$ und $\Pn 5$, Math. Z., 187, (1983), 209-219
@@ -8174,6 +8181,10 @@ Description
     P2=kk[y_0..y_2];
     minimalBetti(X=ionescuOkonekSurfaceD8S5(P4,P2))
     degree X, sectionalGenus X
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+    numList
+  Text
+    X is rational, the second adjoint is P2 
 References
    \textit{Ionescu, P.} Embedded projective varieties of small invariants III, Proceedings of the l'Aquila conference. LNM., 1417, (1990), 138-154
    \textit{Okonek, Ch.} Fl\"achen vom Grad 8 in $\Pn 4$, Math. Z., 191, (1986), 207-223
@@ -8195,6 +8206,18 @@ References
     apply(decompose(X+Y),c->(dim c, degree c, genus c, minimalBetti c))
     betti tateResolutionOfSurface X
 ///
+-* For CannedExample of degree10DESSurface
+ Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    minimalBetti(X=degree10DESSurface(P4,E))
+    degree X, sectionalGenus X
+    betti(T=tateResolutionOfSurface X)
+    betti(T.dd_4)
+    elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+    numList
+*-
 
 doc ///
 Key
@@ -8215,15 +8238,52 @@ Outputs
 Description
   Text
     We construct the surface from a randomly choosen differential T.dd_4
-    of the Tate resolution of the desired ideal.
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    minimalBetti(X=degree10DESSurface(P4,E))
-    degree X, sectionalGenus X
-    betti(T=tateResolutionOfSurface X)
-    betti(T.dd_4)
+    of the Tate resolution of the desired ideal. It has degree 10, sectional genus 9 and q=pg=0.
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     minimalBetti(X=degree10DESSurface(P4,E))
+
+                0  1  2  3 4
+    o5 = total: 1 11 18 10 2
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  1  .  . .
+             4: . 10 18 10 2
+    o5 : BettiTally
+    i6 :     degree X, sectionalGenus X
+
+    o6 = (10, 9)
+    o6 : Sequence
+    i7 :     betti(T=tateResolutionOfSurface X)
+
+                -1  0  1 2 3 4  5  6   7
+    o7 = total: 94 55 27 9 2 3 15 47 105
+            -4:  1  .  . . . .  .  .   .
+            -3: 93 55 27 9 . .  .  .   .
+            -2:  .  .  . . 2 .  .  .   .
+            -1:  .  .  . . . 2  .  .   .
+             0:  .  .  . . . 1 15 47 105
+    o7 : BettiTally
+    i8 :     betti(T.dd_4)
+
+                0 1
+    o8 = total: 2 3
+             1: 2 .
+             2: . 2
+             3: . 1
+    o8 : BettiTally
+    i9 :     elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+       -- 2.34521s elapsed
+    i10 :     numList
+
+    o10 = {(4, 10, 9), 7, (8, 13, 6), 7, (5, 5, 1)}
+    o10 : List
+  Text
+    X is a rational surface, the second adjoint is a Del Pezzo surface of degree 5
+
 References
    \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237 
 ///
