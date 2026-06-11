@@ -7206,6 +7206,53 @@ SeeAlso
   analyzeAboSurface
 ///
 
+
+-* For CannedExample of specificAboSurface
+Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    X=specificAboSurface(P4,E,1);
+    minimalBetti X
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,2)==-6   
+    LeBarzN6(d,sg,2)==7
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    RX=residualInQuintics X;dim RX
+    RX==radical RX
+    tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
+
+
+  Example
+    betti(T=tateResolutionOfSurface X)
+    m3x4=T.dd_5^{0..2}_{4..7}
+    m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
+    betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
+
+
+  Example
+    setRandomSeed("get a Smooth Surface");
+    betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
+    minimalBetti (Y=ci:X)
+    RY=residualInQuintics Y;
+    degree RY
+    RY==canonicalDivisor X
+    saturate ideal singularLocus (P4/Y) == ideal 1_P4
+    D1=canonicalDivisor Y;
+    D2=canonicalDivisor Y;
+    betti(baseLocus=saturate (D1+D2))
+    degree baseLocus, genus baseLocus
+    selfIntersectionNumber(Y,baseLocus)
+    (degree Y, sectionalGenus Y)==(13,16)
+    betti tateResolutionOfSurface Y
+    Ksquare(13,16,3)==-5
+    LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
+    betti(E1=D1:baseLocus)
+    degree E1, genus E1, selfIntersectionNumber(Y,E1)
+*-
+
+
+
 doc ///
 Key
  specificAboSurface
@@ -7236,51 +7283,189 @@ Description
     {1, 1, 1, 1, 1, 7}
    
     Other cases are p=11 and p=7. 
-  Example
-    kk=ZZ/19;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    X=specificAboSurface(P4,E,1);
-    minimalBetti X
-    (d,sg)=(degree X, sectionalGenus X)
-    Ksquare(d,sg,2)==-6   
-    LeBarzN6(d,sg,2)==7
-    pK=partitionOfCanonicalDivisorOfAboSurface X
-    RX=residualInQuintics X;dim RX
-    RX==radical RX
-    tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
+    CannedExample
+   i2 :     kk=ZZ/19;
+   i3 :     P4=kk[x_0..x_4];
+   i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+   i5 :     X=specificAboSurface(P4,E,1);
+
+   o5 : Ideal of P4
+   i6 :     minimalBetti X
+
+                0  1  2  3 4
+    o6 = total: 1 12 24 17 4
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  4  .  . .
+             5: .  8 24 17 4
+    o6 : BettiTally
+    i7 :     (d,sg)=(degree X, sectionalGenus X)
+
+    o7 = (12, 13)
+    o7 : Sequence
+    i8 :     Ksquare(d,sg,2)==-6   
+
+    o8 = true
+    i9 :     LeBarzN6(d,sg,2)==7
+
+    o9 = true
+    i10 :     pK=partitionOfCanonicalDivisorOfAboSurface X
+
+    o10 = {1, 1, 2, 2, 3, 3}
+    o10 : List
+    i11 :     RX=residualInQuintics X;dim RX
+
+    o11 : Ideal of P4
+    o12 = 2
+    i13 :     RX==radical RX
+
+    o13 = true
+    i14 :     tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
+
+    o14 = Tally{(2, 1, 0, (1, 6)) => 1  }
+                (2, 4, -3, (1, 24)) => 1
+    o14 : Tally
   Text
     There are two (-1) lines and five 6-secant lines in this case.    
     The Tate resolution has a specific form:
-  Example
-    betti(T=tateResolutionOfSurface X)
-    m3x4=T.dd_5^{0..2}_{4..7}
-    m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
-    betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
+  CannedExample
+    i15 :     betti(T=tateResolutionOfSurface X)
+
+                  -1  0  1  2 3 4 5  6  7
+    o15 = total: 123 74 38 14 4 4 8 28 76
+             -4:   1  .  .  . . . .  .  .
+             -3: 122 74 38 14 1 . .  .  .
+             -2:   .  .  .  . 3 1 .  .  .
+             -1:   .  .  .  . . 3 4  .  .
+              0:   .  .  .  . . . 4 28 76
+    o15 : BettiTally
+    i16 :     m3x4=T.dd_5^{0..2}_{4..7}
+
+    o16 = {3} | e_0-5e_1-9e_2-5e_3-9e_4  -e_0-e_1-e_2-3e_3+4e_4
+          {3} | 3e_0+6e_1-9e_2+8e_3-3e_4 3e_1-9e_2+5e_3        
+          {3} | 2e_0+e_2-5e_3+9e_4       8e_1-7e_2+9e_3-3e_4   
+          -------------------------------------------------------------------------
+          -2e_1-e_2+5e_3           -8e_1+2e_2-9e_3+3e_4     |
+          -e_0-5e_1+9e_2+9e_3+7e_4 6e_1-e_2+6e_3-7e_4       |
+          2e_2+8e_3                -e_0-7e_1-8e_2+9e_3-7e_4 |
+
+                             3                 4
+    o16 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                      0   4             0   4
+    i17 :     m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
+
+    o17 = {1} | e_2 |
+          {1} | e_1 |
+          {1} | e_0 |
+
+                             3                 1
+    o17 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                      0   4             0   4
+    i18 :     betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
+
+                 0  1
+    o18 = total: 1 10
+              0: 1  .
+              1: .  .
+              2: . 10
+    o18 : BettiTally
   Text
     The construction of X uses a special 3x4 matrix over E such
     that the Hom group above is non-zero.
 
     The (5,5) linked surface Y is an elliptic surface of degree 13 and sectional genus 16.
-  Example
-    setRandomSeed("get a Smooth Surface");
-    betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
-    minimalBetti (Y=ci:X)
-    RY=residualInQuintics Y;
-    degree RY
-    RY==canonicalDivisor X
-    "saturate ideal singularLocus (P4/Y) == ideal 1_P4";
-    D1=canonicalDivisor Y;
-    D2=canonicalDivisor Y;
-    betti(baseLocus=saturate (D1+D2))
-    degree baseLocus, genus baseLocus
-    selfIntersectionNumber(Y,baseLocus)
-    (degree Y, sectionalGenus Y)==(13,16)
-    betti tateResolutionOfSurface Y
-    Ksquare(13,16,3)==-5
-    LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
-    betti(E1=D1:baseLocus)
-    degree E1, genus E1, selfIntersectionNumber(Y,E1)
+  CannedExample
+    i19 :     setRandomSeed("get a Smooth Surface");
+     -- setting random seed to 12565710742996174726728999654169754803660
+    i20 :     betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
+
+                 0 1
+    o20 = total: 1 2
+              0: 1 .
+              1: . .
+              2: . .
+              3: . .
+              4: . 2
+    o20 : BettiTally
+    i21 :     minimalBetti (Y=ci:X)
+
+                 0  1  2  3 4
+    o21 = total: 1 12 22 14 3
+              0: 1  .  .  . .
+              1: .  .  .  . .
+              2: .  .  .  . .
+              3: .  .  .  . .
+              4: .  3  .  . .
+              5: .  9 22 14 3
+    o21 : BettiTally
+    i22 :     RY=residualInQuintics Y;
+
+    o22 : Ideal of P4
+    i23 :     degree RY
+
+    o23 = 12
+    i24 :     RY==canonicalDivisor X
+
+    o24 = true
+    i26 :     saturate ideal singularLocus (P4/Y) == ideal 1_P4
+
+    o26 = true
+    i27 :     D1=canonicalDivisor Y;
+
+    o27 : Ideal of P4
+
+    i28 : D2=canonicalDivisor Y;
+
+    o28 : Ideal of P4
+    i29 :     betti(baseLocus=saturate (D1+D2))
+
+                 0  1
+    o29 = total: 1 15
+              0: 1  .
+              1: .  .
+              2: . 15
+    o29 : BettiTally
+    i30 :     degree baseLocus, genus baseLocus
+
+    o30 = (5, -4)
+    o30 : Sequence
+    i31 :     selfIntersectionNumber(Y,baseLocus)
+
+    o31 = -5
+    i32 :     (degree Y, sectionalGenus Y)==(13,16)
+
+    o32 = true
+    i33 :     betti tateResolutionOfSurface Y
+
+                  -1  0  1  2 3 4 5  6  7
+    o33 = total: 142 87 46 18 6 4 6 24 68
+             -4:   1  .  .  . . . .  .  .
+             -3: 141 87 46 18 2 . .  .  .
+             -2:   .  .  .  . 4 3 .  .  .
+             -1:   .  .  .  . . 1 3  .  .
+              0:   .  .  .  . . . 3 24 68
+    o33 : BettiTally
+    i34 :     Ksquare(13,16,3)==-5
+
+    o34 = true
+    i35 :     LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
+
+    o35 = true
+    i36 :     betti(E1=D1:baseLocus)
+
+                 0  1
+    o36 = total: 1 22
+              0: 1  .
+              1: .  .
+              2: .  .
+              3: . 22
+    o36 : BettiTally
+    i37 :     degree E1, genus E1, selfIntersectionNumber(Y,E1)
+
+    o37 = (12, 1, 0)
+    o37 : Sequence
   Text
     The linked surface Y is a smooth elliptic surface blown-up in 5
     points, which are (-1)-lines on Y.
@@ -7361,6 +7546,19 @@ SeeAlso
  perhaps there is also a 1,1,1,1,3,5 case *-
     
 ///
+-* For CannedExample of specificEllipticAboSurfaceD12S13
+Example
+    kk=ZZ/31;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
+    (d,sg)=(degree X, sectionalGenus X)
+    betti tateResolutionOfSurface X
+    minimalBetti X
+    K=canonicalDivisor X;
+    cK=decompose K;
+    tally apply(cK,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+*-
 
 doc ///
 Key
@@ -7386,17 +7584,50 @@ Description
     In characteristic p=31 the function returns a non minimal elliptic surface with
     six (-1) curves of degrees {1,1,1,1,2,2}.
     The canonical divisor has in addition a component that is an elliptic curve of degree 4.
-  Example
-    kk=ZZ/31;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
-    (d,sg)=(degree X, sectionalGenus X)
-    betti tateResolutionOfSurface X
-    minimalBetti X
-    K=canonicalDivisor X;
-    cK=decompose K;
-    tally apply(cK,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+  CannedExample
+    i2 :     kk=ZZ/31;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
+    #mdKRs = 1
+    (K,R) = ({1, 1, 1, 1, 2, 2, 4}, Tally{(1, 1, (0, 6)) => 3   }), dim Hom = 6
+                                          (2, 2, (1, 8, 9)) => 1
+    o5 : Ideal of P4
+    i6 :     (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (12, 13)
+    o6 : Sequence
+    i7 :     betti tateResolutionOfSurface X
+
+                 -1  0  1  2 3 4 5  6  7
+    o7 = total: 123 74 38 14 4 4 8 28 76
+            -4:   1  .  .  . . . .  .  .
+            -3: 122 74 38 14 1 . .  .  .
+            -2:   .  .  .  . 3 1 .  .  .
+            -1:   .  .  .  . . 3 4  .  .
+             0:   .  .  .  . . . 4 28 76
+    o7 : BettiTally
+    i8 :     minimalBetti X
+
+                0  1  2  3 4
+    o8 = total: 1 12 24 17 4
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  4  .  . .
+             5: .  8 24 17 4
+    o8 : BettiTally
+    i9 :     K=canonicalDivisor X;
+        
+    o9 : Ideal of P4
+    i10 : cK=decompose K;
+    i11 :     tally apply(cK,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+
+    o11 = Tally{(2, 1, 0, -1) => 4 }
+                (2, 4, -1, -2) => 1
+                (2, 4, 1, 0) => 1
+    o11 : Tally
   Text
     This surface is a non-minimal elliptic surface with four (-1)-lines and two (-1)-conics.
     The canonical divisor also has a degree 4 elliptic curve as a component.
@@ -7500,7 +7731,7 @@ Outputs
   of Abo surface data m3x4,d,(K,R)
 Description
   Text
-    The functions collects N eaxmpale of surface  by choosing randomly 3x4 matrices over the exterior
+    The functions collects N examples of surface  by choosing randomly 3x4 matrices over the exterior
     algebra and testing whether they lead to a surface.
     If the pair of (K,R) of the partition of the canonical divisor and the numerical type of
     the residual scheme to the surface in the quintics containing it is new or for that type there are
@@ -8283,7 +8514,6 @@ Description
     o10 : List
   Text
     X is a rational surface, the second adjoint is a Del Pezzo surface of degree 5
-
 References
    \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237 
 ///
