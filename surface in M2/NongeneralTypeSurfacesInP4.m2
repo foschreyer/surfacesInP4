@@ -7464,6 +7464,16 @@ tally apply(select(decompose baseLocus,c->dim c ==2),c->(dim c -1, degree c, gen
     dim (E1+E2), degree(E1+E2)
 ///
 
+-* for CannedExample of collectAboSurfaces
+Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    mdKRs={};
+    setRandomSeed("carefully choosen randomSeed");
+    elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) -- 31.8852s elapsed
+
+*-
 
 
 doc ///
@@ -7499,14 +7509,33 @@ Description
     examples is reached.
     
     With the option Special=>true then the m3x4 Bordiga matrix has a rank 1 point.
-  Example
-    kk=ZZ/19;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    mdKRs={};
-    setRandomSeed("carefully choosen randomSeed");
-    elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) -- 31.8852s elapsed
-   
+  CannedExample
+    i2 :     kk=ZZ/19;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     mdKRs={};
+    i6 :     setRandomSeed("carefully choosen randomSeed");
+     -- setting random seed to 130783826824055887938028823731402206818653657496837223808
+    i7 :     elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) 
+      -- 13.0813s elapsed
+        K = {1, 1, 1, 3, 3, 3}
+        count1= 1
+        count=1, (K,R)= ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }), dim Hom = 1
+                                                   ((2, 4), (1, 21)) => 1
+        count1= 1
+        -- 56.2178s elapsed
+    o7 = {(| 6e_0-5e_1+e_2-9e_3   -8e_0-6e_1+7e_4     e_0+6e_1-3e_2+e_3+4e_4   
+           | -9e_0-2e_1+8e_2+4e_3 e_0-3e_1-8e_2-6e_4  -3e_0-2e_1+4e_2+3e_3-7e_4
+           | 7e_0-3e_1+e_2-6e_3   4e_0-3e_1-9e_2-6e_4 -8e_0+5e_1-8e_2          
+         --------------------------------------------------------------------------
+         2e_0+8e_1-4e_2-8e_3+8e_4 |, 1, ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1,
+         4e_0+4e_1-8e_2-e_3+e_4   |                                ((2, 4), (1,
+         8e_0-3e_1+3e_2+7e_3-7e_4 |
+         --------------------------------------------------------------------------
+         6)) => 4 }))}
+         21)) => 1
+    o7 : List
+  
 SeeAlso
    residualInQuintics
    partitionOfCanonicalDivisorOfAboSurface
@@ -7647,6 +7676,44 @@ SeeAlso
    partitionOfCanonicalDivisorOfAboSurface
    
 ///
+-* For CannedExample of randomEllipticAboSurface
+Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    P3=kk[y_0..y_3];
+    setRandomSeed("fairly fast");
+    elapsedTime (X,m3x4,r)=randomEllipticAboSurface(P4,P3);
+    minimalBetti X
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,2)
+    betti(tateResolutionOfSurface X)
+    RX=residualInQuintics X;
+    cRX=decompose RX;
+    tally apply(cRX, c-> (dim c -1, degree c, (dim(c+X)-1,degree(c+X))))
+    K=canonicalDivisor X;
+    cK=decompose K;
+    tally apply(cK,c->(dim c -1, degree c, genus c, selfIntersectionNumber(X,c), minimalBetti c))
+
+
+  Example
+    E=(select(cK,c->genus c ==1))_0;
+    betti E,
+    saturate ideal singularLocus(P4/E)
+    dim E,degree E, genus E, minimalBetti E
+    m=2
+    mE= saturate(E^m+X);
+    betti mE
+    H=ideal( gens mE*random(source gens mE,P4^{-6}));
+    linked=saturate((H+X):mE);
+    betti linked, betti saturate linked
+    H'=ideal(gens linked*random(source gens linked,P4^{-6}));
+    betti trim ideal(gens linked%X)
+    betti linked, betti X
+    E'=(X+H'):linked;
+    betti E'
+    degree E', genus E'
+    dim(E'+E)
+*-
 
 doc ///
 Key
@@ -7678,44 +7745,185 @@ Description
     a 3x5 matrix over P3 such that the adjoint Bordiga matrix has the desired number of rank 1 points.
     
     The fastest, hence default, choice is NumberOfRank1Points=>3.
-  Example
-    kk=ZZ/19;
-    P4=kk[x_0..x_4];
-    P3=kk[y_0..y_3];
-    setRandomSeed("fairly fast");
-    elapsedTime (X,m3x4,r)=randomEllipticAboSurface(P4,P3);
-    minimalBetti X
-    (d,sg)=(degree X, sectionalGenus X)
-    Ksquare(d,sg,2)
-    betti(tateResolutionOfSurface X)
-    RX=residualInQuintics X;
-    cRX=decompose RX;
-    tally apply(cRX, c-> (dim c -1, degree c, (dim(c+X)-1,degree(c+X))))
-    K=canonicalDivisor X;
-    cK=decompose K;
-    tally apply(cK,c->(dim c -1, degree c, genus c, selfIntersectionNumber(X,c), minimalBetti c))
+  CannedExample
+    i2 :     kk=ZZ/19;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     P3=kk[y_0..y_3];
+    i5 :     setRandomSeed("fairly fast");
+      -- setting random seed to 11374382488447926963809
+    i6 :     elapsedTime (X,m3x4,r)=randomEllipticAboSurface(P4,P3);
+      -- 21.0565s elapsed
+    i7 :     minimalBetti X
+
+                0  1  2  3 4
+    o7 = total: 1 12 24 17 4
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  4  .  . .
+             5: .  8 24 17 4
+    o7 : BettiTally
+    i8 :     (d,sg)=(degree X, sectionalGenus X)
+
+    o8 = (12, 13)
+    o8 : Sequence
+    i9 :     Ksquare(d,sg,2)
+
+    o9 = -6
+    i10 :     betti(tateResolutionOfSurface X)
+   
+
+                  -1  0  1  2 3 4 5  6  7
+    o10 = total: 123 74 38 14 4 4 8 28 76
+             -4:   1  .  .  . . . .  .  .
+             -3: 122 74 38 14 1 . .  .  .
+             -2:   .  .  .  . 3 1 .  .  .
+             -1:   .  .  .  . . 3 4  .  .
+              0:   .  .  .  . . . 4 28 76
+    o10 : BettiTally
+    i11 :  RX=residualInQuintics X;
+
+    o11 : Ideal of P4
+    i12 :     cRX=decompose RX;
+    i13 :     tally apply(cRX, c-> (dim c -1, degree c, (dim(c+X)-1,degree(c+X))))
+
+    o13 = Tally{(1, 1, (0, 6)) => 3}
+                (2, 2, (1, 8)) => 1
+    o13 : Tally
+    i14 :     K=canonicalDivisor X;
+
+    o14 : Ideal of P4
+    i15 :     cK=decompose K;
+    i16 :     tally apply(cK,c->(dim c -1, degree c, genus c, selfIntersectionNumber(X,c), minimalBetti c))
+
+                                      0 1 2 3 4
+    o16 = Tally{(1, 2, -1, -2, total: 1 5 8 5 1) => 1}
+                                   0: 1 1 . . .
+                                   1: . 4 8 5 1
+                                     0 1 2 3
+                (1, 1, 0, -1, total: 1 3 3 1) => 2
+                                  0: 1 3 3 1
+                                     0 1 2 3
+                (1, 2, 0, -1, total: 1 3 3 1) => 2
+                                  0: 1 2 1 .
+                                  1: . 1 2 1
+                                    0 1 2 3
+                (1, 4, 1, 0, total: 1 3 3 1) => 1
+                                 0: 1 1 . .
+                                 1: . 2 2 .
+                                 2: . . 1 1
+    o16 : Tally
   Text
     The canonical divisor decomposes into four (-1)-lines and two (-1)-conics, and an elliptic
     curve of class (2,2) on a P1xP1. So the minimal model has K^2_min=0,
     hence is an elliptic surface.
-  Example
-    E=(select(cK,c->genus c ==1))_0;
-    betti E,
-    saturate ideal singularLocus(P4/E)
-    dim E,degree E, genus E, minimalBetti E
-    m=2
-    mE= saturate(E^m+X);
-    betti mE
-    H=ideal( gens mE*random(source gens mE,P4^{-6}));
-    linked=saturate((H+X):mE);
-    betti linked, betti saturate linked
-    H'=ideal(gens linked*random(source gens linked,P4^{-6}));
-    betti trim ideal(gens linked%X)
-    betti linked, betti X
-    E'=(X+H'):linked;
-    betti E'
-    degree E', genus E'
-    dim(E'+E)
+
+  CannedExample
+    i17 :     E=(select(cK,c->genus c ==1))_0;
+
+    o17 : Ideal of P4
+    i18 :     betti E,
+
+                  0 1
+    o18 = (total: 1 3, )
+               0: 1 1
+               1: . 2
+    o18 : Sequence
+    i19 :     saturate ideal singularLocus(P4/E)
+
+    o19 = ideal 1
+    o19 : Ideal of P4
+    i20 :     dim E,degree E, genus E, minimalBetti E
+
+                           0 1 2 3
+    o20 = (2, 4, 1, total: 1 3 3 1)
+                        0: 1 1 . .
+                        1: . 2 2 .
+                        2: . . 1 1
+    o20 : Sequence
+    i21 :     m=2
+
+    o21 = 2
+    i22 :     mE= saturate(E^m+X);
+
+    o22 : Ideal of P4
+    i23 :     betti mE
+
+                 0 1
+    o23 = total: 1 7
+              0: 1 .
+              1: . 1
+              2: . 6
+    o23 : BettiTally
+    i24 :     H=ideal( gens mE*random(source gens mE,P4^{-6}));
+
+    o24 : Ideal of P4
+
+    i25 :     linked=saturate((H+X):mE);
+        
+    o25 : Ideal of P4
+
+    i26 : betti linked, betti saturate linked
+                  0  1         0  1
+    o26 = (total: 1 15, total: 1 15)
+               0: 1  .      0: 1  .
+               1: .  .      1: .  .
+               2: .  .      2: .  .
+               3: .  .      3: .  .
+               4: .  4      4: .  4
+               5: . 10      5: . 10
+               6: .  .      6: .  .
+               7: .  1      7: .  1
+    o26 : Sequence
+    i27 :  H'=ideal(gens linked*random(source gens linked,P4^{-6}));
+
+    o27 : Ideal of P4
+    i28 :  betti trim ideal(gens linked%X)
+   
+                 0 1
+    o28 = total: 1 3
+              0: 1 .
+              1: . .
+              2: . .
+              3: . .
+              4: . .
+              5: . 2
+              6: . .
+              7: . 1
+    o28 : BettiTally
+    i29 :  betti linked, betti X
+
+                  0  1         0  1
+    o29 = (total: 1 15, total: 1 12)
+               0: 1  .      0: 1  .
+               1: .  .      1: .  .
+               2: .  .      2: .  .
+               3: .  .      3: .  .
+               4: .  4      4: .  4
+               5: . 10      5: .  8
+               6: .  .
+               7: .  1
+    o29 : Sequence
+    i30 :     E'=(X+H'):linked;
+
+    o30 : Ideal of P4
+    i31 :     betti E'
+
+                 0  1
+    o31 = total: 1 12
+              0: 1  .
+              1: .  .
+              2: .  8
+              3: .  4
+    o31 : BettiTally
+    i32 :     degree E', genus E'
+
+    o32 = (8, 1)
+    o32 : Sequence
+    i33 :     dim(E'+E)
+
+    o33 = 0
   Text
     The divisor 2E moves in a pencil.
 References
