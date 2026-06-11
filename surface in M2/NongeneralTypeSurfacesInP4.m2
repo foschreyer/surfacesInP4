@@ -7021,7 +7021,25 @@ SeeAlso
   analyzeAboSurface
   aboSurfaceFromMatrix
 ///
-
+-* For CannedExample of abo111144Surface
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    P3=kk[y_0..y_3];
+    setRandomSeed("quite fast");
+    elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3);
+    r==4
+    pK=partitionOfCanonicalDivisorOfAboSurface X
+    R=residualInQuintics X;   
+    cResidual=decompose R;
+    tally apply(cResidual, c-> (dim c, degree c, (dim(c+X), degree (c+X))))	   
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) == -6    
+    numberOfMinusOneLines=#select(pK,d->d==1)
+    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and
+	    degree (c+X)==6*degree c),c->degree c)
+    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+*-
 doc///
 Key
  abo111144Surface
@@ -7050,23 +7068,44 @@ Description
     This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor (1,1,1,1,4,4)
     from special (3x5) matrices over P3, such that the Bordiga surface is smooth and has
     seven rank two planes meeting the 1x3 line.
-  Example
-    kk=ZZ/nextPrime 10^4;
-    P4=kk[x_0..x_4];
-    P3=kk[y_0..y_3];
-    setRandomSeed("quite fast");
-    elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3);
-    r==4
-    pK=partitionOfCanonicalDivisorOfAboSurface X
-    R=residualInQuintics X;   
-    cResidual=decompose R;
-    tally apply(cResidual, c-> (dim c, degree c, (dim(c+X), degree (c+X))))	   
-    (d,sg,xO)=(12,13,2);
-    Ksquare(d,sg,xO) == -6    
-    numberOfMinusOneLines=#select(pK,d->d==1)
-    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and
-	    degree (c+X)==6*degree c),c->degree c)
-    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     P3=kk[y_0..y_3];
+    i5 :     setRandomSeed("quite fast");
+      -- setting random seed to 124864759781408404214
+    i6 :     elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3);
+      -- 12.6696s elapsed
+    i7 :  r==4
+
+    o7 = true
+    i8 : pK=partitionOfCanonicalDivisorOfAboSurface X
+
+    o8 = {1, 1, 1, 1, 4, 4}
+    o8 : List
+    i9 :     R=residualInQuintics X;   
+
+    o9 : Ideal of P4
+    i10 :     cResidual=decompose R;
+    i11 :     tally apply(cResidual, c-> (dim c, degree c, (dim(c+X), degree (c+X))))	   
+
+    o11 = Tally{(2, 1, (1, 6)) => 3 }
+                (2, 2, (1, 11)) => 2
+    o11 : Tally
+    i12 :     (d,sg,xO)=(12,13,2);
+    i13 :     Ksquare(d,sg,xO) == -6    
+
+    o13 = true
+    i14 :     numberOfMinusOneLines=#select(pK,d->d==1)
+
+    o14 = 4
+    i15 :     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and
+        	    degree (c+X)==6*degree c),c->degree c)
+
+    o15 = 3
+    i16 :     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+
+    o16 = true
   Text
     In this example, X has three 6-secant lines and two 11-secant conics.
 SeeAlso
@@ -7076,6 +7115,33 @@ SeeAlso
   analyzeAboSurface
   aboSurfaceFromMatrix
 ///
+-*
+For CannedExample of abo111333Surface
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    setRandomSeed("fix decompositions");
+    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+    K    
+    cResidual=primaryDecomposition residual;
+    tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) == -#K    
+    numberOfMinusOneLines=#select(K,d->d==1)
+    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
+    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+
+
+  Example
+    R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
+    minimalBetti R
+    saturate ideal singularLocus R
+    degree (R+X)==21
+
+*-
 
 doc///
 Key
@@ -7104,31 +7170,74 @@ Description
     of the canonical divisor. This function constructs a 3x4 matrix m3x4 with linear entries
     from E whose column space contains 7 rank-two planes meeting a specific line and returns
     aboSurfaceFromMatrix(m3x4,P4).
-  Example
-    kk=ZZ/nextPrime 10^4;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    setRandomSeed("fix decompositions");
-    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
-    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
-    K    
-    cResidual=primaryDecomposition residual;
-    tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
-	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
-    (d,sg,xO)=(12,13,2);
-    Ksquare(d,sg,xO) == -#K    
-    numberOfMinusOneLines=#select(K,d->d==1)
-    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
-    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     setRandomSeed("fix decompositions");
+      -- setting random seed to 1220442291374344711948625538118317179
+    i6 :     elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+      -- 14.5008s elapsed
+    i7 :     elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+      -- 13.6416s elapsed
+    i8 :     K    
+
+    o8 = {1, 1, 1, 3, 3, 3}
+    o8 : List
+    i9 :     cResidual=primaryDecomposition residual;
+    i10 :     tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+        	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+
+                              0 1
+    o10 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
+                           0: 1 3              (1, 5, 5) => 1
+                              0 1
+                (2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 2}) => 1
+                           0: 1 3              (1, 2, 2) => 2
+                              0 1
+                (2, 1, total: 1 3, 1, 6, Tally{(1, 6, 6) => 1}) => 1
+                           0: 1 3
+                              0 1
+                (2, 4, total: 1 6, 1, 21, Tally{(1, 1, 1) => 2  }) => 1
+                           0: 1 .               (1, 3, 3) => 2
+                           1: . 6               (1, 13, 13) => 1
+    o10 : Tally
+    i11 :     (d,sg,xO)=(12,13,2);
+    i12 :     Ksquare(d,sg,xO) == -#K    
+
+    o12 = true
+    i13 :     numberOfMinusOneLines=#select(K,d->d==1)
+
+    o13 = 3
+    i14 :     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
+
+    o14 = 4
+    i15 :     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+
+    o15 = true
   Text
     In this example, X has four 6-secant lines. The intersection of these lines
     with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
     and length (6) respectively.
-  Example
-    R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
-    minimalBetti R
-    saturate ideal singularLocus R
-    degree (R+X)==21
+  CannedExample
+    i16 :     R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
+
+    o16 : Ideal of P4
+    i17 :     minimalBetti R
+
+                 0 1 2 3
+    o17 = total: 1 6 8 3
+              0: 1 . . .
+              1: . 6 8 3
+
+    o17 : BettiTally
+    i18 :     saturate ideal singularLocus R
+
+    o18 = ideal 1
+    o18 : Ideal of P4
+    i19 :     degree (R+X)==21
+
+    o19 = true
   Text
     Since the rational normal curve R intersects X in 21>20 points,
     it is contained in any quintic of X.
@@ -7139,6 +7248,34 @@ SeeAlso
   analyzeAboSurface
   aboSurfaceFromMatrix
 ///
+
+-*
+For CannedExample of abo111117Surface
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    setRandomSeed("fix a fast decomposition of K");
+    elapsedTime (X,m3x4)=abo111117Surface(P4,E,Verbose=>false);
+    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+    K    
+    cResidual=primaryDecomposition residual;
+    netList apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) == -#K    
+    numberOfMinusOneLines=#select(K,d->d==1)
+    expectedNumberOfSixSecants=LeBarzN6(d,sg,xO)-numberOfMinusOneLines
+    plane=cResidual_0;
+    cPlaneCapX=primaryDecomposition saturate(plane+X);
+    point=(select(cPlaneCapX,c->dim c==1))_0;
+    randomLineThroughPoint=trim(plane+ideal ((gens point)*random(source gens point,P4^{-1})));
+    degree(randomLineThroughPoint+X)==6
+    L1=cResidual_4;
+    degree(L1+X)
+    dim(L1+plane)
+    tally apply(cResidual_{1,2,3},L->dim(L+plane))
+*-
 
 doc ///
 Key
@@ -7168,30 +7305,91 @@ Description
     that it drops rank by two at a point and by two at the intersection of three lines in a plane, where
     its last 3x2 submatrix drops the rank by one.The functiom then defines m3x4 as
     the adjoint matrix of m3x5 and returns aboSurface(m3x4,P4). 
-  Example
-    kk=ZZ/nextPrime 10^4;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    setRandomSeed("fix a fast decomposition of K");
-    elapsedTime (X,m3x4)=abo111117Surface(P4,E,Verbose=>false);
-    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
-    K    
-    cResidual=primaryDecomposition residual;
-    netList apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
-	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
-    (d,sg,xO)=(12,13,2);
-    Ksquare(d,sg,xO) == -#K    
-    numberOfMinusOneLines=#select(K,d->d==1)
-    expectedNumberOfSixSecants=LeBarzN6(d,sg,xO)-numberOfMinusOneLines
-    plane=cResidual_0
-    cPlaneCapX=primaryDecomposition saturate(plane+X)
-    point=(select(cPlaneCapX,c->dim c==1))_0
-    randomLineThroughPoint=trim(plane+ideal ((gens point)*random(source gens point,P4^{-1})))
-    degree(randomLineThroughPoint+X)==6
-    L1=cResidual_4
-    degree(L1+X)
-    dim(L1+plane)
-    tally apply(cResidual_{1,2,3},L->dim(L+plane))
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     setRandomSeed("fix a fast decomposition of K");
+     -- setting random seed to 13616088329504166732828826647070520602128631652395528887107
+    i6 :     elapsedTime (X,m3x4)=abo111117Surface(P4,E,Verbose=>false);
+     -- 10.9342s elapsed
+    i7 :     elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+     -- 12.8561s elapsed
+    i8 :     K    
+
+    o8 = {1, 1, 1, 1, 1, 7}
+    o8 : List
+    i9 :     cResidual=primaryDecomposition residual;
+    i10 :  netList apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+        tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+
+          +--------------------------------------------------+
+          |              0 1                                 |
+    o10 = |(3, 1, total: 1 2, 2, 5, Tally{(1, 1, 1) => 1})   |
+          |           0: 1 2              (2, 5, 5) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 5, Tally{(0, 18, 1) => 1})  |
+          |           0: 1 3              (1, 1, 1) => 3     |
+          |                               (1, 2, 2) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 5, Tally{(0, 19, 1) => 1})  |
+          |           0: 1 3              (1, 1, 1) => 1     |
+          |                               (1, 2, 2) => 2     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 5, Tally{(0, 18, 1) => 1})  |
+          |           0: 1 3              (1, 1, 1) => 3     |
+          |                               (1, 2, 2) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1})   |
+          |           0: 1 3              (1, 2, 2) => 1     |
+          |                               (1, 3, 3) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 2, total: 1 5, 1, 12, Tally{(1, 12, 12) => 1})|
+          |           0: 1 1                                 |
+          |           1: . 4                                 |
+          +--------------------------------------------------+
+
+    i11 :     (d,sg,xO)=(12,13,2);
+    i12 :     Ksquare(d,sg,xO) == -#K    
+
+    o12 = true
+    i13 :     numberOfMinusOneLines=#select(K,d->d==1)
+
+    o13 = 5
+    i14 :     expectedNumberOfSixSecants=LeBarzN6(d,sg,xO)-numberOfMinusOneLines
+
+    o14 = 2
+    i15 :     plane=cResidual_0;
+
+    o15 : Ideal of P4
+    i16 :     cPlaneCapX=primaryDecomposition saturate(plane+X);
+    i17 :     point=(select(cPlaneCapX,c->dim c==1))_0;
+
+    o17 : Ideal of P4
+    i18 :     randomLineThroughPoint=trim(plane+ideal ((gens point)*random(source gens point,P4^{-1})));
+
+    o18 : Ideal of P4
+    i19 :     degree(randomLineThroughPoint+X)==6
+
+    o19 = true
+    i20 :     L1=cResidual_4;
+
+    o20 : Ideal of P4
+    i21 :     degree(L1+X)
+
+    o21 = 6
+    i22 :     dim(L1+plane)
+
+    o22 = 0
+    i23 :     tally apply(cResidual_{1,2,3},L->dim(L+plane))
+
+    o23 = Tally{1 => 3}
+    o23 : Tally
   Text
     In this example, X has a pencil of 6-secant lines:
     All the lines in the plane through the point. Thus, LeBarz's 6-secant formula does not apply.
