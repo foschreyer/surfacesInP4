@@ -12,7 +12,7 @@ check "NongeneralTypeSurfacesInP4"
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 needsPackage ("NongeneralTypeSurfacesInP4")
-elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 855.314s elapsed 
+elapsedTime installPackage("NongeneralTypeSurfacesInP4")  -- 281.1s elapsed
 
 ///
 
@@ -5444,6 +5444,30 @@ SeeAlso
    chiO
 ///
 
+
+-* for CannedExample in tangentToMonad
+    
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4]
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    X=specificAboSurface(P4,E,1);
+    minimalBetti X
+    betti(T=tateResolutionOfSurface X)
+    a=3, b=1, c=3, d=4
+    m=tangentToMonad X;
+    V=source m
+    rank V - (a^2+b^2+5*b*c+c^2+d^2-1) == 36
+  Text
+    So the rank 2 reflexive sheaf E depends on at most 36 parameters and
+    taking into acount h^0(E)=5
+    we have an atmost 34+4=40 dimensional family of surfaces. 
+    
+    On the other hand X is the blowup of a polarized K3 surface in 6 points. So we
+    get locqlly a family of dimension at least
+  Example
+    2*6+19-3*5+24==40
+*-
 doc///
 Key
  tangentToMonad
@@ -5466,26 +5490,78 @@ Description
     The dimension of the space of isomophism classes of monads is at most
     dim V-(a^2+b^2+c^2+5*b*c+d^2-1).
     In the example below we have a=3, b=1, c=3, d=4
-  Example
-    kk=ZZ/19
-    P4=kk[x_0..x_4]
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    X=specificAboSurface(P4,E,1);
-    minimalBetti X
-    betti(T=tateResolutionOfSurface X)
-    a=3, b=1, c=3, d=4
-    m=tangentToMonad X;
-    V=source m
-    rank V - (a^2+b^2+5*b*c+c^2+d^2-1) == 36
+  CannedExample
+    i1 : kk=ZZ/19
+
+    o1 = kk
+
+    o1 : QuotientRing
+    i2 : P4=kk[x_0..x_4]
+
+    o2 = P4
+
+    o2 : PolynomialRing
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
+
+    o3 = E
+
+    o3 : PolynomialRing, 5 skew commutative variable(s)
+    i4 : X=specificAboSurface(P4,E,1);
+
+    o4 : Ideal of P4
+    i5 : minimalBetti X
+
+                0  1  2  3 4
+    o5 = total: 1 12 24 17 4
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  4  .  . .
+	     5: .  8 24 17 4
+
+    o5 : BettiTally
+    i6 : betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4 5  6  7
+    o6 = total: 123 74 38 14 4 4 8 28 76
+            -4:   1  .  .  . . . .  .  .
+	    -3: 122 74 38 14 1 . .  .  .
+	    -2:   .  .  .  . 3 1 .  .  .
+	    -1:   .  .  .  . . 3 4  .  .
+	     0:   .  .  .  . . . 4 28 76
+
+    o6 : BettiTally
+    i7 : a=3, b=1, c=3, d=4
+
+    o7 = (3, 1, 3, 4)
+
+    o7 : Sequence
+    i8 : m=tangentToMonad X;
+
+                           28                 85
+    o8 : Matrix (kk[e ..e ])   <-- (kk[e ..e ])
+                     0   4              0   4
+    i9 : V=source m
+
+                    85
+    o9 = (kk[e ..e ])
+             0   4
+
+    o9 : kk[e ..e ]-module, free, degrees {85:6}
+             0   4
+    i10 : rank V - (a^2+b^2+5*b*c+c^2+d^2-1) == 36
+
+    o10 = true
   Text
-    So the rank 2 reflexive sheaf E depends on at most 36 parameters and
-    taking into acount h^0(E)=5
-    we have an atmost 34+4=40 dimensional family of surfaces. 
-    
-    On the other hand X is the blowup of a polarized K3 surface in 6 points. So we
-    get locqlly a family of dimension at least
-  Example
-    2*6+19-3*5+24==40
+    So the rank 2 reflexive sheaf E depends on at most 36 parameters
+    and taking into acount h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
+    On the other hand X is the blowup of a polarized K3 surface in 6 points. So we get locally
+    a family of dimension at least
+  CannedExample
+    i11 : 2*6+19-3*5+24==40
+
+    o11 = true
   Text
     Thus the space of monads for the ideal sheaf is smooth of the expected dimension 40
     at the given point. 
@@ -5560,32 +5636,7 @@ References
 
 ///
 
-
-
-
-doc///
-Key
- schreyerSurfaceWith2LinearSyzygies
- (schreyerSurfaceWith2LinearSyzygies, Ring)
- [schreyerSurfaceWith2LinearSyzygies,Smooth]
-Headline
- compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
-Usage
- X = schreyerSurfaceWith2LinearSyzygies(P4)
-Inputs
- P4:Ring
-  the coordinate ring of P4
-Outputs
- X:Ideal
-  the ideal of a smooth Schreyer surface
-Description
-  Text
-    The construction uses a 2-step liaison.
-    The desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
-    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
-    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
-    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
-    which intersect along the directrix of the scroll and two non-CM points of Z.
+-* for CannedExample schreyerSurfaceWith2LinearSyzygies
   Example
     kk=ZZ/nextPrime(2*10^3);P4=kk[x_0..x_4];
     X=schreyerSurfaceWith2LinearSyzygies(P4);
@@ -5620,33 +5671,224 @@ Description
     matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
     m3x2=(res cZ_1).dd_2
     syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
-///
+*-
+
+
 
 doc///
 Key
- schreyerSurfaceWith2or3LinearSyzygies
- (schreyerSurfaceWith2or3LinearSyzygies, Ring, ZZ)
- [schreyerSurfaceWith2or3LinearSyzygies,Smooth]
+ schreyerSurfaceWith2LinearSyzygies
+ (schreyerSurfaceWith2LinearSyzygies, Ring)
+ [schreyerSurfaceWith2LinearSyzygies,Smooth]
 Headline
- compute a rational Schreyer surface whose H^1-module has 4 or 5 extra syzyzgies
+ compute a rational Schreyer surface whose H^1-module has 4 extra syzyzgies
 Usage
- X = schreyerSurfaceWith2or3LinearSyzygies(P4,s)
+ X = schreyerSurfaceWith2LinearSyzygies(P4)
 Inputs
  P4:Ring
   the coordinate ring of P4
- s: ZZ
-   a number s=2 or s=3
 Outputs
  X:Ideal
   the ideal of a smooth Schreyer surface
 Description
   Text
     The construction uses a 2-step liaison.
-    In case of s=2, the desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
+    The desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
     A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
     ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
     which intersect along the directrix of the scroll and two non-CM points of Z.
+  CannedExample
+    i1 : kk=ZZ/nextPrime(2*10^3);P4=kk[x_0..x_4];
+    i3 : X=schreyerSurfaceWith2LinearSyzygies(P4);
+    dim singX=-1
+
+    o3 : Ideal of P4
+    i4 : elapsedTime X=schreyerSurfaceWith2LinearSyzygies(P4);
+    dim singX=-1
+    -- 11.4269s elapsed
+
+    o4 : Ideal of P4
+    i5 : minimalBetti X
+
+                0  1  2  3 4
+    o5 = total: 1 14 28 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  2  . .
+	     5: .  9 26 20 5
+
+    o5 : BettiTally
+    i6 : M=moduleFromSchreyerSurface X;
+
+    o6 : Ideal of P4
+    i7 : minimalBetti M
+
+                0  1  2  3  4 5
+    o7 = total: 1 10 24 30 20 5
+             0: 1  .  .  .  . .
+	     1: . 10 15  4  . .
+	     2: .  .  9 26 20 5
+
+    o7 : BettiTally
+    i8 : X5=ideal (gens X)_{0..4};
+
+    o8 : Ideal of P4
+    i9 : R=X5:X;
+
+    o9 : Ideal of P4
+    i10 : minimalBetti radical R
+
+                 0 1 2
+    o10 = total: 1 3 2
+              0: 1 . .
+              1: . 3 2
+
+    o10 : BettiTally
+    i11 : tally apply(decompose R,c->(dim c, degree c, minimalBetti c))
+
+                              0 1 2
+    o11 = Tally{(3, 1, total: 1 2 1) => 3}
+                           0: 1 2 1
+
+    o11 : Tally
+    i12 : ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+
+    o12 : Ideal of P4
+    i13 : Y=(ci:X):R;
+
+    o13 : Ideal of P4
+    i14 : degree Y,betti(fY=res Y)
+
+                        0 1 2 3
+    o14 = (11, total: 1 6 7 2)
+                   0: 1 . . .
+		   1: . . . .
+		   2: . . . .
+		   3: . 2 . .
+		   4: . 4 7 2
+
+    o14 : Sequence
+    i15 : nCM=decompose ann coker transpose fY.dd_3
+
+    o15 = {ideal (x , x , x , x  + 896x ), ideal (x , x  - 797x , x , x )}
+                   4   2   1   0       3           3   2       4   1   0
+
+    o15 : List
+    i16 : ci2=ideal (gens Y)_{0,1};
+
+    o16 : Ideal of P4
+    i17 : Z=ci2:Y;
+
+    o17 : Ideal of P4
+    i18 : minimalBetti Z
+
+    0 1  2 3 4
+    o18 = total: 1 7 10 5 1
+    0: 1 .  . . .
+    1: . .  . . .
+    2: . 3  2 . .
+    3: . 4  8 5 1
+
+    o18 : BettiTally
+    i19 : cZ=decompose Z;
+    i20 : tally apply(cZ,c->(dim c, degree c, minimalBetti c))
+
+                              0 1 2
+    o20 = Tally{(3, 2, total: 1 2 1) => 1}
+                           0: 1 1 .
+                           1: . 1 1
+                              0 1 2
+                (3, 3, total: 1 3 2) => 1
+                           0: 1 . .
+			   1: . 3 2
+
+    o20 : Tally
+  Text
+    The construction is a reversal of this linkage. Note that both Y and Z are not
+    Cohen-Macaulay at two (common) points.
+  CannedExample
+    i21 : intersectionOftheTwoComponentsOfZ=sum(cZ);
+
+    o21 : Ideal of P4
+    i22 : apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
+
+    o22 = {(2, 1), (1, 1), (1, 1)}
+
+    o22 : List
+    i23 : cI, cI_{1,2}==nCM
+
+    o23 = ({ideal (x  - 165x , x , x  + 168x ), ideal (x , x , x , x  + 896x ),
+	            2       4   1   0       3           4   2   1   0       3  
+         -----------------------------------------------------------------------
+	    ideal (x , x  - 797x , x , x )}, true)
+                    3   2       4   1   0
+
+    o23 : Sequence
+    i24 : planes=decompose R
+
+    o24 = {ideal (x  - 186x  + 20x , x  - 538x  + 144x ), ideal (x  - 275x  +
+	           1       2      4   0       2       4           1       2  
+	    -----------------------------------------------------------------------
+	    716x  - 52x , x  - 652x  + 422x  + 952x ), ideal (x  - 570x , x  -
+	        3      4   0       2       3       4           1       2   0  
+	    -----------------------------------------------------------------------
+	    798x  + 896x )}
+                2       3
+
+    o24 : List
+    i25 : matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
+
+    o25 = | 0 1 |
+          | 0 0 |
+          | 1 0 |
+
+                   3       2
+    o25 : Matrix ZZ  <-- ZZ
+    i26 : matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
+
+    o26 = | 3 2 1 |
+          | 2 3 2 |
+          | 1 2 3 |
+
+                   3       3
+    o26 : Matrix ZZ  <-- ZZ
+    i27 : dim(radical R+Z),degree(radical R+Z)
+
+    o27 = (1, 17)
+
+    o27 : Sequence
+    i28 : matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
+
+    o28 = | 2 3 |
+          | 2 3 |
+          | 2 3 |
+
+                   3       2
+    o28 : Matrix ZZ  <-- ZZ
+    i29 : m3x2=(res cZ_1).dd_2
+
+    o29 = {2} | -x_1+433x_2+549x_3-879x_4 -x_2-826x_4    |
+          {2} | x_0+332x_2-603x_3+974x_4  -579x_2-673x_4 |
+          {2} | 620x_3-23x_4              x_1+384x_4     |
+
+                   3       2
+    o29 : Matrix P4  <-- P4
+    i30 : syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
+
+    o30 = {-2} | 483 -895 |
+          {-2} | 1   0    |
+          {-2} | 0   1    |
+
+                   3       2
+    o30 : Matrix P4  <-- P4
+  
+///
+
+
+-* for cannedExample schreyerSurfaceWith2or3LinearSyzygies
   Example
     kk=ZZ/nextPrime(2*10^3);P4=kk[x_0..x_4];
     elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2);
@@ -5704,6 +5946,338 @@ Description
     degree Y, degree K
     saturate ideal singularLocus Y
     selfIntersectionNumber(Y,K)
+*-
+
+doc///
+Key
+ schreyerSurfaceWith2or3LinearSyzygies
+ (schreyerSurfaceWith2or3LinearSyzygies, Ring, ZZ)
+ [schreyerSurfaceWith2or3LinearSyzygies,Smooth]
+Headline
+ compute a rational Schreyer surface whose H^1-module has 4 or 5 extra syzyzgies
+Usage
+ X = schreyerSurfaceWith2or3LinearSyzygies(P4,s)
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+ s: ZZ
+   a number s=2 or s=3
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The construction uses a 2-step liaison.
+    In case of s=2, the desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
+    A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
+    Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
+    ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
+    which intersect along the directrix of the scroll and two non-CM points of Z.
+  CannedExample
+    i1 : kk=ZZ/nextPrime(2*10^3);P4=kk[x_0..x_4];
+    i3 : elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,2);
+      dim singX=-1
+    -- 11.0011s elapsed
+
+    o3 : Ideal of P4
+    i4 : minimalBetti X
+
+                0  1  2  3 4
+    o4 = total: 1 14 28 20 5
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  2  . .
+	     5: .  9 26 20 5
+
+    o4 : BettiTally
+    i5 : M=moduleFromSchreyerSurface X;
+
+    o5 : Ideal of P4
+    i6 : minimalBetti M
+
+                0  1  2  3  4 5
+    o6 = total: 1 10 24 30 20 5
+             0: 1  .  .  .  . .
+	     1: . 10 15  4  . .
+	     2: .  .  9 26 20 5
+
+    o6 : BettiTally
+    i7 : R=residualInQuintics X;
+
+    o7 : Ideal of P4
+    i8 : tally apply(primaryDecomposition R,c->(dim c, degree c, minimalBetti c))
+
+                             0 1 2
+    o8 = Tally{(3, 1, total: 1 2 1) => 3    }
+                          0: 1 2 1
+                            0 1 2 3 4
+              (2, 2, total: 1 5 8 5 1) => 2
+                         0: 1 1 . . .
+                         1: . 4 8 5 1
+
+    o8 : Tally
+    i9 : ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+
+    o9 : Ideal of P4
+    i10 : Y=(ci:X):R;
+
+    o10 : Ideal of P4
+    i11 : degree (ci:X)
+
+    o11 = 14
+    i12 : degree Y,betti(fY=res Y)
+
+                      0 1 2 3
+    o12 = (11, total: 1 6 7 2)
+                   0: 1 . . .
+                   1: . . . .
+		   2: . . . .
+		   3: . 2 . .
+		   4: . 4 7 2
+
+    o12 : Sequence
+    i13 : nCM=decompose ann coker transpose fY.dd_3
+
+    o13 = {ideal (x , x , x , x  - 998x ), ideal (x , x  - 739x , x , x )}
+                   4   2   1   0       3           3   2       4   1   0
+
+    o13 : List
+    i14 : ci2=ideal (gens Y)_{0,1};
+
+    o14 : Ideal of P4
+    i15 : Z=ci2:Y;
+
+    o15 : Ideal of P4
+    i16 : minimalBetti Z
+
+                 0 1  2 3 4
+    o16 = total: 1 7 10 5 1
+             0: 1 .  . . .
+	     1: . .  . . .
+	     2: . 3  2 . .
+	     3: . 4  8 5 1
+
+    o16 : BettiTally
+    i17 : cZ=decompose Z;
+    i18 : tally apply(cZ,c->(dim c, degree c, minimalBetti c))
+
+                              0 1 2
+    o18 = Tally{(3, 2, total: 1 2 1) => 1}
+                           0: 1 1 .
+                           1: . 1 1
+                              0 1 2
+                (3, 3, total: 1 3 2) => 1
+                           0: 1 . .
+			   1: . 3 2
+
+    o18 : Tally
+  Text
+    The construction is a reversal of this linkage. Note that both Y and Z are not Cohen-Macaulay
+    at two (common) points.   
+  CannedExample
+    i19 : intersectionOftheTwoComponentsOfZ=sum(cZ);
+
+    o19 : Ideal of P4
+    i20 : apply(cI=decompose intersectionOftheTwoComponentsOfZ,c->(dim c, degree c))
+
+    o20 = {(2, 1), (1, 1), (1, 1)}
+
+    o20 : List
+    i21 : cI, cI_{1,2}==nCM
+
+    o21 = ({ideal (x  - 708x , x , x  + 138x ), ideal (x , x , x , x  - 998x ),
+	            2       4   1   0       3           4   2   1   0       3  
+	    -----------------------------------------------------------------------
+	    ideal (x , x  - 739x , x , x )}, true)
+                    3   2       4   1   0
+
+    o21 : Sequence
+    i22 : planes=decompose R
+
+    o22 = {ideal (x  - 824x  - 722x  + 678x , x  + 600x  - 180x  + 508x ), ideal
+              	   1       2       3       4   0       2       3       4        
+	-----------------------------------------------------------------------
+	(x  + 814x , x  + 37x  - 998x ), ideal (x  + 130x  + 74x , x  + 799x  +
+	  1       2   0      2       3           1       2      4   0       2  
+	    -----------------------------------------------------------------------
+	    424x )}
+                4
+
+    o22 : List
+    i23 : matrix apply(planes,p2->apply(nCM,p->dim(p2+p)))
+
+    o23 = | 0 0 |
+          | 1 0 |
+          | 0 1 |
+
+                   3       2
+    o23 : Matrix ZZ  <-- ZZ
+    i24 : matrix apply(planes,p2->apply(planes,p2'->dim(p2+p2')))
+
+    o24 = | 3 2 2 |
+          | 2 3 1 |
+          | 2 1 3 |
+
+                   3       3
+    o24 : Matrix ZZ  <-- ZZ
+    i25 : dim(radical R+Z),degree(radical R+Z)
+
+    o25 = (1, 17)
+
+    o25 : Sequence
+    i26 : matrix apply(planes,p2->apply(cZ,c->degree(p2+c)))
+
+    o26 = | 2 3 |
+          | 2 3 |
+          | 2 3 |
+
+                   3       2
+    o26 : Matrix ZZ  <-- ZZ
+    i27 : m3x2=(res cZ_1).dd_2
+
+    o27 = {2} | -x_1-567x_2-601x_3+230x_4 -x_2-639x_4 |
+          {2} | x_0-302x_2-885x_3-600x_4  3x_2+709x_4 |
+          {2} | -994x_3-619x_4            x_1+875x_4  |
+
+                   3       2
+    o27 : Matrix P4  <-- P4
+    i28 : cI_0
+
+    o28 = ideal (x  - 708x , x , x  + 138x )
+                  2       4   1   0       3
+
+    o28 : Ideal of P4
+    i29 : syz transpose (m3x2%cI_0) -- => cI_0 is the directrix of the scroll
+
+    o29 = {-2} | -215 75 |
+          {-2} | 1    0  |
+          {-2} | 0    1  |
+
+                   3       2
+    o29 : Matrix P4  <-- P4
+  Text
+    In case s=3, the residual scheme to the surface in the quintics consists of 5 planes.
+  CannedExample
+    i30 : elapsedTime X=schreyerSurfaceWith2or3LinearSyzygies(P4,3);
+      dim singX=-1
+    -- 11.1736s elapsed
+
+    o30 : Ideal of P4
+    i31 : minimalBetti X
+
+                 0  1  2  3 4
+    o31 = total: 1 15 29 20 5
+              0: 1  .  .  . .
+	      1: .  .  .  . .
+	      2: .  .  .  . .
+	      3: .  .  .  . .
+	      4: .  5  3  . .
+	      5: . 10 26 20 5
+
+    o31 : BettiTally
+    i32 : M=moduleFromSchreyerSurface X;
+
+    o32 : Ideal of P4
+    i33 : minimalBetti M
+
+                 0  1  2  3  4 5
+    o33 = total: 1 10 25 31 20 5
+              0: 1  .  .  .  . .
+	      1: . 10 15  5  . .
+	      2: .  . 10 26 20 5
+
+    o33 : BettiTally
+    i34 : R=residualInQuintics X;
+
+    o34 : Ideal of P4
+    i35 : cR=decompose R;
+    i36 : tally apply(cR,c->(dim c, degree c))
+
+    o36 = Tally{(3, 1) => 5}
+
+    o36 : Tally
+    i37 : ci=ideal( gens X*random(source gens X,P4^{2:-5}));
+
+    o37 : Ideal of P4
+    i38 : Y=(ci:X):R;
+
+    o38 : Ideal of P4
+    i39 : degree (ci:X)
+
+    o39 = 14
+    i40 : degree Y,betti(fY=res Y), sectionalGenus Y
+
+                     0 1 2
+    o40 = (9, total: 1 4 3, 9)
+                  0: 1 . .
+		  1: . . .
+		  2: . 1 .
+		  3: . 3 3
+
+    o40 : Sequence
+    i41 : apply(cR,p->dim trim(p+Y))
+
+    o41 = {2, 2, 2, 2, 2}
+
+    o41 : List
+    i42 : matrix apply(cR|{Y},p->apply(cR|{Y},q-> dim(p+q)))
+
+    o42 = | 3 2 1 1 2 2 |
+          | 2 3 1 2 1 2 |
+          | 1 1 3 2 2 2 |
+          | 1 2 2 3 1 2 |
+          | 2 1 2 1 3 2 |
+          | 2 2 2 2 2 3 |
+
+                   6       6
+    o42 : Matrix ZZ  <-- ZZ
+    i43 : betti tateResolutionOfSurface Y
+
+                 -1  0  1  2 3 4  5  6   7
+    o43 = total: 91 55 29 12 4 8 27 65 130
+             -4:  1  .  .  . . .  .  .   .
+	     -3: 90 55 29 12 3 .  .  .   .
+	     -2:  .  .  .  . . .  .  .   .
+	     -1:  .  .  .  . . .  .  .   .
+	      0:  .  .  .  . 1 8 27 65 130
+
+    o43 : BettiTally
+    i44 : betti tateResolutionOfSurface X
+
+                  -1  0  1  2 3 4  5  6  7
+    o44 = total: 104 61 30 10 3 5 10 32 84
+             -4:   1  .  .  . . .  .  .  .
+	     -3: 103 61 30 10 . .  .  .  .
+	     -2:   .  .  .  . 2 .  .  .  .
+	     -1:   .  .  .  . 1 5  5  .  .
+	      0:   .  .  .  . . .  5 32 84
+
+    o44 : BettiTally
+    i45 : Ksquare(9,9,4)
+
+    o45 = 2
+    i46 : HdotK(9,9)
+
+    o46 = 7
+    i47 : K=canonicalDivisor Y;
+
+    o47 : Ideal of P4
+    i48 : degree Y, degree K
+
+    o48 = (9, 7)
+
+    o48 : Sequence
+    i49 : saturate ideal singularLocus Y
+
+    o49 = ideal 1
+
+    o49 : Ideal of P4
+    i50 : selfIntersectionNumber(Y,K)
+
+    o50 = 2
+
 ///
 
 
@@ -5750,23 +6324,7 @@ LeBarzN6(11,10,1)
     tally apply(sixSecants, l-> (dim l, degree (l+X)))
 ///
 
-doc///
-Key
- unirationalConstructionOfSchreyerSurface
- (unirationalConstructionOfSchreyerSurface, Ring)
-Headline
- compute a rational Schreyer surface whose H^1-module has 5 extra syzyzgies
-Usage
- X = unirationalConstructionOfSchreyerSurface P4
-Inputs
- P4:Ring
-  the coordinate ring of P4
-Outputs
- X:Ideal
-  the ideal of a smooth Schreyer surface
-Description
-  Text
-    The desired surface has a residual scheme R=X5:X consisting of the union of 5 planes.
+-* for CannedExample unirationalConstructionOfSchreyerSurface
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -5785,12 +6343,148 @@ Description
     sixSecants=sixSecants1|sixSecants2
     tally apply(sixSecants, l-> (betti l,dim l, degree (l+X)))
     LeBarzN6(11,10,1)==10
+*-
+
+doc///
+Key
+ unirationalConstructionOfSchreyerSurface
+ (unirationalConstructionOfSchreyerSurface, Ring)
+Headline
+ compute a rational Schreyer surface whose H^1-module has 5 extra syzyzgies
+Usage
+ X = unirationalConstructionOfSchreyerSurface P4
+Inputs
+ P4:Ring
+  the coordinate ring of P4
+Outputs
+ X:Ideal
+  the ideal of a smooth Schreyer surface
+Description
+  Text
+    The desired surface has a residual scheme R=X5:X consisting of the union of 5 planes.
+  CannedExample  
+    i1 : kk=ZZ/nextPrime 10^3;
+    i2 : P4=kk[x_0..x_4];
+    i3 : X=unirationalConstructionOfSchreyerSurface(P4);
+
+    o3 : Ideal of P4
+    i4 : minimalBetti X
+
+                0  1  2  3 4
+    o4 = total: 1 15 29 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  3  . .
+	     5: . 10 26 20 5
+
+    o4 : BettiTally
+    i5 : M=moduleFromSchreyerSurface X;
+
+    o5 : Ideal of P4
+    i6 : minimalBetti M
+
+                0  1  2  3  4 5
+    o6 = total: 1 10 25 31 20 5
+             0: 1  .  .  .  . .
+             1: . 10 15  5  . .
+             2: .  . 10 26 20 5
+
+    o6 : BettiTally
+    i7 : X5=ideal (gens X)_{0..4};
+
+    o7 : Ideal of P4
+    i8 : R=X5:X;
+
+    o8 : Ideal of P4
+    i9 : minimalBetti R
+
+                0 1 2 3
+    o9 = total: 1 5 5 1
+             0: 1 . . .
+	     1: . . . .
+	     2: . 5 5 1
+
+    o9 : BettiTally
+    i10 : planes=decompose R
+
+    o10 = {ideal (x , x ), ideal (x , x ), ideal (x , x ), ideal (x , x ), ideal
+                   1   0           2   1           3   2           4   0        
+	-----------------------------------------------------------------------
+	(x , x )}
+          4   3
+
+    o10 : List
+    i11 : tangentDimension M
+
+    o11 = 30
+    i12 : tally apply(planes,p->tally apply(decompose(p+X),c->(dim c, degree c, betti c)))
+
+                                    0 1
+    o12 = Tally{Tally{(1, 1, total: 1 4) => 3} => 5}
+                                 0: 1 4
+                  0 1
+    (2, 4, total: 1 3) => 1
+               0: 1 2
+	       1: . .
+	       2: . .
+	       3: . 1
+
+    o12 : Tally
+    i13 : sixSecants1=apply(planes,p-> ideal (gens intersect drop(select(decompose(p+X),c->dim c==1),1))_{0,1,2});
+    i14 : sixSecants2=apply(5,i->trim (planes_i+planes_((i+1)%5)));
+    i15 : sixSecants=sixSecants1|sixSecants2
+
+    o15 = {ideal (x  - 294x  + 146x , x , x ), ideal (x , x , x  - 145x  +
+	           2       3       4   1   0           2   1   0       3  
+	    -----------------------------------------------------------------------
+	    288x ), ideal (x , x , x  - 267x  - 266x ), ideal (x , x  + 276x  -
+	        4           3   2   0       1       4           4   1       2  
+	    -----------------------------------------------------------------------
+	    295x , x ), ideal (x , x , x  + 127x  - 209x ), ideal (x , x , x ),
+        	3   0           4   3   0       1       2           2   1   0  
+	-----------------------------------------------------------------------
+	ideal (x , x , x ), ideal (x , x , x , x ), ideal (x , x , x ), ideal
+        	3   2   1           4   3   2   0           4   3   0        
+	-----------------------------------------------------------------------
+	(x , x , x , x )}
+          4   3   1   0
+
+    o15 : List
+    i16 : tally apply(sixSecants, l-> (betti l,dim l, degree (l+X)))
+
+                        0 1
+    o16 = Tally{(total: 1 3, 2, 6) => 8}
+                     0: 1 3
+            0 1
+    (total: 1 4, 1, 1) => 2
+         0: 1 4
+
+    o16 : Tally
+    i17 : LeBarzN6(11,10,1)==10
+
+    o17 = true
+    
+
   Text
     Each of the five planes intersects X in a plane quartic curve and three points.
     The 6-secants are the five intersection lines of the planes and the five lines spanned by two of
     the special points in each plane.
 ///
-
+ -* for CannedExample specialEnriquesSchreyerSurface
+  Example
+    kk=ZZ/nextPrime 10^3;
+    P4=kk[x_0..x_4];
+    X=specialEnriquesSchreyerSurface(P4);
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+    X5=ideal (gens X)_{0..4};
+    R=X5:X;
+    minimalBetti R
+    tangentDimension M==25
+*-
 
 doc///
 Key
@@ -5815,19 +6509,57 @@ Description
     is independent of the finite ground field
     The two points on the conic are the intersection of the conic with the polar line to the point p of the conic, [Hulek,199x].
     The rest of the construction is unirational.
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    X=specialEnriquesSchreyerSurface(P4);
-    minimalBetti X
-    M=moduleFromSchreyerSurface X;
-    minimalBetti M
-    X5=ideal (gens X)_{0..4};
-    R=X5:X;
-    minimalBetti R
-    tangentDimension M==25
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^3;
+    i2 : P4=kk[x_0..x_4];
+    i3 : X=specialEnriquesSchreyerSurface(P4);
+
+    o3 : Ideal of P4
+    i4 : minimalBetti X
+
+                0  1  2  3 4
+    o4 = total: 1 15 29 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  3  . .
+	     5: . 10 26 20 5
+
+    o4 : BettiTally
+    i5 : M=moduleFromSchreyerSurface X;
+
+    o5 : Ideal of P4
+    i6 : minimalBetti M
+
+                0  1  2  3  4 5
+    o6 = total: 1 10 25 31 20 5
+             0: 1  .  .  .  . .
+	     1: . 10 15  5  . .
+	     2: .  . 10 26 20 5
+
+    o6 : BettiTally
+    i7 : X5=ideal (gens X)_{0..4};
+
+    o7 : Ideal of P4
+    i8 : R=X5:X;
+
+    o8 : Ideal of P4
+    i9 : minimalBetti R
+
+                0 1 2 3
+    o9 = total: 1 5 5 1
+             0: 1 . . .
+	     1: . . . .
+	     2: . 5 5 1
+
+    o9 : BettiTally
+    i10 : tangentDimension M==25
+
+    o10 = true
   Text
-    => These surfaces do not form a complete family, i.e., this family is part of a family of larger dimension.
+    => These surfaces do not form a complete family, i.e., this family is part of a
+    family of larger dimension.
 ///
 
 ///
@@ -5888,29 +6620,8 @@ dim I1
 betti basis(2,T)
 binomial(13,2)
 ///
-
-doc///
-Key
- specificSchreyerSurface
- (specificSchreyerSurface, Ring, Number)
-Headline
- compute a smooth Schreyer surface with given H^1-module
-Usage
- X = specificSchreyerSurface(P4,k)
-Inputs
- P4:Ideal
-  coordinate ring of P4 over a ground field of characteristic 3
- k: Number
-  a number between 0 and 9 specifying the specific H^1-module to use. 
-Outputs
- X:Ideal
-  ideal of a Schreyer surface
-Description
-  Text
-    The function returns one of ten specific smooth Schreyer surfaces.
-    It prints the corresponding adjunction process data.
-    The corresponding H^1-module is precomputed and stored in the function exampleOfSchreyerSurfaces.
-  Example
+-* for CannedExample specificSchreyerSurface
+Example
     P4=ZZ/3[x_0..x_4];
     X=specificSchreyerSurface(P4,1);
     (d,sg)=(degree X, sectionalGenus X)
@@ -5934,6 +6645,125 @@ Description
     M=moduleFromSchreyerSurface X;
     minimalBetti M
     tangentDimension M==36
+
+*-
+
+
+doc///
+Key
+ specificSchreyerSurface
+ (specificSchreyerSurface, Ring, Number)
+Headline
+ compute a smooth Schreyer surface with given H^1-module
+Usage
+ X = specificSchreyerSurface(P4,k)
+Inputs
+ P4:Ideal
+  coordinate ring of P4 over a ground field of characteristic 3
+ k: Number
+  a number between 0 and 9 specifying the specific H^1-module to use. 
+Outputs
+ X:Ideal
+  ideal of a Schreyer surface
+Description
+  Text
+    The function returns one of ten specific smooth Schreyer surfaces.
+    It prints the corresponding adjunction process data.
+    The corresponding H^1-module is precomputed and stored in the function exampleOfSchreyerSurfaces.
+  CannedExample
+    i1 : P4=ZZ/3[x_0..x_4];
+    i2 : X=specificSchreyerSurface(P4,1);
+    {(4, 11, 10), 4, (9, 19, 11), 1, (10, 19, 10), 0, (9, 16, 8), 0, (7, 11, 5), 5, (4, 4, 1)}
+
+    o2 : Ideal of P4
+    i3 : (d,sg)=(degree X, sectionalGenus X)
+
+    o3 = (11, 10)
+
+    o3 : Sequence
+    i4 : Ksquare(d,sg,1)==-6
+
+    o4 = true
+    i5 : LeBarzN6(d,sg,1)==10
+
+    o5 = true
+    i6 : minimalBetti X
+
+                0  1  2  3 4
+    o6 = total: 1 12 26 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  .  . .
+	     5: .  7 26 20 5
+
+    o6 : BettiTally
+    i7 : betti(X5=ideal (gens X)_{0..4})
+
+                0 1
+    o7 = total: 1 5
+             0: 1 .
+	     1: . .
+	     2: . .
+	     3: . .
+	     4: . 5
+
+    o7 : BettiTally
+    i8 : betti(residual=X5:X)
+
+                0  1
+    o8 = total: 1 11
+             0: 1  .
+	     1: .  .
+	     2: . 11
+
+    o8 : BettiTally
+    i9 : dim residual,degree residual
+
+    o9 = (2, 6)
+
+    o9 : Sequence
+    i10 : tally apply(primaryDecomposition residual,c-> (
+	    (dim c, degree c, degree (c+X))))
+
+    o10 = Tally{(2, 2, 12) => 3}
+
+    o10 : Tally
+  Text
+    There are 6 six-secant lines grouped into Frobenius orbits.
+    So there should be 4 (-1) lines. Indeed, the adjunction data confirm this.
+    The last surface in the adjunction process is a conic bundle with 6+8-5=9 singular fibers.
+
+    The construction of X uses a special Hartshorne-Rao module M.
+  CannedExample
+    i11 : betti tateResolutionOfSurface X
+
+                  -1  0  1  2 3 4  5  6  7
+    o11 = total: 104 61 30 10 3 5 10 32 84
+             -4:   1  .  .  . . .  .  .  .
+             -3: 103 61 30 10 . .  .  .  .
+             -2:   .  .  .  . 2 .  .  .  .
+             -1:   .  .  .  . 1 5  5  .  .
+              0:   .  .  .  . . .  5 32 84
+
+    o11 : BettiTally
+    i12 : M=moduleFromSchreyerSurface X;
+
+    o12 : Ideal of P4
+    i13 : minimalBetti M
+
+                 0  1  2  3  4 5
+    o13 = total: 1 10 22 28 20 5
+              0: 1  .  .  .  . .
+              1: . 10 15  2  . .
+              2: .  .  7 26 20 5
+
+    o13 : BettiTally
+    i14 : tangentDimension M==36
+
+    o14 = true
+  
   Text
     Thus the space of good modules in the Grassmannian G(5,15) of dimension 50 is smooth of
     the expected codimension 14 at our point M.
@@ -6027,6 +6857,22 @@ o46 = |({0, 0, 1, 5}, (10, 20, 11), Tally{(1, 1, (0, 6)) => 1 })|
    -- compare with the table for schreyer surfaces
 ///
 
+-* for CannedExample in schreyerSurface
+
+  Example
+    P4=ZZ/3[x_0..x_4];
+    setRandomSeed("find one fairly fast");
+    elapsedTime X=schreyerSurface(P4,2,Smooth=>false,Verbose=>true);  
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+
+    setRandomSeed("also fairly fast");
+    elapsedTime X=schreyerSurface(P4,3,Smooth=>false);  
+    minimalBetti X
+    M=moduleFromSchreyerSurface X;
+    minimalBetti M
+*-
 
 doc///
 Key
@@ -6052,23 +6898,91 @@ Description
     by searching in the
     codimension 6+2(s-2) subspace of modules with one extra syzygy, and computes the corresponding surface.
     To find an example, one has to check about 3^6 examples of modules.
-  Example
+  CannedExample
+    i1 : P4=ZZ/3[x_0..x_4];
+    i2 : setRandomSeed("find one fairly fast");
+    -- setting random seed to 12449621278571636824524665417722879537212
+    i3 : elapsedTime X=schreyerSurface(P4,2,Smooth=>false,Verbose=>true);
+    modules tested = 267
+    monads tested = 1
+    -- 1.15894s elapsed
+
+    o3 : Ideal of P4
+    i4 : minimalBetti X
+
+                0  1  2  3 4
+    o4 = total: 1 12 26 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  .  . .
+	     5: .  7 26 20 5
+
+    o4 : BettiTally
+    i5 : M=moduleFromSchreyerSurface X;
+
+    o5 : Ideal of P4
+    i6 : minimalBetti M
+
+                0  1  2  3  4 5
+    o6 = total: 1 10 22 28 20 5
+             0: 1  .  .  .  . .
+	     1: . 10 15  2  . .
+	     2: .  .  7 26 20 5
+
+    o6 : BettiTally
+    i7 : setRandomSeed("also fairly fast");
+    -- setting random seed to 113868634339878070906498645268872
+    i8 : elapsedTime X=schreyerSurface(P4,3,Smooth=>false);
+    -- .421701s elapsed
+
+    o8 : Ideal of P4
+    i9 : minimalBetti X
+
+                0  1  2  3 4
+    o9 = total: 1 13 27 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  1  . .
+	     5: .  8 26 20 5
+
+    o9 : BettiTally
+    i10 : M=moduleFromSchreyerSurface X;
+
+    o10 : Ideal of P4
+    i11 : minimalBetti M
+
+                 0  1  2  3  4 5
+    o11 = total: 1 10 23 29 20 5
+              0: 1  .  .  .  . .
+	      1: . 10 15  3  . .
+	      2: .  .  8 26 20 5
+
+    o11 : BettiTally
+
+SeeAlso
+   findRandomSmoothSchreyerSurface
+///
+
+-* for CannedExample in findSchreyerSurface
+
+Example
     P4=ZZ/3[x_0..x_4];
     setRandomSeed("find one fairly fast");
-    elapsedTime X=schreyerSurface(P4,2,Smooth=>false,Verbose=>true);  
+    elapsedTime X=findRandomSchreyerSurface P4;  
     minimalBetti X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
 
     setRandomSeed("also fairly fast");
-    elapsedTime X=schreyerSurface(P4,3,Smooth=>false);  
+    elapsedTime X=findRandomSchreyerSurface(P4,3);  
     minimalBetti X
     M=moduleFromSchreyerSurface X;
     minimalBetti M
-SeeAlso
-   findRandomSmoothSchreyerSurface
-///
-
+*-
 
 doc///
 Key
@@ -6093,22 +7007,83 @@ Description
     It searches for a suitable H^1-module with Hilbert function (1,5,5) and two extra syzygies by searching in the
     codimension 8 subspace of modules with one extra syzygy, and computes the corresponding surface.
     To find an example one has to check about 3^8 examples of modules.
-  Example
-    P4=ZZ/3[x_0..x_4];
-    setRandomSeed("find one fairly fast");
-    elapsedTime X=findRandomSchreyerSurface P4;  
-    minimalBetti X
-    M=moduleFromSchreyerSurface X;
-    minimalBetti M
+  CannedExample
+    i1 : P4=ZZ/3[x_0..x_4];
+    i2 : setRandomSeed("find one fairly fast");
+    -- setting random seed to 12449621278571636824524665417722879537212
+    i3 : elapsedTime X=findRandomSchreyerSurface P4;
+    -- 1.04095s elapsed
 
-    setRandomSeed("also fairly fast");
-    elapsedTime X=findRandomSchreyerSurface(P4,3);  
-    minimalBetti X
-    M=moduleFromSchreyerSurface X;
-    minimalBetti M
+    o3 : Ideal of P4
+    i4 : minimalBetti X
+
+                0  1  2  3 4
+    o4 = total: 1 12 26 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  .  . .
+	     5: .  7 26 20 5
+
+    o4 : BettiTally
+    i5 : M=moduleFromSchreyerSurface X;
+
+    o5 : Ideal of P4
+    i6 : minimalBetti M
+
+                0  1  2  3  4 5
+    o6 = total: 1 10 22 28 20 5
+             0: 1  .  .  .  . .
+	     1: . 10 15  2  . .
+	     2: .  .  7 26 20 5
+
+    o6 : BettiTally
+    i7 : setRandomSeed("also fairly fast");
+    -- setting random seed to 113868634339878070906498645268872
+    i8 : elapsedTime X=findRandomSchreyerSurface(P4,3);
+    -- .401666s elapsed
+
+    o8 : Ideal of P4
+    i9 : minimalBetti X
+
+                0  1  2  3 4
+    o9 = total: 1 13 27 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  1  . .
+	     5: .  8 26 20 5
+
+    o9 : BettiTally
+    i10 : M=moduleFromSchreyerSurface X;
+
+    o10 : Ideal of P4
+    i11 : minimalBetti M
+
+                 0  1  2  3  4 5
+    o11 = total: 1 10 23 29 20 5
+              0: 1  .  .  .  . .
+	      1: . 10 15  3  . .
+	      2: .  .  8 26 20 5
+
+    o11 : BettiTally
+  
 SeeAlso
    findRandomSmoothSchreyerSurface
 ///
+-* for CannedExample in findRandomSmoothSchreyerSurface
+Example
+    P4=ZZ/3[x_0..x_4];
+    setRandomSeed("carefully choosen good randomSeed ");
+    elapsedTime X=findRandomSmoothSchreyerSurface(P4,2);  
+    minimalBetti X
+    singX=X+minors(2,jacobian X);
+    dim saturate singX==-1
+
+*-
+
 
 doc///
 Key
@@ -6134,13 +7109,34 @@ Description
     codimension 8 subspace of modules with one extra syzygy, and computes the corresponding surface
     and checks its smoothness. Since many H^1-modules lead to singular surfaces one has to check
     more then 3^8 examples of modules.
-  Example
-    P4=ZZ/3[x_0..x_4];
-    setRandomSeed("carefully choosen good randomSeed ");
-    elapsedTime X=findRandomSmoothSchreyerSurface(P4,2);  
-    minimalBetti X
-    singX=X+minors(2,jacobian X);
-    dim saturate singX==-1
+  CannedExample
+    i1 : P4=ZZ/3[x_0..x_4];
+    i2 : setRandomSeed("carefully choosen good randomSeed ");
+    -- setting random seed to 138829667546446909693617136322436953342431360411403175217286822495497
+    i3 : elapsedTime X=findRandomSmoothSchreyerSurface(P4,2);
+    -- .305077s elapsed
+    1
+    -- 4.78983s elapsed
+
+    o3 : Ideal of P4
+    i4 : minimalBetti X
+
+                0  1  2  3 4
+    o4 = total: 1 12 26 20 5
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  5  .  . .
+	     5: .  7 26 20 5
+
+    o4 : BettiTally
+    i5 : singX=X+minors(2,jacobian X);
+
+    o5 : Ideal of P4
+    i6 : dim saturate singX==-1
+
+    o6 = true  
 SeeAlso
    findRandomSchreyerSurface
 ///
@@ -6189,7 +7185,14 @@ Description
 SeeAlso
    exampleOfSchreyerSurfaces
 ///
-
+ -* for CannedExample tangentDimension
+  Example
+    P4=ZZ/3[x_0..x_4];
+    (Ms,types)=exampleOfSchreyerSurfaces P4;
+    elapsedTime netList apply(Ms,M->(minimalBetti M, tangentDimension M)) 
+    --elapsedTime Xs=apply(Ms,M->schreyerSurfaceFromModule M); -- 192.472s elapsed
+    --elapsedTime tally apply(Xs,X -> (singX=X+minors(2,jacobian X); dim saturate singX)) -- 54.9598s elapsed
+*-
 
 doc///
 Key
@@ -6211,14 +7214,67 @@ Description
     To prove the existence of a lift of the corresponding surface to characteristic 0,
     it suffices to prove that the tangent space
     has dimension d=36-dim G(2,s)=36-2*(s-2).
-  Example
-    P4=ZZ/3[x_0..x_4];
-    (Ms,types)=exampleOfSchreyerSurfaces P4;
-    --tally apply(Ms,M->minimalBetti M)
-    --tally apply(Ms, M->tangentDimension M)
-    elapsedTime netList apply(Ms,M->(minimalBetti M, tangentDimension M))
-    --elapsedTime Xs=apply(Ms,M->schreyerSurfaceFromModule M);
-    --tally apply(Xs,X -> (singX=X+minors(2,jacobian X); dim saturate sing X)
+  CannedExample
+    i1 : P4=ZZ/3[x_0..x_4];
+    i2 : (Ms,types)=exampleOfSchreyerSurfaces P4;
+    i3 : elapsedTime netList apply(Ms,M->(minimalBetti M, tangentDimension M))
+    -- 7.88342s elapsed
+
+         +----------------------------+
+         |        0  1  2  3  4 5     |
+    o3 = |(total: 1 10 22 28 20 5, 36)|
+         |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  2  . .     |
+	 |     2: .  .  7 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 22 28 20 5, 36)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  2  . .     |
+	 |     2: .  .  7 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 22 28 20 5, 36)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  2  . .     |
+	 |     2: .  .  7 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 22 28 20 5, 36)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  2  . .     |
+	 |     2: .  .  7 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 23 29 20 5, 34)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  3  . .     |
+	 |     2: .  .  8 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 23 29 20 5, 34)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  3  . .     |
+	 |     2: .  .  8 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 23 29 20 5, 34)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  3  . .     |
+	 |     2: .  .  8 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 24 30 20 5, 32)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  4  . .     |
+	 |     2: .  .  9 26 20 5     |
+	 +----------------------------+
+	 |        0  1  2  3  4 5     |
+	 |(total: 1 10 25 31 20 5, 30)|
+	 |     0: 1  .  .  .  . .     |
+	 |     1: . 10 15  5  . .     |
+	 |     2: .  . 10 26 20 5     |
+	 +----------------------------+
   Text
     This proves that the surfaces precomputed via exampleOfSchreyerSurfaces
     all lift to smooth surfaces over some algebraic number field (of characteristic 0).
@@ -7053,6 +8109,34 @@ SeeAlso
    residualInQuintics
    LeBarzN6   
 ///
+-* for CannedExample in testMatrix
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    m3x1=transpose matrix{{E_0,E_1,E_2}}
+    m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
+      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
+      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
+      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+    elapsedTime r1=testMatrix1(m3x4,P4)
+    elapsedTime r2=testMatrix2(m3x4,P4)
+    r1==r2+5
+    elapsedTime singX=testMatrix(m3x4,P4)
+  Text
+    The matrix m3x4 gives rize to a surface if r>5.
+  Example
+    X= aboSurfaceFromMatrix(m3x4,P4);
+    betti tateResolutionOfSurface X
+    elapsedTime singX=testMatrix(m3x4,P4)
+  Text
+    The last function also checks whether there is a smooth surface with these matrices.
+    For a general 3x4 matrix, we have r=5.
+  Example
+    setRandomSeed("really general");
+    m3x4g=random(E^3,E^{4:-1});
+    testMatrix1(m3x4g,P4)==5
+*-
 
 doc///
 Key
@@ -7089,33 +8173,97 @@ Description
     In the Tate resolution of Abo surfaces, there are linear 3x1 and linear 3x4 matrices.
     We assume that the transpose of m3x1= matrix{{e_0,e_1,e_2}}. Whether the given m3x4 matrix
     together with the m3x1 matrix leads to a smooth surface can be tested with testMatrix1.
-    We need that r1>5.  	
-  Example
-    kk=ZZ/19
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    m3x1=transpose matrix{{E_0,E_1,E_2}}
-    m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
-      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
-      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
-      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
-    elapsedTime r1=testMatrix1(m3x4,P4)
-    elapsedTime r2=testMatrix2(m3x4,P4)
-    r1==r2+5
-    elapsedTime singX=testMatrix(m3x4,P4)
+    We need that r1>5.
+  CannedExample
+    i1 : kk=ZZ/19
+
+    o1 = kk
+
+    o1 : QuotientRing
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
+
+    o3 = E
+
+    o3 : PolynomialRing, 5 skew commutative variable(s)
+    i4 : m3x1=transpose matrix{{E_0,E_1,E_2}}
+
+    o4 = {-1} | e_0 |
+         {-1} | e_1 |
+         {-1} | e_2 |
+
+                 3      1
+    o4 : Matrix E  <-- E
+    i5 : m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
+	    -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
+	    -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
+	    9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+
+    o5 = | 7e_0+3e_1-7e_2-8e_3 -4e_0+3e_1-7e_2-8e_4 5e_0+6e_1+2e_2+9e_3-4e_4
+         | e_0-5e_1-e_2+7e_3   -e_0-4e_1+7e_2-2e_4  -e_0-8e_1+2e_3-3e_4     
+         | 8e_0-2e_1+3e_2+6e_3 9e_0-2e_1-e_2-e_4    9e_0-9e_1+7e_2+e_3+8e_4 
+    ------------------------------------------------------------------------
+          -6e_0-7e_1+3e_3-3e_4      |
+          -7e_0+3e_1-9e_2+6e_3-6e_4 |
+          -e_0+7e_1-8e_2+8e_3-8e_4  |
+
+                 3      4
+    o5 : Matrix E  <-- E
+    i6 : elapsedTime r1=testMatrix1(m3x4,P4)
+     -- .0334885s elapsed
+
+    o6 = 6
+    i7 : elapsedTime r2=testMatrix2(m3x4,P4)
+     -- .0486689s elapsed
+
+    o7 = 1
+    i8 : r1==r2+5
+
+    o8 = true
+    i9 : elapsedTime singX=testMatrix(m3x4,P4)
+    -- 16.2713s elapsed
+
+    o9 = ideal (x  + 8x , x  - 7x , x  + 9x , x  - 3x )
+                 3     4   2     4   1     4   0     4
+
+    o9 : Ideal of P4
+
   Text
     The matrix m3x4 gives rize to a surface if r>5.
-  Example
-    X= aboSurfaceFromMatrix(m3x4,P4);
-    betti tateResolutionOfSurface X
-    elapsedTime singX=testMatrix(m3x4,P4)
-  Text
+  CannedExample
+    i10 : X= aboSurfaceFromMatrix(m3x4,P4);
+
+    o10 : Ideal of P4
+    i11 : betti tateResolutionOfSurface X
+
+                  -1  0  1  2 3 4 5  6  7
+    o11 = total: 123 74 38 14 4 4 8 28 76
+             -4:   1  .  .  . . . .  .  .
+	     -3: 122 74 38 14 1 . .  .  .
+	     -2:   .  .  .  . 3 1 .  .  .
+	     -1:   .  .  .  . . 3 4  .  .
+	      0:   .  .  .  . . . 4 28 76
+
+    o11 : BettiTally
+    i12 : elapsedTime singX=testMatrix(m3x4,P4)
+    -- 16.4333s elapsed
+
+    o12 = ideal 1
+
+    o12 : Ideal of P4
+  Text   
     The last function also checks whether there is a smooth surface with these matrices.
     For a general 3x4 matrix, we have r=5.
-  Example
-    setRandomSeed("really general");
-    m3x4g=random(E^3,E^{4:-1});
-    testMatrix1(m3x4g,P4)==5
+  CannedExample
+    i13 : setRandomSeed("really general");
+    -- setting random seed to 13089166972629855410042251015
+    i14 : m3x4g=random(E^3,E^{4:-1});
+
+                  3      4
+    o14 : Matrix E  <-- E
+    i15 : testMatrix1(m3x4g,P4)==5
+
+    o15 = true
 SeeAlso
   aboSurfaceFromMatrix
   
@@ -7160,6 +8308,16 @@ elapsedTime (singX=singularLocus X; dim singX==0)
     numberOfMinusOneLines=#select(K,d->d==1)
     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+  Text
+    In this example, X has four 6-secant lines. The intersection of these four lines
+    with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
+    and length (6) respectively.
+  Example  
+    R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
+    minimalBetti R
+    saturate ideal singularLocus R
+    degree (R+X)==21
+
 
 *-
 
@@ -7194,60 +8352,78 @@ Description
     We analyze the residual scheme to the input surface X in the scheme cut out
     by the quintic containing X and the partition of the canonical divisor of X
     in view of Le Barz's 6-secant formula.
-  CannedExample
-    i2 :     kk=ZZ/nextPrime 10^4;
-    i3 :     P4=kk[x_0..x_4];
-    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
-    i5 :     setRandomSeed("fix decompositions");
-     -- setting random seed to 1220442291374344711948625538118317179
-    i6 :     elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
-     -- 13.0349s elapsed
-    i7 :     elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
-     -- 12.3718s elapsed
-    i8 :     K    
+  CannedExample 
+    i1 : kk=ZZ/nextPrime 10^4;
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : setRandomSeed("fix decompositions");
+    -- setting random seed to 1220442291374344711948625538118317179
+    i5 : elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+    -- 8.72264s elapsed
+    i6 : elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+    -- 5.28245s elapsed
+    i7 : K
 
-    o8 = {1, 1, 1, 3, 3, 3}
-    o8 : List
-    i9 :     cResidual=primaryDecomposition residual;
-    i10 :     tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
-          	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+    o7 = {1, 1, 1, 3, 3, 3}
 
-                              0 1
-    o10 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
-                           0: 1 3              (1, 5, 5) => 1
-                              0 1
-                (2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 2}) => 1
-                           0: 1 3              (1, 2, 2) => 2
-                              0 1
-                (2, 1, total: 1 3, 1, 6, Tally{(1, 6, 6) => 1}) => 1
-                           0: 1 3
-                              0 1
-                (2, 4, total: 1 6, 1, 21, Tally{(1, 1, 1) => 2  }) => 1
-                           0: 1 .               (1, 3, 3) => 2
-                           1: . 6               (1, 13, 13) => 1
-    o10 : Tally
-    i11 :     (d,sg,xO)=(12,13,2);
-    i12 :     Ksquare(d,sg,xO) == -#K    
+    o7 : List
+    i8 : cResidual=primaryDecomposition residual;
+    i9 : tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
 
-    o12 = true
-    i13 :     numberOfMinusOneLines=#select(K,d->d==1)
+                             0 1
+    o9 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
+                          0: 1 3              (1, 5, 5) => 1
+                             0 1
+               (2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 2}) => 1
+                          0: 1 3              (1, 2, 2) => 2
+                             0 1
+               (2, 1, total: 1 3, 1, 6, Tally{(1, 6, 6) => 1}) => 1
+                          0: 1 3
+                             0 1
+               (2, 4, total: 1 6, 1, 21, Tally{(1, 1, 1) => 2  }) => 1
+                          0: 1 .               (1, 3, 3) => 2
+                          1: . 6               (1, 13, 13) => 1
 
-    o13 = 3
-    i14 :     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
+    o9 : Tally
+    i10 : (d,sg,xO)=(12,13,2);
+    i11 : Ksquare(d,sg,xO) == -#K
 
-    o14 = 4
-    i15 :     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+    o11 = true
+    i12 : numberOfMinusOneLines=#select(K,d->d==1)
 
-    o15 = true
+    o12 = 3
+    i13 : numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
+
+    o13 = 4
+    i14 : LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+
+    o14 = true
   Text
     In this example, X has four 6-secant lines. The intersection of these four lines
     with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
     and length (6) respectively.
-  Example
-    R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
-    minimalBetti R
-    saturate ideal singularLocus R
-    degree (R+X)==21
+  CannedExample
+    i15 : R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
+
+    o15 : Ideal of P4
+    i16 : minimalBetti R
+
+                 0 1 2 3
+    o16 = total: 1 6 8 3
+              0: 1 . . .
+              1: . 6 8 3
+
+    o16 : BettiTally
+    i17 : saturate ideal singularLocus R
+
+    o17 = ideal 1
+
+    o17 : Ideal of P4
+    i18 : degree (R+X)==21
+
+    o18 = true
+
   Text
     Since the rational normal curve R intersects X in 21>20 points,
     it is contained in any quintic of X.
@@ -13232,30 +14408,7 @@ SeeAlso
   horrocksMumfordSurface
   varietyOfUnstablePlanes
 ///
-
-doc///
-Key
- varietyOfUnstablePlanes
- (varietyOfUnstablePlanes,Matrix)
- [varietyOfUnstablePlanes,Verbose]
-Headline
- investigate the variety of unstable planes of the bundle corresponding m2x5
-Usage
- pentagons=varietyOfUnstablePlanes(m2x5)
-Inputs
- m2x5:Matrix
-  2x5 matrix with entries of degree in an exterior algebra dual to the coordinate ring of P4
-Outputs
- pentagons:List
-   list of pentagons
-Description
-  Text
-    The matrix m2x5 defines a vector bundle of rank 2 and chern polynomial
-    1-t+4t^2. The functions computes partial information about the variety
-    of unstable planes, which following [BHM] is the interesction of a
-    the Grassmannian G(2,5) with a P1xP4 in P9. By [DS] this variety should coincide with
-    Shioda's modular variety. We verify some of the assertians. In particular,
-    that the singular fibers are 12 pentagons, which come in pairs.
+-* for CannedExample in varietyOfUnstablePlanes
   Example
     kk=ZZ/2;
     E=kk[e_0..e_4,SkewCommutative=>true];
@@ -13285,7 +14438,122 @@ Description
     betti res (pent_1=intersect(pentagons_1))
     fivePoints=pent_0+pent_1;
     (dim fivePoints,degree fivePoints) == (1,5)
-    betti res fivePoints 
+    betti res fivePoints
+
+*-
+
+
+doc///
+Key
+ varietyOfUnstablePlanes
+ (varietyOfUnstablePlanes,Matrix)
+ [varietyOfUnstablePlanes,Verbose]
+Headline
+ investigate the variety of unstable planes of the bundle corresponding m2x5
+Usage
+ pentagons=varietyOfUnstablePlanes(m2x5)
+Inputs
+ m2x5:Matrix
+  2x5 matrix with entries of degree in an exterior algebra dual to the coordinate ring of P4
+Outputs
+ pentagons:List
+   list of pentagons
+Description
+  Text
+    The matrix m2x5 defines a vector bundle of rank 2 and chern polynomial
+    1-t+4t^2. The functions computes partial information about the variety
+    of unstable planes, which following [BHM] is the interesction of a
+    the Grassmannian G(2,5) with a P1xP4 in P9. By [DS] this variety should coincide with
+    Shioda's modular variety. We verify some of the assertians. In particular,
+    that the singular fibers are 12 pentagons, which come in pairs.
+  
+  CannedExample
+    i1 : kk=ZZ/2;
+    i2 : E=kk[e_0..e_4,SkewCommutative=>true];
+  Text
+    The following matrix was found using searchHMBundle.
+  CannedExample
+    i3 : m2x5=matrix {{e_0*e_1+e_1*e_2+e_2*e_3+e_0*e_4+e_1*e_4+e_3*e_4,
+              e_0*e_2+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4+e_3*e_4,
+	      e_0*e_3+e_1*e_3+e_2*e_3+e_0*e_4+e_2*e_4,
+	      e_1*e_2+e_0*e_3+e_1*e_3+e_2*e_4, e_0*e_3+e_2*e_3+e_0*e_4},
+	  {e_1*e_4+e_3*e_4, e_0*e_4+e_1*e_4,
+	      e_1*e_2+e_1*e_4+e_2*e_4+e_3*e_4,
+	      e_0*e_2+e_1*e_3+e_0*e_4+e_1*e_4,
+	      e_0*e_1+e_1*e_3+e_2*e_3+e_0*e_4+e_1*e_4+e_2*e_4+e_3*e_4}};
+
+                  2      5
+    o3 : Matrix E  <-- E
+  Text
+    It defines a vector bundle defined over ZZ/2 since its Tate resolution has the right shape.
+  CannedExample
+    i4 : T=res(coker m2x5,LengthLimit=>5);
+    i5 : betti (T'= res(coker transpose T.dd_5**E^{2},LengthLimit=>10)[5])
+
+                 -5 -4 -3 -2 -1 0 1  2  3  4   5
+    o5 = total: 100 37 14 10  5 2 5 10 14 37 100
+            -4: 100 35  4  .  . . .  .  .  .   .
+	    -3:   .  2 10 10  5 . .  .  .  .   .
+	    -2:   .  .  .  .  . 2 .  .  .  .   .
+	    -1:   .  .  .  .  . . 5 10 10  2   .
+	     0:   .  .  .  .  . . .  .  4 35 100
+
+    o5 : BettiTally
+  Text
+    Its variety of unstable is as expected.
+  CannedExample
+    i6 : pentagons=varietyOfUnstablePlanes(m2x5,Verbose=>2);
+                                   2          2   4      3    4   4    3     2 2      3    4
+      singularFibers = (t)(s + t)(s  + s*t + t )(s  + s*t  + t )(s  + s t + s t  + s*t  + t )
+      -- 5.26706s elapsed
+      number of components and intersection matrices = Tally{(5, | -2 1  0  0  1  |) => 12}
+                                                                 | 1  -2 1  0  0  |
+								 | 0  1  -2 1  0  |
+								 | 0  0  1  -2 1  |
+								 | 1  0  0  1  -2 |
+       -- => the singular fibers consists of 12 pentagons of lines.
+       -- => the surface of unstable plane of the bundle coincides with Shioda's modular surface
+       -- => the bundle is projectively equivalent to the HM bundle
+                                                                 0  1  2  3 4
+      number and betti table of singular points = Tally{(5, total: 1 10 20 15 4) => 12}
+                                                              0: 1  .  .  . .
+                                                              1: . 10 20 15 4
+      pairs of singular fibers = {{0, 1}, {2, 4}, {3, 7}, {5, 11}, {6, 10}, {8, 9}}
+    i7 : fiveLines=pentagons_0;
+    i8 : betti res (pent_0=intersect(fiveLines))
+
+                0 1 2 3
+    o8 = total: 1 5 5 1
+             0: 1 . . .
+	     1: . 5 5 .
+	     2: . . . 1
+
+    o8 : BettiTally
+    i9 : betti res (pent_1=intersect(pentagons_1))
+
+                0 1 2 3
+    o9 = total: 1 5 5 1
+             0: 1 . . .
+	     1: . 5 5 .
+	     2: . . . 1
+
+    o9 : BettiTally
+    i10 : fivePoints=pent_0+pent_1;
+
+    o10 : Ideal of GF 256[x ..x ]
+    0   4
+    i11 : (dim fivePoints,degree fivePoints) == (1,5)
+
+    o11 = true
+    i12 : betti res fivePoints
+
+                 0  1  2  3 4
+    o12 = total: 1 10 20 15 4
+              0: 1  .  .  . .
+	      1: . 10 20 15 4
+
+    o12 : BettiTally
+   
   Text
     This function is incomplete. Ideally we would like to compute a coordinate change
     of P4 and and basis change of source and target of the 2x5 matrix which moves
