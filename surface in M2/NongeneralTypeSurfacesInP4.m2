@@ -6868,6 +6868,19 @@ SeeAlso
   LeBarzN6
   residualInQuintics
 ///
+-* For CannedExample of partitionOfCanonicalDivisorOfAboSurface
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    setRandomSeed("fix decompositions");
+    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+    elapsedTime K = partitionOfCanonicalDivisorOfAboSurface X   
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) , -#K
+    HdotK(d,sg), sum K
+
+*-
 
 doc///
 Key
@@ -6892,16 +6905,28 @@ Description
   Text
     The canonical divisor of an Abo surface that is a non-minimal K3-surface, is a collection of
     six (-1)-curves of total degree 12. Which degrees occur depends on the surface.
-  Example
-    kk=ZZ/nextPrime 10^4;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    setRandomSeed("fix decompositions");
-    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
-    elapsedTime K = partitionOfCanonicalDivisorOfAboSurface X   
-    (d,sg,xO)=(12,13,2);
-    Ksquare(d,sg,xO) , -#K
-    HdotK(d,sg), sum K    
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     setRandomSeed("fix decompositions");
+      -- setting random seed to 1220442291374344711948625538118317179
+    i6 :     elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+      -- 17.5693s elapsed
+    i7 :     elapsedTime K = partitionOfCanonicalDivisorOfAboSurface X   
+      -- 15.7959s elapsed
+
+    o7 = {1, 1, 1, 3, 3, 3}
+    o7 : List
+    i8 :     (d,sg,xO)=(12,13,2);
+    i9 :     Ksquare(d,sg,xO) , -#K
+
+    o9 = (-6, -6)
+    o9 : Sequence
+    i10 :     HdotK(d,sg), sum K    
+
+    o10 = (12, 12)
+    o10 : Sequence
   Text
     The partitions of 12 into 6 parts are in bijection with the partitions of 6. From the
     11 partitions we have observed the following 9.
