@@ -6226,6 +6226,20 @@ Description
 
 -* Abo-Ranestad surfaces *-
 
+-* for CannedExample of veroneseImagesInG25
+ Example
+    kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    n=7;
+    elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+    (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    (degree pts,degree vP2,degree vP3,degree g25)
+    degree pts==n-1
+    (L0,L1,L2,J)=adjunctionProcess(X,1);
+    L0_1==n and degree pts==n-1;
+
+*-
+
+
 doc///
 Key
  veroneseImagesInG25
@@ -6253,23 +6267,68 @@ Description
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
     This function verifies this assertion in an example.
-  Example
-    kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    n=7;
-    elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-    (degree pts,degree vP2,degree vP3,degree g25)
-    degree pts==n-1
-    "(L0,L1,L2,J)=adjunctionProcess(X,1);";
-    "L0_1==n and degree pts==n-1";
-    
-  
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    i4 :     n=7;
+    i5 :     elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+     -- 6.14016s elapsed
+    i6 :     (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    i7 :     (degree pts,degree vP2,degree vP3,degree g25)
+
+    o7 = (6, 4, 8, 5)
+    o7 : Sequence
+    i8 :     degree pts==n-1
+
+    o8 = true
+    i9 :     (L0,L1,L2,J)=adjunctionProcess(X,1);
+    i10 :  L0_1==n and degree pts==n-1
+
+    o110 = true
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
 ///
 
+-* 
+for CannedExample of aboRanestadSurface
+ Example
+    kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
+    m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
 
+
+
+  Example
+    P4=kk[x_0..x_4];
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
+    minimalBetti X
+    singX=X+minors(2,jacobian X);
+    dim saturate singX==-1
+    (d,s)=(degree X, sectionalGenus X)
+    LeBarzN6(d,s,1)==8
+    Ksquare(d,s,1)==-12
+    elapsedTime betti (T=tateResolutionOfSurface X)
+    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+    numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+
+  Example
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
+    minimalBetti X
+    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+    numList=={(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+    kk=ZZ/19;P4=kk[x_0..x_4];
+    setRandomSeed("fast search");
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
+    minimalBetti X
+    elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+    numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
+    setRandomSeed("another fast search");
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true); 
+    minimalBetti X
+    elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
+    L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
+  
+
+*-
 
 doc///
 Key
@@ -6300,25 +6359,66 @@ Description
     (-1) lines on the surface will coincides with the number of intersection points of the images plus 1.
     We need at least 3 intersection points and can have up to 7 
     In the construction, we normalize the matrix m2x3 as indicated below.
-  Example
-    kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
-    m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
+
+    o5 = | e_0 e_1 e_3 |
+         | e_1 e_2 e_4 |
+
+                 2      3
+    o5 : Matrix E  <-- E
   Text
     One can easily force 3 or 4 intersection points. To find more, we perform a random search over
     a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find
     examples with c additional intersection points with about q^c trials.
-  Example
-    P4=ZZ/nextPrime 10^3[x_0..x_4];
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
-    minimalBetti X
-    singX=X+minors(2,jacobian X);
-    dim saturate singX==-1
-    (d,s)=(degree X, sectionalGenus X)
-    LeBarzN6(d,s,1)==8
-    Ksquare(d,s,1)==-12
-    elapsedTime betti (T=tateResolutionOfSurface X)
-    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3)";
-    "numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}";
+  CannedExample
+    i6 :     P4=kk[x_0..x_4];
+    i7 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
+     -- 6.50601s elapsed
+    i8 :     minimalBetti X
+
+                0 1  2  3 4
+    o8 = total: 1 9 18 13 3
+             0: 1 .  .  . .
+             1: . .  .  . .
+             2: . .  .  . .
+             3: . .  .  . .
+             4: . 5  .  . .
+             5: . 4 18 13 3
+    o8 : BettiTally
+    i9 :     singX=X+minors(2,jacobian X);
+
+    o9 : Ideal of P4
+    i10 :     dim saturate singX==-1
+
+    o10 = true
+    i11 :     (d,s)=(degree X, sectionalGenus X)
+
+    o11 = (12, 13)
+    o11 : Sequence
+    i12 :     LeBarzN6(d,s,1)==8
+
+    o12 = true
+    i13 :     Ksquare(d,s,1)==-12
+
+    o13 = true
+    i14 :     elapsedTime betti (T=tateResolutionOfSurface X)
+     -- 27.6394s elapsed
+
+                  -1  0  1  2 3 4 5  6  7
+    o14 = total: 122 73 37 13 4 4 8 29 77
+             -4:   1  .  .  . . . .  .  .
+             -3: 121 73 37 13 . . .  .  .
+             -2:   .  .  .  . 4 2 .  .  .
+             -1:   .  .  .  . . 2 3  .  .
+              0:   .  .  .  . . . 5 29 77
+    o14 : BettiTally
+    i15 :     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+      -- 264.405s elapsed
+    i16 :     numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+
+    o16 = true
   Text
      The last adjoint surface is a Del Pezzo surface of degree 4 in P4. Thus,
      X is the blow-up in 12+9 points embedded by a linear system of class
@@ -6330,25 +6430,88 @@ Description
     intersection points in the Grassmannian G(2,5).
     We can easily force 2 more intersection points  and can get a 7th intersection point via a
     codimension 1 random search.
-  Example
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
-    minimalBetti X
-    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
-    "numList=={(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}";
-    kk=ZZ/19;P4=kk[x_0..x_4];
-    setRandomSeed("fast search");
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
-    minimalBetti X
-    "elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);";
-    "numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}";
-    setRandomSeed("another fast search");
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true); 
-    minimalBetti X
-    "elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);";
-    "L0=={(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}";
+   CannedExample
+    i17 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
+     -- 10.0296s elapsed
+    i18 :     minimalBetti X
+
+                 0 1  2  3 4
+    o18 = total: 1 9 18 13 3
+              0: 1 .  .  . .
+              1: . .  .  . .
+              2: . .  .  . .
+              3: . .  .  . .
+              4: . 5  .  . .
+              5: . 4 18 13 3
+    o18 : BettiTally
+    i19 :     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+     -- 375.319s elapsed
+    i22 :     numList
+
+    o22 = {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+    o22 : List
+    i23 :     kk=ZZ/19;P4=kk[x_0..x_4];
+    i25 :     setRandomSeed("fast search");
+     -- setting random seed to 11374490907814143332492
+    i26 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
+    trials so far to get a surface = 12
+    trials to get a smooth surface = 1
+     -- 26.9961s elapsed
+    i27 :     minimalBetti X
+
+                 0 1  2  3 4
+    o27 = total: 1 9 18 13 3
+              0: 1 .  .  . .
+              1: . .  .  . .
+              2: . .  .  . .
+              3: . .  .  . .
+              4: . 5  .  . .
+              5: . 4 18 13 3
+    o27 : BettiTally
+    i28 :     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+     -- 704.182s elapsed
+    i29 :     numList
+
+    o29 = {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
+    o29 : List
+    i31 :     setRandomSeed("another fast search");
+     -- setting random seed to 117342191518550946866766190799857765377
+    i32 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true); 
+       trials so far to get a surface = 3
+       trials to get a smooth surface = 1
+     -- 46.2467s elapsed
+    i33 :  minimalBetti X
+                 0 1  2  3 4
+    o33 = total: 1 9 18 13 3
+              0: 1 .  .  . .
+              1: . .  .  . .
+              2: . .  .  . .
+              3: . .  .  . .
+              4: . 5  .  . .
+              5: . 4 18 13 3
+    o33 : BettiTally
+    i34 :     elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
+     -- 778.518s elapsed
+    i36 :     L0
+
+    o36 = {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
+
 SeeAlso
    adjunctionProcessData
 ///
+-*  for CannedExample of matrixFromAboRanestadSurface
+  Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
+    setRandomSeed("fairly fast search")
+    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    betti tateResolutionOfSurface X
+    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    m4x2'=matrixFromAboRanestadSurface X
+    m4x2
+    minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+
+*-
 
 doc///
 Key
@@ -6369,20 +6532,72 @@ Description
     In the Tate resolution of an Abo-Ranestad surface, there are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
     with linear entries over the exterior algebra. The 2x3 matrix is normalized. The function returns the
     4x2 matrix.
-  Example
-    kk=ZZ/19
-    P4=kk[x_0..x_4]
+  CannedExample
+    i2 :     kk=ZZ/19;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     setRandomSeed("fairly fast search")
+     -- setting random seed to 1219487757425192677910281801934109671
+
+    o4 = 1219487757425192677910281801934109671
+    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    trials so far to get a surface = 1       
+    trials to get a smooth surface = 1
+     -- 7.27749s elapsed
+    i6 :   betti tateResolutionOfSurface X
+    
+                 -1  0  1  2 3 4 5  6  7
+    o6 = total: 122 73 37 13 4 4 8 29 77
+            -4:   1  .  .  . . . .  .  .
+            -3: 121 73 37 13 . . .  .  .
+            -2:   .  .  .  . 4 2 .  .  .
+            -1:   .  .  .  . . 2 3  .  .
+             0:   .  .  .  . . . 5 29 77
+    o6 : BettiTally
+    i7 :  elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    trials so far to get a surface = 1
+    trials to get a smooth surface = 1
+     -- 5.91285s elapsed
+
+    o7 : Ideal of P4
+    i8 :     m4x2'=matrixFromAboRanestadSurface X
+
+    o8 = {-1} | -5e_0+e_1+9e_2-5e_3-9e_4  -4e_2-8e_3+4e_4    |
+         {-1} | 7e_0-2e_1+5e_3-7e_4       5e_2-e_3-4e_4      |
+         {-1} | -9e_0+5e_1-4e_3-6e_4      e_1-4e_2+9e_3+7e_4 |
+         {-1} | -8e_0+5e_1+6e_2+4e_3+3e_4 e_0+9e_2-7e_4      |
+
+                            4                 2
+    o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                     0   4             0   4
+    i9 :     m4x2
+
+    o9 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
+         {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
+         {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
+         {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
+
+                            4                 2
+    o9 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                     0   4             0   4
+    i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+
+    o10 = true
+SeeAlso
+   aboRanestadSurface
+   aboRanestadSurfaceFromMatrix
+///
+-* for CannedExample of aboRanestadSurfaceFromMatrix
+ Example
+    kk=ZZ/19;
+    P4=kk[x_0..x_4];
     setRandomSeed("fairly fast search")
     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
     betti tateResolutionOfSurface X
     elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
     m4x2'=matrixFromAboRanestadSurface X
     m4x2
-    assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
-SeeAlso
-   aboRanestadSurface
-   aboRanestadSurfaceFromMatrix
-///
+    minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+*-
 
 doc///
 Key
@@ -6410,20 +6625,73 @@ Description
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1)-lines on the surface coincides with the number of intersection points of the images plus 1.
     The function returns a corresponding surface X.
-  Example
-    kk=ZZ/19
-    P4=kk[x_0..x_4]
-    setRandomSeed("fairly fast search")
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
-    betti tateResolutionOfSurface X
-    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
-    m4x2'=matrixFromAboRanestadSurface X
-    m4x2
-    assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
+   CannedExample
+    i2 :     kk=ZZ/19
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     setRandomSeed("fairly fast search")
+     -- setting random seed to 1219487757425192677910281801934109671
+
+    o4 = 1219487757425192677910281801934109671
+    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    trials so far to get a surface = 1
+    trials to get a smooth surface = 1
+     -- 7.48173s elapsed
+    i6 :     betti tateResolutionOfSurface X
+
+                 -1  0  1  2 3 4 5  6  7
+    o6 = total: 122 73 37 13 4 4 8 29 77
+            -4:   1  .  .  . . . .  .  .
+            -3: 121 73 37 13 . . .  .  .
+            -2:   .  .  .  . 4 2 .  .  .
+            -1:   .  .  .  . . 2 3  .  .
+             0:   .  .  .  . . . 5 29 77
+    o6 : BettiTally
+    i7 :     elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    trials so far to get a surface = 1
+    trials to get a smooth surface = 1
+     -- 6.34168s elapsed
+
+    o7 : Ideal of P4
+    i8 :     m4x2'=matrixFromAboRanestadSurface X
+
+    o8 = {-1} | -5e_0+e_1+9e_2-5e_3-9e_4  -4e_2-8e_3+4e_4    |
+         {-1} | 7e_0-2e_1+5e_3-7e_4       5e_2-e_3-4e_4      |
+         {-1} | -9e_0+5e_1-4e_3-6e_4      e_1-4e_2+9e_3+7e_4 |
+         {-1} | -8e_0+5e_1+6e_2+4e_3+3e_4 e_0+9e_2-7e_4      |
+
+                            4                 2
+    o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                     0   4             0   4
+    i9 :     m4x2
+    o9 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
+         {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
+         {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
+         {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
+
+                            4                 2
+    o9 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                     0   4             0   4
+    i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+
+    o10 = true
+ 
 SeeAlso
    aboRanestadSurface
    matrixFromAboRanestadSurface
 ///
+-* For CannedExample of specificAboRanestadSurfac
+  Example
+    kk=ZZ/19
+    P4=kk[x_0..x_4]
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,3);
+    L0
+    elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
+    numList==L0
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
+    minimalBetti J == B
+
+*-
 
 doc///
 Key
@@ -6450,16 +6718,23 @@ Description
   Text
     In the Tate resolution of an Abo-Ranestad surface, there is a 4x2 matrix m4x2.
     We compute a Abo-Ranestad surface of the k-th given matrix
-  Example
-    kk=ZZ/19
-    P4=kk[x_0..x_4]
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,2);
-    L0
-    "elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;";
-    "numList==L0";
-    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
-    "minimalBetti J == B";    
+  CannedExample
+    i2 :     kk=ZZ/19;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,3);
+     -- 15.3768s elapsed
+    i6 :     L0
+
+    o6 = {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+    o6 : List
+    i7 :     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
+     -- 305.883s elapsed
+    i8 :     numList==L0
+
+    o8 = true
+  Text
+    The third adjoint surface is a Del Pezzo surface of degree 4.  X=P2(12;4^5,2^12,1^4); 
 SeeAlso
    aboRanestadSurfaceFromMatrix
    adjunctionProcess
@@ -6567,7 +6842,7 @@ Description
 
     o12 = true
   Text
-    The third adjunction is a Del Pezzo surface of degree 5.   X=P2(12;4^4,3^3,2^9,1^5);
+    The third adjoint surface is a Del Pezzo surface of degree 5.   X=P2(12;4^4,3^3,2^9,1^5);
 SeeAlso
    aboRanestadSurfaceFromMatrix
    adjunctionProcess
