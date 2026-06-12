@@ -6465,6 +6465,21 @@ SeeAlso
    adjunctionProcess
    tateResolutionOfSurface
 ///
+-* For CannedExample of get4x2Matrix
+  Example
+    kk=ZZ/nextPrime 10^3
+    P4=kk[x_0..x_4]
+    E=kk[e_0..e_4,SkewCommutative=>true]
+    m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
+    m4x2=get4x2Matrix(m2x3,4)
+    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    elapsedTime betti(T=tateResolutionOfSurface X)
+    elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
+    numList=={(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
+    minimalBetti J == B
+ 
+*-
 
 doc///
 Key
@@ -6491,18 +6506,68 @@ Description
     It turns out that the number of
     (-1) lines on the surface will coincides with the number of intersection points of the images plus 1.
     The function returns for the normalized 2x3 matrix the desired 4x2 matrix.
-  Example
-    kk=ZZ/nextPrime 10^3
-    P4=kk[x_0..x_4]
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
-    m4x2=get4x2Matrix(m2x3,4)
-    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
-    elapsedTime betti(T=tateResolutionOfSurface X)
-    "elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;";
-    "numList=={(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}";
-    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
-    "minimalBetti J == B";    
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^3
+
+    o2 = kk
+    o2 : QuotientRing
+    i3 :     P4=kk[x_0..x_4]
+
+    o3 = P4
+    o3 : PolynomialRing
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true]
+
+    o4 = E
+    o4 : PolynomialRing, 5 skew commutative variable(s)
+    i5 :     m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
+
+    o5 = | e_0 e_1 e_3 |
+         | e_1 e_2 e_4 |
+                 2      3
+    o5 : Matrix E  <-- E
+    i6 :     m4x2=get4x2Matrix(m2x3,4)
+
+    o6 = {-1} | 117e_0+279e_1+228e_2-407e_3+484e_4 494e_0+126e_1+344e_2-261e_3+270e_4 |
+         {-1} | -151e_0-122e_1+27e_2+472e_3-58e_4  495e_0-38e_1+334e_2-271e_3+441e_4  |
+         {-1} | 129e_0+171e_1-280e_2-350e_3+264e_4 414e_0+369e_1+193e_2+50e_3-9e_4    |
+         {-1} | 473e_0-56e_1+294e_2+456e_3-398e_4  -12e_0-392e_1-365e_2+462e_3-55e_4  |
+                 4      2
+    o6 : Matrix E  <-- E
+    i7 :     elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    trials so far to get a surface = 1
+    trials to get a smooth surface = 1
+     -- 6.56431s elapsed
+
+    o7 : Ideal of P4
+    i8 :     elapsedTime betti(T=tateResolutionOfSurface X)
+     -- 26.8608s elapsed
+
+                 -1  0  1  2 3 4 5  6  7
+    o8 = total: 122 73 37 13 4 4 8 29 77
+            -4:   1  .  .  . . . .  .  .
+            -3: 121 73 37 13 . . .  .  .
+            -2:   .  .  .  . 4 2 .  .  .
+            -1:   .  .  .  . . 2 3  .  .
+             0:   .  .  .  . . . 5 29 77
+    o8 : BettiTally
+    i9 :     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
+     -- 254.72s elapsed
+    i10 :     numList=={(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}
+
+    o10 = true
+    i11 :     B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
+
+                 0 1 2 3
+    o11 = total: 1 5 5 1
+              0: 1 . . .
+              1: . 5 5 .
+              2: . . . 1
+    o11 : BettiTally
+    i12 :     minimalBetti J == B
+
+    o12 = true
+  Text
+    The third adjunction is a Del Pezzo surface of degree 5.   X=P2(12;4^4,3^3,2^9,1^5);
 SeeAlso
    aboRanestadSurfaceFromMatrix
    adjunctionProcess
@@ -6803,7 +6868,25 @@ elapsedTime (singX=singularLocus X; dim singX==0)
 
 
 ///
+-*  For CannedExample of analyzeAboSurface
+  Example
+    kk=ZZ/nextPrime 10^4;
+    P4=kk[x_0..x_4];
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    setRandomSeed("fix decompositions");
+    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+    K    
+    cResidual=primaryDecomposition residual;
+    tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+    (d,sg,xO)=(12,13,2);
+    Ksquare(d,sg,xO) == -#K    
+    numberOfMinusOneLines=#select(K,d->d==1)
+    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
+    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
 
+*-
 
 doc///
 Key
@@ -6836,22 +6919,51 @@ Description
     We analyze the residual scheme to the input surface X in the scheme cut out
     by the quintic containing X and the partition of the canonical divisor of X
     in view of Le Barz's 6-secant formula.
-  Example
-    kk=ZZ/nextPrime 10^4;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    setRandomSeed("fix decompositions");
-    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
-    elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
-    K    
-    cResidual=primaryDecomposition residual;
-    tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
-	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
-    (d,sg,xO)=(12,13,2);
-    Ksquare(d,sg,xO) == -#K    
-    numberOfMinusOneLines=#select(K,d->d==1)
-    numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
-    LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+  CannedExample
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     setRandomSeed("fix decompositions");
+     -- setting random seed to 1220442291374344711948625538118317179
+    i6 :     elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+     -- 13.0349s elapsed
+    i7 :     elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+     -- 12.3718s elapsed
+    i8 :     K    
+
+    o8 = {1, 1, 1, 3, 3, 3}
+    o8 : List
+    i9 :     cResidual=primaryDecomposition residual;
+    i10 :     tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+          	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+
+                              0 1
+    o10 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
+                           0: 1 3              (1, 5, 5) => 1
+                              0 1
+                (2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 2}) => 1
+                           0: 1 3              (1, 2, 2) => 2
+                              0 1
+                (2, 1, total: 1 3, 1, 6, Tally{(1, 6, 6) => 1}) => 1
+                           0: 1 3
+                              0 1
+                (2, 4, total: 1 6, 1, 21, Tally{(1, 1, 1) => 2  }) => 1
+                           0: 1 .               (1, 3, 3) => 2
+                           1: . 6               (1, 13, 13) => 1
+    o10 : Tally
+    i11 :     (d,sg,xO)=(12,13,2);
+    i12 :     Ksquare(d,sg,xO) == -#K    
+
+    o12 = true
+    i13 :     numberOfMinusOneLines=#select(K,d->d==1)
+
+    o13 = 3
+    i14 :     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
+
+    o14 = 4
+    i15 :     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
+
+    o15 = true
   Text
     In this example, X has four 6-secant lines. The intersection of these four lines
     with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
