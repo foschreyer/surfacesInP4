@@ -7824,12 +7824,13 @@ SeeAlso
 
 -* 
 for CannedExample of aboRanestadSurface
- Example
+  Example
     kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
     m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
-
-
-
+  Text
+    One can easily force 3 or 4 intersection points. To find more, we perform a random search over
+    a finite ground field FF_q. Since an extra intersection point is a codimension 1 condition we can find
+    examples with c additional intersection points with about q^c trials.
   Example
     P4=kk[x_0..x_4];
     elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
@@ -7842,7 +7843,17 @@ for CannedExample of aboRanestadSurface
     elapsedTime betti (T=tateResolutionOfSurface X)
     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
     numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
-
+  Text
+    The last adjoint surface is a Del Pezzo surface of degree 4 in P4. Thus,
+    X is the blow-up in 12+9 points embedded by a linear system of class
+    (12;4^5,2^12,1^4).
+  
+  Text
+    A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well.
+    In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four
+    intersection points in the Grassmannian G(2,5).
+    We can easily force 2 more intersection points  and can get a 7th intersection point via a
+    codimension 1 random search.
   Example
     elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
     minimalBetti X
@@ -7860,7 +7871,7 @@ for CannedExample of aboRanestadSurface
     elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
     L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
   
-
+  
 *-
 
 doc///
@@ -7893,142 +7904,138 @@ Description
     We need at least 3 intersection points and can have up to 7 
     In the construction, we normalize the matrix m2x3 as indicated below.
   CannedExample
-    i2 :     kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
-    i5 :     m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
+    i1 : kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}
 
-    o5 = | e_0 e_1 e_3 |
+    o4 = | e_0 e_1 e_3 |
          | e_1 e_2 e_4 |
 
                  2      3
-    o5 : Matrix E  <-- E
+    o4 : Matrix E  <-- E
   Text
-    One can easily force 3 or 4 intersection points. To find more, we perform a random search over
-    a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find
-    examples with c additional intersection points with about q^c trials.
+    One can easily force 3 or 4 intersection points.
+    To find more, we perform a random search over a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find examples with c additional intersection points with about q^c trials.
   CannedExample
-    i6 :     P4=kk[x_0..x_4];
-    i7 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);  
-     -- 6.50601s elapsed
-    i8 :     minimalBetti X
+    i5 : P4=kk[x_0..x_4];
+    i6 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);
+    -- 4.81344s elapsed
+    i7 : minimalBetti X
 
                 0 1  2  3 4
-    o8 = total: 1 9 18 13 3
+    o7 = total: 1 9 18 13 3
              0: 1 .  .  . .
-             1: . .  .  . .
-             2: . .  .  . .
-             3: . .  .  . .
-             4: . 5  .  . .
-             5: . 4 18 13 3
-    o8 : BettiTally
-    i9 :     singX=X+minors(2,jacobian X);
+	     1: . .  .  . .
+	     2: . .  .  . .
+	     3: . .  .  . .
+	     4: . 5  .  . .
+	     5: . 4 18 13 3
 
-    o9 : Ideal of P4
-    i10 :     dim saturate singX==-1
+    o7 : BettiTally
+    i8 : singX=X+minors(2,jacobian X);
 
-    o10 = true
-    i11 :     (d,s)=(degree X, sectionalGenus X)
+    o8 : Ideal of P4
+    i9 : dim saturate singX==-1
 
-    o11 = (12, 13)
-    o11 : Sequence
-    i12 :     LeBarzN6(d,s,1)==8
+    o9 = true
+    i10 : (d,s)=(degree X, sectionalGenus X)
+
+    o10 = (12, 13)
+
+    o10 : Sequence
+    i11 : LeBarzN6(d,s,1)==8
+
+    o11 = true
+    i12 : Ksquare(d,s,1)==-12
 
     o12 = true
-    i13 :     Ksquare(d,s,1)==-12
-
-    o13 = true
-    i14 :     elapsedTime betti (T=tateResolutionOfSurface X)
-     -- 27.6394s elapsed
+    i13 : elapsedTime betti (T=tateResolutionOfSurface X)
+    -- 17.9288s elapsed
 
                   -1  0  1  2 3 4 5  6  7
-    o14 = total: 122 73 37 13 4 4 8 29 77
+    o13 = total: 122 73 37 13 4 4 8 29 77
              -4:   1  .  .  . . . .  .  .
-             -3: 121 73 37 13 . . .  .  .
-             -2:   .  .  .  . 4 2 .  .  .
-             -1:   .  .  .  . . 2 3  .  .
-              0:   .  .  .  . . . 5 29 77
-    o14 : BettiTally
-    i15 :     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
-      -- 264.405s elapsed
-    i16 :     numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+	     -3: 121 73 37 13 . . .  .  .
+	     -2:   .  .  .  . 4 2 .  .  .
+	     -1:   .  .  .  . . 2 3  .  .
+	      0:   .  .  .  . . . 5 29 77
 
-    o16 = true
+    o13 : BettiTally
+    i14 : elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+    -- 127.77s elapsed
+    i15 : numList=={(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+
+    o15 = true
   Text
-     The last adjoint surface is a Del Pezzo surface of degree 4 in P4. Thus,
-     X is the blow-up in 12+9 points embedded by a linear system of class
-     (12;4^5,2^12,1^4).
-  
-  Text
-    A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well.
-    In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four
-    intersection points in the Grassmannian G(2,5).
-    We can easily force 2 more intersection points  and can get a 7th intersection point via a
-    codimension 1 random search.
-   CannedExample
-    i17 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);  
-     -- 10.0296s elapsed
-    i18 :     minimalBetti X
+    The last adjoint surface is a Del Pezzo surface of degree 4 in P4. Thus, X is the blow-up in 12+9 points embedded by a linear system of class (12;4^5,2^12,1^4).
+
+    A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well. In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four intersection points in the Grassmannian G(2,5). We can easily force 2 more intersection points and can get a 7th intersection point via a codimension 1 random search.
+  CannedExample
+    i16 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);
+    -- 5.37867s elapsed
+    i17 : minimalBetti X
 
                  0 1  2  3 4
-    o18 = total: 1 9 18 13 3
+    o17 = total: 1 9 18 13 3
               0: 1 .  .  . .
-              1: . .  .  . .
-              2: . .  .  . .
-              3: . .  .  . .
-              4: . 5  .  . .
-              5: . 4 18 13 3
-    o18 : BettiTally
-    i19 :     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
-     -- 375.319s elapsed
-    i22 :     numList
+	      1: . .  .  . .
+	      2: . .  .  . .
+	      3: . .  .  . .
+	      4: . 5  .  . .
+	      5: . 4 18 13 3
 
-    o22 = {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
-    o22 : List
-    i23 :     kk=ZZ/19;P4=kk[x_0..x_4];
-    i25 :     setRandomSeed("fast search");
-     -- setting random seed to 11374490907814143332492
-    i26 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
+    o17 : BettiTally
+    i18 : elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+    -- 122.83s elapsed
+    i19 : numList=={(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}
+
+    o19 = true
+    i20 : kk=ZZ/19;P4=kk[x_0..x_4];
+    i22 : setRandomSeed("fast search");
+    -- setting random seed to 11374490907814143332492
+    i23 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
     trials so far to get a surface = 12
     trials to get a smooth surface = 1
-     -- 26.9961s elapsed
-    i27 :     minimalBetti X
+    -- 7.20331s elapsed
+    i24 : minimalBetti X
 
                  0 1  2  3 4
-    o27 = total: 1 9 18 13 3
+    o24 = total: 1 9 18 13 3
               0: 1 .  .  . .
-              1: . .  .  . .
-              2: . .  .  . .
-              3: . .  .  . .
-              4: . 5  .  . .
-              5: . 4 18 13 3
-    o27 : BettiTally
-    i28 :     elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
-     -- 704.182s elapsed
-    i29 :     numList
+	      1: . .  .  . .
+	      2: . .  .  . .
+	      3: . .  .  . .
+	      4: . 5  .  . .
+	      5: . 4 18 13 3
 
-    o29 = {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
-    o29 : List
-    i31 :     setRandomSeed("another fast search");
-     -- setting random seed to 117342191518550946866766190799857765377
-    i32 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true); 
-       trials so far to get a surface = 3
-       trials to get a smooth surface = 1
-     -- 46.2467s elapsed
-    i33 :  minimalBetti X
+    o24 : BettiTally
+    i25 : elapsedTime (numList,L1,L2,J)=adjunctionProcess(X,3);
+    -- 147.992s elapsed
+    i26 : numList=={(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}
+
+    o26 = true
+    i27 : setRandomSeed("another fast search");
+    -- setting random seed to 117342191518550946866766190799857765377
+    i28 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true);
+    trials so far to get a surface = 3
+    trials to get a smooth surface = 1
+    -- 8.3556s elapsed
+    i29 : minimalBetti X
+
                  0 1  2  3 4
-    o33 = total: 1 9 18 13 3
+    o29 = total: 1 9 18 13 3
               0: 1 .  .  . .
-              1: . .  .  . .
-              2: . .  .  . .
-              3: . .  .  . .
-              4: . 5  .  . .
-              5: . 4 18 13 3
-    o33 : BettiTally
-    i34 :     elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
-     -- 778.518s elapsed
-    i36 :     L0
+	      1: . .  .  . .
+	      2: . .  .  . .
+	      3: . .  .  . .
+	      4: . 5  .  . .
+	      5: . 4 18 13 3
 
-    o36 = {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
+    o29 : BettiTally
+    i30 : elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,3);
+    -- 157.524s elapsed
+    i31 : L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
 
+    o31 = true 
 SeeAlso
    adjunctionProcessData
 ///
@@ -9484,15 +9491,19 @@ Example
     RX=residualInQuintics X;dim RX
     RX==radical RX
     tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
-
-
+  Text
+    There are two (-1) lines and five 6-secant lines in this case.    
+    The Tate resolution has a specific form:
   Example
     betti(T=tateResolutionOfSurface X)
     m3x4=T.dd_5^{0..2}_{4..7}
     m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
     betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
+  Text
+    The construction of X uses a special 3x4 matrix over E such
+    that the Hom group above is non-zero.
 
-
+    The (5,5) linked surface Y is an elliptic surface of degree 13 and sectional genus 16.
   Example
     setRandomSeed("get a Smooth Surface");
     betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
@@ -9512,8 +9523,10 @@ Example
     LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
     betti(E1=D1:baseLocus)
     degree E1, genus E1, selfIntersectionNumber(Y,E1)
-*-
 
+
+
+*-
 
 
 doc ///
@@ -9545,193 +9558,206 @@ Description
     {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 4, 4}, {1, 1, 1, 1, 2, 6},
     {1, 1, 1, 1, 1, 7}
    
-    Other cases are p=11 and p=7. 
-    CannedExample
-   i2 :     kk=ZZ/19;
-   i3 :     P4=kk[x_0..x_4];
-   i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
-   i5 :     X=specificAboSurface(P4,E,1);
+    Other cases are p=11 and p=7.
+  CannedExample
+    i1 : kk=ZZ/19;
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : X=specificAboSurface(P4,E,1);
 
-   o5 : Ideal of P4
-   i6 :     minimalBetti X
+    o4 : Ideal of P4
+    i5 : minimalBetti X
 
                 0  1  2  3 4
-    o6 = total: 1 12 24 17 4
+    o5 = total: 1 12 24 17 4
              0: 1  .  .  . .
-             1: .  .  .  . .
-             2: .  .  .  . .
-             3: .  .  .  . .
-             4: .  4  .  . .
-             5: .  8 24 17 4
-    o6 : BettiTally
-    i7 :     (d,sg)=(degree X, sectionalGenus X)
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  4  .  . .
+	     5: .  8 24 17 4
 
-    o7 = (12, 13)
-    o7 : Sequence
-    i8 :     Ksquare(d,sg,2)==-6   
+    o5 : BettiTally
+    i6 : (d,sg)=(degree X, sectionalGenus X)
+
+    o6 = (12, 13)
+
+    o6 : Sequence
+    i7 : Ksquare(d,sg,2)==-6
+
+    o7 = true
+    i8 : LeBarzN6(d,sg,2)==7
 
     o8 = true
-    i9 :     LeBarzN6(d,sg,2)==7
+    i9 : pK=partitionOfCanonicalDivisorOfAboSurface X
 
-    o9 = true
-    i10 :     pK=partitionOfCanonicalDivisorOfAboSurface X
+    o9 = {1, 1, 2, 2, 3, 3}
 
-    o10 = {1, 1, 2, 2, 3, 3}
-    o10 : List
-    i11 :     RX=residualInQuintics X;dim RX
+    o9 : List
+    i10 : RX=residualInQuintics X;dim RX
 
-    o11 : Ideal of P4
-    o12 = 2
-    i13 :     RX==radical RX
+    o10 : Ideal of P4
 
-    o13 = true
-    i14 :     tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
+    o11 = 2
+    i12 : RX==radical RX
 
-    o14 = Tally{(2, 1, 0, (1, 6)) => 1  }
-                (2, 4, -3, (1, 24)) => 1
-    o14 : Tally
+    o12 = true
+    i13 : tally apply(decompose RX,c->(dim c ,degree c, genus c,(dim (c+X),degree(c+X))))
+
+    o13 = Tally{(2, 1, 0, (1, 6)) => 1  }
+              (2, 4, -3, (1, 24)) => 1
+
+    o13 : Tally
   Text
-    There are two (-1) lines and five 6-secant lines in this case.    
+    There are two (-1) lines and five 6-secant lines in this case.
     The Tate resolution has a specific form:
   CannedExample
-    i15 :     betti(T=tateResolutionOfSurface X)
+    i14 : betti(T=tateResolutionOfSurface X)
 
                   -1  0  1  2 3 4 5  6  7
-    o15 = total: 123 74 38 14 4 4 8 28 76
+    o14 = total: 123 74 38 14 4 4 8 28 76
              -4:   1  .  .  . . . .  .  .
-             -3: 122 74 38 14 1 . .  .  .
-             -2:   .  .  .  . 3 1 .  .  .
-             -1:   .  .  .  . . 3 4  .  .
-              0:   .  .  .  . . . 4 28 76
-    o15 : BettiTally
-    i16 :     m3x4=T.dd_5^{0..2}_{4..7}
+	     -3: 122 74 38 14 1 . .  .  .
+	     -2:   .  .  .  . 3 1 .  .  .
+	     -1:   .  .  .  . . 3 4  .  .
+	      0:   .  .  .  . . . 4 28 76
 
-    o16 = {3} | e_0-5e_1-9e_2-5e_3-9e_4  -e_0-e_1-e_2-3e_3+4e_4
-          {3} | 3e_0+6e_1-9e_2+8e_3-3e_4 3e_1-9e_2+5e_3        
-          {3} | 2e_0+e_2-5e_3+9e_4       8e_1-7e_2+9e_3-3e_4   
-          -------------------------------------------------------------------------
-          -2e_1-e_2+5e_3           -8e_1+2e_2-9e_3+3e_4     |
-          -e_0-5e_1+9e_2+9e_3+7e_4 6e_1-e_2+6e_3-7e_4       |
-          2e_2+8e_3                -e_0-7e_1-8e_2+9e_3-7e_4 |
+    o14 : BettiTally
+    i15 : m3x4=T.dd_5^{0..2}_{4..7}
 
-                             3                 4
-    o16 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+    o15 = {3} | -e_0+5e_1+9e_2+5e_3+9e_4 -e_0-8e_1-6e_3-5e_4 
+          {3} | -2e_0+7e_1-2e_2+2e_3     -2e_1+4e_2+7e_3-5e_4
+          {3} | -2e_0+e_1-e_2-4e_3+7e_4  -5e_1-5e_2-6e_3-5e_4
+          ------------------------------------------------------------------
+	  2e_1+e_2-5e_3            9e_1+8e_2-3e_3-3e_4 |
+	  -e_0+3e_1-7e_2+4e_3+7e_4 5e_1+e_2-8e_3+7e_4  |
+	  8e_1+6e_2+7e_3           -e_0-9e_1+6e_2+e_3  |
+
+                           3                 4
+    o15 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                       0   4             0   4
-    i17 :     m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
+    i16 : m3x1=(transpose gens trim ideal T.dd_4^{0..2}_{3})**(ring T)^{-2}
 
-    o17 = {1} | e_2 |
+    o16 = {1} | e_2 |
           {1} | e_1 |
           {1} | e_0 |
 
-                             3                 1
-    o17 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                           3                 1
+    o16 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                       0   4             0   4
-    i18 :     betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
+    i17 : betti(hom=Hom(coker m3x4,coker m3x1,DegreeLimit=>0))
 
                  0  1
-    o18 = total: 1 10
+    o17 = total: 1 10
               0: 1  .
-              1: .  .
-              2: . 10
-    o18 : BettiTally
+	      1: .  .
+	      2: . 10
+
+    o17 : BettiTally
   Text
     The construction of X uses a special 3x4 matrix over E such
     that the Hom group above is non-zero.
 
     The (5,5) linked surface Y is an elliptic surface of degree 13 and sectional genus 16.
   CannedExample
-    i19 :     setRandomSeed("get a Smooth Surface");
-     -- setting random seed to 12565710742996174726728999654169754803660
-    i20 :     betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
+    i18 : setRandomSeed("get a Smooth Surface");
+    -- setting random seed to 12565710742996174726728999654169754803660
+    i19 : betti(ci=ideal (gens X*random(source gens X,P4^{2:-5})))
 
                  0 1
-    o20 = total: 1 2
+    o19 = total: 1 2
               0: 1 .
-              1: . .
-              2: . .
-              3: . .
-              4: . 2
-    o20 : BettiTally
-    i21 :     minimalBetti (Y=ci:X)
+	      1: . .
+	      2: . .
+	      3: . .
+	      4: . 2
+
+    o19 : BettiTally
+    i20 : minimalBetti (Y=ci:X)
 
                  0  1  2  3 4
-    o21 = total: 1 12 22 14 3
+    o20 = total: 1 12 22 14 3
               0: 1  .  .  . .
-              1: .  .  .  . .
-              2: .  .  .  . .
-              3: .  .  .  . .
-              4: .  3  .  . .
-              5: .  9 22 14 3
-    o21 : BettiTally
-    i22 :     RY=residualInQuintics Y;
+	      1: .  .  .  . .
+	      2: .  .  .  . .
+	      3: .  .  .  . .
+	      4: .  3  .  . .
+	      5: .  9 22 14 3
 
-    o22 : Ideal of P4
-    i23 :     degree RY
+    o20 : BettiTally
+    i21 : RY=residualInQuintics Y;
 
-    o23 = 12
-    i24 :     RY==canonicalDivisor X
+    o21 : Ideal of P4
+    i22 : degree RY
+
+    o22 = 12
+    i23 : RY==canonicalDivisor X
+
+    o23 = true
+    i24 : saturate ideal singularLocus (P4/Y) == ideal 1_P4
 
     o24 = true
-    i26 :     saturate ideal singularLocus (P4/Y) == ideal 1_P4
+    i25 : D1=canonicalDivisor Y;
 
-    o26 = true
-    i27 :     D1=canonicalDivisor Y;
+    o25 : Ideal of P4
+    i26 : D2=canonicalDivisor Y;
 
-    o27 : Ideal of P4
-
-    i28 : D2=canonicalDivisor Y;
-
-    o28 : Ideal of P4
-    i29 :     betti(baseLocus=saturate (D1+D2))
+    o26 : Ideal of P4
+    i27 : betti(baseLocus=saturate (D1+D2))
 
                  0  1
-    o29 = total: 1 15
-              0: 1  .
-              1: .  .
-              2: . 15
-    o29 : BettiTally
-    i30 :     degree baseLocus, genus baseLocus
+    o27 = total: 1 15
+               0: 1  .
+	       1: .  .
+	       2: . 15
 
-    o30 = (5, -4)
-    o30 : Sequence
-    i31 :     selfIntersectionNumber(Y,baseLocus)
+    o27 : BettiTally
+    i28 : degree baseLocus, genus baseLocus
 
-    o31 = -5
-    i32 :     (degree Y, sectionalGenus Y)==(13,16)
+    o28 = (5, -4)
 
-    o32 = true
-    i33 :     betti tateResolutionOfSurface Y
+    o28 : Sequence
+    i29 : selfIntersectionNumber(Y,baseLocus)
+
+    o29 = -5
+    i30 : (degree Y, sectionalGenus Y)==(13,16)
+
+    o30 = true
+    i31 : betti tateResolutionOfSurface Y
 
                   -1  0  1  2 3 4 5  6  7
-    o33 = total: 142 87 46 18 6 4 6 24 68
+    o31 = total: 142 87 46 18 6 4 6 24 68
              -4:   1  .  .  . . . .  .  .
-             -3: 141 87 46 18 2 . .  .  .
-             -2:   .  .  .  . 4 3 .  .  .
-             -1:   .  .  .  . . 1 3  .  .
-              0:   .  .  .  . . . 3 24 68
-    o33 : BettiTally
-    i34 :     Ksquare(13,16,3)==-5
+	     -3: 141 87 46 18 2 . .  .  .
+	     -2:   .  .  .  . 4 3 .  .  .
+	     -1:   .  .  .  . . 1 3  .  .
+	      0:   .  .  .  . . . 3 24 68
 
-    o34 = true
-    i35 :     LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
+    o31 : BettiTally
+    i32 : Ksquare(13,16,3)==-5
 
-    o35 = true
-    i36 :     betti(E1=D1:baseLocus)
+    o32 = true
+    i33 : LeBarzN6(13,16,3)==LeBarzN6(12,13,2)
+
+    o33 = true
+    i34 : betti(E1=D1:baseLocus)
 
                  0  1
-    o36 = total: 1 22
+    o34 = total: 1 22
               0: 1  .
-              1: .  .
-              2: .  .
-              3: . 22
-    o36 : BettiTally
-    i37 :     degree E1, genus E1, selfIntersectionNumber(Y,E1)
+	      1: .  .
+	      2: .  .
+	      3: . 22
 
-    o37 = (12, 1, 0)
-    o37 : Sequence
+    o34 : BettiTally
+    i35 : degree E1, genus E1, selfIntersectionNumber(Y,E1)
+
+    o35 = (12, 1, 0)
+
+    o35 : Sequence
   Text
-    The linked surface Y is a smooth elliptic surface blown-up in 5
-    points, which are (-1)-lines on Y.
+    The linked surface Y is a smooth elliptic surface blown-up in 5 points, which are (-1)-lines on Y
+      
 References
    \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
 
