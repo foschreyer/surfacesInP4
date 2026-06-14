@@ -10548,7 +10548,7 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of the cubic scroll in P4
+  of the del Pezzo surface in P4
 Description
   Text
     We choose randomly two quadrics.
@@ -10571,7 +10571,7 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of the del Pezzo in P4
+  of the castelnuovo surface in P4
 Description
   Text
     We construct a Castelnuovo surface from its Hilbert-Burch matrix
@@ -10789,7 +10789,7 @@ References
     minimalBetti X4
     Y=X4:X;
     degree Y, sectionalGenus Y
-    singX=singularLocus(P4/X);
+    elapsedTime singX=singularLocus(P4/X);
     dim singX
     dim(X+Y)
     apply(decompose(X+Y),c->(dim c, degree c, genus c, minimalBetti c))
