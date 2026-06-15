@@ -8073,55 +8073,56 @@ Description
     with linear entries over the exterior algebra. The 2x3 matrix is normalized. The function returns the
     4x2 matrix.
   CannedExample
-    i2 :     kk=ZZ/19;
-    i3 :     P4=kk[x_0..x_4];
-    i4 :     setRandomSeed("fairly fast search")
-     -- setting random seed to 1219487757425192677910281801934109671
+    i1 : kk=ZZ/19;
+    i2 : P4=kk[x_0..x_4];
+    i3 : setRandomSeed("fairly fast search")
+    -- setting random seed to 1219487757425192677910281801934109671
 
-    o4 = 1219487757425192677910281801934109671
-    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
-    trials so far to get a surface = 1       
-    trials to get a smooth surface = 1
-     -- 7.27749s elapsed
-    i6 :   betti tateResolutionOfSurface X
-    
-                 -1  0  1  2 3 4 5  6  7
-    o6 = total: 122 73 37 13 4 4 8 29 77
-            -4:   1  .  .  . . . .  .  .
-            -3: 121 73 37 13 . . .  .  .
-            -2:   .  .  .  . 4 2 .  .  .
-            -1:   .  .  .  . . 2 3  .  .
-             0:   .  .  .  . . . 5 29 77
-    o6 : BettiTally
-    i7 :  elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+    o3 = 1219487757425192677910281801934109671
+    i4 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
-     -- 5.91285s elapsed
+    -- 5.58853s elapsed
+    i5 : betti tateResolutionOfSurface X
 
-    o7 : Ideal of P4
-    i8 :     m4x2'=matrixFromAboRanestadSurface X
+                 -1  0  1  2 3 4 5  6  7
+    o5 = total: 122 73 37 13 4 4 8 29 77
+            -4:   1  .  .  . . . .  .  .
+	    -3: 121 73 37 13 . . .  .  .
+	    -2:   .  .  .  . 4 2 .  .  .
+	    -1:   .  .  .  . . 2 3  .  .
+	     0:   .  .  .  . . . 5 29 77
 
-    o8 = {-1} | -5e_0+e_1+9e_2-5e_3-9e_4  -4e_2-8e_3+4e_4    |
-         {-1} | 7e_0-2e_1+5e_3-7e_4       5e_2-e_3-4e_4      |
-         {-1} | -9e_0+5e_1-4e_3-6e_4      e_1-4e_2+9e_3+7e_4 |
-         {-1} | -8e_0+5e_1+6e_2+4e_3+3e_4 e_0+9e_2-7e_4      |
+    o5 : BettiTally
+    i6 : elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);
+    trials so far to get a surface = 1
+    trials to get a smooth surface = 1
+    -- 5.919s elapsed
 
-                            4                 2
-    o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+    o6 : Ideal of P4
+    i7 : m4x2'=matrixFromAboRanestadSurface X
+
+    o7 = {-1} | 5e_0-e_1-9e_2+5e_3+9e_4  4e_2+8e_3-4e_4      |
+         {-1} | -7e_0+2e_1-5e_3+7e_4     -5e_2+e_3+4e_4      |
+         {-1} | 9e_0-5e_1+4e_3+6e_4      -e_1+4e_2-9e_3-7e_4 |
+         {-1} | 8e_0-5e_1-6e_2-4e_3-3e_4 -e_0-9e_2+7e_4      |
+
+                           4                 2
+    o7 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                      0   4             0   4
-    i9 :     m4x2
+    i8 : m4x2
 
-    o9 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
+    o8 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
          {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
          {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
          {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
 
-                            4                 2
-    o9 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                           4                 2
+    o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                      0   4             0   4
-    i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+    i9 : minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
 
-    o10 = true
+    o9 = true
 SeeAlso
    aboRanestadSurface
    aboRanestadSurfaceFromMatrix
@@ -8165,61 +8166,61 @@ Description
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1)-lines on the surface coincides with the number of intersection points of the images plus 1.
     The function returns a corresponding surface X.
-   CannedExample
-    i2 :     kk=ZZ/19
-    i3 :     P4=kk[x_0..x_4];
-    i4 :     setRandomSeed("fairly fast search")
-     -- setting random seed to 1219487757425192677910281801934109671
+  CannedExample
+    i1 : kk=ZZ/19;
+    i2 : P4=kk[x_0..x_4];
+    i3 : setRandomSeed("fairly fast search")
+    -- setting random seed to 1219487757425192677910281801934109671
 
-    o4 = 1219487757425192677910281801934109671
-    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    o3 = 1219487757425192677910281801934109671
+    i4 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
-     -- 7.48173s elapsed
-    i6 :     betti tateResolutionOfSurface X
+    -- 5.65078s elapsed
+    i5 : betti tateResolutionOfSurface X
 
                  -1  0  1  2 3 4 5  6  7
-    o6 = total: 122 73 37 13 4 4 8 29 77
+    o5 = total: 122 73 37 13 4 4 8 29 77
             -4:   1  .  .  . . . .  .  .
-            -3: 121 73 37 13 . . .  .  .
-            -2:   .  .  .  . 4 2 .  .  .
-            -1:   .  .  .  . . 2 3  .  .
-             0:   .  .  .  . . . 5 29 77
-    o6 : BettiTally
-    i7 :     elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
+	    -3: 121 73 37 13 . . .  .  .
+	    -2:   .  .  .  . 4 2 .  .  .
+	    -1:   .  .  .  . . 2 3  .  .
+	     0:   .  .  .  . . . 5 29 77
+
+    o5 : BettiTally
+    i6 : elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
-     -- 6.34168s elapsed
+    -- 6.06622s elapsed
 
-    o7 : Ideal of P4
-    i8 :     m4x2'=matrixFromAboRanestadSurface X
+    o6 : Ideal of P4
+    i7 : m4x2'=matrixFromAboRanestadSurface X
 
-    o8 = {-1} | -5e_0+e_1+9e_2-5e_3-9e_4  -4e_2-8e_3+4e_4    |
-         {-1} | 7e_0-2e_1+5e_3-7e_4       5e_2-e_3-4e_4      |
-         {-1} | -9e_0+5e_1-4e_3-6e_4      e_1-4e_2+9e_3+7e_4 |
-         {-1} | -8e_0+5e_1+6e_2+4e_3+3e_4 e_0+9e_2-7e_4      |
+    o7 = {-1} | 5e_0-e_1-9e_2+5e_3+9e_4  4e_2+8e_3-4e_4      |
+         {-1} | -7e_0+2e_1-5e_3+7e_4     -5e_2+e_3+4e_4      |
+	 {-1} | 9e_0-5e_1+4e_3+6e_4      -e_1+4e_2-9e_3-7e_4 |
+	 {-1} | 8e_0-5e_1-6e_2-4e_3-3e_4 -e_0-9e_2+7e_4      |
+
+                            4                 2
+    o7 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                     0   4             0   4
+    i8 : m4x2
+
+    o8 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
+         {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
+	 {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
+	 {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
 
                             4                 2
     o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                      0   4             0   4
-    i9 :     m4x2
-    o9 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
-         {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
-         {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
-         {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
-
-                            4                 2
-    o9 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
-                     0   4             0   4
-    i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
-
-    o10 = true
- 
 SeeAlso
    aboRanestadSurface
    matrixFromAboRanestadSurface
 ///
--* For CannedExample of specificAboRanestadSurfac
+
+
+-* For CannedExample of specificAboRanestadSurface
   Example
     kk=ZZ/19
     P4=kk[x_0..x_4]
@@ -8228,9 +8229,8 @@ SeeAlso
     L0
     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
     numList==L0
-    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
-    minimalBetti J == B
-
+    degree J, genera J
+    minimalBetti J  
 *-
 
 doc///
@@ -8259,6 +8259,58 @@ Description
     In the Tate resolution of an Abo-Ranestad surface, there is a 4x2 matrix m4x2.
     We compute a Abo-Ranestad surface of the k-th given matrix
   CannedExample
+    i1 : kk=ZZ/19    
+
+    o1 = kk
+
+    o1 : QuotientRing
+    i2 : P4=kk[x_0..x_4]
+
+    o2 = P4
+
+    o2 : PolynomialRing
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
+
+    o3 = E
+
+    o3 : PolynomialRing, 5 skew commutative variable(s)
+    i4 : elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,3);
+    -- 6.715s elapsed
+    i5 : L0
+
+    o5 = {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
+
+    o5 : List
+    i6 : elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
+    -- 126.946s elapsed
+    i7 : numList==L0
+
+    o7 = true
+    i8 : degree J, genera J
+
+    o8 = (4, {0, 1, 3})
+
+    o8 : Sequence
+    i9 : minimalBetti J
+
+                0 1 2
+    o9 = total: 1 2 1
+             0: 1 . .
+	     1: . 2 .
+	     2: . . 1
+
+    o9 : BettiTally 
+  Text
+    The third adjoint surface is a Del Pezzo surface of degree 4,
+    hence X=P2(12;4^5,2^12,1^5); 
+SeeAlso
+   aboRanestadSurfaceFromMatrix
+   adjunctionProcess
+   tateResolutionOfSurface
+///
+
+-*
+CannedExample
     i2 :     kk=ZZ/19;
     i3 :     P4=kk[x_0..x_4];
     i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
@@ -8273,13 +8325,7 @@ Description
     i8 :     numList==L0
 
     o8 = true
-  Text
-    The third adjoint surface is a Del Pezzo surface of degree 4.  X=P2(12;4^5,2^12,1^4); 
-SeeAlso
-   aboRanestadSurfaceFromMatrix
-   adjunctionProcess
-   tateResolutionOfSurface
-///
+*-
 -* For CannedExample of get4x2Matrix
   Example
     kk=ZZ/nextPrime 10^3
@@ -11765,7 +11811,7 @@ Description
     o3 : BettiTally
     i4 : betti(T=tateResolutionOfSurface X)
 
-    -1  0  1 2 3 4  5  6   7
+                -1  0  1 2 3 4  5  6   7
     o4 = total: 76 43 20 6 3 5 16 50 112
             -4:  1  .  . . . .  .  .   .
 	    -3: 75 43 20 6 . .  .  .   .
@@ -12611,10 +12657,10 @@ SeeAlso
   Text
     The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
     Tate resolution, cf. [EFS,Example 7.1].
-  Example
+  Example    
     H2cohomology=prune Ext^2(HMbundle,P4^{-5})
     H1cohomology=prune Ext^1(HMbundle,P4^{-5})
-    apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
+    apply(toList(0..6),i->hilbertFunction(i,H1cohomology))
     betti F'
 
 
@@ -12655,12 +12701,12 @@ Description
                 0  1  2  3 4
     o4 = total: 1 18 35 20 2
              0: 1  .  .  . .
-             1: .  .  .  . .
-             2: .  .  .  . .
-             3: .  .  .  . .
-             4: .  3  .  . .
-             5: . 15 35 20 .
-             6: .  .  .  . 2
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  3  .  . .
+	     5: . 15 35 20 .
+	     6: .  .  .  . 2
 
     o4 : BettiTally
     i5 : (d,sg)=(degree X, sectionalGenus X)
@@ -12673,10 +12719,10 @@ Description
                 -1  0  1 2 3  4  5  6  7   8
     o6 = total: 81 45 20 7 6 10 13 32 85 175
             -4:  1  .  . . .  .  .  .  .   .
-            -3: 80 45 20 5 1  .  .  .  .   .
-            -2:  .  .  . 2 .  .  .  .  .   .
-            -1:  .  .  . . 5 10 10  2  .   .
-             0:  .  .  . . .  .  3 30 85 175
+	    -3: 80 45 20 5 1  .  .  .  .   .
+	    -2:  .  .  . 2 .  .  .  .  .   .
+	    -1:  .  .  . . 5 10 10  2  .   .
+	     0:  .  .  . . .  .  3 30 85 175
 
     o6 : BettiTally
     i7 : k2=Ksquare(10,6,0)
@@ -12686,16 +12732,13 @@ Description
 
     o8 = true
     i9 : tally apply(decompose residualInQuintics(X),c->(dim c-1, degree c,
-             (dim(c+X)-1 ,degree(c+X))))
+	    (dim(c+X)-1 ,degree(c+X))))
 
     o9 = Tally{(1, 1, (0, 6)) => 5 }
-               (1, 4, (0, 24)) => 5
+              (1, 4, (0, 24)) => 5
 
     o9 : Tally
-
   Text
-    X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of
-    degree 15. The six secant lines are  twentyfive  (-1)-lines of X'.
     X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of degree 15. The six secant lines are twentyfive (-1)-lines of X'.
   CannedExample
     i10 : ci=ideal(gens X*random(source gens X,P4^{2:-5}));
@@ -12709,12 +12752,12 @@ Description
                  0 1  2  3 4
     o12 = total: 1 8 15 10 2
               0: 1 .  .  . .
-              1: . .  .  . .
-              2: . .  .  . .
-              3: . .  .  . .
-              4: . 3  .  . .
-              5: . .  .  . .
-              6: . 5 15 10 2
+	      1: . .  .  . .
+	      2: . .  .  . .
+	      3: . .  .  . .
+	      4: . 3  .  . .
+	      5: . .  .  . .
+	      6: . 5 15 10 2
 
     o12 : BettiTally
     i13 : betti tateResolutionOfSurface(X',7)
@@ -12722,10 +12765,10 @@ Description
                   -1   0  1  2  3  4 5  6  7   8
     o13 = total: 171 105 55 22 11 10 8 17 50 115
              -4:   1   .  .  .  .  . .  .  .   .
-             -3: 170 105 55 20  1  . .  .  .   .
-             -2:   .   .  .  2 10 10 5  .  .   .
-             -1:   .   .  .  .  .  . .  2  .   .
-              0:   .   .  .  .  .  . 3 15 50 115
+	     -3: 170 105 55 20  1  . .  .  .   .
+	     -2:   .   .  .  2 10 10 5  .  .   .
+	     -1:   .   .  .  .  .  . .  2  .   .
+	      0:   .   .  .  .  .  . 3 15 50 115
 
     o13 : BettiTally
     i14 : (d',sg')=(degree X',sectionalGenus X')
@@ -12745,22 +12788,21 @@ Description
 
     o17 : Ideal of P4
   Text
-    The surface X is the zero loci of a vector bundle, whose
-    module of global sections is
+    The surface X is the zero loci of a vector bundle, whose module of global sections is
   CannedExample
     i18 : HMBundle=coker transpose (syz transpose fX.dd_3)_{0..18};
     i19 : minimalBetti HMBundle
 
                   0  1  2 3
     o19 = total: 19 35 20 2
-               5:  4  .  . .
-               6: 15 35 20 .
-               7:  .  .  . 2
+              5:  4  .  . .
+	      6: 15 35 20 .
+	      7:  .  .  . 2
 
-     o19 : BettiTally
+    o19 : BettiTally
   Text
-    In the code we use the Horrocks-Mumford bundle to get X. 
-    The construction of the Horrocks-Mumford bundle uses a monad:In the code we use the Horrocks-Mumford bundle to get X. The construction of the Horrocks-Mumford bundle uses a monad:
+    In the code we use the Horrocks-Mumford bundle to get X.
+    The construction of the Horrocks-Mumford bundle uses a monad:
   CannedExample
     i20 : e=symbol e;
     i21 : E=kk[e_0..e_4,SkewCommutative=>true];
@@ -12772,11 +12814,12 @@ Description
     The matrix
   CannedExample
     i23 : diagonalMatrix{1,-1}*transpose alphad
-    
+
     o23 = | e_1e_4 -e_0e_2 -e_1e_3 -e_2e_4 e_0e_3 |
           | e_2e_3 e_3e_4  -e_0e_4 e_0e_1  e_1e_2 |
+
                   2      5
-    o23 : Matrix E  <-- E                 
+    o23 : Matrix E  <-- E
   Text
     is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
   CannedExample
@@ -12786,26 +12829,25 @@ Description
                   -5 -4 -3 -2 -1 0 1  2  3  4   5
     o25 = total: 100 37 14 10  5 2 5 10 14 37 100
              -4: 100 35  4  .  . . .  .  .  .   .
-             -3:   .  2 10 10  5 . .  .  .  .   .
-             -2:   .  .  .  .  . 2 .  .  .  .   .
-             -1:   .  .  .  .  . . 5 10 10  2   .
-              0:   .  .  .  .  . . .  .  4 35 100
+	     -3:   .  2 10 10  5 . .  .  .  .   .
+	     -2:   .  .  .  .  . 2 .  .  .  .   .
+	     -1:   .  .  .  .  . . 5 10 10  2   .
+	      0:   .  .  .  .  . . .  .  4 35 100
 
     o25 : BettiTally
   Text
-    The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
-    is the module of global sections of the Horrocks-Mumford bundle.
+    The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below is the module of global sections of the Horrocks-Mumford bundle.
   CannedExample
     i26 : HMbundle= (prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4)))**P4^{-4}
 
     o26 = cokernel {7} | -x_1x_4 x_3^2 0     x_1x_3  x_4^2 0      0     x_2x_3  x_1^2 -x_2x_4 x_0^2   x_0x_2  0     0    -x_0x_3 0    0     0    0      0    0      0      x_2^2 0      0    0      0       x_0x_4 x_1x_2 x_0x_1 0      0    0       0      x_3x_4 |
                    {7} | x_2x_3  0     x_4^2 -x_0x_4 0     x_0x_3 x_1^2 0       0     x_0x_1  0       -x_3x_4 x_2^2 0    x_1x_2  0    x_3^2 0    0      0    x_0x_2 x_1x_4 0     0      0    0      -x_2x_4 0      0      0      x_0^2  0    -x_1x_3 0      0      |
                    {7} | 0       0     0     0       0     0      0     0       0     0       -x_1x_4 0       0     0    0       0    0     0    x_2x_4 0    0      x_2x_3 0     x_1x_3 0    0      0       0      x_4^2  0      0      0    0       0      x_1^2  |
-                   {7} | 0       0     0     0       0     0      0     -x_1x_4 0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    x_3x_4 x_3^2   0      0      0      x_2x_3 0    x_2^2   x_1x_2 0      |
-                   {8} | -x_0    -x_1  x_3   0       0     0      x_2   0       0     0       0       0       0     0    0       0    0     0    -x_1   0    0      0      -x_4  -x_4   0    -x_2   0       0      0      0      0      0    0       -x_3   0      |
-                   {8} | 0       -x_4  0     0       0     -x_1   0     0       0     0       0       0       0     0    0       x_0  0     0    -x_4   0    0      -x_3   0     0      0    0      0       x_2    0      0      0      0    0       0      0      |
-                   {8} | 0       0     -x_2  0       0     0      0     -x_4    0     0       0       0       0     0    0       0    0     x_0  0      0    x_1    0      0     0      0    0      0       -x_3   0      0      0      0    0       x_2    0      |
-                   {8} | 0       0     0     -x_2    x_1   0      0     0       0     0       0       0       0     0    0       0    0     x_4  0      -x_3 0      0      0     0      x_1  -x_0   0       0      0      0      0      0    0       0      0      |
+		   {7} | 0       0     0     0       0     0      0     -x_1x_4 0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    x_3x_4 x_3^2   0      0      0      x_2x_3 0    x_2^2   x_1x_2 0      |
+		   {8} | -x_0    -x_1  x_3   0       0     0      x_2   0       0     0       0       0       0     0    0       0    0     0    -x_1   0    0      0      -x_4  -x_4   0    -x_2   0       0      0      0      0      0    0       -x_3   0      |
+		   {8} | 0       -x_4  0     0       0     -x_1   0     0       0     0       0       0       0     0    0       x_0  0     0    -x_4   0    0      -x_3   0     0      0    0      0       x_2    0      0      0      0    0       0      0      |
+		   {8} | 0       0     -x_2  0       0     0      0     -x_4    0     0       0       0       0     0    0       0    0     x_0  0      0    x_1    0      0     0      0    0      0       -x_3   0      0      0      0    0       x_2    0      |
+		   {8} | 0       0     0     -x_2    x_1   0      0     0       0     0       0       0       0     0    0       0    0     x_4  0      -x_3 0      0      0     0      x_1  -x_0   0       0      0      0      0      0    0       0      0      |
 		   {8} | 0       0     0     0       -x_3  0      0     x_0     -x_2  0       0       0       0     0    0       -x_2 0     0    0      0    0      0      0     0      -x_3 0      x_1     0      0      0      0      0    x_4     0      0      |
 		   {8} | 0       0     0     0       0     x_2    0     0       0     0       x_4     0       0     0    0       0    0     0    0      x_4  0      0      0     -x_3   0    0      -x_0    0      0      0      0      0    0       0      -x_1   |
 		   {8} | 0       0     0     0       0     x_4    -x_3  -x_1    0     0       0       0       0     x_0  0       0    0     0    0      0    0      0      0     0      0    x_3    0       0      0      -x_2   0      0    0       0      0      |
@@ -12818,15 +12860,15 @@ Description
 		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    -x_4   -x_3    -x_1   -x_0   0      0      -x_2 0       0      0      |
 		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    0      0       0      0      -x_4   -x_3   x_3  -x_2    -x_1   -x_0   |
 
-                               19
+                                  19
     o26 : P4-module, quotient of P4
     i27 : minimalBetti HMbundle
 
                   0  1  2 3
     o27 = total: 19 35 20 2
               7:  4  .  . .
-              8: 15 35 20 .
-              9:  .  .  . 2
+	      8: 15 35 20 .
+	      9:  .  .  . 2
 
     o27 : BettiTally
     i28 : minimalBetti X
@@ -12842,10 +12884,8 @@ Description
 	      6: .  .  .  . 2
 
     o28 : BettiTally
-
   Text
-    The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
-    Tate resolution, cf. [EFS,Example 7.1].
+    The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the Tate resolution, cf. [EFS,Example 7.1].
   CannedExample
     i29 : H2cohomology=prune Ext^2(HMbundle,P4^{-5})
 
@@ -12862,11 +12902,11 @@ Description
 		   | 0   0    0   0   0    0   x_4 -x_3 x_2  x_0 0    0    0   0   x_1 |
 		   | 0   0    0   0   0    0   0   0    0    0   -x_4 -x_3 x_2 x_1 x_0 |
 
-		                   5
+                                   5
     o30 : P4-module, quotient of P4
-    i31 : apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
+    i31 : apply(toList(0..6),i->hilbertFunction(i,H1cohomology))
 
-    o31 = {10, 10, 2, 0, 0, 0}
+    o31 = {5, 10, 10, 2, 0, 0, 0}
 
     o31 : List
     i32 : betti F'
@@ -12874,12 +12914,13 @@ Description
                   -5 -4 -3 -2 -1 0 1  2  3  4   5
     o32 = total: 100 37 14 10  5 2 5 10 14 37 100
              -4: 100 35  4  .  . . .  .  .  .   .
-             -3:   .  2 10 10  5 . .  .  .  .   .
-             -2:   .  .  .  .  . 2 .  .  .  .   .
+	     -3:   .  2 10 10  5 . .  .  .  .   .
+	     -2:   .  .  .  .  . 2 .  .  .  .   .
 	     -1:   .  .  .  .  . . 5 10 10  2   .
 	      0:   .  .  .  .  . . .  .  4 35 100
 
     o32 : BettiTally
+ 
 
 References
    \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
@@ -12895,6 +12936,8 @@ References
 SeeAlso
   searchHMBundle
 ///
+
+
 -* for CannedExample abelianSurfaceD15
   Example
    kk=ZZ/nextPrime 10^3;
@@ -15669,7 +15712,7 @@ Description
     i10 : fivePoints=pent_0+pent_1;
 
     o10 : Ideal of GF 256[x ..x ]
-    0   4
+                           0   4
     i11 : (dim fivePoints,degree fivePoints) == (1,5)
 
     o11 = true
