@@ -23,7 +23,7 @@ newPackage(
     Date => "April 28, 2025",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
-	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://add"},
+	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
 	        { Name => "Kristian Ranestad", Email => "ranestad@math.uio.no", HomePage => "https://add"},
 	        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer"}},
     AuxiliaryFiles => false,
