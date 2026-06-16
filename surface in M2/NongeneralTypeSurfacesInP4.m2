@@ -4679,16 +4679,17 @@ Headline => "functions for investigating Abo surfaces which have degree 12, sect
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
 characteristic 2 has a Tate resolution for the ideal sheaf of shape",
 
--*
-        -1  0  1  2 3 4 5  6  7
-total: 123 74 38 14 4 4 8 28 76
-   -4:   1  .  .  . . . .  .  .
-   -3: 122 74 38 14 1 . .  .  .
-   -2:   .  .  .  . 3 1 .  .  .
-   -1:   .  .  .  . . 3 4  .  .
-    0:   .  .  .  . . . 4 28 76
-*-
-
+EXAMPLE { "chiITable(12,13,2)"
+},
+PARA{ "We construct the surface it from the 3x1 and 3x4 matrix in the Tate resolution,
+    which define a line and a Bordiga surface. These matrices can be completed to a differential
+    of the Tate resolution, if the line intersects enough of the 10 planes of the Bordiga surface
+    containig cubic curves.
+    In some special cases we choose the Bordiga matrix to have some rank 1 points.
+    For further details we refer to the code and the decription in"},
+UL {PARA{"Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, 
+an update, preprint (2026)."},},
+    
     
    PARA{},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
@@ -12971,15 +12972,16 @@ Description
  
 
 References
-   \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
-
-   \textit{Comessatti, A.}, Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
    
-   \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735-755
-  
-   \textit{Decker, W., Schreyer, F-O.}, On the uniqueness of the {Horrocks}-{Mumford}-bundle, Math. Ann., 273,(1986),415-443
+     Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81
 
-   \textit{Eisenbud, D., Fl\o ystad, G., Schreyer, F-O.}, Sheaf cohomology and free resolutions over exterior algebras ,Trans. Amer. Math. Soc., 355,(2003), 4397-4426
+     Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
+
+     Barth, W., Hulek, K., Moore, R., Degenerations of Horrocks-Mumford surfaces, Math. Ann.,277, (1987), 735-755
+
+     Decker, W., Schreyer, F-O., On the uniqueness of the Horrocks-Mumford-bundle, Math. Ann., 273, (1986), 415-443
+
+     Eisenbud, D., Fl\o ystad, G., Schreyer, F-O., Sheaf cohomology and free resolutions over exterior algebras, Trans. Amer. Math. Soc., 355, (2003), 4397-4426
 
 SeeAlso
   searchHMBundle
