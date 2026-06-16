@@ -12972,8 +12972,8 @@ Description
  
 
 References
-   
-     Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81
+
+    Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81
 
      Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
 
@@ -12986,7 +12986,10 @@ References
 SeeAlso
   searchHMBundle
 ///
-
+-*
+UL{{"Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81"},
+   {"Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71"},
+   },*-
 
 -* for CannedExample abelianSurfaceD15
   Example
