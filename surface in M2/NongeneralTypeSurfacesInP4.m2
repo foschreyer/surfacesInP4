@@ -2,7 +2,7 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-elapsedTime installPackage "NongeneralTypeSurfacesInP4"
+elapsedTime installPackage "NongeneralTypeSurfacesInP4" -- 38.7084s elapsed
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -4681,7 +4681,7 @@ characteristic 2 has a Tate resolution for the ideal sheaf of shape",
 
 EXAMPLE { "chiITable(12,13,2)"
 },
-PARA{ "We construct the surface it from the 3x1 and 3x4 matrix in the Tate resolution,
+PARA{ "We construct the surface from the 3x1 and 3x4 linear matrices in the Tate resolution,
     which define a line and a Bordiga surface. These matrices can be completed to a differential
     of the Tate resolution, if the line intersects enough of the 10 planes of the Bordiga surface
     containig cubic curves.
