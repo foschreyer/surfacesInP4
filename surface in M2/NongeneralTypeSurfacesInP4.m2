@@ -5,7 +5,7 @@ needsPackage"NongeneralTypeSurfacesInP4"
 elapsedTime installPackage "NongeneralTypeSurfacesInP4" -- 38.7084s elapsed
 
 viewHelp "NongeneralTypeSurfacesInP4"
-
+;
 check "NongeneralTypeSurfacesInP4"
 
 
@@ -1660,7 +1660,7 @@ specificAboRanestadSurface=method()
 
 specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
     -- list of seven example ordered as in the paper.
-    if char P4 == 19 then (       
+    if char P4 == 19 and member(k,toList(0..6)) then (       
     Ms:={matrix {{4*E_1+7*E_2+4*E_4, 4*E_0-9*E_1-9*E_2+4*E_3+3*E_4},
       {-2*E_0+3*E_1-5*E_2-3*E_3-6*E_4, E_0-5*E_1-9*E_2-8*E_3-7*E_4},
       {-9*E_0+5*E_1-7*E_2+3*E_3-7*E_4, -8*E_0+2*E_1-4*E_2+9*E_3-4*E_4},
@@ -1701,6 +1701,8 @@ specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
     X:=aboRanestadSurfaceFromMatrix(P4,Ms_k);
     return (X,adjData_k);
     );
+    if char P4 == 19 and not member(k,toList(0..6)) then
+       <<" Expect k = "<<k<< "to be between 0 and 6."<<endl;
     if not member(char P4 ,{19}) then (
 	<<" no example in characteristic = "<< char P4<<" recorded yet." <<endl);
     )
@@ -4607,12 +4609,27 @@ Headline => "functions concerning Schreyer surfaces (8 families)",
 
 document {
 Key => aboRanestadSurfaces,
-Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
-   "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
+Headline => "functions concerning Abo-Ranestad surfaces, which have degree (7 families)",
+   PARA{"[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
     Reviewing their construction we found altogether 7 families. 
-    Most of these components are unirational.",
-   
-   PARA{},
+    Some of these components are unirational."},
+   PARA{"The Tate resolution of the ideal sheaf has the following shape:"},
+   EXAMPLE {"chiITable(12,13,1)"},
+   PARA{"In the Tate resolution there are a 4x2 and a 2x3 matrices with 
+        linear entries in E. Thus we get maps P3 -> G(2,5) and P2 ->  G(2,5).
+        These matrices can be completed to a differential of the Tate resolution
+        if these image intersect in at least 4 points with corresponding rows spann row space of the 4x2 matrix. 
+        We normalize the 2x3 matrix as follows:"},
+   EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
+   PARA{"The variety of matrices m4x2 with 4 intersection points is unirational.
+         To find example with 5, 6 or 7 intersection points can be achieved by search over 
+         a finite field.
+        A special sitation occurs if the 4x2 matrix has 2x2 submatix wich also depends only on 
+        e_0..e_2. Then we have two conics in the e_0..e_2 plane 
+        which intersect in four point and 
+        get to specify two more intersection points gives a
+        another unirational component. 
+        To get 7 or 8 intersection points can be achieved by searching." },
      SUBSECTION "From matrices to surfaces",
      UL{
         TO aboRanestadSurfaceFromMatrix,
@@ -7768,6 +7785,24 @@ Description
     degree pts==n-1
     (L0,L1,L2,J)=adjunctionProcess(X,1);
     L0_1==n and degree pts==n-1;
+    (d,sg)=(degree X,sectionalGenus X)
+    Ksquare(12,13,1)==-12
+    LeBarzN6(12,13,1)==8
+  Text
+    The following computation shows that the specificAboRanestadSurface lift
+    to characteristic zero.
+  Example
+    kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+    elapsedTime netList apply(7,k->(
+	    (X,adj)=specificAboRanestadSurface(P4,E,k);
+	    R=residualInQuintics X;
+            ta=tally apply(primaryDecomposition R,c->
+		(dim c, degree c, degree radical c, degree (radical c+X)));
+	    m4x2=matrixFromAboRanestadSurface(X);
+	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
+	    (k, degree pts+1==adj_1,adj,ta)
+	    ))
+   	    
 
 *-
 
@@ -7803,7 +7838,7 @@ Description
     i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
     i3 : n=7;
     i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    -- 5.12519s elapsed
+    -- 4.98627s elapsed
     i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
     i6 : (degree pts,degree vP2,degree vP3,degree g25)
 
@@ -7815,6 +7850,55 @@ Description
     o7 = true
     i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
     i9 : L0_1==n and degree pts==n-1;
+    i10 : (d,sg)=(degree X,sectionalGenus X)
+
+    o10 = (12, 13)
+
+    o10 : Sequence
+    i11 : Ksquare(12,13,1)==-12
+
+    o11 = true
+    i12 : LeBarzN6(12,13,1)==8
+
+    o12 = true
+  Text
+    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
+  CannedExample
+    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+    i16 : elapsedTime netList apply(7,k->(
+	    (X,adj)=specificAboRanestadSurface(P4,E,k);
+	    R=residualInQuintics X;
+	    ta=tally apply(primaryDecomposition R,c->
+		(dim c, degree c, degree radical c, degree (radical c+X)));
+	    m4x2=matrixFromAboRanestadSurface(X);
+	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
+	    (k, degree pts+1==adj_1,adj,ta)
+	    ))
+    -- 219.852s elapsed
+
+          +---------------------------------------------------------------------------------------------------+
+    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, 1, 6) => 1})  |
+          +---------------------------------------------------------------------------------------------------+
+	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, 2, 12) => 1}) |
+	  +---------------------------------------------------------------------------------------------------+
+	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, 3, 18) => 1}) |
+	  +---------------------------------------------------------------------------------------------------+
+	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, 1, 6) => 1 })|
+	  |                                                                               (2, 2, 2, 12) => 1  |
+	  +---------------------------------------------------------------------------------------------------+
+	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, 2, 11) => 1}) |
+	  +---------------------------------------------------------------------------------------------------+
+	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, 1, 6) => 1 }) |
+	  |                                                                              (2, 2, 2, 11) => 1   |
+	  +---------------------------------------------------------------------------------------------------+
+	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, 1, 6) => 2 }) |
+	  |                                                                              (2, 2, 2, 11) => 1   |
+	  +---------------------------------------------------------------------------------------------------+
+  Text
+     Note that the number of (-1)-lines + the number of 6-secant lines is
+     always equal to 8. In case 3 there is a 6-secant line of multiplicity. In the case
+     4,5,6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
+     in the plane V(x_3,x_4).
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
@@ -9128,7 +9212,7 @@ Description
     With Option count=>true we print count1 which is 
     the number of times we got a not necessarily smooth surface.
     
-    The codimension 2 believe is supported by the fact on average the value of count
+    The codimension 2 belief is supported by the fact on average the value of count
     increases by approximately 180. 
 SeeAlso
   LeBarzN6
@@ -12973,7 +13057,7 @@ Description
 
 References
 
-    Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81
+     Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81
 
      Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
 
