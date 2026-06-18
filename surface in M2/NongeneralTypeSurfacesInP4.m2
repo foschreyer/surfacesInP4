@@ -4868,7 +4868,7 @@ kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 types={}
 elapsedTime (X,m3x4)=randomAboSurface(P4,E);
 elapsedTime type=partitionOfCanonicalDivisorOfAboSurface X
-setRandomSeed("start 111135 search")
+setRandomSeed("start new 111135 search")
 count=0;elapsedTime while (
     (X,m3x4)=randomAboSurface(P4,E);
     type=partitionOfCanonicalDivisorOfAboSurface X;
