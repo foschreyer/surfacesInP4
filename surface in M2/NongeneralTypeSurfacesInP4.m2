@@ -397,26 +397,52 @@ selfIntersectionNumber(X,D)
 -* rational surfaces *-
 
 cubicScroll=method()
+-- A cubic scroll (B1.4)
+--     PURPOSE : Construct a cubic scroll, a rational surface of degree 3 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function constructs a cubic scroll surface as the determinantal variety of a 2x3 matrix with linear entries in 'P4'
 cubicScroll(PolynomialRing) := P4 -> minors(2,matrix{{P4_0,P4_1,P4_3},{P4_1,P4_2,P4_4}})
 ///
 
 ///
 veroneseSurface=method()
+-- A Veronese surface (B1.6) 
+--     PURPOSE : Construct a veronese surface, a rational surface of degree 5 in a projective fourspace
+--       INPUT : 'P4', the ring of P4
+--             : 'P2', the ring of P2
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function constructs the surface as the projection of the the Veronse embedding of the projective plane 'P2' to projective fivespace with a general vertex
 veroneseSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    -- 'kk' is the coefficient ring of 'P2'
     kk := coefficientRing P2;
-    h:=basis(2,P2)*syz random(kk^1,kk^6); 
+    -- 'h' is the polynomial map represented by four random plane qudratics 
+    h:=basis(2,P2)*syz random(kk^1,kk^6);
+    -- 'X' is the image of 'P2' under 'h'
     X:=trim ker map(P2,P4,h);
+    -- Check whether 'X' is a surface of degree 4 
     assert(degree X ==4 and dim X==3);
     X)
 
 delPezzoSurface=method()
+-- A Del Pezzo surface of degree 4 (B1.5) 
+--        PURPOSE : Construct a Del Pezzo surface of degree 4 in a projective fourspace P4
+--          INPUT : 'P4', the ring of P4
+--         OUTPUT : an ideal 
+--    DESCRIPTION : The function constructs a Del Pezzo surface as a complete intersection of two quadrics
+--           NOTE : If the user chooses the pair of the ring 'P4' of P4 and the ring 'P2' of P2 as input, then the function constructs a Del Pezzo surface as the blow-up of P2 at four points
 delPezzoSurface(PolynomialRing) := P4 -> ideal random(P4^1,P4^{2:-2})
 delPezzoSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    -- 'kk' is the coefficient ring of 'P2'
     kk:= coefficientRing P2;
+    -- 'pts2' is the union of the three coordinate points and a random point on "P2' 
     pts := {matrix{{1,0,0}},matrix{{0,1,0}},matrix{{0,0,1}},matrix{{1,1,1}},random(kk^1,kk^3)};
     pts2:= intersect apply(pts, pt-> ideal((vars P2)* (syz pt)));
+    -- 'h' is the polynomial map represented by plane cubics passing though the four points
     h:=gens truncate(3,pts2);
-     X:=trim ker map(P2,P4,h);
+    -- 'X' is the image of 'P2' under 'h'
+    X:=trim ker map(P2,P4,h);
+    -- Check whether 'X' is a surface of degree 4 
     assert(degree X ==4 and dim X==3);
     X)
 
