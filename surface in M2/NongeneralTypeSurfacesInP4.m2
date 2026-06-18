@@ -2,10 +2,10 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-elapsedTime installPackage "NongeneralTypeSurfacesInP4" -- 38.7084s elapsed
+elapsedTime installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
-;
+
 check "NongeneralTypeSurfacesInP4"
 
 
@@ -47,7 +47,7 @@ export {
     "randomSpecialAboSurface",
     "numericalTypeOfResidualInQuintics",
     "partitionOfCanonicalDivisorOfAboSurface",
-    --"adjointMatrices",
+    "adjointMatrices",
     "Equations",
     "SingX",
     "Count",
@@ -62,8 +62,8 @@ export {
     "testMatrix",
     "testMatrix1",
     "testMatrix2",
-    --"WithM3x13",
-    --"WithX",
+    "WithM3x13",
+    "WithX",
     "abo112224Or111234Surface",
     "abo111333Surface",
     "abo111117Surface",
@@ -74,7 +74,7 @@ export {
     "irregularity",
     "geometricGenus",
     "chiNX",
-    --"chiI",
+    "chiI",
     "chiITable",
     "HdotK",
     "Ksquare",
@@ -276,7 +276,7 @@ chiITable(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
     -- Use 'BettiTally' to display the Betti diagram 
     new BettiTally from (H4|H3|H2|H1|H0))
 
-/// -* Test chiITable *-
+/// -* Test chiTable *-
 kk=ZZ/nextPrime 10^4
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
@@ -430,7 +430,7 @@ delPezzoSurface=method()
 --          INPUT : 'P4', the ring of P4
 --         OUTPUT : an ideal 
 --    DESCRIPTION : The function constructs a Del Pezzo surface as a complete intersection of two quadrics
---           NOTE : If the user chooses the pair of the ring 'P4' of P4 and the ring 'P2' of P2 as input, then the function constructs a Del Pezzo surface as the blow-up of P2 at four points
+--        COMMENT : If the user chooses the pair of the ring 'P4' of P4 and the ring 'P2' of P2 as input, then the function constructs a Del Pezzo surface as the blow-up of P2 at four points
 delPezzoSurface(PolynomialRing) := P4 -> ideal random(P4^1,P4^{2:-2})
 delPezzoSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     -- 'kk' is the coefficient ring of 'P2'
@@ -448,46 +448,69 @@ delPezzoSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
 
 
 castelnuovoSurface=method()
+-- A Castelnuovo surface (B1.7)
+--     PURPOSE : Construct a Castelnouvo surface, a rational surface of degree 5 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function constructs a cubic scroll surface as the determinantal variety of a 3x2 matrix with linear and quadratic entries in 'P4'
 castelnuovoSurface(PolynomialRing) := P4 -> minors(2,random(P4^{-2,2:-3},P4^{2:-4}))
 
 bordigaSurface=method()
--- Output: the ideal of a Bordiga surface. Such surface is the blow up P2 in 10 points
---         embedded by quartics through those points. The points in P2 are determintal
---         so is the surface. They are given by a triple tensor (3,4,5).
--- Note:   The rank two locus of the 3x5 tensor of linear forms in P3,
---         correspond to planes in P4 containing one of the 10 cubics through nine
---         of the 10 points  in P2
+-- A Bordiga surface (B1.8)
+--        PURPOSE : Construct a Bordiga surface, a rational surface of degree 6 in a projective fourspace P4
+--          INPUT : 'P4', the ring of P4
+--         OUTPUT : an ideal 
+--    DESCRIPTION : The function constructs the ideal of a Bordiga surface as the dependency locus of a 4x3 matrix with linear entries from 'P4'. If s is "Blow-up," then the function chooses ten points on the projective plane randomly and computes the image of the morphim determine by the linear system of cubics through the four points
+--        COMMENT : If the user chooses the pair of the ring 'P4' of P4 and the ring 'P2' of P2 as input, then the function constructs a Del Pezzo surface as the blow-up of P2 at ten points
 bordigaSurface(PolynomialRing) := P4 -> minors(3,random(P4^{4:-3},P4^{3:-4}))
 bordigaSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    -- 'kk' is the coefficient ring of 'P4'
     kk:= coefficientRing P2;
     pts := {matrix{{1,0,0}},matrix{{0,1,0}},matrix{{0,0,1}},matrix{{1,1,1}}}|apply(6,c->random(kk^1,kk^3));
+    -- 'pts2' is the union of the six points on "P2'
     pts2:= intersect apply(pts, pt-> ideal((vars P2)* (syz pt)));
+    -- 'h' is the polynomial map represented by plane quartics passing through the ten points
     h:=gens truncate(4,pts2);
+    -- 'X' is the image of 'P2' under 'h'
     X:=trim ker map(P2,P4,h);
+    -- Check whether 'X' is a surface of degree 6
     assert(degree X ==6 and dim X==3);
     X)
 
 ionescuOkonekSurfaceD7=method()
---Output: the desired surface. We choose the 5+6 points over the field of definition.
---      We could specify the collection of points also via their Hilbert-Burch matrices.
+-- A rational surface of degree 7 (B1.9)
+--     PURPOSE : Construct a rational surface of degree 7 and sectional genus 4 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function constructs a rational surface of degree 7 and sectional genus 4 via the linear system of plane sextics passing through five simple points and six double points on a plane   
 ionescuOkonekSurfaceD7(PolynomialRing,PolynomialRing) :=(P4,P2) -> (
+    -- 'sixPoints' is the list of six simple points
     sixPoints:=apply(6,i->ideal random(P2^1,P2^{2:-1}));
+    -- 'fivePoints; is the list of five points 
     fivePoints:=apply(5,i->ideal random(P2^1,P2^{2:-1}));
+    -- 'H' is the union of 'fivePoints' and the double points supported by the points in 'sixPoints' 
     H:= intersect (apply(sixPoints,p->p^2)|fivePoints);
+    -- 'X' is the image of 'P2' under the polynomial map represented by five plane sextics passing through 'H'
     X:= trim ker map(P2,P4,gens H);
+    -- Check whether 'X' is a surface of degree 7 and sectional genus 4
     assert(dim X==3 and  degree X==7 and sectionalGenus X==4);
     X)
 
-
-
 okonekSurfaceD8S6=method()
-
+-- A rational surface of degree 8 and sectional genus 6 (B1.11)
+--     PURPOSE : Construct a rational surface of degree 8 and sectional genus 6 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--             : 'E", the exterior algebra 
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function finds a morphism from 6*OO_P4(-1) to OO_P4 ++ Omega^1(1), and it constructs the ideal sheaf of a rational surface of degree 8 and sectional genus 6 as its dependency locus
+--     COMMENT : This function uses the BGG package
 okonekSurfaceD8S6(PolynomialRing,Ring) := (P4,E) -> (
-    -- We construct the surface from one matrix in its Tate resolution.
+    -- The transpose of 'm6x2' represents a morphism from the direct sum of six copies of OO_P4(-1) to OO_P4 ++ Omega^1(1) 
     m6x2:=random(E^6,E^{-2,-4});
     betti(T:=res(coker m6x2,LengthLimit=>3));
-    -- For the function symExt see the package BGG.
+    -- -- 'X' is defined as the dependency locus of the aforementioned morphism 
     X:= saturate ideal syz symExt(T.dd_3,P4);
+    -- Check whether 'X' is a surface of degree 8 and sectional genus 6
     assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
     X)
 -*
@@ -1686,7 +1709,7 @@ specificAboRanestadSurface=method()
 
 specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
     -- list of seven example ordered as in the paper.
-    if char P4 == 19 and member(k,toList(0..6)) then (       
+    if char P4 == 19 then (       
     Ms:={matrix {{4*E_1+7*E_2+4*E_4, 4*E_0-9*E_1-9*E_2+4*E_3+3*E_4},
       {-2*E_0+3*E_1-5*E_2-3*E_3-6*E_4, E_0-5*E_1-9*E_2-8*E_3-7*E_4},
       {-9*E_0+5*E_1-7*E_2+3*E_3-7*E_4, -8*E_0+2*E_1-4*E_2+9*E_3-4*E_4},
@@ -1727,8 +1750,6 @@ specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
     X:=aboRanestadSurfaceFromMatrix(P4,Ms_k);
     return (X,adjData_k);
     );
-    if char P4 == 19 and not member(k,toList(0..6)) then
-       <<" Expect k = "<<k<< "to be between 0 and 6."<<endl;
     if not member(char P4 ,{19}) then (
 	<<" no example in characteristic = "<< char P4<<" recorded yet." <<endl);
     )
@@ -1955,7 +1976,7 @@ testMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
         not( degree I==12 and codim I ==2)) do ();
     saturate ideal singularLocus I)
 
-testMatrix2=method(Options=>{Verbose=>false}) -- WithX=>false,WithM3x13=>false
+testMatrix2=method(Options=>{Verbose=>false,WithM3x13 =>false,WithX=>false})
 -- Input: m3x4 Matrix, linear matrix over the exterior algebra
 --        P4 Ring, coordinate ring of P4
 -- Output: d, ZZ, dimension of Hom(coker m3x4, coker m3x1**E^{1}
@@ -1969,7 +1990,7 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
         betti(hom=Hom(coker m3x4,coker m3x1**E^{2},DegreeLimit=>1)));
     if hom==0 then r:=0 else (B:=betti hom;r=B#(0,{0},0));
     --r:=if member((0,{1},1),keys B) then B#(0,{1},1) else 0;
-    --if not (o.WithM3x13 or o.WithX) then return r;
+    if not (o.WithM3x13 or o.WithX) then return r;
     if r==0 then return (r,null);
     kk:=coefficientRing ring m3x4;
     c:=null;
@@ -1979,7 +2000,7 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
    
     m3x13:=map(E^{3:1},,(m3x1**E^{1}|matrix m3x3));
     if not degrees source m3x13 == {{0}, {1}, {1}, {1}} then return (r,null);
-    --if not o.WithX then return (r,m3x13);
+    if not o.WithX then return (r,m3x13);
     s1:=syz m3x13;
     if not degrees source s1 == {{2}, {2}, {2}, {2}, {3}, {3}, {3}, {3}, {3}} then return (r,null);
 --betti m3x13,  source s1== E^{0,3:1}
@@ -3766,7 +3787,7 @@ abelianSurfaceD10=method()
 --     PURPOSE : Construct a nonsingular abelian surface of degree 10 and sectional genus 6
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
 --      OUTPUT : Ideal of the abelian surface of degree 10
--- DESCRIPTION : This function the ideal of an abelian surface as the zero scheme of a global section of the Horrocks-Mumford bundle
+-- DESCRIPTION : This function the ideal of an abalian surface as the zero scheme of a global section of the Horrocks-Mumford bundle
 --     COMMENT : This function uses the BGG package
 
 abelianSurfaceD10(PolynomialRing):=P4 -> (
@@ -4503,7 +4524,6 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO enriquesSurfaceOfDegree10,
 	TO enriquesSurfaceD11S10,
 	TO K3surfaces,
-	TO aboSurfaces
         },
     SUBSECTION "Irregular surface",
      UL{
@@ -4635,27 +4655,12 @@ Headline => "functions concerning Schreyer surfaces (8 families)",
 
 document {
 Key => aboRanestadSurfaces,
-Headline => "functions concerning Abo-Ranestad surfaces, which have degree (7 families)",
-   PARA{"[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
+Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
+   "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
     Reviewing their construction we found altogether 7 families. 
-    Some of these components are unirational."},
-   PARA{"The Tate resolution of the ideal sheaf has the following shape:"},
-   EXAMPLE {"chiITable(12,13,1)"},
-   PARA{"In the Tate resolution there are a 4x2 and a 2x3 matrices with 
-        linear entries in E. Thus we get maps P3 -> G(2,5) and P2 ->  G(2,5).
-        These matrices can be completed to a differential of the Tate resolution
-        if these image intersect in at least 4 points with corresponding rows spann row space of the 4x2 matrix. 
-        We normalize the 2x3 matrix as follows:"},
-   EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
-   PARA{"The variety of matrices m4x2 with 4 intersection points is unirational.
-         To find example with 5, 6 or 7 intersection points can be achieved by search over 
-         a finite field.
-        A special sitation occurs if the 4x2 matrix has 2x2 submatix wich also depends only on 
-        e_0..e_2. Then we have two conics in the e_0..e_2 plane 
-        which intersect in four point and 
-        get to specify two more intersection points gives a
-        another unirational component. 
-        To get 7 or 8 intersection points can be achieved by searching." },
+    Most of these components are unirational.",
+   
+   PARA{},
      SUBSECTION "From matrices to surfaces",
      UL{
         TO aboRanestadSurfaceFromMatrix,
@@ -4718,27 +4723,17 @@ Headline => "Known families of K3 surfaces",
 
 document {
 Key => aboSurfaces,
-Headline => "functions for investigating Abo surfaces which have degree 12, sectional genus 13 and pg=1, (9 families)",
+Headline => "functions for investigating Abo surfaces, (9 families)",
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
-characteristic 2 has a Tate resolution for the ideal sheaf of shape",
+characteristic 2 has a Tate resolution for the ideal sheaf o shape",
 
-EXAMPLE { "chiITable(12,13,2)"
-},
-PARA{ "We construct the surface from the 3x1 and 3x4 linear matrices in the Tate resolution,
-    which define a line and a Bordiga surface. These matrices can be completed to a differential
-    of the Tate resolution, if the line intersects enough of the 10 planes of the Bordiga surface
-    containig cubic curves.
-    In some special cases we choose the Bordiga matrix to have some rank 1 points.
-    For further details we refer to the code and the decription in"},
-UL {PARA{"Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, 
-an update, preprint (2026)."},},
-    
     
    PARA{},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
         TO testMatrix1,
+	TO testMatrix2,	
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO collectAboSurfaces,
@@ -4810,9 +4805,10 @@ help symExt,
 }
 
 -- numerical functions
-
- -* for canned chiITable
+ -*
   Example 
+restart
+needsPackage "NongeneralTypeSurfacesInP4"   
     chiITable(11,10,1)
     chiITable(12,13,1)
     chiITable(12,13,2)
@@ -4855,90 +4851,101 @@ Description
     Assuming that I_X has natural cohomology for m in {-4..8} and that m -> chi(I_X(m)) has enough
     sign changes, we get a plausible table.
   CannedExample
-    i1 : chiITable(11,10,1)
+    i2 : chiITable(11,10,1)
 
                  -1  0  1  2 3 4  5  6  7   8
-    o1 = total: 104 61 30 10 3 5 10 32 84 170
+    o2 = total: 104 61 30 10 3 5 10 32 84 170
             -4:   1  .  .  . . .  .  .  .   .
-	    -3: 103 61 30 10 . .  .  .  .   .
-	    -2:   .  .  .  . 2 .  .  .  .   .
-	    -1:   .  .  .  . 1 5  5  .  .   .
-	     0:   .  .  .  . . .  5 32 84 170
+            -3: 103 61 30 10 . .  .  .  .   .
+            -2:   .  .  .  . 2 .  .  .  .   .
+            -1:   .  .  .  . 1 5  5  .  .   .
+             0:   .  .  .  . . .  5 32 84 170
 
-    o1 : BettiTally
-    i2 : chiITable(12,13,1)
+     o2 : BettiTally
 
-    -1  0  1  2 3 4 5  6  7   8
-    o2 = total: 122 73 37 13 4 4 8 29 77 158
-    -4:   1  .  .  . . . .  .  .   .
-    -3: 121 73 37 13 . . .  .  .   .
-    -2:   .  .  .  . 4 2 .  .  .   .
-    -1:   .  .  .  . . 2 3  .  .   .
-    0:   .  .  .  . . . 5 29 77 158
+     i3 : chiITable(12,13,1)
 
-    o2 : BettiTally
-    i3 : chiITable(12,13,2)
+                  -1  0  1  2 3 4 5  6  7   8
+     o3 = total: 122 73 37 13 4 4 8 29 77 158
+             -4:   1  .  .  . . . .  .  .   .
+             -3: 121 73 37 13 . . .  .  .   .
+             -2:   .  .  .  . 4 2 .  .  .   .
+             -1:   .  .  .  . . 2 3  .  .   .
+              0:   .  .  .  . . . 5 29 77 158
 
-                 -1  0  1  2 3 4 5  6  7   8
-    o3 = total: 123 74 38 14 4 4 8 28 76 157
-            -4:   1  .  .  . . . .  .  .   .
-	    -3: 122 74 38 14 1 . .  .  .   .
-	    -2:   .  .  .  . 3 1 .  .  .   .
-	    -1:   .  .  .  . . 3 4  .  .   .
-	     0:   .  .  .  . . . 4 28 76 157
+     o3 : BettiTally
 
-    o3 : BettiTally
-    i4 : B=chiITable(12,13,3)
+     i4 : chiITable(12,13,2)
+ 
+                  -1  0  1  2 3 4 5  6  7   8
+     o4 = total: 123 74 38 14 4 4 8 28 76 157
+             -4:   1  .  .  . . . .  .  .   .
+             -3: 122 74 38 14 1 . .  .  .   .
+             -2:   .  .  .  . 3 1 .  .  .   .
+             -1:   .  .  .  . . 3 4  .  .   .
+              0:   .  .  .  . . . 4 28 76 157
 
-                 -1  0  1  2 3 4 5  6  7   8
-    o4 = total: 124 75 39 15 4 4 8 27 75 156
-            -4:   1  .  .  . . . .  .  .   .
-	    -3: 123 75 39 15 2 . .  .  .   .
-	    -2:   .  .  .  . 2 . .  .  .   .
-	    -1:   .  .  .  . . 4 5  .  .   .
-	     0:   .  .  .  . . . 3 27 75 156
+     o4 : BettiTally
 
-    o4 : BettiTally
-    i5 : kk=ZZ/nextPrime 10^4
+     i5 : B=chiITable(12,13,3)    
 
-    o5 = kk
+                  -1  0  1  2 3 4 5  6  7   8
+     o5 = total: 124 75 39 15 4 4 8 27 75 156
+             -4:   1  .  .  . . . .  .  .   .
+             -3: 123 75 39 15 2 . .  .  .   .
+             -2:   .  .  .  . 2 . .  .  .   .
+             -1:   .  .  .  . . 4 5  .  .   .
+              0:   .  .  .  . . . 3 27 75 156
 
-    o5 : QuotientRing
-    i6 : P4=kk[x_0..x_4]
+     o5 : BettiTally
 
-    o6 = P4
+     i6 : kk=ZZ/nextPrime 10^4
 
-    o6 : PolynomialRing
-    i7 : X=ellipticSurfaceD12S13 P4;
+     o6 = kk
 
-    o7 : Ideal of P4
-    i8 : (degree X,sectionalGenus X)
+     o6 : QuotientRing
 
-    o8 = (12, 13)
+     i7 :     P4=kk[x_0..x_4]
 
-    o8 : Sequence
-    i9 : B'=betti tateResolutionOfSurface(X,7)
+     o7 = P4
 
-                 -1  0  1  2 3 4 5  6  7   8
-    o9 = total: 124 75 39 15 4 4 8 27 75 156
-            -4:   1  .  .  . . . .  .  .   .
-            -3: 123 75 39 15 2 . .  .  .   .
-            -2:   .  .  .  . 2 . .  .  .   .
-            -1:   .  .  .  . . 4 5  .  .   .
-             0:   .  .  .  . . . 3 27 75 156
+     o7 : PolynomialRing
 
-    o9 : BettiTally
-    i10 : B==B'
+     i8 : X=ellipticSurfaceD12S13 P4;
 
-    o10 = false
-    i11 : keyWithZeroValue=select(keys B,k->not member(k,keys B'))
+     o8 : Ideal of P4
 
-    o11 = {(4, {2}, 2)}
+     i9 : (degree X,sectionalGenus X)
 
-    o11 : List
-    i12 : B#(keyWithZeroValue_0)
+     o9 = (12, 13)
 
-    o12 = 0
+     o9 : Sequence
+
+     i10 : B'=betti tateResolutionOfSurface(X,7)
+
+                   -1  0  1  2 3 4 5  6  7   8
+     o10 = total: 124 75 39 15 4 4 8 27 75 156
+              -4:   1  .  .  . . . .  .  .   .
+              -3: 123 75 39 15 2 . .  .  .   .
+              -2:   .  .  .  . 2 . .  .  .   .
+              -1:   .  .  .  . . 4 5  .  .   .
+               0:   .  .  .  . . . 3 27 75 156
+
+     o10 : BettiTally
+
+     i11 :     B==B'
+
+     o11 = false
+
+     i12 :     keyWithZeroValue=select(keys B,k->not member(k,keys B'))
+
+     o12 = {(4, {2}, 2)}
+
+     o12 : List
+
+     i13 : B#(keyWithZeroValue_0)
+
+     o13 = 0
   Text
     If chi(I_X(m))\in ZZ[m] has an integral zero then B contains a superflous key.   
 SeeAlso
@@ -7811,24 +7818,6 @@ Description
     degree pts==n-1
     (L0,L1,L2,J)=adjunctionProcess(X,1);
     L0_1==n and degree pts==n-1;
-    (d,sg)=(degree X,sectionalGenus X)
-    Ksquare(12,13,1)==-12
-    LeBarzN6(12,13,1)==8
-  Text
-    The following computation shows that the specificAboRanestadSurface lift
-    to characteristic zero.
-  Example
-    kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-            ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, degree (radical c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-   	    
 
 *-
 
@@ -7861,70 +7850,22 @@ Description
     (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
     This function verifies this assertion in an example.
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    i3 : n=7;
-    i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    -- 4.98627s elapsed
-    i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-    i6 : (degree pts,degree vP2,degree vP3,degree g25)
+    i2 :     kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    i4 :     n=7;
+    i5 :     elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+     -- 6.14016s elapsed
+    i6 :     (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    i7 :     (degree pts,degree vP2,degree vP3,degree g25)
 
-    o6 = (6, 4, 8, 5)
+    o7 = (6, 4, 8, 5)
+    o7 : Sequence
+    i8 :     degree pts==n-1
 
-    o6 : Sequence
-    i7 : degree pts==n-1
+    o8 = true
+    i9 :     (L0,L1,L2,J)=adjunctionProcess(X,1);
+    i10 :  L0_1==n and degree pts==n-1
 
-    o7 = true
-    i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1;
-    i10 : (d,sg)=(degree X,sectionalGenus X)
-
-    o10 = (12, 13)
-
-    o10 : Sequence
-    i11 : Ksquare(12,13,1)==-12
-
-    o11 = true
-    i12 : LeBarzN6(12,13,1)==8
-
-    o12 = true
-  Text
-    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
-  CannedExample
-    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    i16 : elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-	    ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, degree (radical c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-    -- 219.852s elapsed
-
-          +---------------------------------------------------------------------------------------------------+
-    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, 1, 6) => 1})  |
-          +---------------------------------------------------------------------------------------------------+
-	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, 2, 12) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, 3, 18) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, 1, 6) => 1 })|
-	  |                                                                               (2, 2, 2, 12) => 1  |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, 2, 11) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, 1, 6) => 1 }) |
-	  |                                                                              (2, 2, 2, 11) => 1   |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, 1, 6) => 2 }) |
-	  |                                                                              (2, 2, 2, 11) => 1   |
-	  +---------------------------------------------------------------------------------------------------+
-  Text
-     Note that the number of (-1)-lines + the number of 6-secant lines is
-     always equal to 8. In case 3 there is a 6-secant line of multiplicity. In the case
-     4,5,6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
-     in the plane V(x_3,x_4).
+    o110 = true
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
@@ -8181,56 +8122,55 @@ Description
     with linear entries over the exterior algebra. The 2x3 matrix is normalized. The function returns the
     4x2 matrix.
   CannedExample
-    i1 : kk=ZZ/19;
-    i2 : P4=kk[x_0..x_4];
-    i3 : setRandomSeed("fairly fast search")
-    -- setting random seed to 1219487757425192677910281801934109671
+    i2 :     kk=ZZ/19;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     setRandomSeed("fairly fast search")
+     -- setting random seed to 1219487757425192677910281801934109671
 
-    o3 = 1219487757425192677910281801934109671
-    i4 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
-    trials so far to get a surface = 1
+    o4 = 1219487757425192677910281801934109671
+    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    trials so far to get a surface = 1       
     trials to get a smooth surface = 1
-    -- 5.58853s elapsed
-    i5 : betti tateResolutionOfSurface X
-
+     -- 7.27749s elapsed
+    i6 :   betti tateResolutionOfSurface X
+    
                  -1  0  1  2 3 4 5  6  7
-    o5 = total: 122 73 37 13 4 4 8 29 77
+    o6 = total: 122 73 37 13 4 4 8 29 77
             -4:   1  .  .  . . . .  .  .
-	    -3: 121 73 37 13 . . .  .  .
-	    -2:   .  .  .  . 4 2 .  .  .
-	    -1:   .  .  .  . . 2 3  .  .
-	     0:   .  .  .  . . . 5 29 77
-
-    o5 : BettiTally
-    i6 : elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);
+            -3: 121 73 37 13 . . .  .  .
+            -2:   .  .  .  . 4 2 .  .  .
+            -1:   .  .  .  . . 2 3  .  .
+             0:   .  .  .  . . . 5 29 77
+    o6 : BettiTally
+    i7 :  elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
-    -- 5.919s elapsed
+     -- 5.91285s elapsed
 
-    o6 : Ideal of P4
-    i7 : m4x2'=matrixFromAboRanestadSurface X
+    o7 : Ideal of P4
+    i8 :     m4x2'=matrixFromAboRanestadSurface X
 
-    o7 = {-1} | 5e_0-e_1-9e_2+5e_3+9e_4  4e_2+8e_3-4e_4      |
-         {-1} | -7e_0+2e_1-5e_3+7e_4     -5e_2+e_3+4e_4      |
-         {-1} | 9e_0-5e_1+4e_3+6e_4      -e_1+4e_2-9e_3-7e_4 |
-         {-1} | 8e_0-5e_1-6e_2-4e_3-3e_4 -e_0-9e_2+7e_4      |
+    o8 = {-1} | -5e_0+e_1+9e_2-5e_3-9e_4  -4e_2-8e_3+4e_4    |
+         {-1} | 7e_0-2e_1+5e_3-7e_4       5e_2-e_3-4e_4      |
+         {-1} | -9e_0+5e_1-4e_3-6e_4      e_1-4e_2+9e_3+7e_4 |
+         {-1} | -8e_0+5e_1+6e_2+4e_3+3e_4 e_0+9e_2-7e_4      |
 
-                           4                 2
-    o7 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                            4                 2
+    o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                      0   4             0   4
-    i8 : m4x2
+    i9 :     m4x2
 
-    o8 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
+    o9 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
          {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
          {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
          {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
 
-                           4                 2
-    o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                            4                 2
+    o9 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                      0   4             0   4
-    i9 : minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+    i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
 
-    o9 = true
+    o10 = true
 SeeAlso
    aboRanestadSurface
    aboRanestadSurfaceFromMatrix
@@ -8274,61 +8214,61 @@ Description
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1)-lines on the surface coincides with the number of intersection points of the images plus 1.
     The function returns a corresponding surface X.
-  CannedExample
-    i1 : kk=ZZ/19;
-    i2 : P4=kk[x_0..x_4];
-    i3 : setRandomSeed("fairly fast search")
-    -- setting random seed to 1219487757425192677910281801934109671
+   CannedExample
+    i2 :     kk=ZZ/19
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     setRandomSeed("fairly fast search")
+     -- setting random seed to 1219487757425192677910281801934109671
 
-    o3 = 1219487757425192677910281801934109671
-    i4 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    o4 = 1219487757425192677910281801934109671
+    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
-    -- 5.65078s elapsed
-    i5 : betti tateResolutionOfSurface X
+     -- 7.48173s elapsed
+    i6 :     betti tateResolutionOfSurface X
 
                  -1  0  1  2 3 4 5  6  7
-    o5 = total: 122 73 37 13 4 4 8 29 77
+    o6 = total: 122 73 37 13 4 4 8 29 77
             -4:   1  .  .  . . . .  .  .
-	    -3: 121 73 37 13 . . .  .  .
-	    -2:   .  .  .  . 4 2 .  .  .
-	    -1:   .  .  .  . . 2 3  .  .
-	     0:   .  .  .  . . . 5 29 77
-
-    o5 : BettiTally
-    i6 : elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);
+            -3: 121 73 37 13 . . .  .  .
+            -2:   .  .  .  . 4 2 .  .  .
+            -1:   .  .  .  . . 2 3  .  .
+             0:   .  .  .  . . . 5 29 77
+    o6 : BettiTally
+    i7 :     elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
-    -- 6.06622s elapsed
+     -- 6.34168s elapsed
 
-    o6 : Ideal of P4
-    i7 : m4x2'=matrixFromAboRanestadSurface X
+    o7 : Ideal of P4
+    i8 :     m4x2'=matrixFromAboRanestadSurface X
 
-    o7 = {-1} | 5e_0-e_1-9e_2+5e_3+9e_4  4e_2+8e_3-4e_4      |
-         {-1} | -7e_0+2e_1-5e_3+7e_4     -5e_2+e_3+4e_4      |
-	 {-1} | 9e_0-5e_1+4e_3+6e_4      -e_1+4e_2-9e_3-7e_4 |
-	 {-1} | 8e_0-5e_1-6e_2-4e_3-3e_4 -e_0-9e_2+7e_4      |
-
-                            4                 2
-    o7 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
-                     0   4             0   4
-    i8 : m4x2
-
-    o8 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
-         {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
-	 {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
-	 {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
+    o8 = {-1} | -5e_0+e_1+9e_2-5e_3-9e_4  -4e_2-8e_3+4e_4    |
+         {-1} | 7e_0-2e_1+5e_3-7e_4       5e_2-e_3-4e_4      |
+         {-1} | -9e_0+5e_1-4e_3-6e_4      e_1-4e_2+9e_3+7e_4 |
+         {-1} | -8e_0+5e_1+6e_2+4e_3+3e_4 e_0+9e_2-7e_4      |
 
                             4                 2
     o8 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
                      0   4             0   4
+    i9 :     m4x2
+    o9 = {-1} | -9e_0-5e_1+e_2            -4e_0+7e_1-5e_2           |
+         {-1} | e_0-9e_2                  -3e_0-3e_1-e_2            |
+         {-1} | -4e_0-2e_1-7e_2+8e_3-3e_4 -8e_0+5e_1+e_2-3e_3-5e_4  |
+         {-1} | e_0+5e_1-2e_2-8e_3+8e_4   -5e_0-4e_1-3e_2-6e_3-7e_4 |
+
+                            4                 2
+    o9 : Matrix (kk[e ..e ])  <-- (kk[e ..e ])
+                     0   4             0   4
+    i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
+
+    o10 = true
+ 
 SeeAlso
    aboRanestadSurface
    matrixFromAboRanestadSurface
 ///
-
-
--* For CannedExample of specificAboRanestadSurface
+-* For CannedExample of specificAboRanestadSurfac
   Example
     kk=ZZ/19
     P4=kk[x_0..x_4]
@@ -8337,8 +8277,9 @@ SeeAlso
     L0
     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
     numList==L0
-    degree J, genera J
-    minimalBetti J  
+    B=new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 5, (2,{3},3) => 5, (3,{5},5)=> 1}
+    minimalBetti J == B
+
 *-
 
 doc///
@@ -8367,58 +8308,6 @@ Description
     In the Tate resolution of an Abo-Ranestad surface, there is a 4x2 matrix m4x2.
     We compute a Abo-Ranestad surface of the k-th given matrix
   CannedExample
-    i1 : kk=ZZ/19    
-
-    o1 = kk
-
-    o1 : QuotientRing
-    i2 : P4=kk[x_0..x_4]
-
-    o2 = P4
-
-    o2 : PolynomialRing
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
-
-    o3 = E
-
-    o3 : PolynomialRing, 5 skew commutative variable(s)
-    i4 : elapsedTime (X,L0)=specificAboRanestadSurface(P4,E,3);
-    -- 6.715s elapsed
-    i5 : L0
-
-    o5 = {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}
-
-    o5 : List
-    i6 : elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess X;
-    -- 126.946s elapsed
-    i7 : numList==L0
-
-    o7 = true
-    i8 : degree J, genera J
-
-    o8 = (4, {0, 1, 3})
-
-    o8 : Sequence
-    i9 : minimalBetti J
-
-                0 1 2
-    o9 = total: 1 2 1
-             0: 1 . .
-	     1: . 2 .
-	     2: . . 1
-
-    o9 : BettiTally 
-  Text
-    The third adjoint surface is a Del Pezzo surface of degree 4,
-    hence X=P2(12;4^5,2^12,1^5); 
-SeeAlso
-   aboRanestadSurfaceFromMatrix
-   adjunctionProcess
-   tateResolutionOfSurface
-///
-
--*
-CannedExample
     i2 :     kk=ZZ/19;
     i3 :     P4=kk[x_0..x_4];
     i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
@@ -8433,7 +8322,13 @@ CannedExample
     i8 :     numList==L0
 
     o8 = true
-*-
+  Text
+    The third adjoint surface is a Del Pezzo surface of degree 4.  X=P2(12;4^5,2^12,1^4); 
+SeeAlso
+   aboRanestadSurfaceFromMatrix
+   adjunctionProcess
+   tateResolutionOfSurface
+///
 -* For CannedExample of get4x2Matrix
   Example
     kk=ZZ/nextPrime 10^3
@@ -8789,8 +8684,8 @@ Key
  testMatrix2
  (testMatrix2,Matrix,Ring)
  [testMatrix2,Verbose]
- --[testMatrix2,WithM3x13]
- --[testMatrix2,WithX]
+ [testMatrix2,WithM3x13]
+ [testMatrix2,WithX]
 Headline
  test whether a 3x4 matrix with entries over the exterior algebra leads to an Abo surface
 Usage
@@ -9238,7 +9133,7 @@ Description
     With Option count=>true we print count1 which is 
     the number of times we got a not necessarily smooth surface.
     
-    The codimension 2 belief is supported by the fact on average the value of count
+    The codimension 2 believe is supported by the fact on average the value of count
     increases by approximately 180. 
 SeeAlso
   LeBarzN6
@@ -9295,45 +9190,43 @@ Description
     from special (3x5) matrices over P3, such that the Bordiga surface is smooth and has
     seven rank two planes meeting the 1x3 line.
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^4;
-    i2 : P4=kk[x_0..x_4];
-    i3 : P3=kk[y_0..y_3];
-    i4 : setRandomSeed("quite fast");
-    -- setting random seed to 124864759781408404214
-    i5 : elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3);
-    -- 8.56151s elapsed
-    i6 : r==4
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     P3=kk[y_0..y_3];
+    i5 :     setRandomSeed("quite fast");
+      -- setting random seed to 124864759781408404214
+    i6 :     elapsedTime (X,m3x4,r)=abo111144Surface(P4,P3);
+      -- 12.6696s elapsed
+    i7 :  r==4
 
-    o6 = true
-    i7 : pK=partitionOfCanonicalDivisorOfAboSurface X
+    o7 = true
+    i8 : pK=partitionOfCanonicalDivisorOfAboSurface X
 
-    o7 = {1, 1, 1, 1, 4, 4}
+    o8 = {1, 1, 1, 1, 4, 4}
+    o8 : List
+    i9 :     R=residualInQuintics X;   
 
-    o7 : List
-    i8 : R=residualInQuintics X;
+    o9 : Ideal of P4
+    i10 :     cResidual=decompose R;
+    i11 :     tally apply(cResidual, c-> (dim c, degree c, (dim(c+X), degree (c+X))))	   
 
-    o8 : Ideal of P4
-    i9 : cResidual=decompose R;
-    i10 : tally apply(cResidual, c-> (dim c, degree c, (dim(c+X), degree (c+X))))
+    o11 = Tally{(2, 1, (1, 6)) => 3 }
+                (2, 2, (1, 11)) => 2
+    o11 : Tally
+    i12 :     (d,sg,xO)=(12,13,2);
+    i13 :     Ksquare(d,sg,xO) == -6    
 
-    o10 = Tally{(2, 1, (1, 6)) => 3 }
-               (2, 2, (1, 11)) => 2
+    o13 = true
+    i14 :     numberOfMinusOneLines=#select(pK,d->d==1)
 
-    o10 : Tally
-    i11 : (d,sg,xO)=(12,13,2);
-    i12 : Ksquare(d,sg,xO) == -6
+    o14 = 4
+    i15 :     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and
+        	    degree (c+X)==6*degree c),c->degree c)
 
-    o12 = true
-    i13 : numberOfMinusOneLines=#select(pK,d->d==1)
+    o15 = 3
+    i16 :     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
 
-    o13 = 4
-    i14 : numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and
-	    degree (c+X)==6*degree c),c->degree c)
-
-    o14 = 3
-    i15 : LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
-
-    o15 = true
+    o16 = true
   Text
     In this example, X has three 6-secant lines and two 11-secant conics.
 SeeAlso
@@ -9361,10 +9254,8 @@ For CannedExample of abo111333Surface
     numberOfMinusOneLines=#select(K,d->d==1)
     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
-  Text
-    In this example, X has four 6-secant lines. The intersection of these lines
-    with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
-    and length (6) respectively.
+
+
   Example
     R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
     minimalBetti R
@@ -9401,75 +9292,73 @@ Description
     from E whose column space contains 7 rank-two planes meeting a specific line and returns
     aboSurfaceFromMatrix(m3x4,P4).
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^4;
-    i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
-    i4 : setRandomSeed("fix decompositions");
-    -- setting random seed to 1220442291374344711948625538118317179
-    i5 : elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
-    -- 9.50229s elapsed
-    i6 : elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
-    -- 5.8356s elapsed
-    i7 : K
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     setRandomSeed("fix decompositions");
+      -- setting random seed to 1220442291374344711948625538118317179
+    i6 :     elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+      -- 14.5008s elapsed
+    i7 :     elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+      -- 13.6416s elapsed
+    i8 :     K    
 
-    o7 = {1, 1, 1, 3, 3, 3}
+    o8 = {1, 1, 1, 3, 3, 3}
+    o8 : List
+    i9 :     cResidual=primaryDecomposition residual;
+    i10 :     tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+        	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
 
-    o7 : List
-    i8 : cResidual=primaryDecomposition residual;
-    i9 : tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
-	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+                              0 1
+    o10 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
+                           0: 1 3              (1, 5, 5) => 1
+                              0 1
+                (2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 2}) => 1
+                           0: 1 3              (1, 2, 2) => 2
+                              0 1
+                (2, 1, total: 1 3, 1, 6, Tally{(1, 6, 6) => 1}) => 1
+                           0: 1 3
+                              0 1
+                (2, 4, total: 1 6, 1, 21, Tally{(1, 1, 1) => 2  }) => 1
+                           0: 1 .               (1, 3, 3) => 2
+                           1: . 6               (1, 13, 13) => 1
+    o10 : Tally
+    i11 :     (d,sg,xO)=(12,13,2);
+    i12 :     Ksquare(d,sg,xO) == -#K    
 
-                             0 1
-    o9 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
-                          0: 1 3              (1, 5, 5) => 1
-                             0 1
-               (2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 2}) => 1
-                          0: 1 3              (1, 2, 2) => 2
-                             0 1
-               (2, 1, total: 1 3, 1, 6, Tally{(1, 6, 6) => 1}) => 1
-                          0: 1 3
-                             0 1
-               (2, 4, total: 1 6, 1, 21, Tally{(1, 1, 1) => 2  }) => 1
-                          0: 1 .               (1, 3, 3) => 2
-                          1: . 6               (1, 13, 13) => 1
+    o12 = true
+    i13 :     numberOfMinusOneLines=#select(K,d->d==1)
 
-    o9 : Tally
-    i10 : (d,sg,xO)=(12,13,2);
-    i11 : Ksquare(d,sg,xO) == -#K
+    o13 = 3
+    i14 :     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
 
-    o11 = true
-    i12 : numberOfMinusOneLines=#select(K,d->d==1)
+    o14 = 4
+    i15 :     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
 
-    o12 = 3
-    i13 : numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
-
-    o13 = 4
-    i14 : LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
-
-    o14 = true
+    o15 = true
   Text
-    In this example, X has four 6-secant lines. The intersection of
-    these lines with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2) and length (6) respectively.
+    In this example, X has four 6-secant lines. The intersection of these lines
+    with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
+    and length (6) respectively.
   CannedExample
-    i15 : R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
+    i16 :     R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
 
-    o15 : Ideal of P4
-    i16 : minimalBetti R
+    o16 : Ideal of P4
+    i17 :     minimalBetti R
 
                  0 1 2 3
-    o16 = total: 1 6 8 3
+    o17 = total: 1 6 8 3
               0: 1 . . .
               1: . 6 8 3
 
-    o16 : BettiTally
-    i17 : saturate ideal singularLocus R
+    o17 : BettiTally
+    i18 :     saturate ideal singularLocus R
 
-    o17 = ideal 1
+    o18 = ideal 1
+    o18 : Ideal of P4
+    i19 :     degree (R+X)==21
 
-    o17 : Ideal of P4
-    i18 : degree (R+X)==21
-
-    o18 = true
+    o19 = true
   Text
     Since the rational normal curve R intersects X in 21>20 points,
     it is contained in any quintic of X.
@@ -9536,93 +9425,92 @@ Description
     of the canonical divisor. This function constructs a 3x5 matrix m3x5 over the homogeneous coordinate ring of a P3 with linear enties such
     that it drops rank by two at a point and by two at the intersection of three lines in a plane, where
     its last 3x2 submatrix drops the rank by one.The functiom then defines m3x4 as
-    the adjoint matrix of m3x5 and returns aboSurface(m3x4,P4).
+    the adjoint matrix of m3x5 and returns aboSurface(m3x4,P4). 
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^4;
-    i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
-    i4 : setRandomSeed("fix a fast decomposition of K");
-    -- setting random seed to 13616088329504166732828826647070520602128631652395528887107
-    i5 : elapsedTime (X,m3x4)=abo111117Surface(P4,E,Verbose=>false);
-    -- 7.72893s elapsed
-    i6 : elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
-    -- 8.75027s elapsed
-    i7 : K
+    i2 :     kk=ZZ/nextPrime 10^4;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     setRandomSeed("fix a fast decomposition of K");
+     -- setting random seed to 13616088329504166732828826647070520602128631652395528887107
+    i6 :     elapsedTime (X,m3x4)=abo111117Surface(P4,E,Verbose=>false);
+     -- 10.9342s elapsed
+    i7 :     elapsedTime (K,residual)=analyzeAboSurface(X,Verbose=>false);
+     -- 12.8561s elapsed
+    i8 :     K    
 
-    o7 = {1, 1, 1, 1, 1, 7}
+    o8 = {1, 1, 1, 1, 1, 7}
+    o8 : List
+    i9 :     cResidual=primaryDecomposition residual;
+    i10 :  netList apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
+        tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
 
-    o7 : List
-    i8 : cResidual=primaryDecomposition residual;
-    i9 : netList apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
-	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
+          +--------------------------------------------------+
+          |              0 1                                 |
+    o10 = |(3, 1, total: 1 2, 2, 5, Tally{(1, 1, 1) => 1})   |
+          |           0: 1 2              (2, 5, 5) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 5, Tally{(0, 18, 1) => 1})  |
+          |           0: 1 3              (1, 1, 1) => 3     |
+          |                               (1, 2, 2) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 5, Tally{(0, 19, 1) => 1})  |
+          |           0: 1 3              (1, 1, 1) => 1     |
+          |                               (1, 2, 2) => 2     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 5, Tally{(0, 18, 1) => 1})  |
+          |           0: 1 3              (1, 1, 1) => 3     |
+          |                               (1, 2, 2) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1})   |
+          |           0: 1 3              (1, 2, 2) => 1     |
+          |                               (1, 3, 3) => 1     |
+          +--------------------------------------------------+
+          |              0 1                                 |
+          |(2, 2, total: 1 5, 1, 12, Tally{(1, 12, 12) => 1})|
+          |           0: 1 1                                 |
+          |           1: . 4                                 |
+          +--------------------------------------------------+
 
-         +--------------------------------------------------+
-         |              0 1                                 |
-    o9 = |(3, 1, total: 1 2, 2, 5, Tally{(1, 1, 1) => 1})   |
-         |           0: 1 2              (2, 5, 5) => 1     |
-	 +--------------------------------------------------+
-	 |              0 1                                 |
-	 |(2, 1, total: 1 3, 1, 5, Tally{(0, 18, 1) => 1})  |
-	 |           0: 1 3              (1, 1, 1) => 3     |
-	 |                               (1, 2, 2) => 1     |
-	 +--------------------------------------------------+
-	 |              0 1                                 |
-	 |(2, 1, total: 1 3, 1, 5, Tally{(0, 19, 1) => 1})  |
-	 |           0: 1 3              (1, 1, 1) => 1     |
-	 |                               (1, 2, 2) => 2     |
-	 +--------------------------------------------------+
-	 |              0 1                                 |
-	 |(2, 1, total: 1 3, 1, 5, Tally{(0, 18, 1) => 1})  |
-	 |           0: 1 3              (1, 1, 1) => 3     |
-	 |                               (1, 2, 2) => 1     |
-	 +--------------------------------------------------+
-	 |              0 1                                 |
-	 |(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1})   |
-	 |           0: 1 3              (1, 2, 2) => 1     |
-	 |                               (1, 3, 3) => 1     |
-	 +--------------------------------------------------+
-	 |              0 1                                 |
-	 |(2, 2, total: 1 5, 1, 12, Tally{(1, 12, 12) => 1})|
-	 |           0: 1 1                                 |
-	 |           1: . 4                                 |
-	 +--------------------------------------------------+
-    i10 : (d,sg,xO)=(12,13,2);
-    i11 : Ksquare(d,sg,xO) == -#K
+    i11 :     (d,sg,xO)=(12,13,2);
+    i12 :     Ksquare(d,sg,xO) == -#K    
 
-    o11 = true
-    i12 : numberOfMinusOneLines=#select(K,d->d==1)
+    o12 = true
+    i13 :     numberOfMinusOneLines=#select(K,d->d==1)
 
-    o12 = 5
-    i13 : expectedNumberOfSixSecants=LeBarzN6(d,sg,xO)-numberOfMinusOneLines
+    o13 = 5
+    i14 :     expectedNumberOfSixSecants=LeBarzN6(d,sg,xO)-numberOfMinusOneLines
 
-    o13 = 2
-    i14 : plane=cResidual_0;
+    o14 = 2
+    i15 :     plane=cResidual_0;
 
-    o14 : Ideal of P4
-    i15 : cPlaneCapX=primaryDecomposition saturate(plane+X);
-    i16 : point=(select(cPlaneCapX,c->dim c==1))_0;
-
-    o16 : Ideal of P4
-    i17 : randomLineThroughPoint=trim(plane+ideal ((gens point)*random(source gens point,P4^{-1})));
+    o15 : Ideal of P4
+    i16 :     cPlaneCapX=primaryDecomposition saturate(plane+X);
+    i17 :     point=(select(cPlaneCapX,c->dim c==1))_0;
 
     o17 : Ideal of P4
-    i18 : degree(randomLineThroughPoint+X)==6
+    i18 :     randomLineThroughPoint=trim(plane+ideal ((gens point)*random(source gens point,P4^{-1})));
 
-    o18 = true
-    i19 : L1=cResidual_4;
+    o18 : Ideal of P4
+    i19 :     degree(randomLineThroughPoint+X)==6
 
-    o19 : Ideal of P4
-    i20 : degree(L1+X)
+    o19 = true
+    i20 :     L1=cResidual_4;
 
-    o20 = 6
-    i21 : dim(L1+plane)
+    o20 : Ideal of P4
+    i21 :     degree(L1+X)
 
-    o21 = 0
-    i22 : tally apply(cResidual_{1,2,3},L->dim(L+plane))
+    o21 = 6
+    i22 :     dim(L1+plane)
 
-    o22 = Tally{1 => 3}
+    o22 = 0
+    i23 :     tally apply(cResidual_{1,2,3},L->dim(L+plane))
 
-    o22 : Tally
+    o23 = Tally{1 => 3}
+    o23 : Tally
   Text
     In this example, X has a pencil of 6-secant lines:
     All the lines in the plane through the point. Thus, LeBarz's 6-secant formula does not apply.
@@ -9630,7 +9518,7 @@ Description
 
     The 5-secant lines are contained in every quintic, because each intersects the plane at a point.
 References
-     Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in $\Pn 4$, an update, preprint (2026)    
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)    
 SeeAlso
   LeBarzN6
   partitionOfCanonicalDivisorOfAboSurface
@@ -10035,59 +9923,54 @@ Description
     six (-1) curves of degrees {1,1,1,1,2,2}.
     The canonical divisor has in addition a component that is an elliptic curve of degree 4.
   CannedExample
-    i1 : kk=ZZ/31;
-    i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
-    i4 : X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
+    i2 :     kk=ZZ/31;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     X=specificEllipticAboSurfaceD12S13(P4,E,0,Verbose=>true);
     #mdKRs = 1
     (K,R) = ({1, 1, 1, 1, 2, 2, 4}, Tally{(1, 1, (0, 6)) => 3   }), dim Hom = 6
                                           (2, 2, (1, 8, 9)) => 1
+    o5 : Ideal of P4
+    i6 :     (d,sg)=(degree X, sectionalGenus X)
 
-    o4 : Ideal of P4
-    i5 : (d,sg)=(degree X, sectionalGenus X)
-
-    o5 = (12, 13)
-
-    o5 : Sequence
-    i6 : betti tateResolutionOfSurface X
+    o6 = (12, 13)
+    o6 : Sequence
+    i7 :     betti tateResolutionOfSurface X
 
                  -1  0  1  2 3 4 5  6  7
-    o6 = total: 123 74 38 14 4 4 8 28 76
+    o7 = total: 123 74 38 14 4 4 8 28 76
             -4:   1  .  .  . . . .  .  .
-	    -3: 122 74 38 14 1 . .  .  .
-	    -2:   .  .  .  . 3 1 .  .  .
-	    -1:   .  .  .  . . 3 4  .  .
-	     0:   .  .  .  . . . 4 28 76
-
-    o6 : BettiTally
-    i7 : minimalBetti X
- 
-                0  1  2  3 4
-    o7 = total: 1 12 24 17 4
-             0: 1  .  .  . .
-	     1: .  .  .  . .
-	     2: .  .  .  . .
-	     3: .  .  .  . .
-	     4: .  4  .  . .
-	     5: .  8 24 17 4
-
+            -3: 122 74 38 14 1 . .  .  .
+            -2:   .  .  .  . 3 1 .  .  .
+            -1:   .  .  .  . . 3 4  .  .
+             0:   .  .  .  . . . 4 28 76
     o7 : BettiTally
-    i8 : K=canonicalDivisor X;
+    i8 :     minimalBetti X
 
-    o8 : Ideal of P4
-    i9 : cK=decompose K;
-    i10 : tally apply(cK,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
+                0  1  2  3 4
+    o8 = total: 1 12 24 17 4
+             0: 1  .  .  . .
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  4  .  . .
+             5: .  8 24 17 4
+    o8 : BettiTally
+    i9 :     K=canonicalDivisor X;
+        
+    o9 : Ideal of P4
+    i10 : cK=decompose K;
+    i11 :     tally apply(cK,c->(dim c, degree c, genus c, selfIntersectionNumber(X,c)))
 
-    o10 = Tally{(2, 1, 0, -1) => 4}
-                (2, 2, 0, -1) => 2
+    o11 = Tally{(2, 1, 0, -1) => 4 }
+                (2, 4, -1, -2) => 1
                 (2, 4, 1, 0) => 1
-
-    o10 : Tally
+    o11 : Tally
   Text
     This surface is a non-minimal elliptic surface with four (-1)-lines and two (-1)-conics.
     The canonical divisor also has a degree 4 elliptic curve as a component.
 References
-   Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in $\Pn 4$, an update, preprint (2026)
 
 SeeAlso
    residualInQuintics
@@ -10196,30 +10079,32 @@ Description
     
     With the option Special=>true then the m3x4 Bordiga matrix has a rank 1 point.
   CannedExample
-    i1 : kk=ZZ/19;
-    i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
-    i4 : mdKRs={};
-    i5 : setRandomSeed("carefully choosen randomSeed");
-    -- setting random seed to 130783826824055887938028823731402206818653657496837223808
-    i6 : elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) -- 31.8852s elapsed
-    -- 10.9464s elapsed
-    K = {1, 1, 1, 3, 3, 3}
-    count1= 1
-    count=1, (K,R)= ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }), dim Hom = 1
-                                               ((2, 4), (1, 21)) => 1
-    count1= 1
-    -- 49.0182s elapsed
-
-    o6 = {(| 6e_0-5e_1+e_2-9e_3   -8e_0-6e_1+7e_4     e_0+6e_1-3e_2+e_3+4e_4   
-	    | -9e_0-2e_1+8e_2+4e_3 e_0-3e_1-8e_2-6e_4  -3e_0-2e_1+4e_2+3e_3-7e_4
-	    | 7e_0-3e_1+e_2-6e_3   4e_0-3e_1-9e_2-6e_4 -8e_0+5e_1-8e_2          
-	    ------------------------------------------------------------------------
-	    2e_0+8e_1-4e_2-8e_3+8e_4 |, 1, ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }))}
-	    4e_0+4e_1-8e_2-e_3+e_4   |                                ((2, 4), (1, 21)) => 1
-	    8e_0-3e_1+3e_2+7e_3-7e_4 |
-
-    o6 : List
+    i2 :     kk=ZZ/19;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     mdKRs={};
+    i6 :     setRandomSeed("carefully choosen randomSeed");
+     -- setting random seed to 130783826824055887938028823731402206818653657496837223808
+    i7 :     elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) 
+      -- 13.0813s elapsed
+        K = {1, 1, 1, 3, 3, 3}
+        count1= 1
+        count=1, (K,R)= ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }), dim Hom = 1
+                                                   ((2, 4), (1, 21)) => 1
+        count1= 1
+        -- 56.2178s elapsed
+    o7 = {(| 6e_0-5e_1+e_2-9e_3   -8e_0-6e_1+7e_4     e_0+6e_1-3e_2+e_3+4e_4   
+           | -9e_0-2e_1+8e_2+4e_3 e_0-3e_1-8e_2-6e_4  -3e_0-2e_1+4e_2+3e_3-7e_4
+           | 7e_0-3e_1+e_2-6e_3   4e_0-3e_1-9e_2-6e_4 -8e_0+5e_1-8e_2          
+         --------------------------------------------------------------------------
+         2e_0+8e_1-4e_2-8e_3+8e_4 |, 1, ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1,
+         4e_0+4e_1-8e_2-e_3+e_4   |                                ((2, 4), (1,
+         8e_0-3e_1+3e_2+7e_3-7e_4 |
+         --------------------------------------------------------------------------
+         6)) => 4 }))}
+         21)) => 1
+    o7 : List
+  
 SeeAlso
    residualInQuintics
    partitionOfCanonicalDivisorOfAboSurface
@@ -10993,57 +10878,51 @@ Description
     We construct the surface from a randomly choosen differential T.dd_4
     of the Tate resolution of the desired ideal. It has degree 10, sectional genus 9 and q=pg=0.
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3;
-    i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
-    i4 : minimalBetti(X=degree10DESSurface(P4,E))
+    i2 :     kk=ZZ/nextPrime 10^3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     E=kk[e_0..e_4,SkewCommutative=>true];
+    i5 :     minimalBetti(X=degree10DESSurface(P4,E))
 
                 0  1  2  3 4
-    o4 = total: 1 11 18 10 2
+    o5 = total: 1 11 18 10 2
              0: 1  .  .  . .
-	     1: .  .  .  . .
-	     2: .  .  .  . .
-	     3: .  1  .  . .
-	     4: . 10 18 10 2
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  1  .  . .
+             4: . 10 18 10 2
+    o5 : BettiTally
+    i6 :     degree X, sectionalGenus X
 
-    o4 : BettiTally
-    i5 : degree X, sectionalGenus X
-
-    o5 = (10, 9)
-
-    o5 : Sequence
-    i6 : betti(T=tateResolutionOfSurface X)
+    o6 = (10, 9)
+    o6 : Sequence
+    i7 :     betti(T=tateResolutionOfSurface X)
 
                 -1  0  1 2 3 4  5  6   7
-    o6 = total: 94 55 27 9 2 3 15 47 105
+    o7 = total: 94 55 27 9 2 3 15 47 105
             -4:  1  .  . . . .  .  .   .
-	    -3: 93 55 27 9 . .  .  .   .
-	    -2:  .  .  . . 2 .  .  .   .
-	    -1:  .  .  . . . 2  .  .   .
-	     0:  .  .  . . . 1 15 47 105
-
-    o6 : BettiTally
-    i7 : betti(T.dd_4)
+            -3: 93 55 27 9 . .  .  .   .
+            -2:  .  .  . . 2 .  .  .   .
+            -1:  .  .  . . . 2  .  .   .
+             0:  .  .  . . . 1 15 47 105
+    o7 : BettiTally
+    i8 :     betti(T.dd_4)
 
                 0 1
-    o7 = total: 2 3
+    o8 = total: 2 3
              1: 2 .
              2: . 2
              3: . 1
+    o8 : BettiTally
+    i9 :     elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
+       -- 2.34521s elapsed
+    i10 :     numList
 
-    o7 : BettiTally
-    i8 : elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,2);
-    -- 2.23162s elapsed
-    i9 : numList
-
-    o9 = {(4, 10, 9), 7, (8, 13, 6), 7, (5, 5, 1)}
-
-    o9 : List
+    o10 = {(4, 10, 9), 7, (8, 13, 6), 7, (5, 5, 1)}
+    o10 : List
   Text
-    X is a rational surface, the second adjoint is a Del Pezzo surface of degree 5, hence
-    X is of type P^2(9;1^7,2^7,1^4).
+    X is a rational surface, the second adjoint is a Del Pezzo surface of degree 5
 References
-   Decker, W., Ein, L., Schreyer, F-O., Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237 
+   \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237 
 ///
 -*for CannedExample of degree10pi8RanestadSurface
   Example
@@ -11059,9 +10938,7 @@ References
     tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
 	    degree (c+X), betti saturate (c+X),
 	    tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
-    elapsedTime (L0,L1,L2,J)=adjunctionProcess X;
-    L0
-    minimalBetti J
+
 *-
 
 doc ///
@@ -11083,107 +10960,79 @@ Description
     We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
     with Hilbert function (2,5,3).
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3;
-    i2 : P4=kk[x_0..x_4];
-    i3 : minimalBetti(X=degree10pi8RanestadSurface P4)
+    i2 :     kk=ZZ/nextPrime 10^3;
+    i3 :     P4=kk[x_0..x_4];
+    i4 :     minimalBetti(X=degree10pi8RanestadSurface P4)
 
                 0  1  2  3 4
-    o3 = total: 1 14 24 14 3
+    o4 = total: 1 14 24 14 3
              0: 1  .  .  . .
-	     1: .  .  .  . .
-	     2: .  .  .  . .
-	     3: .  .  .  . .
-	     4: . 10 13  4 .
-	     5: .  4 11 10 3
-
-    o3 : BettiTally
-    i4 : betti(T=tateResolutionOfSurface X)
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: . 10 13  4 .
+             5: .  4 11 10 3
+    o4 : BettiTally
+    i5 :     betti(T=tateResolutionOfSurface X)
 
                 -1  0  1 2 3 4  5  6  7
-    o4 = total: 90 52 25 8 3 5 13 41 98
+    o5 = total: 90 52 25 8 3 5 13 41 98
             -4:  1  .  . . . .  .  .  .
-	    -3: 89 52 25 8 . .  .  .  .
-	    -2:  .  .  . . 1 .  .  .  .
-	    -1:  .  .  . . 2 5  3  .  .
-	     0:  .  .  . . . . 10 41 98
+            -3: 89 52 25 8 . .  .  .  .
+            -2:  .  .  . . 1 .  .  .  .
+            -1:  .  .  . . 2 5  3  .  .
+             0:  .  .  . . . . 10 41 98
+    o5 : BettiTally
+    i6 :     (d,sg)=(degree X, sectionalGenus X)
 
-    o4 : BettiTally
-    i5 : (d,sg)=(degree X, sectionalGenus X)
-
-    o5 = (10, 8)
-
-    o5 : Sequence
-    i6 : LeBarzN6(d,sg,1)==6
-
-    o6 = true
-    i7 : Ksquare(d,sg,1)==-4
+    o6 = (10, 8)
+    o6 : Sequence
+    i7 :     LeBarzN6(d,sg,1)==6
 
     o7 = true
-    i8 : residual=residualInQuintics X;
+    i8 :     Ksquare(d,sg,1)==-4
 
-    o8 : Ideal of P4
-    i9 : dim residual, degree residual, betti residual
+    o8 = true
+    i9 :     residual=residualInQuintics X;
 
-    0 1
-    o9 = (3, 1, total: 1 6)
-    0: 1 .
-    1: . 6
+    o9 : Ideal of P4
 
-    o9 : Sequence
-    i10 : tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
-	    degree (c+X), betti saturate (c+X),
-	    tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
+    i10 :     dim residual, degree residual, betti residual
 
-                  0 1            0 1
-    o10 = Tally{(2, 1, total: 1 3, 6, total: 1 4, Tally{(1, 1) => 2}) => 1}
-                           0: 1 3         0: 1 3        (1, 4) => 1
+                        0 1
+    o10 = (3, 1, total: 1 6)
+                     0: 1 .
+                     1: . 6
+    o10 : Sequence
+    i11 :     tally apply(primaryDecomposition residual,c->(dim c, degree c, betti c,
+          	    degree (c+X), betti saturate (c+X),
+      	        tally apply(primaryDecomposition saturate (c+X),d->(dim d, degree radical d))))
+
+                              0 1            0 1
+    o11 = Tally{(2, 1, total: 1 3, 6, total: 1 4, Tally{(1, 1) => 2}) => 1}
+                           0: 1 3         0: 1 3        (1, 2) => 2
                                           1: . .
-					  2: . .
-					  3: . .
-					  4: . .
-					  5: . 1
-                  0 1            0 1
-    (3, 1, total: 1 2, 4, total: 1 5, Tally{(1, 1) => 3}) => 1
-               0: 1 2         0: 1 2        (2, 4) => 1
-                              1: . .
-			      2: . .
-			      3: . .
-			      4: . .
-			      5: . 3
-
-    o10 : Tally
-    i11 : elapsedTime (L0,L1,L2,J)=adjunctionProcess X;
-    -- 94.9218s elapsed
-    i12 : L0
-
-    o12 = {(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}
-
-    o12 : List
-    i13 : minimalBetti J
-
-                 0 1 2 3
-    o13 = total: 1 6 8 3
-              0: 1 . . .
-	      1: . 3 2 .
-	      2: . 3 6 3
-
-    o13 : BettiTally
+                                          2: . .
+                                          3: . .
+                                          4: . .
+                                          5: . 1
+                              0 1            0 1
+                (3, 1, total: 1 2, 4, total: 1 5, Tally{(1, 1) => 3}) => 1
+                           0: 1 2         0: 1 2        (2, 4) => 1
+                                          1: . .
+                                          2: . .
+                                          3: . .
+                                          4: . .
+                                          5: . 3
+    o11 : Tally
   Text
    There are four 6-secant lines, three of them are in the plane which which intersects X
    in a plane quartic and three points. Hence there X contains two (-1)-lines.
-   The adjunction process gives the data
-
-   L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
-
+   The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
-   It is one of the exceptions in case (4) of the adjunction process of Sommese and Van de Ven.
 References
-   Decker, W., Ein, L., Schreyer, F-O., Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
-
-   Ranestad, K., On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
-
-   Sommese, A.J., Van de Ven, A., On the adjunction mapping, Math. Ann. 278 (1987), 593-603.
-
+   \textit{Decker, W., Ein, L., Schreyer, F-O.} Construction of surfaces in {${\bf P}\sb 4$}, MJ. Algebraic Geom. 2, (1993), 185--237
+   \textit{Ranestad, K} On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
 SeeAlso
    enriquesSurfaceOfDegree10
    adjunctionProcessData
@@ -11965,7 +11814,7 @@ Description
     o3 : BettiTally
     i4 : betti(T=tateResolutionOfSurface X)
 
-                -1  0  1 2 3 4  5  6   7
+    -1  0  1 2 3 4  5  6   7
     o4 = total: 76 43 20 6 3 5 16 50 112
             -4:  1  .  . . . .  .  .   .
 	    -3: 75 43 20 6 . .  .  .   .
@@ -12644,48 +12493,45 @@ Outputs
   of a bielliptic surface of degree 10 
 Description
   Text
-    We construct a bielliptic surface of degree 10
+   We construct a bielliptic surface of degree 10 
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3;
-    i2 : P4=kk[x_0..x_4];
-    i3 : elapsedTime X=biellipticSurfaceD10 P4;
-    -- 30.656s elapsed
+    i2 :    kk=ZZ/nextPrime 10^3;
+    i3 :    P4=kk[x_0..x_4];
+    i4 :    elapsedTime X=biellipticSurfaceD10 P4;
+       -- 45.9089s elapsed
 
-    o3 : Ideal of P4
-    i4 : (d,sg)=(degree X, sectionalGenus X)
+    o4 : Ideal of P4
+    i5 :    (d,sg)=(degree X, sectionalGenus X)
 
-    o4 = (10, 6)
-
-    o4 : Sequence
-    i5 : minimalBetti X
+    o5 = (10, 6)
+    o5 : Sequence
+    i6 :    minimalBetti X
 
                 0  1  2  3  4
-    o5 = total: 1 26 55 40 10
+    o6 = total: 1 26 55 40 10
              0: 1  .  .  .  .
-	     1: .  .  .  .  .
-	     2: .  .  .  .  .
-	     3: .  .  .  .  .
-	     4: .  1  .  .  .
-	     5: . 25 55 40 10
-
-    o5 : BettiTally
-    i6 : betti(T=tateResolutionOfSurface X)
+             1: .  .  .  .  .
+             2: .  .  .  .  .
+             3: .  .  .  .  .
+             4: .  1  .  .  .
+             5: . 25 55 40 10
+    o6 : BettiTally
+    i7 :    betti(T=tateResolutionOfSurface X)
 
                 -1  0  1 2 3  4  5  6  7
-    o6 = total: 81 45 20 6 5 10 11 30 85
+    o7 = total: 81 45 20 6 5 10 11 30 85
             -4:  1  .  . . .  .  .  .  .
-	    -3: 80 45 20 5 .  .  .  .  .
-	    -2:  .  .  . 1 .  .  .  .  .
-	    -1:  .  .  . . 5 10 10  .  .
-	     0:  .  .  . . .  .  1 30 85
+            -3: 80 45 20 5 .  .  .  .  .
+            -2:  .  .  . 1 .  .  .  .  .
+            -1:  .  .  . . 5 10 10  .  .
+             0:  .  .  . . .  .  1 30 85
+    o7 : BettiTally
 
-    o6 : BettiTally
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 References
-   Serrano, F., Divisors on bielliptic surfaces and embeddings in $\Pn 4$, Math. Z., 203, (1990), 527-533
-
-   Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K., Syzygies of abelian and bielliptic surfaces in. $\Pn 4$, Int. J. of Math., 8, (1997),  849-919
+   \textit{Serrano, F.}, Divisors on bielliptic surfaces and embeddings in $\Pn 4$, Math. Z., 203, (1990), 527-533
+   \textit{Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K.  Syzygies of abelian and bielliptic surfaces in. $\Pn 4$, Int. J. of Math., 8, (1997),  849-919
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -12714,48 +12560,46 @@ Outputs
   of a bielliptic surface of degree 15 
 Description
   Text
-    We construct a nonminimal bielliptic surface of degree 15.
+    We construct a nonminimal bielliptic surface of degree 15
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^4;
-    i2 : P4=kk[x_0..x_4];
-    i3 : elapsedTime X=biellipticSurfaceD15 P4;
-    -- 9.53306s elapsed
+     i2 :    kk=ZZ/nextPrime 10^4; 
+     i3 :    P4=kk[x_0..x_4];
+     i4 :    elapsedTime X=biellipticSurfaceD15 P4;
+        -- 11.3729s elapsed
 
-    o3 : Ideal of P4
-    i4 : (d,sg)=(degree X, sectionalGenus X)
+     o4 : Ideal of P4
+     i5 : (d,sg)=(degree X, sectionalGenus X)
 
-    o4 = (15, 21)
+     o5 = (15, 21)
+     o5 : Sequence
+     i6 :    minimalBetti X
 
-    o4 : Sequence
-    i5 : minimalBetti X
+                 0  1  2 3
+     o6 = total: 1 11 15 5
+              0: 1  .  . .
+              1: .  .  . .
+              2: .  .  . .
+              3: .  .  . .
+              4: .  1  . .
+              5: . 10 15 5
+     o6 : BettiTally
+     i7 :    betti(T=tateResolutionOfSurface X)
 
-                0  1  2 3
-    o5 = total: 1 11 15 5
-             0: 1  .  . .
-	     1: .  .  . .
-	     2: .  .  . .
-	     3: .  .  . .
-	     4: .  1  . .
-	     5: . 10 15 5
-
-    o5 : BettiTally
-    i6 : betti(T=tateResolutionOfSurface X)
-
-                 -1   0  1  2  3  4 5  6  7
-    o6 = total: 171 105 55 21 10 10 6 15 50
-            -4:   1   .  .  .  .  . .  .  .
-	    -3: 170 105 55 20  .  . .  .  .
-	    -2:   .   .  .  1 10 10 5  .  .
-	    -1:   .   .  .  .  .  . .  .  .
-	     0:   .   .  .  .  .  . 1 15 50
-
-    o6 : BettiTally
+                  -1   0  1  2  3  4 5  6  7
+     o7 = total: 171 105 55 21 10 10 6 15 50
+             -4:   1   .  .  .  .  . .  .  .
+             -3: 170 105 55 20  .  . .  .  .
+             -2:   .   .  .  1 10 10 5  .  .
+             -1:   .   .  .  .  .  . .  .  .
+              0:   .   .  .  .  .  . 1 15 50
+     o7 : BettiTally
+     
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 Caveat
    The function can fail, in which case it returns null.
 References
-   Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K., Syzygies of abelian and bielliptic surfaces in. $\Pn 4$, Int. J. of Math., 8, (1997),  849-919
+   \textit{Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K.  Syzygies of abelian and bielliptic surfaces in. $\Pn 4$, Int. J. of Math., 8, (1997),  849-919
 SeeAlso
   tateResolutionOfSurface
 ///
@@ -12816,10 +12660,10 @@ SeeAlso
   Text
     The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
     Tate resolution, cf. [EFS,Example 7.1].
-  Example    
+  Example
     H2cohomology=prune Ext^2(HMbundle,P4^{-5})
     H1cohomology=prune Ext^1(HMbundle,P4^{-5})
-    apply(toList(0..6),i->hilbertFunction(i,H1cohomology))
+    apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
     betti F'
 
 
@@ -12860,12 +12704,12 @@ Description
                 0  1  2  3 4
     o4 = total: 1 18 35 20 2
              0: 1  .  .  . .
-	     1: .  .  .  . .
-	     2: .  .  .  . .
-	     3: .  .  .  . .
-	     4: .  3  .  . .
-	     5: . 15 35 20 .
-	     6: .  .  .  . 2
+             1: .  .  .  . .
+             2: .  .  .  . .
+             3: .  .  .  . .
+             4: .  3  .  . .
+             5: . 15 35 20 .
+             6: .  .  .  . 2
 
     o4 : BettiTally
     i5 : (d,sg)=(degree X, sectionalGenus X)
@@ -12878,10 +12722,10 @@ Description
                 -1  0  1 2 3  4  5  6  7   8
     o6 = total: 81 45 20 7 6 10 13 32 85 175
             -4:  1  .  . . .  .  .  .  .   .
-	    -3: 80 45 20 5 1  .  .  .  .   .
-	    -2:  .  .  . 2 .  .  .  .  .   .
-	    -1:  .  .  . . 5 10 10  2  .   .
-	     0:  .  .  . . .  .  3 30 85 175
+            -3: 80 45 20 5 1  .  .  .  .   .
+            -2:  .  .  . 2 .  .  .  .  .   .
+            -1:  .  .  . . 5 10 10  2  .   .
+             0:  .  .  . . .  .  3 30 85 175
 
     o6 : BettiTally
     i7 : k2=Ksquare(10,6,0)
@@ -12891,13 +12735,16 @@ Description
 
     o8 = true
     i9 : tally apply(decompose residualInQuintics(X),c->(dim c-1, degree c,
-	    (dim(c+X)-1 ,degree(c+X))))
+             (dim(c+X)-1 ,degree(c+X))))
 
     o9 = Tally{(1, 1, (0, 6)) => 5 }
-              (1, 4, (0, 24)) => 5
+               (1, 4, (0, 24)) => 5
 
     o9 : Tally
+
   Text
+    X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of
+    degree 15. The six secant lines are  twentyfive  (-1)-lines of X'.
     X has 25 six-secant lines. It is linked in a (5,5) complete intersection to a surface X' of degree 15. The six secant lines are twentyfive (-1)-lines of X'.
   CannedExample
     i10 : ci=ideal(gens X*random(source gens X,P4^{2:-5}));
@@ -12911,12 +12758,12 @@ Description
                  0 1  2  3 4
     o12 = total: 1 8 15 10 2
               0: 1 .  .  . .
-	      1: . .  .  . .
-	      2: . .  .  . .
-	      3: . .  .  . .
-	      4: . 3  .  . .
-	      5: . .  .  . .
-	      6: . 5 15 10 2
+              1: . .  .  . .
+              2: . .  .  . .
+              3: . .  .  . .
+              4: . 3  .  . .
+              5: . .  .  . .
+              6: . 5 15 10 2
 
     o12 : BettiTally
     i13 : betti tateResolutionOfSurface(X',7)
@@ -12924,10 +12771,10 @@ Description
                   -1   0  1  2  3  4 5  6  7   8
     o13 = total: 171 105 55 22 11 10 8 17 50 115
              -4:   1   .  .  .  .  . .  .  .   .
-	     -3: 170 105 55 20  1  . .  .  .   .
-	     -2:   .   .  .  2 10 10 5  .  .   .
-	     -1:   .   .  .  .  .  . .  2  .   .
-	      0:   .   .  .  .  .  . 3 15 50 115
+             -3: 170 105 55 20  1  . .  .  .   .
+             -2:   .   .  .  2 10 10 5  .  .   .
+             -1:   .   .  .  .  .  . .  2  .   .
+              0:   .   .  .  .  .  . 3 15 50 115
 
     o13 : BettiTally
     i14 : (d',sg')=(degree X',sectionalGenus X')
@@ -12947,21 +12794,22 @@ Description
 
     o17 : Ideal of P4
   Text
-    The surface X is the zero loci of a vector bundle, whose module of global sections is
+    The surface X is the zero loci of a vector bundle, whose
+    module of global sections is
   CannedExample
     i18 : HMBundle=coker transpose (syz transpose fX.dd_3)_{0..18};
     i19 : minimalBetti HMBundle
 
                   0  1  2 3
     o19 = total: 19 35 20 2
-              5:  4  .  . .
-	      6: 15 35 20 .
-	      7:  .  .  . 2
+               5:  4  .  . .
+               6: 15 35 20 .
+               7:  .  .  . 2
 
-    o19 : BettiTally
+     o19 : BettiTally
   Text
-    In the code we use the Horrocks-Mumford bundle to get X.
-    The construction of the Horrocks-Mumford bundle uses a monad:
+    In the code we use the Horrocks-Mumford bundle to get X. 
+    The construction of the Horrocks-Mumford bundle uses a monad:In the code we use the Horrocks-Mumford bundle to get X. The construction of the Horrocks-Mumford bundle uses a monad:
   CannedExample
     i20 : e=symbol e;
     i21 : E=kk[e_0..e_4,SkewCommutative=>true];
@@ -12973,12 +12821,11 @@ Description
     The matrix
   CannedExample
     i23 : diagonalMatrix{1,-1}*transpose alphad
-
+    
     o23 = | e_1e_4 -e_0e_2 -e_1e_3 -e_2e_4 e_0e_3 |
           | e_2e_3 e_3e_4  -e_0e_4 e_0e_1  e_1e_2 |
-
                   2      5
-    o23 : Matrix E  <-- E
+    o23 : Matrix E  <-- E                 
   Text
     is the famous Horrocks-Mumford matrix which leads to a Tate resolution of the following shape
   CannedExample
@@ -12988,25 +12835,26 @@ Description
                   -5 -4 -3 -2 -1 0 1  2  3  4   5
     o25 = total: 100 37 14 10  5 2 5 10 14 37 100
              -4: 100 35  4  .  . . .  .  .  .   .
-	     -3:   .  2 10 10  5 . .  .  .  .   .
-	     -2:   .  .  .  .  . 2 .  .  .  .   .
-	     -1:   .  .  .  .  . . 5 10 10  2   .
-	      0:   .  .  .  .  . . .  .  4 35 100
+             -3:   .  2 10 10  5 . .  .  .  .   .
+             -2:   .  .  .  .  . 2 .  .  .  .   .
+             -1:   .  .  .  .  . . 5 10 10  2   .
+              0:   .  .  .  .  . . .  .  4 35 100
 
     o25 : BettiTally
   Text
-    The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below is the module of global sections of the Horrocks-Mumford bundle.
+    The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
+    is the module of global sections of the Horrocks-Mumford bundle.
   CannedExample
     i26 : HMbundle= (prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4)))**P4^{-4}
 
     o26 = cokernel {7} | -x_1x_4 x_3^2 0     x_1x_3  x_4^2 0      0     x_2x_3  x_1^2 -x_2x_4 x_0^2   x_0x_2  0     0    -x_0x_3 0    0     0    0      0    0      0      x_2^2 0      0    0      0       x_0x_4 x_1x_2 x_0x_1 0      0    0       0      x_3x_4 |
                    {7} | x_2x_3  0     x_4^2 -x_0x_4 0     x_0x_3 x_1^2 0       0     x_0x_1  0       -x_3x_4 x_2^2 0    x_1x_2  0    x_3^2 0    0      0    x_0x_2 x_1x_4 0     0      0    0      -x_2x_4 0      0      0      x_0^2  0    -x_1x_3 0      0      |
                    {7} | 0       0     0     0       0     0      0     0       0     0       -x_1x_4 0       0     0    0       0    0     0    x_2x_4 0    0      x_2x_3 0     x_1x_3 0    0      0       0      x_4^2  0      0      0    0       0      x_1^2  |
-		   {7} | 0       0     0     0       0     0      0     -x_1x_4 0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    x_3x_4 x_3^2   0      0      0      x_2x_3 0    x_2^2   x_1x_2 0      |
-		   {8} | -x_0    -x_1  x_3   0       0     0      x_2   0       0     0       0       0       0     0    0       0    0     0    -x_1   0    0      0      -x_4  -x_4   0    -x_2   0       0      0      0      0      0    0       -x_3   0      |
-		   {8} | 0       -x_4  0     0       0     -x_1   0     0       0     0       0       0       0     0    0       x_0  0     0    -x_4   0    0      -x_3   0     0      0    0      0       x_2    0      0      0      0    0       0      0      |
-		   {8} | 0       0     -x_2  0       0     0      0     -x_4    0     0       0       0       0     0    0       0    0     x_0  0      0    x_1    0      0     0      0    0      0       -x_3   0      0      0      0    0       x_2    0      |
-		   {8} | 0       0     0     -x_2    x_1   0      0     0       0     0       0       0       0     0    0       0    0     x_4  0      -x_3 0      0      0     0      x_1  -x_0   0       0      0      0      0      0    0       0      0      |
+                   {7} | 0       0     0     0       0     0      0     -x_1x_4 0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    x_3x_4 x_3^2   0      0      0      x_2x_3 0    x_2^2   x_1x_2 0      |
+                   {8} | -x_0    -x_1  x_3   0       0     0      x_2   0       0     0       0       0       0     0    0       0    0     0    -x_1   0    0      0      -x_4  -x_4   0    -x_2   0       0      0      0      0      0    0       -x_3   0      |
+                   {8} | 0       -x_4  0     0       0     -x_1   0     0       0     0       0       0       0     0    0       x_0  0     0    -x_4   0    0      -x_3   0     0      0    0      0       x_2    0      0      0      0    0       0      0      |
+                   {8} | 0       0     -x_2  0       0     0      0     -x_4    0     0       0       0       0     0    0       0    0     x_0  0      0    x_1    0      0     0      0    0      0       -x_3   0      0      0      0    0       x_2    0      |
+                   {8} | 0       0     0     -x_2    x_1   0      0     0       0     0       0       0       0     0    0       0    0     x_4  0      -x_3 0      0      0     0      x_1  -x_0   0       0      0      0      0      0    0       0      0      |
 		   {8} | 0       0     0     0       -x_3  0      0     x_0     -x_2  0       0       0       0     0    0       -x_2 0     0    0      0    0      0      0     0      -x_3 0      x_1     0      0      0      0      0    x_4     0      0      |
 		   {8} | 0       0     0     0       0     x_2    0     0       0     0       x_4     0       0     0    0       0    0     0    0      x_4  0      0      0     -x_3   0    0      -x_0    0      0      0      0      0    0       0      -x_1   |
 		   {8} | 0       0     0     0       0     x_4    -x_3  -x_1    0     0       0       0       0     x_0  0       0    0     0    0      0    0      0      0     0      0    x_3    0       0      0      -x_2   0      0    0       0      0      |
@@ -13019,15 +12867,15 @@ Description
 		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    -x_4   -x_3    -x_1   -x_0   0      0      -x_2 0       0      0      |
 		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    0      0       0      0      -x_4   -x_3   x_3  -x_2    -x_1   -x_0   |
 
-                                  19
+                               19
     o26 : P4-module, quotient of P4
     i27 : minimalBetti HMbundle
 
                   0  1  2 3
     o27 = total: 19 35 20 2
               7:  4  .  . .
-	      8: 15 35 20 .
-	      9:  .  .  . 2
+              8: 15 35 20 .
+              9:  .  .  . 2
 
     o27 : BettiTally
     i28 : minimalBetti X
@@ -13043,8 +12891,10 @@ Description
 	      6: .  .  .  . 2
 
     o28 : BettiTally
+
   Text
-    The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the Tate resolution, cf. [EFS,Example 7.1].
+    The Hilbert function of the cohomology of the Horrocks-Mumford bundle is incoded in the
+    Tate resolution, cf. [EFS,Example 7.1].
   CannedExample
     i29 : H2cohomology=prune Ext^2(HMbundle,P4^{-5})
 
@@ -13061,11 +12911,11 @@ Description
 		   | 0   0    0   0   0    0   x_4 -x_3 x_2  x_0 0    0    0   0   x_1 |
 		   | 0   0    0   0   0    0   0   0    0    0   -x_4 -x_3 x_2 x_1 x_0 |
 
-                                   5
+		                   5
     o30 : P4-module, quotient of P4
-    i31 : apply(toList(0..6),i->hilbertFunction(i,H1cohomology))
+    i31 : apply(toList(1..6),i->hilbertFunction(i,H1cohomology))
 
-    o31 = {5, 10, 10, 2, 0, 0, 0}
+    o31 = {10, 10, 2, 0, 0, 0}
 
     o31 : List
     i32 : betti F'
@@ -13073,34 +12923,27 @@ Description
                   -5 -4 -3 -2 -1 0 1  2  3  4   5
     o32 = total: 100 37 14 10  5 2 5 10 14 37 100
              -4: 100 35  4  .  . . .  .  .  .   .
-	     -3:   .  2 10 10  5 . .  .  .  .   .
-	     -2:   .  .  .  .  . 2 .  .  .  .   .
+             -3:   .  2 10 10  5 . .  .  .  .   .
+             -2:   .  .  .  .  . 2 .  .  .  .   .
 	     -1:   .  .  .  .  . . 5 10 10  2   .
 	      0:   .  .  .  .  . . .  .  4 35 100
 
     o32 : BettiTally
- 
 
 References
+   \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
 
-     Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81
+   \textit{Comessatti, A.}, Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
+   
+   \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735-755
+  
+   \textit{Decker, W., Schreyer, F-O.}, On the uniqueness of the {Horrocks}-{Mumford}-bundle, Math. Ann., 273,(1986),415-443
 
-     Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
-
-     Barth, W., Hulek, K., Moore, R., Degenerations of Horrocks-Mumford surfaces, Math. Ann.,277, (1987), 735-755
-
-     Decker, W., Schreyer, F-O., On the uniqueness of the Horrocks-Mumford-bundle, Math. Ann., 273, (1986), 415-443
-
-     Eisenbud, D., Fl\o ystad, G., Schreyer, F-O., Sheaf cohomology and free resolutions over exterior algebras, Trans. Amer. Math. Soc., 355, (2003), 4397-4426
+   \textit{Eisenbud, D., Fl\o ystad, G., Schreyer, F-O.}, Sheaf cohomology and free resolutions over exterior algebras ,Trans. Amer. Math. Soc., 355,(2003), 4397-4426
 
 SeeAlso
   searchHMBundle
 ///
--*
-UL{{"Horrocks, G., Mumford, D., A rank 2 vector bundle on P^4 with 15,000 symmetries, Topology ,212, (1973), 63-81"},
-   {"Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71"},
-   },*-
-
 -* for CannedExample abelianSurfaceD15
   Example
    kk=ZZ/nextPrime 10^3;
@@ -15875,7 +15718,7 @@ Description
     i10 : fivePoints=pent_0+pent_1;
 
     o10 : Ideal of GF 256[x ..x ]
-                           0   4
+    0   4
     i11 : (dim fivePoints,degree fivePoints) == (1,5)
 
     o11 = true
