@@ -1320,13 +1320,13 @@ L0
 ///
 
 
-specificSchreyerSurface=method()
+specificSchreyerSurface=method(Options=>{Verbose=>true})
 --Input: k an integer
 --Output a specific schreyer surface
-specificSchreyerSurface(Ring,Number) := (P4,k) -> (
+specificSchreyerSurface(Ring,Number) := o -> (P4,k) -> (
     (Ms,Types):=exampleOfSchreyerSurfaces(P4);
     X:=schreyerSurfaceFromModule(Ms_k);
-    <<Types_k <<endl;
+    if o.Verbose then <<Types_k <<endl;
     X)
 
 enriquesSurfaceD11S10 = method()
@@ -4681,12 +4681,27 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 document {
 Key => schreyerSurfaces,
 Headline => "functions concerning Schreyer surfaces (8 families)",
-   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
+   PARA{"[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
-   In the following, we give an overview of the functions used in that search.",
+   In the following, we give an overview of the functions used in that search."},
+
+   EXAMPLE {"chiITable(11,10,1)"},
+
+   PARA{"The H^1-module of the ideal sheaf has Hilbert function (1,5,5). A general module with this Hilbert function is determined by a 
+       10-dimension subspace of H^0(P4,O(2)) and has syzygies"},
+
+   EXAMPLE {"kk=ZZ/3;P4=kk[x_0..x_4]; M = coker random(P4^1,P4^{10:-2});minimalBetti M"},
+
+   PARA{"What is needed is a 10-dimensional subspace with leads to a module with betti table"},
+
+   EXAMPLE {"(Ms,types)=exampleOfSchreyerSurfaces P4; minimalBetti Ms_1 "},
    
-   PARA{},
+   PARA{"that is a module with two extra second syzygy.
+        We have  found 9 families of such modules, with one family leading to an 
+        Enriques surface.
+       "},
+
      SUBSECTION "From modules to surfaces",
      UL{
         TO schreyerSurfaceFromModule,
@@ -4716,9 +4731,28 @@ document {
 Key => aboRanestadSurfaces,
 Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
    "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
-    Reviewing their construction we found altogether 7 families. 
-    Most of these components are unirational.",
-   
+    Reviewing their construction we found altogether 7 families",
+
+    PARA{"The Tate resolution of the ideal sheaf has the following shape:"},
+
+EXAMPLE{"chiITable(12,13,1)"},
+
+
+PARA{"In the Tate resolution there are a 4x2 and a 2x3 matrices with linear entries in E. 
+Thus we get maps P3 -> G(2,5) and P2 -> G(2,5). 
+These matrices can be completed to a differential of the Tate resolution 
+if these image intersect in at least 4 points with corresponding rows spann the row space of the 4x2 matrix.
+ We normalize the 2x3 matrix as follows:"},
+
+EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
+
+PARA{"The variety of matrices m4x2 with 4 intersection points is unirational. 
+To find example with 5, 6 or 7 intersection points can be achieved by search over a 
+finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
+wich also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
+which intersect in four point and get to specify two more intersection points gives 
+an another unirational component. To get 7 or 8 intersection points can be achieved by searching.
+"},   
    PARA{},
      SUBSECTION "From matrices to surfaces",
      UL{
@@ -4786,6 +4820,17 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
 characteristic 2 has a Tate resolution for the ideal sheaf o shape",
 
+PARA{"A regular smooth surface X of degree 12, sectional genus 13 and 
+Euler characteristic 2 has a Tate resolution for the ideal sheaf of shape:"},
+EXAMPLE {"chiITable(12,13,2)"},
+
+PARA {"We construct the surface from the 3x1 and 3x4 linear matrices 
+in the Tate resolution, which define a line and a Bordiga surface. 
+These matrices can be completed to a differential of the Tate resolution, 
+if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. In some special cases we choose the Bordiga matrix to have some rank 1 points. For further details we refer to the code and the decription in
+
+Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an update, preprint (2026)."
+},
     
    PARA{},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
@@ -7238,6 +7283,7 @@ doc///
 Key
  specificSchreyerSurface
  (specificSchreyerSurface, Ring, Number)
+ [specificSchreyerSurface, Verbose]
 Headline
  compute a smooth Schreyer surface with given H^1-module
 Usage
@@ -7926,7 +7972,6 @@ Description
     (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
     This function verifies this assertion in an example.
   CannedExample
-<<<<<<< HEAD
     i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
     i3 : n=7;
     i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
@@ -8052,10 +8097,11 @@ CannedExample
 	  |                                                                              (2, 2, 2, 11) => 1   |
 	  +---------------------------------------------------------------------------------------------------+
     o110 = true
+*-
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
-///
+
 
 
 /// -*to get four 6-secant lines define over kk *-
