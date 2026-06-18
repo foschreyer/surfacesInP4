@@ -5,7 +5,7 @@ needsPackage"NongeneralTypeSurfacesInP4"
 elapsedTime installPackage "NongeneralTypeSurfacesInP4" -- 38.7084s elapsed
 
 viewHelp "NongeneralTypeSurfacesInP4"
-;
+
 check "NongeneralTypeSurfacesInP4"
 
 
@@ -1674,10 +1674,10 @@ specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
       6*E_0-4*E_1-2*E_2+2*E_3+7*E_4}, {3*E_1+5*E_2+3*E_3+5*E_4,
       5*E_1+5*E_2+5*E_3+5*E_4}, {-8*E_0+3*E_1+7*E_2+4*E_3-3*E_4,
       -9*E_0+5*E_1+7*E_2-5*E_3-3*E_4}},
-    matrix {{7*E_0+8*E_1-2*E_2+8*E_3+2*E_4, -8*E_0+8*E_1-8*E_2-E_3+8*E_4},
-      {-7*E_0+4*E_1-6*E_2+7*E_3-2*E_4, 9*E_0+6*E_1-4*E_2-9*E_3+5*E_4},
-      {-2*E_0+8*E_1-2*E_3+8*E_4, 4*E_0-9*E_1+4*E_3-9*E_4},
-      {-8*E_0-9*E_1-9*E_2+5*E_3-7*E_4, 6*E_0+6*E_1+9*E_2-E_3-E_4}},
+     matrix {{-8*E_0-8*E_1-6*E_2+8*E_3-E_4, -E_0+6*E_1+E_3},
+      {-3*E_0+5*E_1-8*E_2-5*E_3+3*E_4, 7*E_0-5*E_1+E_2-E_3+2*E_4},
+      {4*E_0+5*E_1-8*E_2+2*E_3-8*E_4, 4*E_0-7*E_1+5*E_2+2*E_3+5*E_4},
+      {-9*E_0+7*E_1+3*E_2+7*E_3+3*E_4, -5*E_0+4*E_1-3*E_2-6*E_3+9*E_4}},
     matrix {{8*E_0+9*E_1+E_2, -9*E_0+3*E_1-7*E_2}, {-6*E_0+E_1-3*E_2,
       -3*E_0-5*E_1-8*E_2}, {-8*E_0+9*E_1-7*E_2-6*E_3+7*E_4,
       8*E_0+E_1+9*E_2+6*E_3-9*E_4}, {-2*E_0-5*E_1-7*E_2-9*E_3+2*E_4,
@@ -7797,7 +7797,7 @@ Description
 	    (X,adj)=specificAboRanestadSurface(P4,E,k);
 	    R=residualInQuintics X;
             ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, degree (radical c+X)));
+		(dim c, degree c, degree radical c, genus c, degree (radical c+X)));
 	    m4x2=matrixFromAboRanestadSurface(X);
 	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
 	    (k, degree pts+1==adj_1,adj,ta)
@@ -7838,6 +7838,77 @@ Description
     i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
     i3 : n=7;
     i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+    -- 4.75132s elapsed
+    i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    i6 : (degree pts,degree vP2,degree vP3,degree g25)
+
+    o6 = (6, 4, 8, 5)
+
+    o6 : Sequence
+    i7 : degree pts==n-1
+
+    o7 = true
+    i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
+    i9 : L0_1==n and degree pts==n-1
+
+    o9 = true
+    i10 : (d,sg)=(degree X,sectionalGenus X)
+
+    o10 = (12, 13)
+
+    o10 : Sequence
+    i11 : Ksquare(12,13,1)==-12
+
+    o11 = true
+    i12 : LeBarzN6(12,13,1)==8
+
+    o12 = true
+  Text
+    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
+  CannedExample
+    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+    i16 : elapsedTime netList apply(7,k->(
+	    (X,adj)=specificAboRanestadSurface(P4,E,k);
+	    R=residualInQuintics X;
+	    ta=tally apply(primaryDecomposition R,c->
+		(dim c, degree c, c==radical c, genus c, degree (c+X)));
+	    m4x2=matrixFromAboRanestadSurface(X);
+	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
+	    (k, degree pts+1==adj_1,adj,ta)
+	    ))
+    -- 237.434s elapsed
+
+          +----------------------------------------------------------------------------------------------------------+
+    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, true, 0, 6) => 1})   |
+          +----------------------------------------------------------------------------------------------------------+
+	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, true, -1, 12) => 1}) |
+	  +----------------------------------------------------------------------------------------------------------+
+	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, true, -2, 18) => 1}) |
+	  +----------------------------------------------------------------------------------------------------------+
+	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, true, -1, 12) => 2})|
+	  +----------------------------------------------------------------------------------------------------------+
+	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, true, 0, 11) => 1})  |
+	  +----------------------------------------------------------------------------------------------------------+
+	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, true, 0, 6) => 1 })  |
+	  |                                                                              (2, 2, true, 0, 11) => 1    |
+	  +----------------------------------------------------------------------------------------------------------+
+	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, true, 0, 6) => 2 })  |
+	  |                                                                              (2, 2, true, 0, 11) => 1    |
+	  +----------------------------------------------------------------------------------------------------------+
+  Text
+     Note that the number of (-1)-lines + the number of 6-secant lines is
+     always equal to 8. In the cases
+     4,5 and 6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
+     in the plane V(x_3,x_4).
+SeeAlso
+   adjunctionProcessData
+   aboRanestadSurface
+///
+-*
+CannedExample
+    i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    i3 : n=7;
+    i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
     -- 4.98627s elapsed
     i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
     i6 : (degree pts,degree vP2,degree vP3,degree g25)
@@ -7869,7 +7940,7 @@ Description
 	    (X,adj)=specificAboRanestadSurface(P4,E,k);
 	    R=residualInQuintics X;
 	    ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, degree (radical c+X)));
+		(dim c, degree c, radical c, degree (radical c+X)));
 	    m4x2=matrixFromAboRanestadSurface(X);
 	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
 	    (k, degree pts+1==adj_1,adj,ta)
@@ -7894,16 +7965,24 @@ Description
 	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, 1, 6) => 2 }) |
 	  |                                                                              (2, 2, 2, 11) => 1   |
 	  +---------------------------------------------------------------------------------------------------+
-  Text
-     Note that the number of (-1)-lines + the number of 6-secant lines is
-     always equal to 8. In case 3 there is a 6-secant line of multiplicity. In the case
-     4,5,6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
-     in the plane V(x_3,x_4).
-SeeAlso
-   adjunctionProcessData
-   aboRanestadSurface
-///
+*-
 
+/// -*to get four 6-secant lines define over kk *-
+kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+count=0;elapsedTime while (
+    (X,m4x2) = aboRanestadSurface(P4,4);
+    R=residualInQuintics X;
+    cR=primaryDecomposition R;
+    ta=tally apply(cR,c->
+		(dim c, degree c, degree radical c, degree (radical c+X)));
+    <<"tally of cR = "<<ta <<endl; 
+    not (dim R==2 and #cR==4)) do (count=count+1);count
+
+ta=tally apply(primaryDecomposition R,c->
+		(dim c, degree c, degree radical c, genus c, degree (radical c+X)))
+
+toString m4x2
+///
 -* 
 for CannedExample of aboRanestadSurface
   Example
