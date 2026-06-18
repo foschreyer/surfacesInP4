@@ -2,7 +2,7 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-elapsedTime installPackage "NongeneralTypeSurfacesInP4"
+elapsedTime installPackage "NongeneralTypeSurfacesInP4"  -- 34.8411s elapsed
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -4583,6 +4583,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO enriquesSurfaceOfDegree10,
 	TO enriquesSurfaceD11S10,
 	TO K3surfaces,
+	TO aboSurfaces
         },
     SUBSECTION "Irregular surface",
      UL{
@@ -4697,9 +4698,9 @@ Headline => "functions concerning Schreyer surfaces (8 families)",
 
    EXAMPLE {"(Ms,types)=exampleOfSchreyerSurfaces P4; minimalBetti Ms_1 "},
    
-   PARA{"that is a module with two extra second syzygy.
-        We have  found 9 families of such modules, with one family leading to an 
-        Enriques surface.
+   PARA{"that is a module with at least two extra second syzygy.
+        We have  found 9 families of such modules, with one family leading to  
+        Enriques surfaces.
        "},
 
      SUBSECTION "From modules to surfaces",
@@ -4750,7 +4751,8 @@ PARA{"The variety of matrices m4x2 with 4 intersection points is unirational.
 To find example with 5, 6 or 7 intersection points can be achieved by search over a 
 finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
 wich also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
-which intersect in four point and get to specify two more intersection points gives 
+which intersect in four point and specifying  two more intersection points 
+in the Grassmannian gives 
 an another unirational component. To get 7 or 8 intersection points can be achieved by searching.
 "},   
    PARA{},
@@ -4820,8 +4822,8 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
 characteristic 2 has a Tate resolution for the ideal sheaf o shape",
 
-PARA{"A regular smooth surface X of degree 12, sectional genus 13 and 
-Euler characteristic 2 has a Tate resolution for the ideal sheaf of shape:"},
+PARA{"A regular smooth surface X of degree 12, sectional genus 13 and geometric genus
+pg=1 has a Tate resolution for the ideal sheaf of shape:"},
 EXAMPLE {"chiITable(12,13,2)"},
 
 PARA {"We construct the surface from the 3x1 and 3x4 linear matrices 
