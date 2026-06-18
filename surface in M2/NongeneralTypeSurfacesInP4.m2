@@ -4839,7 +4839,6 @@ Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an upda
      UL{
 	TO aboSurfaceFromMatrix,
         TO testMatrix1,
-	TO testMatrix2,	
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO collectAboSurfaces,
@@ -4863,6 +4862,24 @@ Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an upda
 	TO selfIntersectionNumber,
 	},
 }
+
+/// -* searching 111135 abo surface *-
+kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+types={}
+elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+elapsedTime type=partitionOfCanonicalDivisorOfAboSurface X
+setRandomSeed("start 111135 search")
+count=0;elapsedTime while (
+    (X,m3x4)=randomAboSurface(P4,E);
+    type=partitionOfCanonicalDivisorOfAboSurface X;
+    type != {1, 1, 1, 1, 3, 5} ) do (
+          count=count+1;
+          <<"count = " <<count<<", type = " <<type <<endl;
+	  types=append(types,type))
+toString m3x4    
+tally types
+
+///
 
 document {
 Key => surfacesOfKodairaDimension1,
