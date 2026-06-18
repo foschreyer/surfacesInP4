@@ -446,7 +446,6 @@ delPezzoSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     assert(degree X ==4 and dim X==3);
     X)
 
-
 castelnuovoSurface=method()
 -- A Castelnuovo surface (B1.7)
 --     PURPOSE : Construct a Castelnouvo surface, a rational surface of degree 5 in a projective fourspace P4
@@ -530,18 +529,24 @@ P2=kk[y_0..y_2]
 pencil=ideal(y_0*(y_1-y_2),y_1*(y_0-y_2))
 decompose pencil
 
-
-
 ///
 
 ionescuOkonekSurfaceD8S5=method()
+-- A rational surface of degree 8 and sectional genus 5 (B1.10)
+--     PURPOSE : Construct a rational surface of degree 8 and sectional genus 5 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--             : 'P2', the ring of P2
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function constructs a rational surface of degree 8 and sectional genus 5 via the linear system of plane septics passing through one simple point and ten double points on a plane   
 -- Maybe this is a Ionescu  Okonek surface -- fix rename
 ionescuOkonekSurfaceD8S5(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    -- 'H' is the union of one simple point and ten double points on a plane   
     H:= intersect (apply(10,i->(ideal random(P2^1,P2^{2:-1}))^2)|{ideal random(P2^1,P2^{2:-1})});
+    -- 'X' is the image of 'P2' under the polynomial map represented by five plane sextics passing through 'H'
     X:= trim ker map(P2,P4,gens H);
+    -- Check whether 'X' is a surface of degree 8 and sectional genus 5
     assert(dim X==3 and degree X==8 and sectionalGenus X==5);
     X)
-
 
 degree8AlexanderSurface=method()
 -- Maybe this is a Ionescu  Okonek surface -- fix rename
@@ -551,14 +556,33 @@ degree8AlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     assert(dim X==3 and degree X==8 and sectionalGenus X==5);
     X)
 
-
 nonspecialAlexanderSurface=method()
+-- A rational surface of degree 9 and sectional genus 6 (B1.12)
+--     PURPOSE : Construct a rational surface of degree 9 and sectional genus 6 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function finds a module M of finite length with Hilbert functions (3,5,1), and it constructs a rational surface of degree 9 and sectional genus 6 as the cokernel of the map from F := 6*OO to the sheafified first syzygy module Syz_1(M) of M.
+--     COMMENT : If the user chooses the pair of the ring 'P4' of P4 and the ring 'P2' of P2 as input, then The function constructs a rational surface of degree 9 and sectional genus 6 via the linear system of plane curves of degree 13 passing through ten quadruple points
 nonspecialAlexanderSurface(PolynomialRing) := P4 -> (
+    -- Define a map 'L' : 'P4'^{3:-1,15:-2} -> 'P4'^{1:0} 
     betti(L :=matrix{{P4_0,P4_1,P4_2}}|random(P4^1,P4^{15:-2}));
+    -- Define a map 'L2': P4'^{3:-1,15:-2} -> 'P4'^{3:-1} by concatenating the map from 'P4'^{3:-1} to 'P4'^{3:-1} and a randomly chosen map from 'P4'^{15:-2} to 'P4'^{3:-1} horizontally
     betti(L2 :=map(P4^{3:-1},P4^{3:-1},0)|random(P4^{3:-1},P4^{15:-2}));
+    -- Concatenate the transposes of 'L' and 'L2' side by side and transpose the resulting map 'N'
     betti (N:=transpose (transpose L| transpose L2));
+    -- Compute the resolution of 'N'. 
     betti (fN:=res coker N);
+    -- The transpose of the 4th differential of 'fN' is the presentation matrix of the first syzygy module Syz_1(M) of M. The surface 'X' is defined to be the cokernel of a map from 6*OO to Syz_1(M) 
     X:=trim ideal (fN.dd_4*syz fN.dd_4^{16..21});
+    -- Check whether 'X' is a surface of degree 9 and sectional genus 6
+    assert(dim X==3 and degree X==9 and sectionalGenus X==6);
+    X)
+nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
+    -- 'h1' is the ideal of ten quadruple points
+    betti(h1:=intersect apply(10,c->(ideal random(P2^1,P2^{2:-1}))^4));
+    -- 'X' is the image of 'P2' under the map associated with the linear system of degree-10 curves passing through the quadruple points
+    X:=trim ker map(P2,P4,(gens h1)_{0..4});
+    -- Check whether 'X' is a surface of degree 9 and sectional genus 6
     assert(dim X==3 and degree X==9 and sectionalGenus X==6);
     X)
 
@@ -574,39 +598,49 @@ enriquesSurfaceOfDegree9(PolynomialRing) := P4 -> (
     assert(dim X==3 and degree X==9 and sectionalGenus X==6);
     X)
 
-nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
-    --tenPts = minors(4,random(P4^5,P4^{4:-1})); via Hilbert-Burch
-    --elapsedTime betti (h1=saturate (tenPts^4)) could be alternative
-    betti(h1:=intersect apply(10,c->(ideal random(P2^1,P2^{2:-1}))^4));
-    X:=trim ker map(P2,P4,(gens h1)_{0..4});
-    assert(dim X==3 and degree X==9 and sectionalGenus X==6);
-    X)
-
-
 specialityOneAlexanderSurface=method()
--- Considering the Tate resolution simplifies the construction
--- Linkage with two quartics is reducible, known the condition on points
+-- A rational surface of degree 9 and sectional genus 7 (B1.13)
+--     PURPOSE : Construct a rational surface of degree 9 and sectional genus 7 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--             : 'E', the exterior algebra
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function finds a morphism from F = Omega^3(3) ++ Omega^2(2) to G = 2*Omega^1(1)++OO_P4, and it constructs the ideal sheaf of a rational surface of degree 9 and sectional genus 7 as its dependency locus 
+--    COMMENTS : This function uses the command 'symExt' in the BGG package. This may fail if the characteristic of the field is small 
 specialityOneAlexanderSurface(PolynomialRing,Ring) := (P4,E) -> (
     b1:=gens trim ideal(basis(2,E)%ideal(E_0,E_1))|matrix{{E_0,E_1}};
+    -- 'bb' is a graded E-module homomorphism from 'E'^{1:0,1:-1} to 'E'^{3:-2,2:-1}, which represents a morphism from G^* to F^*
     bb:=b1||random(E^{1},source b1);
+    -- Compute the syzygies of 'bb', whose transpose corresponds to the morphism from F to G
     T:=res(coker bb,LengthLimit=>3);
-    -- For the function symExt see the package BGG.
+    -- 'X' is defined as the cokernel of the morphism from F to G
     X:=trim saturate ideal syz symExt(T.dd_3,P4);
+    -- Check whether 'X' is a surface of degree 9 and sectional genus 7
     assert(dim X==3 and degree X== 9 and sectionalGenus X==7);
     X)
 
-
-
 degree10pi8RanestadSurface=method()
--- see the paper for motivation of this construction and compare with enriquesSurfaceOfDegree10
-degree10pi8RanestadSurface(PolynomialRing) := P4 -> (   
+-- A rational surface of degree 10 and sectional genus 8 (B1.14)
+--     PURPOSE : Construct a rational surface of degree 10 and sectional genus 8 in a projective fourspace P4
+--       INPUT : 'P4', the ring of P4
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function finds a suitable morphism from 5*OO_P4(1) ++ 2*OO_P4 to 2*OO_P4(2) and its cokernel M, and it constructs the ideal sheaf of a rational surface of degree 10 and sectional genus 8 as the dependency locus of a morphism from F = Omega^3(3) to the first syzygy module G of M
+--    COMMENTS : See the paper (need to specify it) for motivation of this construction and compare with enriquesSurfaceOfDegree10. See the paper for motivation of this construction and compare with enriquesSurfaceOfDegree10
+degree10pi8RanestadSurface(PolynomialRing) := P4 -> (
+    -- Define a morphism 'a1' from 5*OO_P4 to 2*OO_P4(1)  
     a1:=transpose matrix apply (5,i->{P4_i,random(0,P4)*P4_i});
+    -- Define a morphism 'a2' from 2*OO_P4(-1) to 2*OO_P4(1)  
     a2:=map(P4^1,P4^{2:-2},0)||matrix{{sum(3,i->random(0,P4)*P4_i^2),sum(2,i->random(0,P4)*P4_(i+3)^2)}};
+    -- Concatenate 'a_1' and 'a2' horizontally to create a morphism 'aa' from 5*OO_P4 ++ 2*OO_P4(-1) to 2*OO_P4(1)  
     aa:=map(P4^2,,a1|a2);
+    -- Compute a resolution of 'aa' up to length 4
     faa:=res(coker aa,LengthLimit=>4);
+    -- Define 'b1' to be a 15x14 submatrix of 'faa.dd_3'
     b1:=faa.dd_3^{0..14}_{0..13};
+    -- 'm15x5' induces a map from Omega^3(3) to the sheafified first syzygy module Syz_1(M) of the cokernel M of aa
     m15x5:=syz transpose syz (transpose (b1*random(source b1,P4^{1:-4})),DegreeLimit=>-3);
+    -- 'X' is defined as the dependency locus of a map from Omega^3(3) to Syz_1(M)
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
+    -- Check whether 'X' is a surface of degree 10 and sectional genus 8
     assert(dim X==3 and degree X==10 and sectionalGenus X==8);
     X)
 
@@ -627,32 +661,49 @@ tex betti res coker random(P4^{2:-2},P4^{5:-3,2:-4})
 tex betti res coker random(P4^{2:-2},P4^{5:-3})
 ///
 
-
-
 degree10pi9RanestadSurface=method()
--- using the Tate resolution simplifies the construction
+-- A rational surface of degree 10 and sectional genus 9 (B1.16)
+--     PURPOSE : Construct a rational surface of degree 10 and sectional genus 9 in a projective fourspace P4 with one 6-secant line
+--       INPUT : 'P4', the ring of P4
+--             : 'E', the exterior algebra
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function constructs the ideal sheaf of a rational surface of degree 10 and sectional genus 9 as the dependency locus of the morphism from F = 2*Omega^3(3) to G = OO_P4 ++ Syz_1(M), where M is the cokernel of a morphism from 
+--    COMMENTS : See the paper (need to specify it) for motivation of this construction and compare with enriquesSurfaceOfDegree10
+--               using the Tate resolution simplifies the construction
 degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
+    -- In the next two lins, construct an 'E'-module homomorphism 'a2' from 'E'^{2:-2} ++ 'E'^{2:-3}' to 'E'^{2:0}, whose transpose corresponds to a map 2*Omega^3(3) -> 2*Omega^1(1) ++ 2O.  
     a1:=(syz matrix{{E_0,E_1}})*random(E^{3:-1},E^{2:-2});
     a2:=map(E^2,,random(E^2,E^{2:-3})|transpose a1);
+    -- Compute the resolution of the cokernel of 'a2' up to length 4
     T :=res(coker a2,LengthLimit=>4);
+    -- Define the ideal sheaf of 'X' by computing its presentation matrix corresponding to the differential 'T.dd_4' of 'T' 
     X := saturate ideal syz symExt(T.dd_4,P4);
+    -- Check whether 'X' is a surface of degree 10 and sectional genus 9
     assert(dim X ==3 and degree X==10 and sectionalGenus X==9);
     X)
 
-
-
-
 degree10DESSurface=method()
+-- A rational surface of degree 10 and sectional genus 9 (B1.15)
+--     PURPOSE : Construct a rational surface of degree 10 and sectional genus 9 in a projective fourspace P4 with no 6-secant lines
+--       INPUT : 'P4', the ring of P4
+--             : 'E', the exterior algebra
+--      OUTPUT : an ideal 
+-- DESCRIPTION : The function finds a morphism from F = 2*Omega^3(3) to G = 2*Omega^1(1) ++ OO_P4 and constructs constructs the ideal sheaf of a rational surface of degree 10 and sectional genus 9 as its dependency locus
+--    COMMENTS : The function uses the command 'symExt' in the BGG package
 degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
+    -- Define a map bb: 2*'E'(-2)++'E'(-3) -> 2'E', whose transpose can be interpreted as a map from F to G
     bb:=random(E^2,E^{2:-2,-3});
+    -- Compute the resolution of 'bb' up to length 3
     betti (T:= res(coker bb,LengthLimit=>3));
-    -- The function symExt from the package BGG computes from a differential in a Tate resolution
-    -- above the regularity (hence a linear differential)
-    -- over the exterior algebra E the linear presentation matrix
-    -- of the corresponding sheaf on P4 (and vice versa from P4-modules to E-modules).
+    -- Define the ideal sheaf of 'X' by computing its presentation matrix corresponding to the differential 'T.dd_4' of 'T' 
+    -- %The function symExt from the package BGG computes from a differential in a Tate resolution
+    -- %above the regularity (hence a linear differential)
+    -- %over the exterior algebra E the linear presentation matrix
+    -- %of the corresponding sheaf on P4 (and vice versa from P4-modules to E-modules).
     X := saturate ideal syz symExt(T.dd_3,P4);
-    -- In this particular case symExt(T.dd_3,P4) is a 28x15 matrix whose kernel has rank 1
-    -- and is given by the quintics in the ideal of desired X.
+    -- Check whether 'X' is a surface of degree 10 and sectional genus 9
+    -- %In this particular case symExt(T.dd_3,P4) is a 28x15 matrix whose kernel has rank 1
+    -- %and is given by the quintics in the ideal of desired X.
     assert(dim X ==3 and degree X==10 and (genera X)_1==9);
     X)
 ///
