@@ -393,6 +393,14 @@ degree D
 selfIntersectionNumber(X,D)
 ///
 
+-- Symbols
+--      Pn : projective n-space
+--   OO_Pn : the structure sheaf of Pn
+--    F(d) : the sheaf twisted by d
+-- Omega^1 : the sheaf of differen
+-- Omega^i : the ith exterior power of Omega^i
+--  F ++ G : the direct sum of sheaves F and G
+--     a*F : the direct sum of a copies of a sheaf F
 
 -* rational surfaces *-
 
