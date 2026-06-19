@@ -1922,34 +1922,51 @@ L_0  ,minimalBetti L_3
 ///
    
 
-
-
-
-
-
-
-
 veroneseImagesInG25=method()
+--     PURPOSE : Find the intersection points of the Veronese surface and the Veronese threefold associated with the 3x2 and 2x4 matrices with linear entries in the Beilinson monad 
+--       INPUT : 'm4x2', a 4x2 matrix (the 2x3 matrix 'm2x3'is fixed) 
+--      OUTPUT : 'vero2', the ideal of the Veronese embedding of the column space of the 3x2 matrix in P9 
+--             : 'vero3', the ideal of the Veronese embedding of the row space of the 2x4 matrix in P9
+--             : 'pts', the ideal of the intersection of 'vero2' oand 'vero3'
+--             : 'g25', the ideal of the Grassmaniann of lines in P4 
 veroneseImagesInG25(Matrix) := m4x2 -> (
+    -- 'E' is the dual exterior algebra
     E:=ring m4x2;
+    -- Choose an explicit 2x3 'm2x3' matrix with linear entries from 'E' 
     m2x3 := matrix{{E_0,E_1,E_3},{E_1,E_2,E_4}};
+    -- 'kk' is the coefficient ring of 'E'
     kk:=coefficientRing E;
     y:= symbol y;
+    -- 'P3' is the ring of P3
     P3:=kk[y_0..y_3];
+    -- 'ExP3' is the tensor product of 'E' and 'P3' over 'kk'
     ExP3:=E**P3;
+    -- Promote the monomial basis for the degree-2 part of 'E' to 'ExP3'
     ef:=sub(basis(2,E),ExP3);
+    -- 'a3' is the matrix of the first three variable of 'P3' 
     a3:=(vars P3)_{0..2};
+    -- 'a4' is the matrix of variables of 'P3'
     a4:=vars P3;
+    -- 'a3' is the generic element of the column space of 'm2x3'  
     a3':=sub(a3,ExP3)*sub(transpose m2x3,ExP3);
+    -- 'paraP2' is the coefficient vector of the wedge product of the entries of 'a3'' with respect to 'ef'
     paraP2:=sub(contract(ef,a3'_(0,0)*a3'_(0,1)),P3);
+    -- 'a4' is the generic element of the row space of 'm4x2' 
     a4':=sub(a4,ExP3)*sub(m4x2,ExP3);
+    -- 'paraP3' is the coefficient vector of the wedge product of the entries of 'a4'' with respect to 'ef'
     paraP3:=sub(contract(ef,a4'_(0,0)*a4'_(0,1)),P3);
     p:=symbol p;
+    -- 'P9' is the ring of P9
     P9:=kk[p_0..p_9];
+    -- 'g25' is the ideal of the Grassmaniann of lines in P4
     g25:=pfaffians(4,genericSkewMatrix(P9,p_0,5));
+    -- 'veroP2' is the ideal of the image of the coolumn space of 'm2x3' under 'paraP2'
     veroP2:=ker map(P3,P9,paraP2);
+    -- 'veroP3' is the ideal of the image of the coolumn space of 'm4x2' under 'paraP2'
     veroP3:=ker map(P3,P9,paraP3);
+    -- Check whether 'veroP2' and 'veroP3' are contained in 'g25' 
     assert(veroP2+g25==veroP2 and veroP3+g25==veroP3);
+    -- Compute the intersection of 'veroP2' and 'veroP3'
     pts:=trim(veroP2+veroP3);
     (pts,veroP2,veroP3,g25))
     
