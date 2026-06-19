@@ -1663,6 +1663,7 @@ numgens I==120-n
 
 ///    
 
+-- % The command below does not appear in the documentation. 
 aboRanestadSurface=method(Options=>{Verbose=>false,Smooth=>true,Special=>0})
 --        PURPOSE : Find a surface with degree 12, sectional genus 13, and Euler characiteristic 1 with designated number of (-1) lines
 --          INPUT : 'P4', the ring of P4
@@ -1973,9 +1974,20 @@ veroneseImagesInG25(Matrix) := m4x2 -> (
     
 
 aboRanestadSurfaceFromMatrix=method(Options=>{Verbose=>false,Smooth=>true})
+--        PURPOSE : Use the 4x2 matrix with linear entries in five variables to construct a surface with degree 12, sectional genus 13, and Euler characiteristic 1, whose ideal sheaf has a minimal cohomology
+--          INPUT : 'P4', ring of P4
+--                  'm4x2', 4x2 matrix with linear entries from the dual exterior algebra E
+--         OUTPUT : 'X', an ideal of an AR surface,
+-- OPTIONAL INPUT : Vervose => a Boolean value, default value false, whether to return the numbers of trials until the first success of finding the desired Beilinson monad and nonsingular surface with desired invariants 
+--                  Smooth  => a Boolean value, default value true, whether to return the ideal of the surface without checking its smoothness
 aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
+    -- 'kk' is the coeffieicnt ring of 'P4'
     kk:= coefficientRing P4;
+    -- 'kk' is the coeffieicnt ring of 'P4'
+    kk:= coefficientRing P4;
+    -- Use 'prepareAboRanestadSurface' to get the data required to construct a surface
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
+    -- Replace the variables appearing in 'm4x2' with the variables of 'E'
     m4x2':=sub(m4x2,vars E);
     count:=1;test:=1;
     I:=null;sol:=null;randSol:=null;
@@ -1984,20 +1996,33 @@ aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
     while( --smooth
     while( -- dim X and degree X
 	while( -- syz bb and syz transpose bb has the correct number of generators
+	    -- (a2x3 | sub(m2x3,ExB)) is a graded homomorphism from 'E'^{2:-2,2:-1} to 'E'^{3:0}, which represents a morphism from 2*Omega^2(2) ++ 2*Omega^1(1) to 3*OO
+	    -- (sub(m4x2,ExB) || sub(m4x2,ExB)) is a graded homomorphism from 'E'^{4:-3} to 'E'^{2:-2,2:-1}, which represents a morphism from 4*Omega^3(3) to 2*Omega^2(2) ++ 2*Omega^1(1)
+	    -- 'c' is the composite of the differentials of the monad for the surface
 	    c=b4x2*sub(m2x3,ExB)+sub(m4x2',ExB)*a2x3;
+	    -- 'I' is generated linear forms, describing the conditions that the composite of the differentials of the monad vanishes.  
 	    I=trim ideal sub(contract(E3,flatten c),B);
+	    -- In the next two lines, choose a point 'randSol' of V('I') at random
 	    sol=vars B%I;
 	    randSol=sub(sol,random(kk^1,kk^140));
+	    -- Define 'b4x2r' by substituting 'randSol' in 'b4x2' 
 	    b4x2r=sub(b4x2,vars E|randSol);
+	    -- Define 'bb' by oncatenating 'm4x2' and 'b4x2r' side by side
 	    betti(bb=map(E^4,,m4x2'|b4x2r));
+	    -- Check whether the source of the syzygies of 'bb' has the expected degrees 
 	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    -- Check whether the source of the syzygies of the transpose of 'bb' has the expected degrees 
 	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
 	    not(test1 and test2)
 	    ) do (test=test+1;count=count+1);
 	if opt.Verbose then (<<"trials so far to get a surface = " <<count <<endl);
+	-- Compute a resolution of the cokernel of 'bb' up to length 4
 	betti(T=res(coker bb, LengthLimit=>4));
+	-- Define the ideal sheaf of 'X' by computing its presentation matrix corresponding to the differential 'T.dd_4' of 'T' 
 	X=saturate ideal syz symExt(T.dd_4,P4);
+	-- Check whether 'X' is a surface and has degree 12
 	not (dim X ==3 and degree X==12)  ) do ();
+    -- If the user choose the initial value for opt.Smooth, then the function returns 'X' along with 'm4x3'. Otherwise, it computes the singular locus of 'X', check whether 'X' is nonsingular, and returns 'X' and 'm4x2' 
     if not opt.Smooth then return X;
     singX=X+minors(2,jacobian X);
     dim singX !=0) do (countSmooth=countSmooth+1);
@@ -2014,15 +2039,21 @@ m4x2
 assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
 ///
 matrixFromAboRanestadSurface=method()
+-- PURPOSE : Obtain the 4x2 matrix from a smooth surface 
+--   INPUT : 'X', the ideal of a surface
+--  OUTPUT : 'm4x2', a 4x2 matrix
 matrixFromAboRanestadSurface(Ideal) := X -> (
     T:=tateResolutionOfSurface X;
     E:= ring T;
     m4x2:=(T.dd_4_{2,3}**E^{2});
     m4x2)
   
-
-    
 collectSmoothAboRanestadSurfaces=method()
+--  PURPOSE : Collect the adjunction types of the designated number of surfaces
+--    INPUT : 'P4', the ring of P4
+--            'n', the number of (-1) lines
+--            'N', the number of surfaces 
+--   OUTPUT : a list of tripes of the ideals 'Xs' of the surfaces, the adjunction types of 'Xs', and the matrices 'm4x2s' 
 collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
     m4x2s:={};Xs:={};adjTypes:={};
     X:=null;m4x2:=null;m2x3:=null;numList:=null;L1:=null;L2:=null;J:=null;
