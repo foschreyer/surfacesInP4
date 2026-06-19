@@ -1576,44 +1576,69 @@ tangentDimension(Ideal) := (M) -> (
 
 
 prepareAboRanestadSurfaces=method()
+--  PURPOSE : The outputs will be used to find a 4x2 matrix, which is a part of the desired Beilinson monad  
+--    INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--   OUTPUT : Matrices and rings 
 prepareAboRanestadSurfaces(Ring) := P4 -> (
+    -- 'kk' is the ring of P4
     kk:=coefficientRing P4;
     e:= symbol e;
+    -- 'E' is the dual exterior algebra
     E:=kk[e_0..e_4,SkewCommutative=>true];
+    -- Fix a 2x3 matrix 'm2x3' with linear entries from 'E' 
     m2x3:=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}};-- random(E^2,E^{3:-1})
     a:= symbol a; b:= symbol b;
+    -- Create the list 'bs' of 80 variables b_(i,j,k)
     bs:=flatten apply(4,i->flatten apply(2,j->apply(10,k->b_(i,j,k))));
+    -- Create the list 'as' of 60 variables a_(i,j,k) 
     as:=flatten apply(2,i->flatten apply(3,j->apply(10,k->a_(i,j,k))));
+    -- Define the polynomial ring with variables from 'as' and 'bs'
     B:=kk[bs,as];
+    -- Take the tensor product of 'E' and 'B' over 'kk'
     ExB:=E**B;
+    -- Promote the monomial basis for the degree-2 part of 'E' to 'ExB'
     E2:=sub(basis(2,E),ExB);
+    -- Define the 4x2 matrix 'b4x2' with entries formal linear combinations of elements of the monomial basis for the degree-2 part of 'E'  
     b4x2:=matrix apply(4,i->apply(2,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    -- Define the 2x3 matrix 'a2x3' with entries formal linear combinations of elements of the monomial basis for the degree-2 part of 'E' 
     a2x3:=matrix apply(2,i->apply(3,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    -- 'E3' is the degree-3 part of 'E'
     E3:=sub(basis(3,E),ExB);
 (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3))
 
 get4x2Matrix = method(Options=>{Special=>0})
+--        PURPOSE : Find a 4x2 matrix, which shares n rows with the transpose of m2x3    
+--          INPUT : 'm2x3', a 2x3 matrix 'm2x3' with linear entries from 'E', and 'n', desired number of intersection points in G(2,5) 
+--         OUTPUT : a 4x2 matrix with linear entries from 'E'
+-- OPTIONAL INPUT : Special => an integer between 0 and 2, default value 0
 get4x2Matrix(Matrix,Number) := opt -> (m2x3,n) -> (
-    -- n desired number of intersection points in G(2,5)
+    -- 'E' is the ring of 'm2x3'
     E:= ring m2x3;
+    -- 'kk' is the coefficient ring of 'E' 
     kk:= coefficientRing E;
-    s:=opt.Special; 
+    -- 's' is the optional input, which is 0, 1, or 2
+    s:=opt.Special;
+    -- 'E'' is the polynomial ring with the first three variables of 'E' 
     E':= coefficientRing E[(gens E)_{0..2}];
+    -- Initialize 'm2x2' by defining it to be the zero matrix 
     m2x2:=map(E^2,E^0,0);
+    -- Initialize 'm2' by defining it to be null 
     m2:=null;
-    scan(s,cc->(while (m2=random(kk^2,kk^2); det m2==0) do ();
-	 m2x2=m2x2|map(E^2,,m2*m2x3_{0,1}*random(kk^2,kk^1))));
+    scan(s,cc->(while (m2=random(kk^2,kk^2); det m2==0) do (); -- % Do we need this and the next line? 
+    	 m2x2=m2x2|map(E^2,,m2*m2x3_{0,1}*random(kk^2,kk^1))));
+    -- Define an integer 'm' according to the value of 's'
     if s==2 then m:=min(4-s,max(0,n-4));
     if s==1 then m=min(4-s,n-1);
-    if s==0 then m=min(4,n);    
+    if s==0 then m=min(4,n);
+    -- Define a 2xm matrix 'm2x2' with linear entries from 'E' obtained by multiplying 'm2' by m linear combinations of the columns of 'm2x3'
     scan(m,cc-> (
 	 while (m2=random(kk^2,kk^2); det m2==0) do ();
 	 m2x2=m2x2|map(E^2,,m2*m2x3*random(kk^3,kk^1))));
+    -- Define a 2x4 matrix 'm2x4' with linear entries from 'E' by concatenating 'm2x2' and a randomly chosen 2x(4-m) matrix with lienar entries from 'E'
     m2x4:=m2x2|random(E^2,E^{4-rank source m2x2:-1});
+    -- Return the transpose of 'm2x4'
     transpose m2x4);
     
-    
-
 ///
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
