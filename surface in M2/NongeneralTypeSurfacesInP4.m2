@@ -2,7 +2,7 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-elapsedTime installPackage "NongeneralTypeSurfacesInP4"  -- 34.8411s elapsed
+elapsedTime installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -1320,13 +1320,13 @@ L0
 ///
 
 
-specificSchreyerSurface=method(Options=>{Verbose=>true})
+specificSchreyerSurface=method()
 --Input: k an integer
 --Output a specific schreyer surface
-specificSchreyerSurface(Ring,Number) := o -> (P4,k) -> (
+specificSchreyerSurface(Ring,Number) := (P4,k) -> (
     (Ms,Types):=exampleOfSchreyerSurfaces(P4);
     X:=schreyerSurfaceFromModule(Ms_k);
-    if o.Verbose then <<Types_k <<endl;
+    <<Types_k <<endl;
     X)
 
 enriquesSurfaceD11S10 = method()
@@ -1664,15 +1664,29 @@ numgens I==120-n
 ///    
 
 aboRanestadSurface=method(Options=>{Verbose=>false,Smooth=>true,Special=>0})
+--        PURPOSE : Find a surface with degree 12, sectional genus 13, and Euler characiteristic 1 with designated number of (-1) lines
+--          INPUT : 'P4', the ring of P4
+--                  'n', the number of (-1) lines
+--         OUTPUT : 'X', an ideal of an AR surface,
+--                  'm4x2', a linear matrix over the exterior algebra
+-- OPTIONAL INPUT : Vervose =>  a Boolean value, default value false, whether to return the numbers of trials until the first success of finding the desired Beilinson monad and nonsingular surface with desired invariants 
+--		    Special => an integer, default value 0, 
+--                  Smooth  => a Boolean value, default value true, whether to return the ideal of the surface without checking its smoothness
+--    DESCRIPTION : The function constructs the ideal sheaf of a surface as the homology of a Beilinson monad,
+--                  provided that it has natural cohomology. n-1 coincides with number of intersection points in G(2,5)
+--                  121-n coincides with the number of generators of 'X' 
 aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     -- Input: P4 ring of P4
     --        n number of -1 lines
     --        n-1 coincides with number of intersection points in G(2,5)
     --        121-n coincides with the number of generators of the ideal I below 
     -- Output: X an ideal of an AR surface,
-    --         m4x2 linear matrix over the exterior algebra    
+    --         m4x2 linear matrix over the exterior algebra
+    -- The function gives an error if n is not between 2 and 9
     assert(member(121-n,toList(112..117)));
+    -- 'kk' is the coeffieicnt ring of 'P4'
     kk:= coefficientRing P4;
+    -- Use 'prepareAboRanestadSurface' to get the data required to construct a surface
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
     count:=1;test:=1;
     I:=null;sol:=null;randSol:=null;m4x2:=0;
@@ -1682,23 +1696,38 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     while( -- dim X and degree X
 	while( -- syz bb and syz transpose bb has the correct number of generators
 	    while( -- numgens I correct
+		-- Use 'm2x3' and 'get4x2Matrix' to get a 4x2 matrix with linear entries from 'E' 
 		m4x2=get4x2Matrix(m2x3,n-1,Special=>opt.Special);
+		-- (a2x3 | sub(m2x3,ExB)) is a graded homomorphism from 'E'^{2:-2,2:-1} to 'E'^{3:0}, which represents a morphism from 2*Omega^2(2) ++ 2*Omega^1(1) to 3*OO
+		-- (sub(m4x2,ExB) || sub(m4x2,ExB)) is a graded homomorphism from 'E'^{4:-3} to 'E'^{2:-2,2:-1}, which represents a morphism from 4*Omega^3(3) to 2*Omega^2(2) ++ 2*Omega^1(1)
+		-- 'c' is the composite of the differentials of the monad for the surface
 		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+		-- 'I' is generated linear forms, describing the conditions that the composite of the differentials of the monad vanishes.  
 		I=trim ideal sub(contract(E3,flatten c),B);
+		-- The function gives an error if the number of the minimal set of generators is not equal to 121-n
 		numgens I =!= 121-n
 		) do (count=count+1);
+	    -- In the next two lines, choose a point 'randSol' of V('I') at random 
 	    sol=vars B%I;
 	    randSol=sub(sol,random(kk^1,kk^140));
+	    -- Define 'b4x2r' by substituting 'randSol' in 'b4x2' 
 	    b4x2r=sub(b4x2,vars E|randSol);
+	    -- Define 'bb' by oncatenating 'm4x2' and 'b4x2r' side by side
 	    betti(bb=map(E^4,,m4x2|b4x2r));
+	    -- Check whether the source of the syzygies of 'bb' has the expected degrees 
 	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    -- Check whether the source of the syzygies of the transpose of 'bb' has the expected degrees 
 	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
 	    not(test1 and test2)
 	    ) do (test=test+1;count=count+1);
 	if opt.Verbose then (<<"trials so far to get a surface = " <<count <<endl);
+	-- Compute a resolution of the cokernel of 'bb' up to length 4
 	betti(T=res(coker bb, LengthLimit=>4));
+	-- Define the ideal sheaf of 'X' by computing its presentation matrix corresponding to the differential 'T.dd_4' of 'T' 
 	X=saturate ideal syz symExt(T.dd_4,P4);
+	-- Check whether 'X' is a surface and has degree 12
 	not (dim X ==3 and degree X==12)  ) do ();
+    -- If the user choose the initial value for opt.Smooth, then the function returns 'X' along with 'm4x3'. Otherwise, it computes the singular locus of 'X', check whether 'X' is nonsingular, and returns 'X' and 'm4x2' 
     if not opt.Smooth then return (X,m4x2);
     singX=X+minors(2,jacobian X);
     dim singX !=0) do (countSmooth=countSmooth+1);
@@ -1807,10 +1836,10 @@ specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
       6*E_0-4*E_1-2*E_2+2*E_3+7*E_4}, {3*E_1+5*E_2+3*E_3+5*E_4,
       5*E_1+5*E_2+5*E_3+5*E_4}, {-8*E_0+3*E_1+7*E_2+4*E_3-3*E_4,
       -9*E_0+5*E_1+7*E_2-5*E_3-3*E_4}},
-     matrix {{-8*E_0-8*E_1-6*E_2+8*E_3-E_4, -E_0+6*E_1+E_3},
-      {-3*E_0+5*E_1-8*E_2-5*E_3+3*E_4, 7*E_0-5*E_1+E_2-E_3+2*E_4},
-      {4*E_0+5*E_1-8*E_2+2*E_3-8*E_4, 4*E_0-7*E_1+5*E_2+2*E_3+5*E_4},
-      {-9*E_0+7*E_1+3*E_2+7*E_3+3*E_4, -5*E_0+4*E_1-3*E_2-6*E_3+9*E_4}},
+    matrix {{7*E_0+8*E_1-2*E_2+8*E_3+2*E_4, -8*E_0+8*E_1-8*E_2-E_3+8*E_4},
+      {-7*E_0+4*E_1-6*E_2+7*E_3-2*E_4, 9*E_0+6*E_1-4*E_2-9*E_3+5*E_4},
+      {-2*E_0+8*E_1-2*E_3+8*E_4, 4*E_0-9*E_1+4*E_3-9*E_4},
+      {-8*E_0-9*E_1-9*E_2+5*E_3-7*E_4, 6*E_0+6*E_1+9*E_2-E_3-E_4}},
     matrix {{8*E_0+9*E_1+E_2, -9*E_0+3*E_1-7*E_2}, {-6*E_0+E_1-3*E_2,
       -3*E_0-5*E_1-8*E_2}, {-8*E_0+9*E_1-7*E_2-6*E_3+7*E_4,
       8*E_0+E_1+9*E_2+6*E_3-9*E_4}, {-2*E_0-5*E_1-7*E_2-9*E_3+2*E_4,
@@ -4608,7 +4637,6 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO enriquesSurfaceOfDegree10,
 	TO enriquesSurfaceD11S10,
 	TO K3surfaces,
-	TO aboSurfaces
         },
     SUBSECTION "Irregular surface",
      UL{
@@ -4707,27 +4735,12 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 document {
 Key => schreyerSurfaces,
 Headline => "functions concerning Schreyer surfaces (8 families)",
-   PARA{"[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
+   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
-   In the following, we give an overview of the functions used in that search."},
-
-   EXAMPLE {"chiITable(11,10,1)"},
-
-   PARA{"The H^1-module of the ideal sheaf has Hilbert function (1,5,5). A general module with this Hilbert function is determined by a 
-       10-dimension subspace of H^0(P4,O(2)) and has syzygies"},
-
-   EXAMPLE {"kk=ZZ/3;P4=kk[x_0..x_4]; M = coker random(P4^1,P4^{10:-2});minimalBetti M"},
-
-   PARA{"What is needed is a 10-dimensional subspace with leads to a module with betti table"},
-
-   EXAMPLE {"(Ms,types)=exampleOfSchreyerSurfaces P4; minimalBetti Ms_1 "},
+   In the following, we give an overview of the functions used in that search.",
    
-   PARA{"that is a module with at least two extra second syzygy.
-        We have  found 9 families of such modules, with one family leading to  
-        Enriques surfaces.
-       "},
-
+   PARA{},
      SUBSECTION "From modules to surfaces",
      UL{
         TO schreyerSurfaceFromModule,
@@ -4757,29 +4770,9 @@ document {
 Key => aboRanestadSurfaces,
 Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
    "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
-    Reviewing their construction we found altogether 7 families",
-
-    PARA{"The Tate resolution of the ideal sheaf has the following shape:"},
-
-EXAMPLE{"chiITable(12,13,1)"},
-
-
-PARA{"In the Tate resolution there are a 4x2 and a 2x3 matrices with linear entries in E. 
-Thus we get maps P3 -> G(2,5) and P2 -> G(2,5). 
-These matrices can be completed to a differential of the Tate resolution 
-if these image intersect in at least 4 points with corresponding rows spann the row space of the 4x2 matrix.
- We normalize the 2x3 matrix as follows:"},
-
-EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
-
-PARA{"The variety of matrices m4x2 with 4 intersection points is unirational. 
-To find example with 5, 6 or 7 intersection points can be achieved by search over a 
-finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
-wich also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
-which intersect in four point and specifying  two more intersection points 
-in the Grassmannian gives 
-an another unirational component. To get 7 or 8 intersection points can be achieved by searching.
-"},   
+    Reviewing their construction we found altogether 7 families. 
+    Most of these components are unirational.",
+   
    PARA{},
      SUBSECTION "From matrices to surfaces",
      UL{
@@ -4847,23 +4840,13 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
 characteristic 2 has a Tate resolution for the ideal sheaf o shape",
 
-PARA{"A regular smooth surface X of degree 12, sectional genus 13 and geometric genus
-pg=1 has a Tate resolution for the ideal sheaf of shape:"},
-EXAMPLE {"chiITable(12,13,2)"},
-
-PARA {"We construct the surface from the 3x1 and 3x4 linear matrices 
-in the Tate resolution, which define a line and a Bordiga surface. 
-These matrices can be completed to a differential of the Tate resolution, 
-if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. In some special cases we choose the Bordiga matrix to have some rank 1 points. For further details we refer to the code and the decription in
-
-Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an update, preprint (2026)."
-},
     
    PARA{},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
         TO testMatrix1,
+	TO testMatrix2,	
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO collectAboSurfaces,
@@ -4887,24 +4870,6 @@ Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an upda
 	TO selfIntersectionNumber,
 	},
 }
-
-/// -* searching 111135 abo surface *-
-kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-types={}
-elapsedTime (X,m3x4)=randomAboSurface(P4,E);
-elapsedTime type=partitionOfCanonicalDivisorOfAboSurface X
-setRandomSeed("start new 111135 search")
-count=0;elapsedTime while (
-    (X,m3x4)=randomAboSurface(P4,E);
-    type=partitionOfCanonicalDivisorOfAboSurface X;
-    type != {1, 1, 1, 1, 3, 5} ) do (
-          count=count+1;
-          <<"count = " <<count<<", type = " <<type <<endl;
-	  types=append(types,type))
-toString m3x4    
-tally types
-
-///
 
 document {
 Key => surfacesOfKodairaDimension1,
@@ -7327,7 +7292,6 @@ doc///
 Key
  specificSchreyerSurface
  (specificSchreyerSurface, Ring, Number)
- [specificSchreyerSurface, Verbose]
 Headline
  compute a smooth Schreyer surface with given H^1-module
 Usage
@@ -7967,24 +7931,7 @@ Description
     degree pts==n-1
     (L0,L1,L2,J)=adjunctionProcess(X,1);
     L0_1==n and degree pts==n-1;
-    (d,sg)=(degree X,sectionalGenus X)
-    Ksquare(12,13,1)==-12
-    LeBarzN6(12,13,1)==8
-  Text
-    The following computation shows that the specificAboRanestadSurface lift
-    to characteristic zero.
-  Example
-    kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-            ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, genus c, degree (radical c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-   	    
+
 *-
 
 
@@ -8016,154 +7963,27 @@ Description
     (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
     This function verifies this assertion in an example.
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    i3 : n=7;
-    i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    -- 4.75132s elapsed
-    i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-    i6 : (degree pts,degree vP2,degree vP3,degree g25)
+    i2 :     kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    i4 :     n=7;
+    i5 :     elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+     -- 6.14016s elapsed
+    i6 :     (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    i7 :     (degree pts,degree vP2,degree vP3,degree g25)
 
-    o6 = (6, 4, 8, 5)
+    o7 = (6, 4, 8, 5)
+    o7 : Sequence
+    i8 :     degree pts==n-1
 
-    o6 : Sequence
-    i7 : degree pts==n-1
+    o8 = true
+    i9 :     (L0,L1,L2,J)=adjunctionProcess(X,1);
+    i10 :  L0_1==n and degree pts==n-1
 
-    o7 = true
-    i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1
-
-    o9 = true
-    i10 : (d,sg)=(degree X,sectionalGenus X)
-
-    o10 = (12, 13)
-
-    o10 : Sequence
-    i11 : Ksquare(12,13,1)==-12
-
-    o11 = true
-    i12 : LeBarzN6(12,13,1)==8
-
-    o12 = true
-  Text
-    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
-  CannedExample
-    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    i16 : elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-	    ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, c==radical c, genus c, degree (c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-    -- 237.434s elapsed
-
-          +----------------------------------------------------------------------------------------------------------+
-    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, true, 0, 6) => 1})   |
-          +----------------------------------------------------------------------------------------------------------+
-	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, true, -1, 12) => 1}) |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, true, -2, 18) => 1}) |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, true, -1, 12) => 2})|
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, true, 0, 11) => 1})  |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, true, 0, 6) => 1 })  |
-	  |                                                                              (2, 2, true, 0, 11) => 1    |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, true, 0, 6) => 2 })  |
-	  |                                                                              (2, 2, true, 0, 11) => 1    |
-	  +----------------------------------------------------------------------------------------------------------+
-  Text
-     Note that the number of (-1)-lines + the number of 6-secant lines is
-     always equal to 8. In the cases
-     4,5 and 6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
-     in the plane V(x_3,x_4).
-SeeAlso
-   adjunctionProcessData
-   aboRanestadSurface
-///
--*
-CannedExample
-    i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    i3 : n=7;
-    i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    -- 4.98627s elapsed
-    i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-    i6 : (degree pts,degree vP2,degree vP3,degree g25)
-    o7 = true
-    i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1;
-    i10 : (d,sg)=(degree X,sectionalGenus X)
-
-    o10 = (12, 13)
-
-    o10 : Sequence
-    i11 : Ksquare(12,13,1)==-12
-
-    o11 = true
-    i12 : LeBarzN6(12,13,1)==8
-
-    o12 = true
-  Text
-    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
-  CannedExample
-    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    i16 : elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-	    ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, radical c, degree (radical c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-    -- 219.852s elapsed
-
-          +---------------------------------------------------------------------------------------------------+
-    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, 1, 6) => 1})  |
-          +---------------------------------------------------------------------------------------------------+
-	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, 2, 12) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, 3, 18) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, 1, 6) => 1 })|
-	  |                                                                               (2, 2, 2, 12) => 1  |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, 2, 11) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, 1, 6) => 1 }) |
-	  |                                                                              (2, 2, 2, 11) => 1   |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, 1, 6) => 2 }) |
-	  |                                                                              (2, 2, 2, 11) => 1   |
-	  +---------------------------------------------------------------------------------------------------+
     o110 = true
-*-
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
-
-
-
-/// -*to get four 6-secant lines define over kk *-
-kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-count=0;elapsedTime while (
-    (X,m4x2) = aboRanestadSurface(P4,4);
-    R=residualInQuintics X;
-    cR=primaryDecomposition R;
-    ta=tally apply(cR,c->
-		(dim c, degree c, degree radical c, degree (radical c+X)));
-    <<"tally of cR = "<<ta <<endl; 
-    not (dim R==2 and #cR==4)) do (count=count+1);count
-
-ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, genus c, degree (radical c+X)))
-
-toString m4x2
 ///
+
 -* 
 for CannedExample of aboRanestadSurface
   Example
