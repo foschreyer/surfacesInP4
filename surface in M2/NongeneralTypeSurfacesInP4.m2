@@ -1925,10 +1925,11 @@ L_0  ,minimalBetti L_3
 veroneseImagesInG25=method()
 --     PURPOSE : Find the intersection points of the Veronese surface and the Veronese threefold associated with the 3x2 and 2x4 matrices with linear entries in the Beilinson monad 
 --       INPUT : 'm4x2', a 4x2 matrix (the 2x3 matrix 'm2x3'is fixed) 
---      OUTPUT : 'vero2', the ideal of the Veronese embedding of the column space of the 3x2 matrix in P9 
---             : 'vero3', the ideal of the Veronese embedding of the row space of the 2x4 matrix in P9
+--      OUTPUT : 'veroP2', the ideal of the Veronese embedding of the column space of the 3x2 matrix in P9 
+--             : 'veroP3', the ideal of the Veronese embedding of the row space of the 2x4 matrix in P9
 --             : 'pts', the ideal of the intersection of 'vero2' oand 'vero3'
---             : 'g25', the ideal of the Grassmaniann of lines in P4 
+--             : 'g25', the ideal of the Grassmaniann of lines in P4
+--    COMMENTS : The embeddings of the column space of the 3x2 matrix and the row space of the 2x4 matrix in P9 are induced by the Pluecker embedding of the Grassmaniann of lines in P4. 
 veroneseImagesInG25(Matrix) := m4x2 -> (
     -- 'E' is the dual exterior algebra
     E:=ring m4x2;
