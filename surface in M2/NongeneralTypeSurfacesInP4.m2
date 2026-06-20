@@ -4866,19 +4866,47 @@ Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an upda
 /// -* searching 111135 abo surface *-
 kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 types={}
-elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+elapsedTime (X,m3x4)=randomSpecialAboSurface(P4,E,Count=>true);
 elapsedTime type=partitionOfCanonicalDivisorOfAboSurface X
-setRandomSeed("start new 111135 search")
-count=0;elapsedTime while (
-    (X,m3x4)=randomAboSurface(P4,E);
+setRandomSeed("start a new 111135 search")
+case=0;elapsedTime while (
+    (X,m3x4)=randomSpecialAboSurface(P4,E,Count=>true);
     type=partitionOfCanonicalDivisorOfAboSurface X;
-    type != {1, 1, 1, 1, 3, 5} ) do (
-          count=count+1;
+    type != {1, 1, 1, 1, 3, 5} and #types<20 ) do (
+          case=case+1;
           <<"count = " <<count<<", type = " <<type <<endl;
 	  types=append(types,type))
-toString m3x4    
-tally types
+toString m3x4
+-*
 
+#types==20
+tally types -- randomSpecialAboSurface(P4,E)
+
+o12 = Tally{{1, 1, 1, 1, 2, 5} => 4}
+            {1, 1, 1, 2, 2, 4} => 3
+            {1, 1, 1, 2, 2, 5} => 7
+            {1, 1, 2, 2, 2, 2} => 2
+            {1, 1, 2, 2, 2, 3} => 1
+            {1, 1, 2, 2, 2, 4} => 3
+
+
+#types==124
+tally types -- randomAboSurface(P4,E)
+
+o29 = Tally{{1, 1, 1, 1, 1, 6} => 1 }
+            {1, 1, 1, 1, 1, 7} => 5
+            {1, 1, 1, 1, 2, 2} => 1
+            {1, 1, 1, 2, 2, 2} => 2
+            {1, 1, 1, 2, 2, 3} => 3
+            {1, 1, 1, 2, 3, 3} => 5
+            {1, 1, 1, 2, 3, 4} => 3
+            {1, 1, 1, 3, 3, 3} => 33
+            {1, 1, 2, 2, 2, 2} => 5
+            {1, 1, 2, 2, 2, 3} => 1
+            {1, 1, 2, 2, 3, 3} => 34
+            {1, 2, 2, 2, 2, 2} => 1
+            {1, 2, 2, 2, 2, 3} => 30
+*-
 ///
 
 document {
