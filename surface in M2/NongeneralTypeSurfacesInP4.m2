@@ -4687,7 +4687,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO enriquesSurfaceD11S10,
 	TO K3surfaces,
         },
-    SUBSECTION "Irregular surface",
+    SUBSECTION "Irregular surfaces",
      UL{
         TO quinticEllipticScroll,
 	TO ellipticConicBundle,
@@ -8530,7 +8530,7 @@ Description
     with linear entries over the exterior algebra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5).
     It turns out that the number of
-    (-1) lines on the surface will coincides with the number of intersection points of the images plus 1.
+    (-1) lines on the surface coincides with the number of intersection points of the images plus 1.
     The function returns for the normalized 2x3 matrix the desired 4x2 matrix.
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^3
@@ -8658,7 +8658,7 @@ Key
  (aboSurfaceFromMatrix,Matrix,Ring)
  [aboSurfaceFromMatrix,Verbose]
 Headline
- construct a Abo surface, a K3 surface of degree 12 and sectional genus 13
+ construct an Abo surface, a K3 surface of degree 12 and sectional genus 13
 Usage
  X= aboSurfaceFromMatrix(m3x4,P4)
 Inputs
@@ -8676,7 +8676,7 @@ Description
     together with m3x1 leads to a smooth surface can be tested with testMatrix1.
 
     The resulting surfaces is either a K3-surfaces or an elliptic surface. If it is a K3 surface then
-    it is a 6-points blow-up of a minimal modeland the degrees of the
+    it is a 6-points blow-up of a minimal model and the degrees of the
     six exceptional divisors form a partition of 12 into 6 parts. In the example below, this is the partition
     {1,2,2,2,3}.
   CannedExample
@@ -9249,8 +9249,12 @@ Outputs
   dimension of the relevant Hom space
 Description
   Text
-    The function performs a search in a particular linear family of matrices.
-    It finds matrices, we believe in codimesion 2, yielding smooth surfaces of two differnt components.
+    The function performs a search in a particular linear family of 3x4 matrices m_3x4 on P4 given a fixed 3x1 matrix m_3x1. When a linear form in m_3x1
+    and the linear forms in a column in the matrix m_3x4 together span only a 2-dimensional space, then we say the two matrices have a rank two incidence.
+    This incidence corresponds to the adjoint 3x5 matrix m_3x5 of m_3x4 having rank 2 in a point where the 3x2 submatrix of m_3x5 corresponding to m_3x1 has rank 1.
+    The Hom space turns out to have dimension at least r when m_3x4 and m_3x1 have r+3 rank two incidences. Using a linear family of 3x5 matrices m_3x5 on P3
+    with three prescribed incidences, we find by random search, matrices m_3x5 whose adjoint m_3x4 has r+3 rank two incidences with m_3x1.
+    With r=2, we find matrices m_3x4, we believe in codimesion 2, yielding smooth surfaces of two different components.
   CannedExample
     i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
@@ -9295,7 +9299,7 @@ Description
     With Option count=>true we print count1 which is 
     the number of times we got a not necessarily smooth surface.
     
-    The codimension 2 believe is supported by the fact on average the value of count
+    The codimension 2 belief is supported by the fact on average the value of count
     increases by approximately 180. 
 SeeAlso
   LeBarzN6
@@ -9349,8 +9353,10 @@ Outputs
 Description
   Text
     This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor (1,1,1,1,4,4)
-    from special (3x5) matrices over P3, such that the Bordiga surface is smooth and has
-    seven rank two planes meeting the 1x3 line.
+    from special (3x5) matrices over P3, such that the 3x4 matrix m3x4 has seven rank two incidences with m3x1.
+    These are obtained by considering 3x5 matrices m3x5 on P3 with a 3x2 submatrix m3x2, corresponding to
+    m3x1, that has rank 1 in a plane and a line, such that m3x5 have rank two at six points in the plane and at one point on the line. 
+    The rank of the Hom space is 4.
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^4;
     i3 :     P4=kk[x_0..x_4];
@@ -9584,9 +9590,9 @@ Outputs
 Description
   Text
     This gives an (apparently) unirational construction of Abo surfaces with 111117 partition
-    of the canonical divisor. This function constructs a 3x5 matrix m3x5 over the homogeneous coordinate ring of a P3 with linear enties such
-    that it drops rank by two at a point and by two at the intersection of three lines in a plane, where
-    its last 3x2 submatrix drops the rank by one.The functiom then defines m3x4 as
+    of the canonical divisor. This function constructs a 3x5 matrix m3x5 over the homogeneous coordinate ring of a P3 with linear entries such
+    that its last 3x2 submatrix has rank 0 at a point and rank 1 along three lines, and m3x5 has rank at the point and rank two at three points one on each of the three lines.
+    The functiom then defines m3x4 as
     the adjoint matrix of m3x5 and returns aboSurface(m3x4,P4). 
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^4;
