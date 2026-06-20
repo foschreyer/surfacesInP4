@@ -2,7 +2,7 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-elapsedTime installPackage "NongeneralTypeSurfacesInP4"  -- 34.8411s elapsed
+elapsedTime installPackage "NongeneralTypeSurfacesInP4"
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -1320,13 +1320,13 @@ L0
 ///
 
 
-specificSchreyerSurface=method(Options=>{Verbose=>true})
+specificSchreyerSurface=method()
 --Input: k an integer
 --Output a specific schreyer surface
-specificSchreyerSurface(Ring,Number) := o -> (P4,k) -> (
+specificSchreyerSurface(Ring,Number) := (P4,k) -> (
     (Ms,Types):=exampleOfSchreyerSurfaces(P4);
     X:=schreyerSurfaceFromModule(Ms_k);
-    if o.Verbose then <<Types_k <<endl;
+    <<Types_k <<endl;
     X)
 
 enriquesSurfaceD11S10 = method()
@@ -1576,44 +1576,69 @@ tangentDimension(Ideal) := (M) -> (
 
 
 prepareAboRanestadSurfaces=method()
+--  PURPOSE : The outputs will be used to find a 4x2 matrix, which is a part of the desired Beilinson monad  
+--    INPUT : 'P4', the homogeneous coordinate ring of projective fourspace 
+--   OUTPUT : Matrices and rings 
 prepareAboRanestadSurfaces(Ring) := P4 -> (
+    -- 'kk' is the ring of P4
     kk:=coefficientRing P4;
     e:= symbol e;
+    -- 'E' is the dual exterior algebra
     E:=kk[e_0..e_4,SkewCommutative=>true];
+    -- Fix a 2x3 matrix 'm2x3' with linear entries from 'E' 
     m2x3:=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}};-- random(E^2,E^{3:-1})
     a:= symbol a; b:= symbol b;
+    -- Create the list 'bs' of 80 variables b_(i,j,k)
     bs:=flatten apply(4,i->flatten apply(2,j->apply(10,k->b_(i,j,k))));
+    -- Create the list 'as' of 60 variables a_(i,j,k) 
     as:=flatten apply(2,i->flatten apply(3,j->apply(10,k->a_(i,j,k))));
+    -- Define the polynomial ring with variables from 'as' and 'bs'
     B:=kk[bs,as];
+    -- Take the tensor product of 'E' and 'B' over 'kk'
     ExB:=E**B;
+    -- Promote the monomial basis for the degree-2 part of 'E' to 'ExB'
     E2:=sub(basis(2,E),ExB);
+    -- Define the 4x2 matrix 'b4x2' with entries formal linear combinations of elements of the monomial basis for the degree-2 part of 'E'  
     b4x2:=matrix apply(4,i->apply(2,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
+    -- Define the 2x3 matrix 'a2x3' with entries formal linear combinations of elements of the monomial basis for the degree-2 part of 'E' 
     a2x3:=matrix apply(2,i->apply(3,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
+    -- 'E3' is the degree-3 part of 'E'
     E3:=sub(basis(3,E),ExB);
 (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3))
 
 get4x2Matrix = method(Options=>{Special=>0})
+--        PURPOSE : Find a 4x2 matrix, which shares n rows with the transpose of m2x3    
+--          INPUT : 'm2x3', a 2x3 matrix 'm2x3' with linear entries from 'E', and 'n', desired number of intersection points in G(2,5) 
+--         OUTPUT : a 4x2 matrix with linear entries from 'E'
+-- OPTIONAL INPUT : Special => an integer between 0 and 2, default value 0
 get4x2Matrix(Matrix,Number) := opt -> (m2x3,n) -> (
-    -- n desired number of intersection points in G(2,5)
+    -- 'E' is the ring of 'm2x3'
     E:= ring m2x3;
+    -- 'kk' is the coefficient ring of 'E' 
     kk:= coefficientRing E;
-    s:=opt.Special; 
+    -- 's' is the optional input, which is 0, 1, or 2
+    s:=opt.Special;
+    -- 'E'' is the polynomial ring with the first three variables of 'E' 
     E':= coefficientRing E[(gens E)_{0..2}];
+    -- Initialize 'm2x2' by defining it to be the zero matrix 
     m2x2:=map(E^2,E^0,0);
+    -- Initialize 'm2' by defining it to be null 
     m2:=null;
-    scan(s,cc->(while (m2=random(kk^2,kk^2); det m2==0) do ();
-	 m2x2=m2x2|map(E^2,,m2*m2x3_{0,1}*random(kk^2,kk^1))));
+    scan(s,cc->(while (m2=random(kk^2,kk^2); det m2==0) do (); -- % Do we need this and the next line? 
+    	 m2x2=m2x2|map(E^2,,m2*m2x3_{0,1}*random(kk^2,kk^1))));
+    -- Define an integer 'm' according to the value of 's'
     if s==2 then m:=min(4-s,max(0,n-4));
     if s==1 then m=min(4-s,n-1);
-    if s==0 then m=min(4,n);    
+    if s==0 then m=min(4,n);
+    -- Define a 2xm matrix 'm2x2' with linear entries from 'E' obtained by multiplying 'm2' by m linear combinations of the columns of 'm2x3'
     scan(m,cc-> (
 	 while (m2=random(kk^2,kk^2); det m2==0) do ();
 	 m2x2=m2x2|map(E^2,,m2*m2x3*random(kk^3,kk^1))));
+    -- Define a 2x4 matrix 'm2x4' with linear entries from 'E' by concatenating 'm2x2' and a randomly chosen 2x(4-m) matrix with lienar entries from 'E'
     m2x4:=m2x2|random(E^2,E^{4-rank source m2x2:-1});
+    -- Return the transpose of 'm2x4'
     transpose m2x4);
     
-    
-
 ///
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
@@ -1638,16 +1663,31 @@ numgens I==120-n
 
 ///    
 
+-- % The command below does not appear in the documentation. 
 aboRanestadSurface=method(Options=>{Verbose=>false,Smooth=>true,Special=>0})
+--        PURPOSE : Find a surface with degree 12, sectional genus 13, and Euler characiteristic 1 with designated number of (-1) lines
+--          INPUT : 'P4', the ring of P4
+--                  'n', the number of (-1) lines
+--         OUTPUT : 'X', an ideal of an AR surface,
+--                  'm4x2', a linear matrix over the exterior algebra
+-- OPTIONAL INPUT : Vervose =>  a Boolean value, default value false, whether to return the numbers of trials until the first success of finding the desired Beilinson monad and nonsingular surface with desired invariants 
+--		    Special => an integer, default value 0, 
+--                  Smooth  => a Boolean value, default value true, whether to return the ideal of the surface without checking its smoothness
+--    DESCRIPTION : The function constructs the ideal sheaf of a surface as the homology of a Beilinson monad,
+--                  provided that it has natural cohomology. n-1 coincides with number of intersection points in G(2,5)
+--                  121-n coincides with the number of generators of 'X' 
 aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     -- Input: P4 ring of P4
     --        n number of -1 lines
     --        n-1 coincides with number of intersection points in G(2,5)
     --        121-n coincides with the number of generators of the ideal I below 
     -- Output: X an ideal of an AR surface,
-    --         m4x2 linear matrix over the exterior algebra    
+    --         m4x2 linear matrix over the exterior algebra
+    -- The function gives an error if n is not between 2 and 9
     assert(member(121-n,toList(112..117)));
+    -- 'kk' is the coeffieicnt ring of 'P4'
     kk:= coefficientRing P4;
+    -- Use 'prepareAboRanestadSurface' to get the data required to construct a surface
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
     count:=1;test:=1;
     I:=null;sol:=null;randSol:=null;m4x2:=0;
@@ -1657,23 +1697,38 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     while( -- dim X and degree X
 	while( -- syz bb and syz transpose bb has the correct number of generators
 	    while( -- numgens I correct
+		-- Use 'm2x3' and 'get4x2Matrix' to get a 4x2 matrix with linear entries from 'E' 
 		m4x2=get4x2Matrix(m2x3,n-1,Special=>opt.Special);
+		-- (a2x3 | sub(m2x3,ExB)) is a graded homomorphism from 'E'^{2:-2,2:-1} to 'E'^{3:0}, which represents a morphism from 2*Omega^2(2) ++ 2*Omega^1(1) to 3*OO
+		-- (sub(m4x2,ExB) || sub(m4x2,ExB)) is a graded homomorphism from 'E'^{4:-3} to 'E'^{2:-2,2:-1}, which represents a morphism from 4*Omega^3(3) to 2*Omega^2(2) ++ 2*Omega^1(1)
+		-- 'c' is the composite of the differentials of the monad for the surface
 		c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
+		-- 'I' is generated linear forms, describing the conditions that the composite of the differentials of the monad vanishes.  
 		I=trim ideal sub(contract(E3,flatten c),B);
+		-- The function gives an error if the number of the minimal set of generators is not equal to 121-n
 		numgens I =!= 121-n
 		) do (count=count+1);
+	    -- In the next two lines, choose a point 'randSol' of V('I') at random 
 	    sol=vars B%I;
 	    randSol=sub(sol,random(kk^1,kk^140));
+	    -- Define 'b4x2r' by substituting 'randSol' in 'b4x2' 
 	    b4x2r=sub(b4x2,vars E|randSol);
+	    -- Define 'bb' by oncatenating 'm4x2' and 'b4x2r' side by side
 	    betti(bb=map(E^4,,m4x2|b4x2r));
+	    -- Check whether the source of the syzygies of 'bb' has the expected degrees 
 	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    -- Check whether the source of the syzygies of the transpose of 'bb' has the expected degrees 
 	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
 	    not(test1 and test2)
 	    ) do (test=test+1;count=count+1);
 	if opt.Verbose then (<<"trials so far to get a surface = " <<count <<endl);
+	-- Compute a resolution of the cokernel of 'bb' up to length 4
 	betti(T=res(coker bb, LengthLimit=>4));
+	-- Define the ideal sheaf of 'X' by computing its presentation matrix corresponding to the differential 'T.dd_4' of 'T' 
 	X=saturate ideal syz symExt(T.dd_4,P4);
+	-- Check whether 'X' is a surface and has degree 12
 	not (dim X ==3 and degree X==12)  ) do ();
+    -- If the user choose the initial value for opt.Smooth, then the function returns 'X' along with 'm4x3'. Otherwise, it computes the singular locus of 'X', check whether 'X' is nonsingular, and returns 'X' and 'm4x2' 
     if not opt.Smooth then return (X,m4x2);
     singX=X+minors(2,jacobian X);
     dim singX !=0) do (countSmooth=countSmooth+1);
@@ -1782,10 +1837,10 @@ specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
       6*E_0-4*E_1-2*E_2+2*E_3+7*E_4}, {3*E_1+5*E_2+3*E_3+5*E_4,
       5*E_1+5*E_2+5*E_3+5*E_4}, {-8*E_0+3*E_1+7*E_2+4*E_3-3*E_4,
       -9*E_0+5*E_1+7*E_2-5*E_3-3*E_4}},
-     matrix {{-8*E_0-8*E_1-6*E_2+8*E_3-E_4, -E_0+6*E_1+E_3},
-      {-3*E_0+5*E_1-8*E_2-5*E_3+3*E_4, 7*E_0-5*E_1+E_2-E_3+2*E_4},
-      {4*E_0+5*E_1-8*E_2+2*E_3-8*E_4, 4*E_0-7*E_1+5*E_2+2*E_3+5*E_4},
-      {-9*E_0+7*E_1+3*E_2+7*E_3+3*E_4, -5*E_0+4*E_1-3*E_2-6*E_3+9*E_4}},
+    matrix {{7*E_0+8*E_1-2*E_2+8*E_3+2*E_4, -8*E_0+8*E_1-8*E_2-E_3+8*E_4},
+      {-7*E_0+4*E_1-6*E_2+7*E_3-2*E_4, 9*E_0+6*E_1-4*E_2-9*E_3+5*E_4},
+      {-2*E_0+8*E_1-2*E_3+8*E_4, 4*E_0-9*E_1+4*E_3-9*E_4},
+      {-8*E_0-9*E_1-9*E_2+5*E_3-7*E_4, 6*E_0+6*E_1+9*E_2-E_3-E_4}},
     matrix {{8*E_0+9*E_1+E_2, -9*E_0+3*E_1-7*E_2}, {-6*E_0+E_1-3*E_2,
       -3*E_0-5*E_1-8*E_2}, {-8*E_0+9*E_1-7*E_2-6*E_3+7*E_4,
       8*E_0+E_1+9*E_2+6*E_3-9*E_4}, {-2*E_0-5*E_1-7*E_2-9*E_3+2*E_4,
@@ -1868,42 +1923,69 @@ L_0  ,minimalBetti L_3
 ///
    
 
-
-
-
-
-
-
-
 veroneseImagesInG25=method()
+--     PURPOSE : Find the intersection points of the Veronese surface and the Veronese threefold associated with the 3x2 and 2x4 matrices with linear entries in the Beilinson monad 
+--       INPUT : 'm4x2', a 4x2 matrix (the 2x3 matrix 'm2x3'is fixed) 
+--      OUTPUT : 'veroP2', the ideal of the Veronese embedding of the column space of the 3x2 matrix in P9 
+--             : 'veroP3', the ideal of the Veronese embedding of the row space of the 2x4 matrix in P9
+--             : 'pts', the ideal of the intersection of 'vero2' oand 'vero3'
+--             : 'g25', the ideal of the Grassmaniann of lines in P4
+--    COMMENTS : The embeddings of the column space of the 3x2 matrix and the row space of the 2x4 matrix in P9 are induced by the Pluecker embedding of the Grassmaniann of lines in P4. 
 veroneseImagesInG25(Matrix) := m4x2 -> (
+    -- 'E' is the dual exterior algebra
     E:=ring m4x2;
+    -- Choose an explicit 2x3 'm2x3' matrix with linear entries from 'E' 
     m2x3 := matrix{{E_0,E_1,E_3},{E_1,E_2,E_4}};
+    -- 'kk' is the coefficient ring of 'E'
     kk:=coefficientRing E;
     y:= symbol y;
+    -- 'P3' is the ring of P3
     P3:=kk[y_0..y_3];
+    -- 'ExP3' is the tensor product of 'E' and 'P3' over 'kk'
     ExP3:=E**P3;
+    -- Promote the monomial basis for the degree-2 part of 'E' to 'ExP3'
     ef:=sub(basis(2,E),ExP3);
+    -- 'a3' is the matrix of the first three variable of 'P3' 
     a3:=(vars P3)_{0..2};
+    -- 'a4' is the matrix of variables of 'P3'
     a4:=vars P3;
+    -- 'a3' is the generic element of the column space of 'm2x3'  
     a3':=sub(a3,ExP3)*sub(transpose m2x3,ExP3);
+    -- 'paraP2' is the coefficient vector of the wedge product of the entries of 'a3'' with respect to 'ef'
     paraP2:=sub(contract(ef,a3'_(0,0)*a3'_(0,1)),P3);
+    -- 'a4' is the generic element of the row space of 'm4x2' 
     a4':=sub(a4,ExP3)*sub(m4x2,ExP3);
+    -- 'paraP3' is the coefficient vector of the wedge product of the entries of 'a4'' with respect to 'ef'
     paraP3:=sub(contract(ef,a4'_(0,0)*a4'_(0,1)),P3);
     p:=symbol p;
+    -- 'P9' is the ring of P9
     P9:=kk[p_0..p_9];
+    -- 'g25' is the ideal of the Grassmaniann of lines in P4
     g25:=pfaffians(4,genericSkewMatrix(P9,p_0,5));
+    -- 'veroP2' is the ideal of the image of the coolumn space of 'm2x3' under 'paraP2'
     veroP2:=ker map(P3,P9,paraP2);
+    -- 'veroP3' is the ideal of the image of the coolumn space of 'm4x2' under 'paraP2'
     veroP3:=ker map(P3,P9,paraP3);
+    -- Check whether 'veroP2' and 'veroP3' are contained in 'g25' 
     assert(veroP2+g25==veroP2 and veroP3+g25==veroP3);
+    -- Compute the intersection of 'veroP2' and 'veroP3'
     pts:=trim(veroP2+veroP3);
     (pts,veroP2,veroP3,g25))
     
 
 aboRanestadSurfaceFromMatrix=method(Options=>{Verbose=>false,Smooth=>true})
+--        PURPOSE : Use the 4x2 matrix with linear entries in five variables to construct a surface with degree 12, sectional genus 13, and Euler characiteristic 1, whose ideal sheaf has a minimal cohomology
+--          INPUT : 'P4', ring of P4
+--                  'm4x2', 4x2 matrix with linear entries from the dual exterior algebra E
+--         OUTPUT : 'X', an ideal of an AR surface,
+-- OPTIONAL INPUT : Vervose => a Boolean value, default value false, whether to return the numbers of trials until the first success of finding the desired Beilinson monad and nonsingular surface with desired invariants 
+--                  Smooth  => a Boolean value, default value true, whether to return the ideal of the surface without checking its smoothness
 aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
+    -- 'kk' is the coeffieicnt ring of 'P4'
     kk:= coefficientRing P4;
+    -- Use 'prepareAboRanestadSurface' to get the data required to construct a surface
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
+    -- Replace the variables appearing in 'm4x2' with the variables of 'E'
     m4x2':=sub(m4x2,vars E);
     count:=1;test:=1;
     I:=null;sol:=null;randSol:=null;
@@ -1912,20 +1994,33 @@ aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
     while( --smooth
     while( -- dim X and degree X
 	while( -- syz bb and syz transpose bb has the correct number of generators
+	    -- (a2x3 | sub(m2x3,ExB)) is a graded homomorphism from 'E'^{2:-2,2:-1} to 'E'^{3:0}, which represents a morphism from 2*Omega^2(2) ++ 2*Omega^1(1) to 3*OO
+	    -- (sub(m4x2,ExB) || sub(m4x2,ExB)) is a graded homomorphism from 'E'^{4:-3} to 'E'^{2:-2,2:-1}, which represents a morphism from 4*Omega^3(3) to 2*Omega^2(2) ++ 2*Omega^1(1)
+	    -- 'c' is the composite of the differentials of the monad for the surface
 	    c=b4x2*sub(m2x3,ExB)+sub(m4x2',ExB)*a2x3;
+	    -- 'I' is generated linear forms, describing the conditions that the composite of the differentials of the monad vanishes.  
 	    I=trim ideal sub(contract(E3,flatten c),B);
+	    -- In the next two lines, choose a point 'randSol' of V('I') at random
 	    sol=vars B%I;
 	    randSol=sub(sol,random(kk^1,kk^140));
+	    -- Define 'b4x2r' by substituting 'randSol' in 'b4x2' 
 	    b4x2r=sub(b4x2,vars E|randSol);
+	    -- Define 'bb' by oncatenating 'm4x2' and 'b4x2r' side by side
 	    betti(bb=map(E^4,,m4x2'|b4x2r));
+	    -- Check whether the source of the syzygies of 'bb' has the expected degrees 
 	    test1 = degrees source syz bb =={{3}, {3}, {3}, {4}, {4}, {4}, {4}, {4}};
+	    -- Check whether the source of the syzygies of the transpose of 'bb' has the expected degrees 
 	    test2 = degrees source syz transpose bb=={{2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}, {2}};
 	    not(test1 and test2)
 	    ) do (test=test+1;count=count+1);
 	if opt.Verbose then (<<"trials so far to get a surface = " <<count <<endl);
+	-- Compute a resolution of the cokernel of 'bb' up to length 4
 	betti(T=res(coker bb, LengthLimit=>4));
+	-- Define the ideal sheaf of 'X' by computing its presentation matrix corresponding to the differential 'T.dd_4' of 'T' 
 	X=saturate ideal syz symExt(T.dd_4,P4);
+	-- Check whether 'X' is a surface and has degree 12
 	not (dim X ==3 and degree X==12)  ) do ();
+    -- If the user choose the initial value for opt.Smooth, then the function returns 'X' along with 'm4x3'. Otherwise, it computes the singular locus of 'X', check whether 'X' is nonsingular, and returns 'X' and 'm4x2' 
     if not opt.Smooth then return X;
     singX=X+minors(2,jacobian X);
     dim singX !=0) do (countSmooth=countSmooth+1);
@@ -1942,15 +2037,21 @@ m4x2
 assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
 ///
 matrixFromAboRanestadSurface=method()
+-- PURPOSE : Obtain the 4x2 matrix from a smooth surface 
+--   INPUT : 'X', the ideal of a surface
+--  OUTPUT : 'm4x2', a 4x2 matrix
 matrixFromAboRanestadSurface(Ideal) := X -> (
     T:=tateResolutionOfSurface X;
     E:= ring T;
     m4x2:=(T.dd_4_{2,3}**E^{2});
     m4x2)
   
-
-    
 collectSmoothAboRanestadSurfaces=method()
+--  PURPOSE : Collect the adjunction types of the designated number of surfaces
+--    INPUT : 'P4', the ring of P4
+--            'n', the number of (-1) lines
+--            'N', the number of surfaces 
+--   OUTPUT : a list of tripes of the ideals 'Xs' of the surfaces, the adjunction types of 'Xs', and the matrices 'm4x2s' 
 collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
     m4x2s:={};Xs:={};adjTypes:={};
     X:=null;m4x2:=null;m2x3:=null;numList:=null;L1:=null;L2:=null;J:=null;
@@ -4583,9 +4684,8 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO enriquesSurfaceOfDegree10,
 	TO enriquesSurfaceD11S10,
 	TO K3surfaces,
-	TO aboSurfaces
         },
-    SUBSECTION "Irregular surface",
+    SUBSECTION "Irregular surfaces",
      UL{
         TO quinticEllipticScroll,
 	TO ellipticConicBundle,
@@ -4682,27 +4782,12 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 document {
 Key => schreyerSurfaces,
 Headline => "functions concerning Schreyer surfaces (8 families)",
-   PARA{"[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
+   "[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
-   In the following, we give an overview of the functions used in that search."},
-
-   EXAMPLE {"chiITable(11,10,1)"},
-
-   PARA{"The H^1-module of the ideal sheaf has Hilbert function (1,5,5). A general module with this Hilbert function is determined by a 
-       10-dimension subspace of H^0(P4,O(2)) and has syzygies"},
-
-   EXAMPLE {"kk=ZZ/3;P4=kk[x_0..x_4]; M = coker random(P4^1,P4^{10:-2});minimalBetti M"},
-
-   PARA{"What is needed is a 10-dimensional subspace with leads to a module with betti table"},
-
-   EXAMPLE {"(Ms,types)=exampleOfSchreyerSurfaces P4; minimalBetti Ms_1 "},
+   In the following, we give an overview of the functions used in that search.",
    
-   PARA{"that is a module with at least two extra second syzygy.
-        We have  found 9 families of such modules, with one family leading to  
-        Enriques surfaces.
-       "},
-
+   PARA{},
      SUBSECTION "From modules to surfaces",
      UL{
         TO schreyerSurfaceFromModule,
@@ -4732,29 +4817,9 @@ document {
 Key => aboRanestadSurfaces,
 Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
    "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
-    Reviewing their construction we found altogether 7 families",
-
-    PARA{"The Tate resolution of the ideal sheaf has the following shape:"},
-
-EXAMPLE{"chiITable(12,13,1)"},
-
-
-PARA{"In the Tate resolution there are a 4x2 and a 2x3 matrices with linear entries in E. 
-Thus we get maps P3 -> G(2,5) and P2 -> G(2,5). 
-These matrices can be completed to a differential of the Tate resolution 
-if these image intersect in at least 4 points with corresponding rows spann the row space of the 4x2 matrix.
- We normalize the 2x3 matrix as follows:"},
-
-EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
-
-PARA{"The variety of matrices m4x2 with 4 intersection points is unirational. 
-To find example with 5, 6 or 7 intersection points can be achieved by search over a 
-finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
-wich also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
-which intersect in four point and specifying  two more intersection points 
-in the Grassmannian gives 
-an another unirational component. To get 7 or 8 intersection points can be achieved by searching.
-"},   
+    Reviewing their construction we found altogether 7 families. 
+    Most of these components are unirational.",
+   
    PARA{},
      SUBSECTION "From matrices to surfaces",
      UL{
@@ -4822,23 +4887,13 @@ Headline => "functions for investigating Abo surfaces, (9 families)",
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
 characteristic 2 has a Tate resolution for the ideal sheaf o shape",
 
-PARA{"A regular smooth surface X of degree 12, sectional genus 13 and geometric genus
-pg=1 has a Tate resolution for the ideal sheaf of shape:"},
-EXAMPLE {"chiITable(12,13,2)"},
-
-PARA {"We construct the surface from the 3x1 and 3x4 linear matrices 
-in the Tate resolution, which define a line and a Bordiga surface. 
-These matrices can be completed to a differential of the Tate resolution, 
-if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. In some special cases we choose the Bordiga matrix to have some rank 1 points. For further details we refer to the code and the decription in
-
-Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an update, preprint (2026)."
-},
     
    PARA{},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
         TO testMatrix1,
+	TO testMatrix2,	
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO collectAboSurfaces,
@@ -4862,6 +4917,7 @@ Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an upda
 	TO selfIntersectionNumber,
 	},
 }
+
 
 /// -* searching 111135 abo surface *-
 kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
@@ -4908,6 +4964,7 @@ o29 = Tally{{1, 1, 1, 1, 1, 6} => 1 }
             {1, 2, 2, 2, 2, 3} => 30
 *-
 ///
+
 
 document {
 Key => surfacesOfKodairaDimension1,
@@ -7330,7 +7387,6 @@ doc///
 Key
  specificSchreyerSurface
  (specificSchreyerSurface, Ring, Number)
- [specificSchreyerSurface, Verbose]
 Headline
  compute a smooth Schreyer surface with given H^1-module
 Usage
@@ -7970,24 +8026,7 @@ Description
     degree pts==n-1
     (L0,L1,L2,J)=adjunctionProcess(X,1);
     L0_1==n and degree pts==n-1;
-    (d,sg)=(degree X,sectionalGenus X)
-    Ksquare(12,13,1)==-12
-    LeBarzN6(12,13,1)==8
-  Text
-    The following computation shows that the specificAboRanestadSurface lift
-    to characteristic zero.
-  Example
-    kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-            ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, genus c, degree (radical c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-   	    
+
 *-
 
 
@@ -8019,154 +8058,27 @@ Description
     (-1) lines on the surface will coincides with the number of intersection points of the images + 1.
     This function verifies this assertion in an example.
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    i3 : n=7;
-    i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    -- 4.75132s elapsed
-    i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-    i6 : (degree pts,degree vP2,degree vP3,degree g25)
+    i2 :     kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
+    i4 :     n=7;
+    i5 :     elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
+     -- 6.14016s elapsed
+    i6 :     (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
+    i7 :     (degree pts,degree vP2,degree vP3,degree g25)
 
-    o6 = (6, 4, 8, 5)
+    o7 = (6, 4, 8, 5)
+    o7 : Sequence
+    i8 :     degree pts==n-1
 
-    o6 : Sequence
-    i7 : degree pts==n-1
+    o8 = true
+    i9 :     (L0,L1,L2,J)=adjunctionProcess(X,1);
+    i10 :  L0_1==n and degree pts==n-1
 
-    o7 = true
-    i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1
-
-    o9 = true
-    i10 : (d,sg)=(degree X,sectionalGenus X)
-
-    o10 = (12, 13)
-
-    o10 : Sequence
-    i11 : Ksquare(12,13,1)==-12
-
-    o11 = true
-    i12 : LeBarzN6(12,13,1)==8
-
-    o12 = true
-  Text
-    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
-  CannedExample
-    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    i16 : elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-	    ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, c==radical c, genus c, degree (c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-    -- 237.434s elapsed
-
-          +----------------------------------------------------------------------------------------------------------+
-    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, true, 0, 6) => 1})   |
-          +----------------------------------------------------------------------------------------------------------+
-	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, true, -1, 12) => 1}) |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, true, -2, 18) => 1}) |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, true, -1, 12) => 2})|
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, true, 0, 11) => 1})  |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, true, 0, 6) => 1 })  |
-	  |                                                                              (2, 2, true, 0, 11) => 1    |
-	  +----------------------------------------------------------------------------------------------------------+
-	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, true, 0, 6) => 2 })  |
-	  |                                                                              (2, 2, true, 0, 11) => 1    |
-	  +----------------------------------------------------------------------------------------------------------+
-  Text
-     Note that the number of (-1)-lines + the number of 6-secant lines is
-     always equal to 8. In the cases
-     4,5 and 6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
-     in the plane V(x_3,x_4).
-SeeAlso
-   adjunctionProcessData
-   aboRanestadSurface
-///
--*
-CannedExample
-    i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    i3 : n=7;
-    i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
-    -- 4.98627s elapsed
-    i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
-    i6 : (degree pts,degree vP2,degree vP3,degree g25)
-    o7 = true
-    i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1;
-    i10 : (d,sg)=(degree X,sectionalGenus X)
-
-    o10 = (12, 13)
-
-    o10 : Sequence
-    i11 : Ksquare(12,13,1)==-12
-
-    o11 = true
-    i12 : LeBarzN6(12,13,1)==8
-
-    o12 = true
-  Text
-    The following computation shows that the specificAboRanestadSurface lift to characteristic zero.
-  CannedExample
-    i13 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-    i16 : elapsedTime netList apply(7,k->(
-	    (X,adj)=specificAboRanestadSurface(P4,E,k);
-	    R=residualInQuintics X;
-	    ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, radical c, degree (radical c+X)));
-	    m4x2=matrixFromAboRanestadSurface(X);
-	    (pts,vP2,vP3,g25)=veroneseImagesInG25 m4x2;
-	    (k, degree pts+1==adj_1,adj,ta)
-	    ))
-    -- 219.852s elapsed
-
-          +---------------------------------------------------------------------------------------------------+
-    o16 = |(0, true, {(4, 12, 13), 7, (12, 24, 13), 3, (12, 19, 8), 9, (7, 7, 1)}, Tally{(2, 1, 1, 6) => 1})  |
-          +---------------------------------------------------------------------------------------------------+
-	  |(1, true, {(4, 12, 13), 6, (12, 24, 13), 6, (12, 18, 7), 6, (6, 6, 1)}, Tally{(2, 2, 2, 12) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(2, true, {(4, 12, 13), 5, (12, 24, 13), 9, (12, 17, 6), 3, (5, 5, 1)}, Tally{(2, 3, 3, 18) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(3, true, {(4, 12, 13), 4, (12, 24, 13), 12, (12, 16, 5), 0, (4, 4, 1)}, Tally{(2, 2, 1, 6) => 1 })|
-	  |                                                                               (2, 2, 2, 12) => 1  |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(4, true, {(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}, Tally{(2, 2, 2, 11) => 1}) |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(5, true, {(4, 12, 13), 7, (12, 24, 13), 4, (12, 19, 8), 5, (7, 8, 2)}, Tally{(2, 1, 1, 6) => 1 }) |
-	  |                                                                              (2, 2, 2, 11) => 1   |
-	  +---------------------------------------------------------------------------------------------------+
-	  |(6, true, {(4, 12, 13), 6, (12, 24, 13), 7, (12, 18, 7), 2, (6, 7, 2)}, Tally{(2, 1, 1, 6) => 2 }) |
-	  |                                                                              (2, 2, 2, 11) => 1   |
-	  +---------------------------------------------------------------------------------------------------+
     o110 = true
-*-
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
-
-
-
-/// -*to get four 6-secant lines define over kk *-
-kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-count=0;elapsedTime while (
-    (X,m4x2) = aboRanestadSurface(P4,4);
-    R=residualInQuintics X;
-    cR=primaryDecomposition R;
-    ta=tally apply(cR,c->
-		(dim c, degree c, degree radical c, degree (radical c+X)));
-    <<"tally of cR = "<<ta <<endl; 
-    not (dim R==2 and #cR==4)) do (count=count+1);count
-
-ta=tally apply(primaryDecomposition R,c->
-		(dim c, degree c, degree radical c, genus c, degree (radical c+X)))
-
-toString m4x2
 ///
+
 -* 
 for CannedExample of aboRanestadSurface
   Example
@@ -8664,7 +8576,7 @@ Description
     with linear entries over the exterior algebra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5).
     It turns out that the number of
-    (-1) lines on the surface will coincides with the number of intersection points of the images plus 1.
+    (-1) lines on the surface coincides with the number of intersection points of the images plus 1.
     The function returns for the normalized 2x3 matrix the desired 4x2 matrix.
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^3
@@ -8792,7 +8704,7 @@ Key
  (aboSurfaceFromMatrix,Matrix,Ring)
  [aboSurfaceFromMatrix,Verbose]
 Headline
- construct a Abo surface, a K3 surface of degree 12 and sectional genus 13
+ construct an Abo surface, a K3 surface of degree 12 and sectional genus 13
 Usage
  X= aboSurfaceFromMatrix(m3x4,P4)
 Inputs
@@ -8810,7 +8722,7 @@ Description
     together with m3x1 leads to a smooth surface can be tested with testMatrix1.
 
     The resulting surfaces is either a K3-surfaces or an elliptic surface. If it is a K3 surface then
-    it is a 6-points blow-up of a minimal modeland the degrees of the
+    it is a 6-points blow-up of a minimal model and the degrees of the
     six exceptional divisors form a partition of 12 into 6 parts. In the example below, this is the partition
     {1,2,2,2,3}.
   CannedExample
@@ -9383,8 +9295,12 @@ Outputs
   dimension of the relevant Hom space
 Description
   Text
-    The function performs a search in a particular linear family of matrices.
-    It finds matrices, we believe in codimesion 2, yielding smooth surfaces of two differnt components.
+    The function performs a search in a particular linear family of 3x4 matrices m_3x4 on P4 given a fixed 3x1 matrix m_3x1. When a linear form in m_3x1
+    and the linear forms in a column in the matrix m_3x4 together span only a 2-dimensional space, then we say the two matrices have a rank two incidence.
+    This incidence corresponds to the adjoint 3x5 matrix m_3x5 of m_3x4 having rank 2 in a point where the 3x2 submatrix of m_3x5 corresponding to m_3x1 has rank 1.
+    The Hom space turns out to have dimension at least r when m_3x4 and m_3x1 have r+3 rank two incidences. Using a linear family of 3x5 matrices m_3x5 on P3
+    with three prescribed incidences, we find by random search, matrices m_3x5 whose adjoint m_3x4 has r+3 rank two incidences with m_3x1.
+    With r=2, we find matrices m_3x4, we believe in codimesion 2, yielding smooth surfaces of two different components.
   CannedExample
     i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
@@ -9429,7 +9345,7 @@ Description
     With Option count=>true we print count1 which is 
     the number of times we got a not necessarily smooth surface.
     
-    The codimension 2 believe is supported by the fact on average the value of count
+    The codimension 2 belief is supported by the fact on average the value of count
     increases by approximately 180. 
 SeeAlso
   LeBarzN6
@@ -9483,8 +9399,10 @@ Outputs
 Description
   Text
     This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor (1,1,1,1,4,4)
-    from special (3x5) matrices over P3, such that the Bordiga surface is smooth and has
-    seven rank two planes meeting the 1x3 line.
+    from special (3x5) matrices over P3, such that the 3x4 matrix m3x4 has seven rank two incidences with m3x1.
+    These are obtained by considering 3x5 matrices m3x5 on P3 with a 3x2 submatrix m3x2, corresponding to
+    m3x1, that has rank 1 in a plane and a line, such that m3x5 have rank two at six points in the plane and at one point on the line. 
+    The rank of the Hom space is 4.
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^4;
     i3 :     P4=kk[x_0..x_4];
@@ -9718,9 +9636,9 @@ Outputs
 Description
   Text
     This gives an (apparently) unirational construction of Abo surfaces with 111117 partition
-    of the canonical divisor. This function constructs a 3x5 matrix m3x5 over the homogeneous coordinate ring of a P3 with linear enties such
-    that it drops rank by two at a point and by two at the intersection of three lines in a plane, where
-    its last 3x2 submatrix drops the rank by one.The functiom then defines m3x4 as
+    of the canonical divisor. This function constructs a 3x5 matrix m3x5 over the homogeneous coordinate ring of a P3 with linear entries such
+    that its last 3x2 submatrix has rank 0 at a point and rank 1 along three lines, and m3x5 has rank at the point and rank two at three points one on each of the three lines.
+    The functiom then defines m3x4 as
     the adjoint matrix of m3x5 and returns aboSurface(m3x4,P4). 
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^4;
