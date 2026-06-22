@@ -19,8 +19,8 @@ elapsedTime installPackage("NongeneralTypeSurfacesInP4")    -- 47.3775s elapsed,
 
 newPackage(
     "NongeneralTypeSurfacesInP4",
-    Version => "0.8",
-    Date => "April 28, 2025",
+    Version => "0.9",
+    Date => "May 22, 2026",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
@@ -4782,7 +4782,7 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 
 document {
 Key => schreyerSurfaces,
-Headline => "functions concerning Schreyer surfaces (8 families)",
+Headline => "functions concerning Schreyer surfaces, degree 11 sectional genus 10 (8 families)",
    PARA{"[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
    of which 3 families consist of rational surfaces. 
    Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
@@ -4831,7 +4831,7 @@ Headline => "functions concerning Schreyer surfaces (8 families)",
 
 document {
 Key => aboRanestadSurfaces,
-Headline => "functions concerning Abo-Ranestad surfaces (7 families)",
+Headline => "functions concerning Abo-Ranestad surfaces, degree 12 and sectional genus 13 (7 families)",
    "[Abo-Ranestad,2006] discovered 4 families of rational surfaces X in P4 with d=12 and sectional genus pi=13 via a search over a finite field.
 
     Reviewing their construction we found altogether 7 families",
@@ -4921,7 +4921,7 @@ Headline => "Known families of K3 surfaces",
 
 document {
 Key => aboSurfaces,
-Headline => "functions for investigating Abo surfaces, (9 families)",
+Headline => "functions for investigating Abo surfaces, degree 12, sectional genus 13 and pg=1 (9 families)",
    "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
 characteristic 2 has a Tate resolution for the ideal sheaf o shape",
 
