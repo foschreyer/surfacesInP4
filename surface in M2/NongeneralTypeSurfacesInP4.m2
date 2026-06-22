@@ -47,7 +47,7 @@ export {
     "randomSpecialAboSurface",
     "numericalTypeOfResidualInQuintics",
     "partitionOfCanonicalDivisorOfAboSurface",
-    "adjointMatrices",
+    --"adjointMatrices",
     "Equations",
     "SingX",
     "Count",
@@ -73,8 +73,8 @@ export {
     "chiO",
     "irregularity",
     "geometricGenus",
-    "chiNX",
-    "chiI",
+    --"chiNX",
+    --"chiI",
     "chiITable",
     "HdotK",
     "Ksquare",
@@ -118,9 +118,9 @@ export {
     "unirationalConstructionOfSchreyerSurface",
     "specialEnriquesSchreyerSurface",
     "adjunctionProcessData",
-    "prepareAboRanestadSurfaces",
+    --"prepareAboRanestadSurfaces",
     "aboRanestadSurface",
-    "collectSmoothAboRanestadSurfaces",
+    --"collectSmoothAboRanestadSurfaces",
     "aboRanestadSurfaceFromMatrix",
     "matrixFromAboRanestadSurface",
     "get4x2Matrix",
@@ -144,7 +144,7 @@ export {
     "K3surfaceD9",
     "K3surfaceD10S9L1",
     "K3surfaceD10S9L3",
-    "H1module",
+    --"H1module",
     "K3surfaceD11S11Ln",
     "K3surfaceD11S12",
     "K3surfaceD12",
@@ -4875,8 +4875,15 @@ in the Grassmannian gives
      SUBSECTION "Lift to characteristic zero",
      UL{
 	TO veroneseImagesInG25
-        }        
+        },
+    SUBSECTION "References",
+    UL{
+     "Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026),",
+     "Abo, H., Ranestad, K.,"
+     },
+
 }
+     
 
 document {
 Key => K3surfaces,
@@ -4922,9 +4929,6 @@ Headline => "Known families of K3 surfaces",
 document {
 Key => aboSurfaces,
 Headline => "functions for investigating Abo surfaces, degree 12, sectional genus 13 and pg=1 (9 families)",
-   "A regular smooth surface X of degree 12, sectional genus 13 and Euler 
-characteristic 2 has a Tate resolution for the ideal sheaf o shape",
-
 
 PARA{"A regular smooth surface X of degree 12, sectional genus 13 and geometric genus
 pg=1 has a Tate resolution for the ideal sheaf of shape:"},
@@ -4933,9 +4937,9 @@ EXAMPLE {"chiITable(12,13,2)"},
 PARA {"We construct the surface from the 3x1 and 3x4 linear matrices 
 in the Tate resolution, which define a line and a Bordiga surface. 
 These matrices can be completed to a differential of the Tate resolution, 
-if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. In some special cases we choose the Bordiga matrix to have some rank 1 points. For further details we refer to the code and the decription in
-
-Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an update, preprint (2026)."
+if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. 
+In some special cases we choose the Bordiga matrix to have some rank 1 points. 
+"
 },
 
     
@@ -4967,6 +4971,10 @@ Abo, H., Ranestad, K., Schreyer, F-O.: Non-general type surfaces in P^4, an upda
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
 	},
+    SUBSECTION "References",
+    UL{
+	"Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026)",
+        "Abo, H., unpublished notes, 2022"},
 }
 
 
@@ -5482,7 +5490,7 @@ Outputs
 Description
   Text
     Using sheaf cohomology,' we can compute this quantity for a smooth projective surface.
-    It is alsop possible to use the function genera, which might be faster.
+    It is also possible to use the function genera, which might be faster.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4
 
@@ -8188,8 +8196,9 @@ Description
   Text
      Note that the number of (-1)-lines + the number of 6-secant lines is
      always equal to 8. In the cases
-     4,5 and 6 there is in addition a 21-secant conic. The conic lies in the plane spannned by e_0..e_2,  i.e.,
-     in the plane V(x_3,x_4).
+     4,5 and 6 there is in addition a 21-secant conic. The conic lies in the plane spanned by e_0..e_2,  i.e.,
+     in the plane V(x_3,x_4). We do not have a theoretical proof, of the observation that the
+     number degree pts +1 coincides with the number of (-1)-lines. 
 SeeAlso
    adjunctionProcessData
    aboRanestadSurface
@@ -8353,7 +8362,7 @@ Description
     with linear entries over the exterior algebra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1)-lines on the surface will coincides with the number of intersection points of the images plus 1.
-    We need at least 3 intersection points and can have up to 7 
+    We need at least 4 intersection points and can have up to 7. 
     In the construction, we normalize the matrix m2x3 as indicated below.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
@@ -8365,7 +8374,7 @@ Description
                  2      3
     o4 : Matrix E  <-- E
   Text
-    One can easily force 3 or 4 intersection points.
+    One can easily force 4 intersection points.
     To find more, we perform a random search over a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find examples with c additional intersection points with about q^c trials.
   CannedExample
     i5 : P4=kk[x_0..x_4];
@@ -8522,7 +8531,8 @@ Outputs
 Description
   Text
     In the Tate resolution of an Abo-Ranestad surface, there are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
-    with linear entries over the exterior algebra. The 2x3 matrix is normalized. The function returns the
+    with linear entries over the exterior algebra. The 2x3 matrix is normalized.
+    The function returns the
     4x2 matrix.
   CannedExample
     i2 :     kk=ZZ/19;
@@ -8574,6 +8584,9 @@ Description
     i10 :     minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
 
     o10 = true
+  Text
+    The two 4x2 matrices are equivalent under row and column operations:
+    They define the same rational normal curve.
 SeeAlso
    aboRanestadSurface
    aboRanestadSurfaceFromMatrix
@@ -8617,7 +8630,7 @@ Description
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1)-lines on the surface coincides with the number of intersection points of the images plus 1.
     The function returns a corresponding surface X.
-   CannedExample
+  CannedExample
     i2 :     kk=ZZ/19
     i3 :     P4=kk[x_0..x_4];
     i4 :     setRandomSeed("fairly fast search")
@@ -9496,7 +9509,7 @@ Description
     This incidence corresponds to the adjoint 3x5 matrix m3x5 of m3x4 having rank 2 in a point where the 3x2 submatrix of m3x5 formed by the last two columns, has rank 1.
     The Hom space turns out to have dimension at least r when m3x4 and m3x1 have r+3 rank two incidences. Using a linear family of 3x5 matrices m3x5 on P3
     with three prescribed incidences, we find by random search, matrices m3x5 whose adjoint m3x4 has r+3 rank two incidences with m3x1.
-    With r=2, we find matrices m3x4, we believe in codimesion 2, yielding smooth surfaces of two different components.
+    With r=2, we find matrices m3x4, we believe in codimension 2, yielding smooth surfaces of two different components.
   CannedExample
     i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
@@ -9510,6 +9523,12 @@ Description
     count= 14
     count1= 1
     -- 10.6815s elapsed
+  Text
+    The additional output under the Verbose=>true print the number of trails = count
+    to get a matrix with HomSpace of dimension h which lead to a surface.
+    With Option count=>true we print count1 which is 
+    the number of times we got a not necessarily smooth surface.
+  CannedExample
     i7 : partitionOfCanonicalDivisorOfAboSurface X == {1, 1, 2, 2, 2, 4}
 
     o7 = true
@@ -9542,7 +9561,10 @@ Description
     the number of times we got a not necessarily smooth surface.
     
     The codimension 2 believe is supported by the fact on average the value of count
-    increases by approximately 180. 
+    increases by approximately 180 = (19^2-1)/2.
+
+References
+    Abo, H., Ranestad, K., Schreyer, F-O. Non-general type surfaces in P4, an update, preprint (2026)
 SeeAlso
   LeBarzN6
   residualInQuintics
@@ -13255,29 +13277,9 @@ Description
     The Horrocks-Bundle is obtained as the homology of a monad. The module HMbundle below
     is the module of global sections of the Horrocks-Mumford bundle.
   CannedExample
-    i26 : HMbundle= (prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4)))**P4^{-4}
-
-    o26 = cokernel {7} | -x_1x_4 x_3^2 0     x_1x_3  x_4^2 0      0     x_2x_3  x_1^2 -x_2x_4 x_0^2   x_0x_2  0     0    -x_0x_3 0    0     0    0      0    0      0      x_2^2 0      0    0      0       x_0x_4 x_1x_2 x_0x_1 0      0    0       0      x_3x_4 |
-                   {7} | x_2x_3  0     x_4^2 -x_0x_4 0     x_0x_3 x_1^2 0       0     x_0x_1  0       -x_3x_4 x_2^2 0    x_1x_2  0    x_3^2 0    0      0    x_0x_2 x_1x_4 0     0      0    0      -x_2x_4 0      0      0      x_0^2  0    -x_1x_3 0      0      |
-                   {7} | 0       0     0     0       0     0      0     0       0     0       -x_1x_4 0       0     0    0       0    0     0    x_2x_4 0    0      x_2x_3 0     x_1x_3 0    0      0       0      x_4^2  0      0      0    0       0      x_1^2  |
-                   {7} | 0       0     0     0       0     0      0     -x_1x_4 0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    x_3x_4 x_3^2   0      0      0      x_2x_3 0    x_2^2   x_1x_2 0      |
-                   {8} | -x_0    -x_1  x_3   0       0     0      x_2   0       0     0       0       0       0     0    0       0    0     0    -x_1   0    0      0      -x_4  -x_4   0    -x_2   0       0      0      0      0      0    0       -x_3   0      |
-                   {8} | 0       -x_4  0     0       0     -x_1   0     0       0     0       0       0       0     0    0       x_0  0     0    -x_4   0    0      -x_3   0     0      0    0      0       x_2    0      0      0      0    0       0      0      |
-                   {8} | 0       0     -x_2  0       0     0      0     -x_4    0     0       0       0       0     0    0       0    0     x_0  0      0    x_1    0      0     0      0    0      0       -x_3   0      0      0      0    0       x_2    0      |
-                   {8} | 0       0     0     -x_2    x_1   0      0     0       0     0       0       0       0     0    0       0    0     x_4  0      -x_3 0      0      0     0      x_1  -x_0   0       0      0      0      0      0    0       0      0      |
-		   {8} | 0       0     0     0       -x_3  0      0     x_0     -x_2  0       0       0       0     0    0       -x_2 0     0    0      0    0      0      0     0      -x_3 0      x_1     0      0      0      0      0    x_4     0      0      |
-		   {8} | 0       0     0     0       0     x_2    0     0       0     0       x_4     0       0     0    0       0    0     0    0      x_4  0      0      0     -x_3   0    0      -x_0    0      0      0      0      0    0       0      -x_1   |
-		   {8} | 0       0     0     0       0     x_4    -x_3  -x_1    0     0       0       0       0     x_0  0       0    0     0    0      0    0      0      0     0      0    x_3    0       0      0      -x_2   0      0    0       0      0      |
-		   {8} | 0       0     0     0       0     0      0     0       -x_4  -x_3    -x_2    0       0     -x_1 0       -x_4 0     0    0      -x_2 0      0      0     0      0    0      0       0      0      0      0      0    0       x_0    0      |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       -x_1    -x_3  -x_3 0       0    0     0    -x_0   0    0      0      0     0      -x_2 0      0       0      0      0      -x_4   x_4  0       0      0      |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       -x_4  -x_4 0       0    -x_1  -x_1 0      0    0      x_0    0     0      0    0      0       0      -x_3   0      0      0    0       0      -x_2   |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    -x_4    x_3  x_2   x_2  0      0    0      0      0     x_0    0    0      0       0      0      0      0      x_1  0       0      0      |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    x_2    x_1  -x_3   0      0     0      0    0      0       0      x_4    0      0      0    x_0     0      0      |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    -x_4   -x_2   -x_1  -x_1   x_0  0      0       0      0      x_3    0      0    0       0      0      |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    -x_4   -x_3    -x_1   -x_0   0      0      -x_2 0       0      0      |
-		   {8} | 0       0     0     0       0     0      0     0       0     0       0       0       0     0    0       0    0     0    0      0    0      0      0     0      0    0      0       0      0      -x_4   -x_3   x_3  -x_2    -x_1   -x_0   |
-
-                               19
+    i26 : HMbundle= (prune homology(beilinson(F'.dd_0**E^{-4},P4),beilinson(F'.dd_1**E^{-4},P4)))**P4^{-4};
+    
+                                   19
     o26 : P4-module, quotient of P4
     i27 : minimalBetti HMbundle
 
@@ -13341,15 +13343,15 @@ Description
     o32 : BettiTally
 
 References
-   \textit{Horrocks, G., Mumford, D.}, A rank 2 vector bundle on {P}{{\(^4\)}} with 15,000 symmetries, Topology ,212, (1973), 63-81
+   Horrocks, G., Mumford, D., A rank 2 vector bundle on P4 with 15,000 symmetries, Topology ,212, (1973), 63-81
 
-   \textit{Comessatti, A.}, Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
+   Comessatti, A., Sulle superficie di Jacobi simplicimente singolari, Mem. Ital. delle Scienze (dei XL) serie 3a, 21, (1919), 45-71
    
-   \textit{Barth, W., Hulek, K., Moore, R.}, Degenerations of {Horrocks}-{Mumford} surfaces, Math. Ann.,277, (1987), 735-755
+   Barth, W., Hulek, K., Moore, R., Degenerations of Horrocks-Mumford surfaces, Math. Ann.,277, (1987), 735-755
   
-   \textit{Decker, W., Schreyer, F-O.}, On the uniqueness of the {Horrocks}-{Mumford}-bundle, Math. Ann., 273,(1986),415-443
+   Decker, W., Schreyer, F-O., On the uniqueness of the Horrocks-Mumford-bundle, Math. Ann., 273,(1986),415-443
 
-   \textit{Eisenbud, D., Fl\o ystad, G., Schreyer, F-O.}, Sheaf cohomology and free resolutions over exterior algebras ,Trans. Amer. Math. Soc., 355,(2003), 4397-4426
+   Eisenbud, D., Fl\o ystad, G., Schreyer, F-O., Sheaf cohomology and free resolutions over exterior algebras ,Trans. Amer. Math. Soc., 355,(2003), 4397-4426
 
 SeeAlso
   searchHMBundle
@@ -13610,6 +13612,8 @@ Description
    X is a non-minimal abelian surface. It contains twenty five (-1)-lines.
 References
    \textit{Popescu, S.}, Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)    
+
+   \textit{Abo, H., Ranestad, K., Schreyer, F-O.} Non-general type surfaces in P4, an update, preprint (2026)
 SeeAlso
   horrocksMumfordSurface
   abelianSurfaceD15
@@ -13650,6 +13654,7 @@ Outputs
   of an elliptic surface of degree 7 
 Description
   Text
+    construct an elliptic surface of degree 7 and sectional genus 6.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -13718,6 +13723,7 @@ Outputs
   of an elliptic surface of degree 8 
 Description
   Text
+    Construct an elliptic surface of degree 8  and sectional genus 7.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -14772,7 +14778,7 @@ Description
     i10 :    HdotK(d,sg)
 
     o10 = 12
-    Text
+  Text
     Since K^2=0 this surface is minimal. X is fibered in elliptic curves of degree 4=12/3
     The canonical divisor is the pullback of a divisor of degree 3 on the albanese curve, which is
     an elliptic curve. This fits with pg=3.
@@ -15284,7 +15290,7 @@ Key
  K3surfaceD11S11Ln
  (K3surfaceD11S11Ln, PolynomialRing,ZZ)
 Headline
- construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines (4 families)
+ construct a K3 surface of degree 11, sectional genus 11 and precisely n 6-secants lines due to Popescu (4 families)
 Usage
  X=K3surfaceD11S11Ln(P4,n)
 Inputs
@@ -15479,7 +15485,7 @@ Key
  K3surfaceD11S12
  (K3surfaceD11S12, PolynomialRing)
 Headline
- construct a K3 surface of degree 11 and sectional genus 12 
+ construct a Popescu surface, a K3 surface of degree 11 and sectional genus 12 
 Usage
  X=K3surfaceD11S12 P4
 Inputs
