@@ -14905,7 +14905,7 @@ Outputs
    of a K3 surface of degree 6
 Description
   Text
-   We construct an K3 surface of degree 6 as a complete intersection of type (2,3).
+   We construct a K3 surface of degree 6 as a complete intersection of type (2,3).
    X is minimal and has sectional genus 4.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
@@ -14946,9 +14946,9 @@ Description
 
     o8 : BettiTally
 
-References
+--References
 
-SeeAlso
+--SeeAlso
   
 ///
 
@@ -15004,7 +15004,7 @@ Outputs
   of a K3 surface of degree 8
 Description
   Text
-   We construct an K3 surface of degree 8 and sectional genus 6.
+   We construct a K3 surface of degree 8 and sectional genus 6.
   Example
    kk=ZZ/nextPrime 10^3;
    P4=kk[x_0..x_4];
