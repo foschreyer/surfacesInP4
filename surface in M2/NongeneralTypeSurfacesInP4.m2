@@ -8414,7 +8414,7 @@ Description
     with linear entries over the exterior algebra. These matrices define rational maps P3 -> G(2,5) and P2 -> G(2,5)
     and the type of the surface depends on how these images intersect in the Grassmannian G(2,5). It turns out that the number of
     (-1)-lines on the surface will coincides with the number of intersection points of the images plus 1.
-    We need at least 4 intersection points and can have up to 7. 
+    We need at least 3 intersection points and can have up to 7. 
     In the construction, we normalize the matrix m2x3 as indicated below.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3; e=symbol e; E=kk[e_0..e_4,SkewCommutative=>true];
@@ -8426,7 +8426,7 @@ Description
                  2      3
     o4 : Matrix E  <-- E
   Text
-    One can easily force 4 intersection points.
+    One can easily force 3 intersection points.
     To find more, we perform a random search over a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find examples with c additional intersection points with about q^c trials.
   CannedExample
     i5 : P4=kk[x_0..x_4];
@@ -8584,8 +8584,7 @@ Description
   Text
     In the Tate resolution of an Abo-Ranestad surface, there are a 4x2 matrix m4x2 and a 2x3 matrix m2x3
     with linear entries over the exterior algebra. The 2x3 matrix is normalized.
-    The function returns the
-    4x2 matrix.
+    The function returns the 4x2 matrix.
   CannedExample
     i2 :     kk=ZZ/19;
     i3 :     P4=kk[x_0..x_4];
