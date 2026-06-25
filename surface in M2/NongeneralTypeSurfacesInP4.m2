@@ -1669,24 +1669,24 @@ numgens I==120-n
 aboRanestadSurface=method(Options=>{Verbose=>false,Smooth=>true,Special=>0})
 --        PURPOSE : Find a surface with degree 12, sectional genus 13, and Euler characiteristic 1 with designated number of (-1)-lines
 --          INPUT : 'P4', the ring of P4
---                  'n', the number of (-1)-lines
+--                  'n', the number of intersection points in G(2,n)
 --         OUTPUT : 'X', an ideal of an AR surface,
 --                  'm4x2', a linear matrix over the exterior algebra
 -- OPTIONAL INPUT : Vervose =>  a Boolean value, default value false, whether to return the numbers of trials until the first success of finding the desired Beilinson monad and nonsingular surface with desired invariants 
 --		    Special => an integer, default value 0, 
 --                  Smooth  => a Boolean value, default value true, whether to return the ideal of the surface without checking its smoothness
 --    DESCRIPTION : The function constructs the ideal sheaf of a surface as the homology of a Beilinson monad,
---                  provided that it has natural cohomology. n-1 coincides with number of intersection points in G(2,5)
---                  121-n coincides with the number of generators of 'X' 
+--                  provided that it has natural cohomology. n coincides with number of intersection points in G(2,5)
+--                  120-n coincides with the number of generators of 'X' 
 aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
     -- Input: P4 ring of P4
-    --        n number of -1 lines
-    --        n-1 coincides with number of intersection points in G(2,5)
-    --        121-n coincides with the number of generators of the ideal I below 
+    --        n+1 number of -1 lines
+    --        n coincides with number of intersection points in G(2,5)
+    --        120-n coincides with the number of generators of the ideal I below 
     -- Output: X an ideal of an AR surface,
     --         m4x2 linear matrix over the exterior algebra
     -- The function gives an error if n is not between 2 and 9
-    assert(member(121-n,toList(112..117)));
+    assert(member(120-n,toList(112..117)));
     -- 'kk' is the coeffieicnt ring of 'P4'
     kk:= coefficientRing P4;
     -- Use 'prepareAboRanestadSurface' to get the data required to construct a surface
@@ -1708,7 +1708,7 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
 		-- 'I' is generated linear forms, describing the conditions that the composite of the differentials of the monad vanishes.  
 		I=trim ideal sub(contract(E3,flatten c),B);
 		-- The function gives an error if the number of the minimal set of generators is not equal to 121-n
-		numgens I =!= 121-n
+		numgens I =!= 120-n
 		) do (count=count+1);
 	    -- In the next two lines, choose a point 'randSol' of V('I') at random 
 	    sol=vars B%I;
@@ -1739,7 +1739,7 @@ aboRanestadSurface(Ring,Number) := opt -> (P4,n) -> (
 ///
 kk=ZZ/11
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,9,Special=>2,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
 L0=={(4, 12, 13), 8, (12, 24, 13)}
@@ -1760,7 +1760,7 @@ minimalBetti X
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
 L0
@@ -1772,14 +1772,14 @@ dim R, degree R, minimalBetti R, degree (R+X)
 
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,5,Special=>2,Verbose=>true);
 E=ring m4x2
 m42=m4x2%ideal(vars E)_{0,1,2}
 betti syz (transpose m42,DegreeLimit=>2)
 
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,4,Special=>1,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,3,Special=>1,Verbose=>true);
 E=ring m4x2
 m42=m4x2%ideal(vars E)_{0,1,2}
 betti syz (transpose m42,DegreeLimit=>2)
@@ -1788,7 +1788,7 @@ kk=ZZ/11
 P4=kk[x_0..x_4]
 setRandomSeed("repeat again 6")
 count=0
-elapsedTime while(elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>1,Verbose=>true);
+elapsedTime while(elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>1,Verbose=>true);
     <<minimalBetti X <<endl;
 	E=ring m4x2;
 	m42=m4x2%ideal(vars E)_{0,1,2};
@@ -1807,7 +1807,7 @@ minimalBetti J
 
 kk=ZZ/13
 P4=kk[x_0..x_4]
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>true,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>true,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0
@@ -1816,7 +1816,7 @@ minimalBetti J
 kk=ZZ/11
 P4=kk[x_0..x_4]
 setRandomSeed("search")
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,3);
 L0=={(4, 12, 13), 8, (12, 24, 13), 1, (12, 20, 9), 8, (8, 9, 2)}
@@ -2033,7 +2033,7 @@ aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
 kk=ZZ/19
 P4=kk[x_0..x_4]
 setRandomSeed("fairly fast search")
-elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+elapsedTime (X,m4x2)=aboRanestadSurface(P4,5,Special=>2,Verbose=>true);
 elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
 m4x2'=matrixFromAboRanestadSurface X
 m4x2
@@ -4934,7 +4934,7 @@ achieved by searching.
     SUBSECTION "References",
     UL{
      "Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026),",
-     "Abo, H., Ranestad, K.,"
+     "Abo, H.,Unpublished notes (2022)"
      },
 
 }
@@ -8192,7 +8192,7 @@ Description
     This function verifies this assertion in an example.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3; P4:=kk[x_0..x_4];
-    i3 : n=7;
+    i3 : n=6;
     i4 : elapsedTime (X,m4x2) = aboRanestadSurface(P4,n,Special=>2);
     -- 4.75132s elapsed
     i5 : (pts,vP2,vP3,g25)=veroneseImagesInG25(m4x2);
@@ -8201,7 +8201,7 @@ Description
     o7 : Sequence
 
     i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1
+    i9 : L0_1==n+1 and degree pts==n
 
     o9 = true
     i10 : (d,sg)=(degree X,sectionalGenus X)
@@ -8267,7 +8267,7 @@ CannedExample
     i6 : (degree pts,degree vP2,degree vP3,degree g25)
     o7 = true
     i8 : (L0,L1,L2,J)=adjunctionProcess(X,1);
-    i9 : L0_1==n and degree pts==n-1;
+    i9 : L0_1==n+1 and degree pts==n;
     i10 : (d,sg)=(degree X,sectionalGenus X)
 
     o10 = (12, 13)
@@ -8404,7 +8404,7 @@ Inputs
  P4:Ring
   the coordinate ring of P4
  n:Number
-  the number of desired (-1)-lines on the surface
+  the number of intersection points in G(2,n), the number of (-1)-lines is n+1
 Outputs
  X:Ideal
   the ideal of a Abo-Ranestad surface
@@ -8432,7 +8432,7 @@ Description
     To find more, we perform a random search over a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find examples with c additional intersection points with about q^c trials.
   CannedExample
     i5 : P4=kk[x_0..x_4];
-    i6 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,4);
+    i6 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,3);
     -- 4.81344s elapsed
     i7 : minimalBetti X
 
@@ -8485,7 +8485,7 @@ Description
 
     A special situation occurs when the 4x2 matrix m4x2 contains a 2x2 submatrix with entries in e_0..e_2 as well. In that case we have two conics in the e_0..e_2 plane which intersect in 4 points, hence four intersection points in the Grassmannian G(2,5). We can easily force 2 more intersection points and can get a 7th intersection point via a codimension 1 random search.
   CannedExample
-    i16 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2);
+    i16 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2);
     -- 5.37867s elapsed
     i17 : minimalBetti X
 
@@ -8507,7 +8507,7 @@ Description
     i20 : kk=ZZ/19;P4=kk[x_0..x_4];
     i22 : setRandomSeed("fast search");
     -- setting random seed to 11374490907814143332492
-    i23 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>0,Verbose=>true);
+    i23 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,5,Special=>0,Verbose=>true);
     trials so far to get a surface = 12
     trials to get a smooth surface = 1
     -- 7.20331s elapsed
@@ -8530,7 +8530,7 @@ Description
     o26 = true
     i27 : setRandomSeed("another fast search");
     -- setting random seed to 117342191518550946866766190799857765377
-    i28 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,8,Special=>2,Verbose=>true);
+    i28 : elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2,Verbose=>true);
     trials so far to get a surface = 3
     trials to get a smooth surface = 1
     -- 8.3556s elapsed
@@ -8594,7 +8594,7 @@ Description
      -- setting random seed to 1219487757425192677910281801934109671
 
     o4 = 1219487757425192677910281801934109671
-    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,5,Special=>2,Verbose=>true);
     trials so far to get a surface = 1       
     trials to get a smooth surface = 1
      -- 7.27749s elapsed
@@ -8690,7 +8690,7 @@ Description
      -- setting random seed to 1219487757425192677910281801934109671
 
     o4 = 1219487757425192677910281801934109671
-    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
+    i5 :     elapsedTime (X,m4x2)=aboRanestadSurface(P4,5,Special=>2,Verbose=>true);
     trials so far to get a surface = 1
     trials to get a smooth surface = 1
      -- 7.48173s elapsed
@@ -9011,7 +9011,7 @@ Description
           -7e_0+3e_1-9e_2+6e_3-6e_4 |
           -e_0+7e_1-8e_2+8e_3-8e_4  |
 
-    3      4
+                 3      4
     o4 : Matrix E  <-- E
     i5 : elapsedTime X=aboSurfaceFromMatrix(m3x4,P4);
     -- 22.7432s elapsed
