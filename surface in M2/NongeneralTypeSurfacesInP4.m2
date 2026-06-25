@@ -1120,7 +1120,7 @@ findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
 	elapsedTime while ( -- only hypersurface singularities
 	    X=findRandomSchreyerSurface(P4,s);
 	    dim (X+ideal jacobian X)!=0) do (count=count+1);
-	    <<count <<endl;) else (
+	    <<"trials to get a surface = "<<count <<endl;) else (
         while ( -- only hypersurface singularities
 	    X=findRandomSchreyerSurface(P4,s);
 	    dim (X+ideal jacobian X)!=0) do (count=count+1););	
@@ -1128,7 +1128,7 @@ findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
 	 dim singX !=0) do ();
    X)
 
-/// -* oes not exists *-
+/// -* does not exists *-
 kk=ZZ/nextPrime(10^3)
 P4=kk[x_0..x_4]
 elapsedTime X=unirationalConstructionOfSchreyerSurfaces(P4,KodairaDimension=>-1);
@@ -1157,9 +1157,9 @@ collectSchreyerSurfaces(List,List,Number) :=(adjTypes,Ms,N) -> (
     while (
     elapsedTime X=findRandomSmoothSchreyerSurface(P4,Verbose=>false);
     <<minimalBetti X << endl;count1=count1+1;
-    <<count1 <<endl;
+    <<"trials to get a smmoth surfcae = "<<count1 <<endl;
     elapsedTime (numList,adjList,ptsList,J)=adjunctionProcess(X,4);
-    <<numList <<endl;
+    <<"adjunction type = "<<numList <<endl;
     adjTypes2=append(adjTypes2,numList);
     Ms2=append(Ms2,M);
     if not member(numList,adjTypes1)
@@ -1642,6 +1642,8 @@ get4x2Matrix(Matrix,Number) := opt -> (m2x3,n) -> (
 ///
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
+E=kk[e_0..e_4,SkewCommutative=>true]
+m2x3=matrix{{E_0,E_1,E_3},{E_1,E_2,E_4}}
 (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3)=prepareAboRanestadSurfaces(P4);
 n=4
 m4x2=get4x2Matrix(m2x3,n,Special=>2)
@@ -1655,7 +1657,7 @@ c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
 I=trim ideal sub(contract(E3,flatten c),B);
 numgens I==120-n
 
-n=4
+n=3
 m4x2=get4x2Matrix(m2x3,n,Special=>0)
 c=b4x2*sub(m2x3,ExB)+sub(m4x2,ExB)*a2x3;
 I=trim ideal sub(contract(E3,flatten c),B);
@@ -1761,6 +1763,7 @@ P4=kk[x_0..x_4]
 elapsedTime (X,m4x2)=aboRanestadSurface(P4,7,Special=>2,Verbose=>true);
 minimalBetti X
 elapsedTime  (L0,L1,L2,J)=adjunctionProcess(X,1);
+L0
 assert(L0_1==6)
 
 X5=ideal (gens X)_{0..4};
@@ -4849,13 +4852,13 @@ if the images of these maps in G(2,5) intersect in at least 4 points.
 
 EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
 
-PARA{"The variety of matrices m4x2 with 4 intersection points is unirational. 
-To find example with 5, 6 or 7 intersection points can be achieved by search over a 
+PARA{"The variety of matrices m4x2 with 3 or 4 intersection points is unirational. 
+To find example with 5 or 6  intersection points can be achieved by search over a 
 finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
 wich also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
-which intersect in four point and specifying  two more intersection points 
+which intersect in four point and specifying  one or two more intersection points 
 in the Grassmannian gives 
- another unirational component. To get 7 or 8 intersection points can be achieved by searching.
+ further unirational components. To get 7 intersection points can be achieved by searching.
 "},   
 
    PARA{},
@@ -4947,8 +4950,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
-        TO testMatrix1,
-	TO testMatrix2,	
+        TO testMatrix2,
 	TO randomAboSurface,
 	TO analyzeAboSurface,
 	TO collectAboSurfaces,
@@ -9105,7 +9107,7 @@ Key
 Headline
  test whether a 3x4 matrix with entries over the exterior algebra leads to an Abo surface
 Usage
- r = testMatrix1(m3x4,P4)
+ r2 = testMatrix2(m3x4,P4)
  singX = testMatrix(m3x4,P4)
 Inputs
   m3x4:Matrix
@@ -9113,7 +9115,7 @@ Inputs
   P4:PolynomialRing
     coordinate ring of P4
 Outputs
- r:ZZ
+ r2:ZZ
   the rank of the crucial Hom space
  singX: Ideal
    ideal of the singular locus of an example of a surfaces from m3x4
