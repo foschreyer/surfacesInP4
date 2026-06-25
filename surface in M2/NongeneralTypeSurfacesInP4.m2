@@ -8985,7 +8985,7 @@ Description
     The resulting surfaces is either a K3-surfaces or an elliptic surface. If it is a K3 surface then
     it is a 6-points blow-up of a minimal model and the degrees of the
     six exceptional divisors form a partition of 12 into 6 parts. In the example below, this is the partition
-    {1,2,2,2,3}.
+    {1,2,2,2,2,3}.
   CannedExample
     i1 : kk=ZZ/19
 
@@ -9231,7 +9231,7 @@ Description
     o9 : Ideal of P4
 
   Text
-    The matrix m3x4 gives rize to a surface if r>5.
+    The matrix m3x4 gives rize to a surface if r1>5.
   CannedExample
     i10 : X= aboSurfaceFromMatrix(m3x4,P4);
 
@@ -9255,7 +9255,7 @@ Description
     o12 : Ideal of P4
   Text   
     The last function also checks whether there is a smooth surface with these matrices.
-    For a general 3x4 matrix, we have r=5.
+    For a general 3x4 matrix, we have r1=5.
   CannedExample
     i13 : setRandomSeed("really general");
     -- setting random seed to 13089166972629855410042251015
@@ -9546,21 +9546,24 @@ Inputs
   P3: Ring
     coordinate ring of P3
   h:ZZ
-    desired dimension of the Hom space
+    desired dimension of the HomSpace
 Outputs
  X:Ideal
   ideal of an Abo surface X
  m3x4: Matrix
   the 3x4 matrix of linear forms over the exterior algebra
  r:ZZ
-  dimension of the relevant Hom space
+  dimension of the relevant HomSpace
 Description
   Text
     The function performs a search in a particular linear family of 3x4 matrices m3x4 on P4 given a fixed 3x1 matrix m3x1.
-    We assume that the transpose of m3x1= matrix{{e_0,e_1,e_2}}. It vanishes on a line L3x1. The rank 2 locus of a general matrix m3x4 is a Bordiga surface, so we call the matrix Bordiga matrix.
-    When a linear form in m3x1 and the linear forms in a column in the matrix m3x4 together span only a 2-dimensional space, then we say the two matrices have a rank two incidence. It corresponds to the line L3x1 intersecting a plane of a plane cubic curve on the Bordiga surface.
-    This incidence corresponds to the adjoint 3x5 matrix m3x5 of m3x4 having rank 2 in a point where the 3x2 submatrix of m3x5 formed by the last two columns, has rank 1.
-    The Hom space turns out to have dimension at least r when m3x4 and m3x1 have r+3 rank two incidences. Using a linear family of 3x5 matrices m3x5 on P3
+    We assume that the transpose of m3x1=transpose( matrix{{e_0,e_1,e_2}}). The general matrix m3x4 of linear forms in e_0,...,e_4 has a P3 of columns,
+    of which 10 columns have dependant entries, i.e. are socalled rank 2 columns. More generally, when a row entry in m3x1
+    together with the entries of a column in m3x4 we say
+    that the two matrices have a rank two incidence. 
+    This incidence corresponds to the adjoint 3x5 matrix m3x5 of m3x4 having rank at most 2 in a point where
+    the 3x2 submatrix of m3x5 formed by the last two columns, has rank 1.
+    The HomSpace turns out to have dimension at least r when m3x4 and m3x1 have r+3 rank two incidences. Using a linear family of 3x5 matrices m3x5 on P3
     with three prescribed incidences, we find by random search, matrices m3x5 whose adjoint m3x4 has r+3 rank two incidences with m3x1.
     With r=2, we find matrices m3x4, we believe in codimension 2, yielding smooth surfaces of two different components.
   CannedExample
@@ -9613,7 +9616,7 @@ Description
     With Option count=>true we print count1 which is 
     the number of times we got a not necessarily smooth surface.
     
-    The codimension 2 believe is supported by the fact on average the value of count
+    The codimension 2 belief is supported by the fact on average the value of count
     increases by approximately 180 = (19^2-1)/2.
 
 References
@@ -9774,7 +9777,7 @@ Description
   Text
     This gives an (apparently) unirational construction of Abo surfaces with 111333 partition
     of the canonical divisor. This function constructs a 3x4 matrix m3x4 with linear entries
-    from E whose column space contains 6 rank-two planes meeting a specific line and returns
+    from E whose column space contains six rank 2 columns whose space of entries contain a row entry of m3x1 and returns
     aboSurfaceFromMatrix(m3x4,P4).
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^4;
@@ -9908,7 +9911,7 @@ Description
   Text
     This gives an (apparently) unirational construction of Abo surfaces with 111117 partition
     of the canonical divisor. This function constructs a 3x5 matrix m3x5 over the homogeneous coordinate ring of a P3 with linear entries such
-    that its last 3x2 submatrix has rank 0 at a point and rank 1 along three lines, and m3x5 has rank at the point and rank two at three points one on each of the three lines.
+    that its last 3x2 submatrix has rank 0 at a point and rank 1 along three lines, and m3x5 has rank 1 at the point and rank 2 at three points one on each of the three lines.
     The functiom then defines m3x4 as
     the adjoint matrix of m3x5 and returns aboSurface(m3x4,P4). 
   CannedExample
@@ -10190,7 +10193,7 @@ Description
     o17 : BettiTally
   Text
     The construction of X uses a special 3x4 matrix over E such
-    that the Hom group above is non-zero.
+    that the HomSpace hom above is non-zero.
 
     The (5,5) linked surface Y is an elliptic surface of degree 13 and sectional genus 16.
   CannedExample
@@ -10672,14 +10675,14 @@ Inputs
  E: Ring
   exterior algebra dual to P4
  h: ZZ
-  dimension of the desired Hom-space, or a lower bound for that
+  dimension of the desired HomSpace, or a lower bound for that
 Outputs
  X:Ideal
    of an Abo surface
  m3x4: Matrix
    3x4 matrix over the exterior algebra
  r:ZZ
-  dimension of the Hom-space
+  dimension of the HomSpace
    
 Description
   Text
