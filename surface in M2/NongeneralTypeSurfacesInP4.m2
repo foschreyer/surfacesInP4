@@ -4899,18 +4899,18 @@ EXAMPLE{"chiITable(12,13,1)"},
 PARA{"In the Tate resolution there are a 4x2 and a 2x3 matrices with linear entries in E. 
 Thus we get maps P3 -> G(2,5) and P2 -> G(2,5). 
 These matrices can be completed to a differential of the Tate resolution 
-if the images of these maps in G(2,5) intersect in at least 4 points.
+if the images of these maps in G(2,5) intersect in at least 3 points.
  We normalize the 2x3 matrix as follows:"},
 
 EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
 
-PARA{"The variety of matrices m4x2 with 3 or 4 intersection points is unirational. 
-To find example with 5 or 6  intersection points can be achieved by search over a 
+PARA{"The varieties of matrices m4x2 with 3 or 4 intersection points are unirational. 
+To find example with 5 or 6 intersection points can be achieved by a search over a 
 finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
 wich also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
-which intersect in four point and specifying  one or two more intersection points 
-in the Grassmannian gives 
- further unirational components. To get 7 intersection points can be achieved by searching.
+which intersect in four point and specifying one or two more intersection points 
+in the Grassmannian gives further unirational components. To get 7 intersection points can be 
+achieved by searching.
 "},   
 
    PARA{},
