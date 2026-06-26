@@ -11239,7 +11239,38 @@ References
 
    Okonek, Ch., Fl\"achen vom Grad 8 in P4, Math. Z., 191, (1986), 207-223
 
-     
+///
+
+///
+kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true]; 
+X=okonekSurfaceD8S6(P4,E);
+minimalBetti X
+elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,1);
+L0
+P5=ring J;fJ=res J
+
+sphi=(syz(fJ.dd_1|map(P5^1,,transpose fJ.dd_3),DegreeLimit=>2))
+phi=sphi^{0..4}
+Ms={sub( phi,kk)*fJ.dd_2,(transpose sub( phi,kk))*fJ.dd_2,
+    (inverse transpose sub( phi,kk))*fJ.dd_2,(inverse sub( phi,kk))*fJ.dd_2,
+    fJ.dd_2*sub( phi,kk),fJ.dd_2*(transpose sub( phi,kk)),
+    fJ.dd_2*(inverse transpose sub( phi,kk)),
+    fJ.dd_2*(inverse sub( phi,kk))};
+apply(Ms,M->M+transpose M == 0)
+M=Ms_3
+G25=kk[b_0..b_9]
+g25=genericSkewMatrix(G25,b_0,5)
+bs=flatten (indicesOfSkewMat=apply(5,i->apply(i,j->g25_(j,i))))
+coef=matrix {flatten (indicesOfSkewMat=apply(5,i->apply(i,j->M_(j,i))))}
+dualVars=transpose sub(syz(coef,DegreeLimit=>1),kk)
+P3=kk[c_0..c_3]
+cs=vars P3*dualVars
+
+N=sub(g25,apply(10,i->bs_i=>cs_(0,i)))
+I=pfaffians(4,N)
+dim I, degree I
+decompose I
 ///
 
 doc ///
@@ -11319,6 +11350,9 @@ References
    Okonek, Ch., Fl\"achen vom Grad 8 in P4, Math. Z., 191, (1986), 207-223
 ///
 
+ 
+
+
 ///
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -11335,6 +11369,7 @@ References
     apply(decompose(X+Y),c->(dim c, degree c, genus c, minimalBetti c))
     betti tateResolutionOfSurface X
 ///
+
 -* For CannedExample of degree10DESSurface
  Example
     kk=ZZ/nextPrime 10^3;
@@ -11984,14 +12019,101 @@ SeeAlso
 ///
 
 -* for CannedExample degree10pi9RanestadSurface
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
+     Example
+    kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
     minimalBetti(X=degree10pi9RanestadSurface(P4,E))
     betti(T=tateResolutionOfSurface X)
     betti(T.dd_4)
-    degree X, sectionalGenus X
+    (degree X, sectionalGenus X) == (10,9)
+  Text
+    Next we start to verify for this example the assertions of
+    Proposition 3.8 in [ARS,2026].
+  Example
+    ci=ideal(X_0,X_1);
+    Y=ci:X;
+    cY=primaryDecomposition Y
+    degree Y ==degree ci-degree X
+    netList apply(cY, c->(dim c,degree c,dim (c+X),degree(c+X),minimalBetti c,
+	    dim (sc=singularLocus(P4/c)),radical ideal sc))
+    radical(cY_0+cY_1)
+    fscroll= res cY_1; fscroll.dd_2    
+    kk3=GF(char kk,3)
+    P4'=kk3[gens P4]
+    planes=decompose sub(cY_0,P4')
+    tally apply(planes,c->(dim c,degree c,degree (c+sub(X,P4'))))
+  Text
+    Thus X contains three plane quartics curves.
+  Example
+    elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,2); -- 1219.94s elapsed
+    L0, minimalBetti J
+    P5=ring J
+    fJ=res J
+  Text
+    J defines a Veronese surface in P5. We start to compute a 
+    rational parametrization of X by computing a parametrization of V(J).
+  Example
+    P2=kk[y_0..y_2]
+    P5xP2=P5**P2
+    betti(adjointMat=diff(transpose vars P5,(sub(vars P2,P5xP2)*transpose sub(fJ.dd_3,P5xP2))))
+    para1=map(P2^1,,transpose syz transpose sub(adjointMat,P2))
+    degree last L2 == 12
+    betti(twelvePoints=saturate (sub(last L2,para1)))
+    degree twelvePoints == 12
+  Text
+    The parametrization of X can be computed from the list of adjoint matrices 
+    stored in L1.
+  Example
+    #L1==2
+    betti L1_1, betti L1_0
+    betti (para2=map(P2^1,,transpose (syz transpose sub(last L1,para1))))
+    betti(para3=map(P2^1,,transpose syz transpose sub(L1_0,para2)))
+    betti(Xpara=ker map(P2,P4,para3))
+    Xpara==X
+  Text
+    Thus para3 is a rational parametrization of X.
+    Next we investigate the baselocus.
+  Example
+    baseLocus = ideal para3;
+    tally (cBaseLocus=apply(primaryDecomposition baseLocus,c->(dim c, degree c, degree radical c)))
+    twelvePlanePoints=radical intersect select(primaryDecomposition baseLocus,c->degree c== 3*degree radical c);
+    degree twelvePlanePoints
+    twelvePoints = saturate ideal para2;
+    twelvePoints == twelvePlanePoints
+    betti(sixPlanePoints = saturate(baseLocus,twelvePoints))
+    betti para2, betti twelvePlanePoints
+  Text
+    Finally we determine the nodal quartic.
+  Example
+    secantLine=residualInQuintics X
+    betti(secantImage=sub(secantLine,para3):ideal para3)
+  Text
+    So the 6 points of the secant line on a line in P2.
+  Example
+    eqL=secantImage_0
+    P1=kk[w_0,w_1]
+    paraL=vars P1*sub(transpose syz transpose jacobian eqL,kk)
+    rho1=gens twelvePlanePoints
+    nodalQuartic=ker map (P1,P2,sub(rho1,paraL))
+    nodes=saturate ideal jacobian nodalQuartic
+    rho=map(P2,P2,rho1)
+    preimageOfTheNodes1=sub(nodes,rho1);
+    betti(preimageOfTheNodes=saturate(preimageOfTheNodes1,twelvePlanePoints))
+    degree preimageOfTheNodes
+    betti(sixPoints=preimageOfTheNodes:eqL)
+    betti(sixBasePoints=saturate(ideal para3,twelvePlanePoints))
+    sixBasePoints==sixPlanePoints
+  Text
+    The six points came in three pairs of two.
+  Example
+    tally apply(decompose sixPoints,c->(dim c, degree c))
+    kk3=GF(char kk,3)
+    P2'=kk3[gens P2]
+    tally apply(decompose nodes,c->(dim c, degree c))
+    tally apply(decompose sub(sixPoints,P2'),c->(dim c, degree c))
+  Text
+    In summary, all assertions of [ARS 26,Proposition 3.8] hold in this specific example.
+    For a theoretical proof see [R,88].   
+
 *-
 
 doc ///
@@ -12015,9 +12137,7 @@ Description
     We construct the surface from a carefully chosen differential T.dd_4
     of the Tate resolution.
   CannedExample
-    i1 : kk=ZZ/nextPrime 10^3;
-    i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i1 : kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
     i4 : minimalBetti(X=degree10pi9RanestadSurface(P4,E))
 
                 0 1  2 3 4
@@ -12035,10 +12155,10 @@ Description
                 -1  0  1 2 3 4  5  6   7
     o5 = total: 94 55 27 9 2 4 16 47 105
             -4:  1  .  . . . .  .  .   .
-            -3: 93 55 27 9 . .  .  .   .
-            -2:  .  .  . . 2 .  .  .   .
+	    -3: 93 55 27 9 . .  .  .   .
+	    -2:  .  .  . . 2 .  .  .   .
 	    -1:  .  .  . . . 2  1  .   .
- 	     0:  .  .  . . . 2 15 47 105
+	     0:  .  .  . . . 2 15 47 105
 
     o5 : BettiTally
     i6 : betti(T.dd_4)
@@ -12046,110 +12166,407 @@ Description
                 0 1
     o6 = total: 2 4
              1: 2 .
-             2: . 2
-             3: . 2
+	     2: . 2
+	     3: . 2
 
     o6 : BettiTally
-    i7 : degree X, sectionalGenus X
+    i7 : (degree X, sectionalGenus X) == (10,9)
 
-    o7 = (10, 9)
+    o7 = true
+  Text
+    Next we start to verify for this example the assertions of Proposition 3.8 in [ARS,2026].
+  CannedExample
+    i8 : ci=ideal(X_0,X_1);
 
-    o7 : Sequence
-  
+    o8 : Ideal of P4
+    i9 : Y=ci:X;
+
+    o9 : Ideal of P4
+    i10 : cY=primaryDecomposition Y;
+    
+    o10 : List
+    i11 : degree Y ==degree ci-degree X
+
+    o11 = true
+    i12 : netList apply(cY, c->(dim c,degree c,dim (c+X),degree(c+X),minimalBetti c,
+	    dim (sc=singularLocus(P4/c)),radical ideal sc))
+
+          +----------------------------------------------------------+
+          |                     0 1 2                                |
+    o12 = |(3, 3, 2, 12, total: 1 3 2, 2, ideal (x , x , x ))        |
+          |                  0: 1 . .             4   3   2          |
+	  |                  1: . 3 2                                |
+	  +----------------------------------------------------------+
+	  |                     0 1 2                                |
+	  |(3, 3, 2, 12, total: 1 3 2, 0, ideal (x , x , x , x , x ))|
+	  |                  0: 1 . .             4   3   2   1   0  |
+	  |                  1: . 3 2                                |
+	  +----------------------------------------------------------+
+    i13 : radical(cY_0+cY_1)
+
+    o13 = ideal (x , x , x )
+                  4   3   2
+
+    o13 : Ideal of P4
+    i14 : fscroll= res cY_1; fscroll.dd_2
+
+    o15 = {2} | -x_2-48x_3-14x_4 -502x_3+431x_4     |
+          {2} | -21x_3-447x_4    -x_2+431x_3-478x_4 |
+          {2} | x_0+39x_3+138x_4 x_1-115x_3+404x_4  |
+
+                   3       2
+    o15 : Matrix P4  <-- P4
+    i16 : kk3=GF(char kk,3)
+
+    o16 = kk3
+
+    o16 : GaloisField
+    i17 : P4'=kk3[gens P4]
+
+    o17 = P4'
+
+    o17 : PolynomialRing
+    i18 : planes=decompose sub(cY_0,P4')
+
+                            2                           2                        
+    o18 = {ideal (x  + (118a  + 87a - 155)x , x  + (120a  - 406a + 442)x ), ideal
+	           3                       4   2                        4        
+	  -----------------------------------------------------------------------
+   	             2                           2                             
+	  (x  + (334a  + 34a + 277)x , x  + (391a  + 282a - 25)x ), ideal (x  +
+	    3                       4   2                       4           3  
+	  -----------------------------------------------------------------------
+	           2                            2
+	  (- 452a  - 121a - 286)x , x  + (498a  + 124a + 189)x )}
+                                   4   2                        4
+
+    o18 : List
+    i19 : tally apply(planes,c->(dim c,degree c,degree (c+sub(X,P4'))))
+
+    o19 = Tally{(3, 1, 4) => 3}
+
+    o19 : Tally
+  Text
+    Thus X contains three plane quartics curves.
+  CannedExample
+    i20 : elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,2); 
+    -- 1172.33s elapsed
+    i21 : L0, minimalBetti J
+
+                                                              0 1 2 3
+    o21 = ({(4, 10, 9), 6, (8, 13, 6), 12, (5, 4, 0)}, total: 1 6 8 3)
+                                                           0: 1 . . .
+                                                           1: . 6 8 3
+
+    o21 : Sequence
+    i22 : P5=ring J
+
+    o22 = P5
+
+    o22 : PolynomialRing
+    i23 : fJ=res J
+
+            1       6       8       3
+    o23 = P5  <-- P5  <-- P5  <-- P5
+    
+          0       1       2       3
+
+    o23 : Complex
+  Text
+    J defines a Veronese surface in P5. We start to compute a rational parametrization of
+    X by computing a parametrization of V(J).
+  CannedExample
+    i24 : P2=kk[y_0..y_2]
+
+    o24 = P2
+
+    o24 : PolynomialRing
+    i25 : P5xP2=P5**P2
+
+    o25 = P5xP2
+
+    o25 : PolynomialRing
+    i26 : betti(adjointMat=diff(transpose vars P5,(sub(vars P2,P5xP2)*transpose sub(fJ.dd_3,P5xP2))))
+
+                 0 1
+    o26 = total: 6 8
+             -1: . 8
+              0: 6 .
+
+    o26 : BettiTally
+    i27 : para1=map(P2^1,,transpose syz transpose sub(adjointMat,P2));
+    
+                   1       6
+    o27 : Matrix P2  <-- P2
+    i28 : degree last L2 == 12
+
+    o28 = true
+    i29 : betti(twelvePoints=saturate (sub(last L2,para1)))
+
+                 0 1
+    o29 = total: 1 3
+              0: 1 .
+	      1: . .
+	      2: . .
+	      3: . 3
+
+    o29 : BettiTally
+    i30 : degree twelvePoints == 12
+
+    o30 = true
+  Text
+    The parametrization of X can be computed from the list of adjoint matrices stored in L1.
+  CannedExample
+    i31 : #L1==2
+
+    o31 = true
+    i32 : betti L1_1, betti L1_0
+
+                  0  1         0  1
+    o32 = (total: 9 30, total: 5 18)
+               0: 9 30      0: 5 18
+
+    o32 : Sequence
+    i33 : betti (para2=map(P2^1,,transpose (syz transpose sub(last L1,para1))))
+
+                 0 1
+    o33 = total: 1 9
+              0: 1 .
+	      1: . .
+	      2: . .
+	      3: . .
+	      4: . 9
+
+    o33 : BettiTally
+    i34 : betti(para3=map(P2^1,,transpose syz transpose sub(L1_0,para2)))
+
+                 0 1
+    o34 = total: 1 5
+              0: 1 .
+	      1: . .
+	      2: . .
+	      3: . .
+	      4: . .
+	      5: . .
+	      6: . .
+	      7: . 5
+
+    o34 : BettiTally
+    i35 : betti(Xpara=ker map(P2,P4,para3))
+
+                 0  1
+    o35 = total: 1 12
+              0: 1  .
+	      1: .  .
+	      2: .  .
+	      3: .  2
+	      4: .  6
+	      5: .  4
+
+    o35 : BettiTally
+    i36 : Xpara==X
+
+    o36 = true
+  Text
+    Thus para3 is a rational parametrization of X. Next we investigate the baselocus.
+  CannedExample
+    i37 : baseLocus = ideal para3;
+
+    o37 : Ideal of P2
+    i38 : tally (cBaseLocus=apply(primaryDecomposition baseLocus,c->(dim c, degree c, degree radical c)))
+
+    o38 = Tally{(1, 3, 1) => 1 }
+                (1, 6, 6) => 1
+               (1, 15, 5) => 1
+               (1, 18, 6) => 1
+
+    o38 : Tally
+    i39 : twelvePlanePoints=radical intersect select(primaryDecomposition baseLocus,c->degree c== 3*degree radical c);
+
+    o39 : Ideal of P2
+    i40 : degree twelvePlanePoints
+
+    o40 = 12
+    i41 : twelvePoints = saturate ideal para2;
+
+    o41 : Ideal of P2
+    i42 : twelvePoints == twelvePlanePoints
+
+    o42 = true
+    i43 : betti(sixPlanePoints = saturate(baseLocus,twelvePoints))
+
+                 0 1
+    o43 = total: 1 4
+              0: 1 .
+	      1: . .
+	      2: . 4
+
+    o43 : BettiTally
+    i44 : betti para2, betti twelvePlanePoints
+
+                  0 1         0 1
+    o44 = (total: 1 9, total: 1 3)
+               0: 1 .      0: 1 .
+	       1: . .      1: . .
+	       2: . .      2: . .
+	       3: . .      3: . 3
+	       4: . 9
+
+    o44 : Sequence
+  Text
+    Finally we determine the nodal quartic.
+  CannedExample
+    i45 : secantLine=residualInQuintics X
+
+    o45 = ideal (x , x , x )
+                  4   3   2
+
+    o45 : Ideal of P4
+    i46 : betti(secantImage=sub(secantLine,para3):ideal para3)
+
+                 0 1
+    o46 = total: 1 2
+              0: 1 1
+	      1: . .
+	      2: . .
+	      3: . .
+	      4: . .
+	      5: . 1
+
+    o46 : BettiTally
+  Text
+    So the 6 points of the secant line on a line in P2.
+  CannedExample
+    i47 : eqL=secantImage_0
+
+    o47 = y  + 205y  + 321y
+           0       1       2
+
+    o47 : P2
+    i48 : P1=kk[w_0,w_1]
+
+    o48 = P1
+
+    o48 : PolynomialRing
+    i49 : paraL=vars P1*sub(transpose syz transpose jacobian eqL,kk)
+
+    o49 = | -205w_0-321w_1 w_0 w_1 |
+
+                   1       3
+    o49 : Matrix P1  <-- P1
+    i50 : rho1=gens twelvePlanePoints;
+
+                   1       3
+    o50 : Matrix P2  <-- P2
+    i51 : nodalQuartic=ker map (P1,P2,sub(rho1,paraL))
+
+                 4       3         2 2         3       4       3         2      
+    o51 = ideal(y  + 264y y  + 369y y  - 204y y  + 456y  - 174y y  + 150y y y  -
+         	 0       0 1       0 1       0 1       1       0 2       0 1 2  
+	  -----------------------------------------------------------------------
+	      2         3         2 2          2      2 2         3         3  
+	  427y y y  + 394y y  + 137y y  - 42y y y  - 23y y  - 382y y  - 293y y  +
+              0 1 2       1 2       0 2      0 1 2      1 2       0 2       1 2  
+	 ------------------------------------------------------------------------
+	      4
+	  359y )
+              2
+
+    o51 : Ideal of P2
+    i52 : nodes=saturate ideal jacobian nodalQuartic
+
+                  2                         2                                2 
+    o52 = ideal (y  - 41y y  + 24y y  + 353y , y y  - 396y y  + 111y y  - 31y ,
+                  1      0 2      1 2       2   0 1       0 2       1 2      2 
+	-----------------------------------------------------------------------
+            2                           2
+	   y  - 435y y  + 210y y  + 351y )
+            0       0 2       1 2       2
+
+    o52 : Ideal of P2
+    i53 : rho=map(P2,P2,rho1)
+
+                         2 2         3       4      3         2             2        3       2 2           2       2 2         3         3       4   3           3       4       3         2            2       3         2 2           2      2 2         3         3       4   4        3       4      3         2             2       3         2 2           2       2 2       3         3       4
+    o53 = map (P2, P2, {y y  - 390y y  + 306y  + 64y y  + 442y y y  + 138y y y  + 85y y  + 6y y  - 180y y y  + 308y y  + 439y y  + 117y y  + 435y , y y  - 163y y  - 183y  + 222y y  + 232y y y  + 86y y y  + 3y y  - 503y y  - 370y y y  + 37y y  + 192y y  + 410y y  + 128y , y  + 53y y  - 162y  + 65y y  - 460y y y  + 234y y y  - 5y y  + 138y y  - 454y y y  + 434y y  - 5y y  - 166y y  + 469y })
+                         0 1       0 1       1      0 2       0 1 2       0 1 2      1 2     0 2       0 1 2       1 2       0 2       1 2       2   0 1       0 1       1       0 2       0 1 2      0 1 2     1 2       0 2       0 1 2      1 2       0 2       1 2       2   0      0 1       1      0 2       0 1 2       0 1 2     1 2       0 2       0 1 2       1 2     0 2       1 2       2
+
+    o53 : RingMap P2 <-- P2
+    i54 : preimageOfTheNodes1=sub(nodes,rho1);
+
+    o54 : Ideal of P2
+    i55 : betti(preimageOfTheNodes=saturate(preimageOfTheNodes1,twelvePlanePoints))
+
+                 0 1
+    o55 = total: 1 5
+              0: 1 .
+	      1: . .
+	      2: . .
+	      3: . 4
+	      4: . .
+	      5: . 1
+
+    o55 : BettiTally
+    i56 : degree preimageOfTheNodes
+
+    o56 = 12
+    i57 : betti(sixPoints=preimageOfTheNodes:eqL)
+
+                 0 1
+    o57 = total: 1 4
+              0: 1 .
+	      1: . .
+	      2: . 4
+
+    o57 : BettiTally
+    i58 : betti(sixBasePoints=saturate(ideal para3,twelvePlanePoints))
+
+                 0 1
+    o58 = total: 1 4
+              0: 1 .
+	      1: . .
+	      2: . 4
+
+    o58 : BettiTally
+    i59 : sixBasePoints==sixPlanePoints
+
+    o59 = true
+  Text
+    The six points came in three pairs of two.
+  CannedExample
+    i60 : tally apply(decompose sixPoints,c->(dim c, degree c))
+
+    o60 = Tally{(1, 6) => 1}
+
+    o60 : Tally
+    i61 : kk3=GF(char kk,3);
+
+    o61 : GaloisField
+    i62 : P2'=kk3[gens P2]
+
+    o62 = P2'
+
+    o62 : PolynomialRing
+    i63 : tally apply(decompose nodes,c->(dim c, degree c))
+
+    o63 = Tally{(1, 3) => 1}
+
+    o63 : Tally
+    i64 : tally apply(decompose sub(sixPoints,P2'),c->(dim c, degree c))
+
+    o64 = Tally{(1, 2) => 3}
+
+    o64 : Tally
+  Text
+    In summary, all assertions of [ARS 26,Proposition 3.8] hold in this specific example.
+    For a theoretical proof see [R,88].
+    
 References
    Ranestad, K., On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
+
+   Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026),
 ///
 
-/// -* three plane quartics, decription in overleaf  *-
-8^2-12*2^2-6==10
-binomial(7,2)-12==9
-kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];
-E=kk[e_0..e_4,SkewCommutative=>true]
-X = degree10pi9RanestadSurface(P4,E);
-minimalBetti X
-ci=ideal(X_0,X_1)
-Y=ci:X;
-(degree X, sectionalGenus X)==(10,9)
-cY=primaryDecomposition Y
-degree Y ==degree ci-degree X
-netList apply(cY, c->(dim c,degree c,dim (c+X),degree(c+X),minimalBetti c,
-	dim (sc=singularLocus(P4/c)),radical ideal sc))
-radical(cY_0+cY_1)
-fscroll= res cY_1; fscroll.dd_2
-det (fscroll.dd_2)^{0,1}
-kk3=GF(char kk,3)
-P4'=kk3[gens P4]
-planes=decompose sub(cY_0,P4')
-tally apply(planes,c->(dim c,degree c,degree (c+sub(X,P4'))))
-elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,2);
-L0, minimalBetti J
-fJ=res J
 
--- parametrization of J
-P2=kk[y_0..y_2]
-P5=ring J
-P5xP2=P5**P2
-betti(adjointMat=diff(transpose vars P5,(sub(vars P2,P5xP2)*transpose sub(fJ.dd_3,P5xP2))))
-paramet=map(P2^1,,transpose syz transpose sub(adjointMat,P2))
-degree last L2
-betti(twelvePoints=saturate (sub(last L2,paramet)))
-degree twelvePoints
-betti last L1, betti L1_0
-betti (para2=map(P2^1,,transpose (syz transpose sub(last L1,paramet))))
-betti(para3=map(P2^1,,transpose syz transpose sub(L1_0,para2)))
-betti(Xpara=ker map(P2,P4,para3))
-Xpara==X
-baseLocus=primaryDecomposition ideal para3;
-tally (cBaseLocus=apply(baseLocus,c->(dim c, degree c, degree radical c)))
-twelfePlanePoints=radical intersect select(primaryDecomposition ideal para3,c->degree c== 3*degree radical c);
-degree twelfePlanePoints
-twelfePlanePoints== saturate ideal para2
-betti para2,betti twelfePlanePoints
-secantLine=residualInQuintics X
-betti(secantImage=sub(secantLine,para3):ideal para3)
-eqL=secantImage_0
-
-P1=kk[w_0,w_1]
-paraL=vars P1*sub(transpose syz transpose jacobian eqL,kk)
-rho1=gens twelfePlanePoints
-nodalQuartic=ker map (P1,P2,sub(rho1,paraL))
-nodes=saturate ideal jacobian nodalQuartic
-rho=map(P2,P2,rho1)
-tally (cPreImageNodes=apply(primaryDecomposition sub(nodes,rho1),c->(dim c, degree c, degree radical c)))
-betti(twelfePoints=radical intersect select(primaryDecomposition sub(nodes,rho1),c->
-	degree c==3*degree radical c))
-twelfePoints==twelfePlanePoints
-tally apply(decompose twelfePoints,c->(dim c, degree c))
-P2''=GF(char kk,24)[gens P2]
-tally apply(decompose sub(twelfePoints,P2''),c->(dim c, degree c))
-
-///
--*
- Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4))
-    elapsedTime (L0,adjList,ptsList, J)=adjunctionProcess X;
-    betti(T=tateResolutionOfSurface X)
- Example 
-    LeBarzN6(degree X, sectionalGenus X,1)
-    X5=ideal (gens X)_{0..14};
-    L=X5:X -- L is the six secant line
-    degree(L+X)==6
- Example 
-   elapsedTime (L0,adjList,ptsList,J)=adjunctionProcess(X);
-    ring J
-    betti(H=parametrization(ring J,adjList))
-    cH=primaryDecomposition ideal H;
-    tally apply(cH,c->(dim c, degree radical c, degree c))
-  Example
-    P2=kk[y_0..y_2];
-    elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
-    (L0,adjList,ptsList,J)=adjunctionProcess(X);
-    betti(H=parametrization(ring J,adjList))
-    cH=primaryDecomposition ideal H;
-    tally apply(cH,c->(dim c, degree radical c, degree c))
-*-
 
 doc ///
 Key
