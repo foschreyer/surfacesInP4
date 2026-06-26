@@ -8428,7 +8428,7 @@ Description
                  2      3
     o4 : Matrix E  <-- E
   Text
-    One can easily force 3 intersection points.
+    One can easily force 3 or 4 intersection points.
     To find more, we perform a random search over a finite ground field FF_q. Since an extra intersection point is a codimension-1 condition we can find examples with c additional intersection points with about q^c trials.
   CannedExample
     i5 : P4=kk[x_0..x_4];
@@ -12035,7 +12035,7 @@ Description
             -3: 93 55 27 9 . .  .  .   .
             -2:  .  .  . . 2 .  .  .   .
 	    -1:  .  .  . . . 2  1  .   .
-	    0:  .  .  . . . 2 15 47 105
+ 	     0:  .  .  . . . 2 15 47 105
 
     o5 : BettiTally
     i6 : betti(T.dd_4)
@@ -12055,6 +12055,71 @@ Description
   
 References
    Ranestad, K., On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
+///
+
+/// -* three plane quartics, decription in overleaf  *-
+8^2-12*2^2-6==10
+binomial(7,2)-12==9
+kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];
+E=kk[e_0..e_4,SkewCommutative=>true]
+X = degree10pi9RanestadSurface(P4,E);
+minimalBetti X
+ci=ideal(X_0,X_1)
+Y=ci:X;
+(degree X, sectionalGenus X)==(10,9)
+cY=primaryDecomposition Y
+degree Y ==degree ci-degree X
+netList apply(cY, c->(dim c,degree c,dim (c+X),degree(c+X),minimalBetti c,
+	dim (sc=singularLocus(P4/c)),radical ideal sc))
+radical(cY_0+cY_1)
+fscroll= res cY_1; fscroll.dd_2
+det (fscroll.dd_2)^{0,1}
+kk3=GF(char kk,3)
+P4'=kk3[gens P4]
+planes=decompose sub(cY_0,P4')
+tally apply(planes,c->(dim c,degree c,degree (c+sub(X,P4'))))
+elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,2);
+L0, minimalBetti J
+fJ=res J
+
+-- parametrization of J
+P2=kk[y_0..y_2]
+P5=ring J
+P5xP2=P5**P2
+betti(adjointMat=diff(transpose vars P5,(sub(vars P2,P5xP2)*transpose sub(fJ.dd_3,P5xP2))))
+paramet=map(P2^1,,transpose syz transpose sub(adjointMat,P2))
+degree last L2
+betti(twelvePoints=saturate (sub(last L2,paramet)))
+degree twelvePoints
+betti last L1, betti L1_0
+betti (para2=map(P2^1,,transpose (syz transpose sub(last L1,paramet))))
+betti(para3=map(P2^1,,transpose syz transpose sub(L1_0,para2)))
+betti(Xpara=ker map(P2,P4,para3))
+Xpara==X
+baseLocus=primaryDecomposition ideal para3;
+tally (cBaseLocus=apply(baseLocus,c->(dim c, degree c, degree radical c)))
+twelfePlanePoints=radical intersect select(primaryDecomposition ideal para3,c->degree c== 3*degree radical c);
+degree twelfePlanePoints
+twelfePlanePoints== saturate ideal para2
+betti para2,betti twelfePlanePoints
+secantLine=residualInQuintics X
+betti(secantImage=sub(secantLine,para3):ideal para3)
+eqL=secantImage_0
+
+P1=kk[w_0,w_1]
+paraL=vars P1*sub(transpose syz transpose jacobian eqL,kk)
+rho1=gens twelfePlanePoints
+nodalQuartic=ker map (P1,P2,sub(rho1,paraL))
+nodes=saturate ideal jacobian nodalQuartic
+rho=map(P2,P2,rho1)
+tally (cPreImageNodes=apply(primaryDecomposition sub(nodes,rho1),c->(dim c, degree c, degree radical c)))
+betti(twelfePoints=radical intersect select(primaryDecomposition sub(nodes,rho1),c->
+	degree c==3*degree radical c))
+twelfePoints==twelfePlanePoints
+tally apply(decompose twelfePoints,c->(dim c, degree c))
+P2''=GF(char kk,24)[gens P2]
+tally apply(decompose sub(twelfePoints,P2''),c->(dim c, degree c))
+
 ///
 -*
  Example
