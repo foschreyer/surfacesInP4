@@ -4998,13 +4998,15 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
 },
 
     
-   PARA{},
+   PARA{"These surfaces are mainly non-minimal K3 surfaces with K^2=-6 and H.K=12.
+       Thus the canonical divisor decomposes into six (-1)-curves whose degrees form a partition of 12 into six parts.
+       There are examples correponding to the partitions
+       122223,112224,112233,111234,111225,111333,111144,111126,111117."},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
         TO testMatrix2,
 	TO randomAboSurface,
-	TO analyzeAboSurface,
 	TO collectAboSurfaces,
 	TO specificAboSurface,
 	TO abo112224Or111234Surface,
@@ -5019,6 +5021,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
     PARA{},
      SUBSECTION "6-secants and adjunction",
      UL{
+	TO analyzeAboSurface,
 	TO LeBarzN6,
 	TO residualInQuintics,
 	TO canonicalDivisor,
@@ -5629,7 +5632,7 @@ Inputs
   degree of a a smooth projective surface in P4
  sg:ZZ
   the sectional genus of X
- oX:ZZ
+ xO:ZZ
   the Euler characteristic of the structure sheaf
 Outputs
  N6:ZZ
@@ -14134,7 +14137,7 @@ Description
 	     5: . 10 15 5
 
     o6 : BettiTally
-    i7 : betti tateResolutionOfSurface(X,7)
+    i7 : tateResolutionOfSurface(X,7)
 
                  -1   0  1  2  3  4 5  6  7   8
     o7 = total: 171 105 55 22 11 10 6 15 50 115
