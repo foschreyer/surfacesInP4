@@ -34,6 +34,7 @@ newPackage(
     )
 
 export {
+    "featuredSurfaces",
     "varietyOfUnstablePlanes",
     "searchHMBundle",
     "tangentToMonad",
@@ -4801,6 +4802,45 @@ Headline => "unirational families of rational surfaces",
 	TO aboRanestadSurfaces
 	}
 }
+
+document {
+Key => featuredSurfaces,
+Headline => "Surface featured in the paper Nongeneral type surface in P4, an update",
+   SUBSECTION "Linear systems and liaison",
+     UL{
+        TO bordigaSurface,
+	TO okonekSurfaceD8S6, 
+        TO degree10pi9RanestadSurface,,
+        },
+    SUBSECTION "Hilbert-Burch",
+     UL{
+        TO bordigaSurface,
+	TO degree10DESSurface,
+        },
+    SUBSECTION "Random searches over finite fields",
+     UL{
+        TO schreyerSurfaces,
+	TO vBELSurface,
+        },
+    SUBSECTION "Tate resolutions",
+     UL{
+        TO ellipticConicBundle,
+	TO aboRanestadSurfaces,
+	TO aboSurfaces,
+        },
+    SUBSECTION "Construction using Moore matrices",
+     UL{
+        TO horrocksMumfordSurface,
+	TO biellipticSurfaceD10,
+	TO biellipticSurfaceD15,
+	TO abelianSurfaceD15S21Popescu,
+        },
+   SUBSECTION "Open Problems",
+     UL{
+        TO searchHMBundle,
+        },
+    }
+
 document {
 Key => numericalFunctions,
 Headline => "Various numerical functions to investigate surfaces in P4",
