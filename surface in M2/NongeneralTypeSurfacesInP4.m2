@@ -34,6 +34,7 @@ newPackage(
     )
 
 export {
+    "linkedNonspecialAlexanderSurfaceD16",
     "featuredSurfaces",
     "varietyOfUnstablePlanes",
     "searchHMBundle",
@@ -594,6 +595,12 @@ nonspecialAlexanderSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     -- Check whether 'X' is a surface of degree 9 and sectional genus 6
     assert(dim X==3 and degree X==9 and sectionalGenus X==6);
     X)
+
+linkedNonspecialAlexanderSurfaceD16=method()
+linkedNonspecialAlexanderSurfaceD16(PolynomialRing) := P4 -> (
+    X:=nonspecialAlexanderSurface(P4);
+    ci:=ideal( gens X*random(source gens X,P4^{2:-5}));
+    Y:=ci:X)
 
 enriquesSurfaceOfDegree9=method()
 -- Comment: the 12 quadrics are dual to 3 quadrics in dual space
@@ -4837,7 +4844,8 @@ Headline => "Surface featured in the paper Nongeneral type surface in P4, an upd
         },
    SUBSECTION "Open Problems",
      UL{
-        TO searchHMBundle,
+         TO linkedNonspecialAlexanderSurfaceD16,
+	 TO searchHMBundle,
         },
     }
 
@@ -5721,6 +5729,12 @@ References
 SeeAlso
    residualInQuintics
 ///
+
+
+
+
+
+
 
 doc///
 Key
@@ -12633,7 +12647,7 @@ Description
   Text
     We construct a nonspecial Alexander surface of degree 9 from its rational parametrization,
     or what is faster from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module has
-    a special presentation which gives rize to a six secant line
+    a special presentation which gives rize to a 6-secant line.
   CannedExample
     i2 :     kk=ZZ/nextPrime 10^3;
     i3 :     P4=kk[x_0..x_4];
@@ -12775,6 +12789,155 @@ SeeAlso
    LeBarzN6
    adjunctionProcess
 ///
+
+-* for cannedExample linkedNonspecialAlexanderSurfaceD16
+  Example
+    kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];
+    minimalBetti(Y=linkedNonspecialAlexanderSurfaceD16(P4))
+    ci=ideal(Y_0,Y_1);
+    X=ci:Y;
+    minimalBetti X
+    (degree Y, sectionalGenus Y)==(16,27)
+    betti tateResolutionOfSurface Y
+    elapsedTime Ds=apply(3,i->canonicalDivisor Y);
+    betti(baseLocus=saturate(sum Ds))
+    L=residualInQuintics X
+    baseLocus==L
+    selfIntersectionNumber(Y,L)
+    D=Ds_0:L;
+    HdotK(16,27)
+    degree D, genus D
+    saturate(D+L) == ideal 1_P4
+    Ksquare(16,27,14)==42
+    selfIntersectionNumber(Y,D)==43
+    LeBarzN6(16,27,14)==1
+*-   
+
+
+
+doc ///
+Key
+ linkedNonspecialAlexanderSurfaceD16
+ (linkedNonspecialAlexanderSurfaceD16, PolynomialRing)
+Headline
+ construct a surface which is (5,5)-linked to a nonspecial Alexander surface of degree 9.
+Usage
+ Y = linkedNonspecialAlexanderSurfaceD16 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ Y:Ideal
+  of a surface of general type of degree 16
+Description
+  Text
+    The ideal Y defines a non-minimal smooth surface of general type in P4.
+    It is an example of a surface
+    of degree 16 with a single (-1)-curve which is a line. More precisely,
+    the (-1)-line is the unique 6-secant line of the nonspecial Alexander surface X.
+  CannedExample  
+    i1 : kk=ZZ/nextPrime 10^3;P4=kk[x_0..x_4];
+    i3 : minimalBetti(Y=linkedNonspecialAlexanderSurfaceD16(P4))
+
+                0 1  2 3
+    o3 = total: 1 8 10 3
+             0: 1 .  . .
+	     1: . .  . .
+	     2: . .  . .
+	     3: . .  . .
+	     4: . 2  . .
+	     5: . 6 10 3
+
+    o3 : BettiTally
+    i4 : ci=ideal(Y_0,Y_1);
+
+    o4 : Ideal of P4
+    i5 : X=ci:Y;
+
+    o5 : Ideal of P4
+    i6 : minimalBetti X
+
+                0  1  2  3 4
+    o6 = total: 1 16 29 18 4
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: . 15 26 15 3
+	     5: .  1  3  3 1
+
+    o6 : BettiTally
+    i7 : (degree Y, sectionalGenus Y)==(16,27)
+
+    o7 = true
+    i8 : betti tateResolutionOfSurface Y
+
+                 -1   0  1  2  3 4 5  6  7
+    o8 = total: 215 140 82 40 14 5 5 16 50
+            -4:   1   .  .  .  . . .  .  .
+	    -3: 214 140 82 40 13 . .  .  .
+	    -2:   .   .  .  .  1 5 3  .  .
+	    -1:   .   .  .  .  . . .  .  .
+	     0:   .   .  .  .  . . 2 16 50
+
+    o8 : BettiTally
+    i9 : elapsedTime Ds=apply(3,i->canonicalDivisor Y);
+    -- 33.1938s elapsed
+    i10 : betti(baseLocus=saturate(sum Ds))
+
+                 0 1
+    o10 = total: 1 3
+              0: 1 3
+
+    o10 : BettiTally
+    i11 : L=residualInQuintics X
+
+    o11 = ideal (x , x , x )
+                  2   1   0
+
+    o11 : Ideal of P4
+    i12 : baseLocus==L
+
+    o12 = true
+    i13 : selfIntersectionNumber(Y,L)
+
+    o13 = -1
+    i14 : D=Ds_0:L;
+
+    o14 : Ideal of P4
+    i15 : HdotK(16,27)
+
+    o15 = 36
+    i16 : degree D, genus D
+
+    o16 = (35, 44)
+
+    o16 : Sequence
+    i17 : saturate(D+L) == ideal 1_P4
+
+    o17 = true
+    i18 : Ksquare(16,27,14)==42
+
+    o18 = true
+    i19 : selfIntersectionNumber(Y,D)==43
+
+    o19 = true
+    i20 : LeBarzN6(16,27,14)==1
+
+    o20 = true
+
+ 
+References
+   Alexander, J., Surfaces rationelles non-speciales dans P4, Math. Z., 200, (1988), 87-110
+
+SeeAlso
+   canonicalDivisor
+   tateResolutionOfSurface
+   LeBarzN6
+   selfIntersectionNumber
+   residualInQuintics
+///
+
 
 -* for CannedExample enriquesSurfaceOfDegree9
  Example
