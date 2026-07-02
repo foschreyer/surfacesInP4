@@ -8,7 +8,6 @@ viewHelp "NongeneralTypeSurfacesInP4"
 
 check "NongeneralTypeSurfacesInP4"
 
-
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 needsPackage ("NongeneralTypeSurfacesInP4")
@@ -34,6 +33,7 @@ newPackage(
     )
 
 export {
+    "enriquesSurfaceD13S16",
     "parametrizationOfDegreeFiveDelPezzo",
     "linkedNonspecialAlexanderSurfaceD16",
     "featuredSurfaces",
@@ -734,6 +734,29 @@ betti tateResolutionOfSurface X
 
 
 ///
+
+enriqueSurfaceD13S16=method(Options=>{Special=>false})
+
+enriqueSurfaceD13S16(PolynomialRing):= o -> P4 -> (
+    F:=res ideal vars P4;
+    if not o.Special then (
+	delta:=random(P4^{1:-2},F_2);
+	betti (eps:=delta*F.dd_3);
+	hom:=Hom(P4^{-4},ker eps);
+	homg:=sum(5,i->random(1,P4)*hom_i)+sum(10,i->random(0,P4)*hom_(5+i));
+        N:=ideal(F.dd_3*syz eps*matrix homomorphism homg)) else (
+	delta=random(P4^{2:-2},F_2);
+        betti (eps=delta*F.dd_3);
+	hom=Hom(P4^{-4},ker eps);
+	homg=sum(1,i->random(1,P4)*hom_i)+sum(15,i->random(0,P4)*hom_(1+i));
+	N=trim ideal(F.dd_3*syz eps*matrix homomorphism homg)+ideal random(2,P4));
+    betti (fN:=res N);
+    betti(fM:=res coker transpose fN.dd_5);
+    betti (A:=fM.dd_3^{0..35}_{0..15});
+    betti (sA:=syz transpose A);
+    betti (B:=syz (fM.dd_3)^{36});
+    X:=trim ideal (transpose sA*fM.dd_3^{0..35}*B);    
+    X)
 
 popescuSurface=method()
 -- every thing is determined by the map aa which is part of a differential in the Tate resolution
@@ -4428,6 +4451,29 @@ K3surfaceD13(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==13 and sectionalGenus X==16);
     X)
 
+enriquesSurfaceD13S16=method(Options=>{Special=>false})
+
+enriquesSurfaceD13S16(PolynomialRing):= o -> P4 -> (
+    F:=res ideal vars P4;
+    if not o.Special then (
+	delta:=random(P4^{1:-2},F_2);
+	betti (eps:=delta*F.dd_3);
+	hom:=Hom(P4^{-4},ker eps);
+	homg:=sum(5,i->random(1,P4)*hom_i)+sum(10,i->random(0,P4)*hom_(5+i));
+        N:=ideal(F.dd_3*syz eps*matrix homomorphism homg)) else (
+	delta=random(P4^{2:-2},F_2);
+        betti (eps=delta*F.dd_3);
+	hom=Hom(P4^{-4},ker eps);
+	homg=sum(1,i->random(1,P4)*hom_i)+sum(15,i->random(0,P4)*hom_(1+i));
+	N=trim ideal(F.dd_3*syz eps*matrix homomorphism homg)+ideal random(2,P4));
+    betti (fN:=res N);
+    betti(fM:=res coker transpose fN.dd_5);
+    betti (A:=fM.dd_3^{0..35}_{0..15});
+    betti (sA:=syz transpose A);
+    betti (B:=syz (fM.dd_3)^{36});
+    X:=trim ideal (transpose sA*fM.dd_3^{0..35}*B);    
+    X)
+
 
 K3surfaceD14=method()
 -- K3 surface of degree 14 and sectional genus 19 (B4.15)
@@ -4852,6 +4898,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
         TO enriquesSurfaceOfDegree9,
 	TO enriquesSurfaceOfDegree10,
 	TO enriquesSurfaceD11S10,
+	TO enriquesSurfaceD13S16,
 	TO K3surfaces,
 	TO aboSurfaces,
         },
@@ -11969,7 +12016,7 @@ Description
    The adjunction process gives the data L0={(4, 10, 8), 2, (7, 14, 8), 1, (7, 12, 6), 0, (5, 7, 3)}.
    The last adjoint surface is a conic bundle in P5 with 9 singular fibers.
 References
-   Decker, W., Ein, L., Schreyer, F.-O., Construction of surfaces in P4, MJ. Algebraic Geom. 2, (1993), 185--237
+   Decker, W., Ein, L., Schreyer, F.-O., Construction of surfaces in P4, J. Algebraic Geom. 2, (1993), 185--237
 
    Ranestad, K., On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
 SeeAlso
@@ -11999,7 +12046,7 @@ SeeAlso
      Hilbert-Burch homomorphism on dim G(2,4)=4 further parameters.
      This gives the same number 8 of parameters up to projectivities.
 *-     
--*
+-*  
  Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -12037,74 +12084,82 @@ Description
     We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
     with Hilbert function (2,5,3).
   CannedExample
-    i2 :     kk=ZZ/nextPrime 10^3;
-    i3 :     P4=kk[x_0..x_4];
-    i4 :     minimalBetti(X=enriquesSurfaceOfDegree10 P4)
+    i1 : kk=ZZ/nextPrime 10^3;
+    i2 : P4=kk[x_0..x_4];
+    i3 : minimalBetti(X=enriquesSurfaceOfDegree10 P4)
 
                 0  1  2  3 4
-    o4 = total: 1 12 21 13 3
+    o3 = total: 1 12 21 13 3
              0: 1  .  .  . .
-             1: .  .  .  . .
-             2: .  .  .  . .
-             3: .  .  .  . .
-             4: . 10 11  3 .
-             5: .  2 10 10 3
-    o4 : BettiTally
-    i5 :     betti(T=tateResolutionOfSurface X)
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: . 10 11  3 .
+	     5: .  2 10 10 3
+
+    o3 : BettiTally
+    i4 : betti(T=tateResolutionOfSurface X)
 
                 -1  0  1 2 3 4  5  6  7
-    o5 = total: 90 52 25 8 3 5 13 41 98
+    o4 = total: 90 52 25 8 3 5 13 41 98
             -4:  1  .  . . . .  .  .  .
-            -3: 89 52 25 8 . .  .  .  .
-            -2:  .  .  . . 1 .  .  .  .
-            -1:  .  .  . . 2 5  3  .  .
-             0:  .  .  . . . . 10 41 98
-    o5 : BettiTally
-    i6 :     (d,sg)=(degree X, sectionalGenus X)
+	    -3: 89 52 25 8 . .  .  .  .
+	    -2:  .  .  . . 1 .  .  .  .
+	    -1:  .  .  . . 2 5  3  .  .
+	     0:  .  .  . . . . 10 41 98
 
-    o6 = (10, 8)
-    o6 : Sequence
-    i7 :     LeBarzN6(d,sg,1)==6
+    o4 : BettiTally
+    i5 : (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 8)
+
+    o5 : Sequence
+    i6 : LeBarzN6(d,sg,1)==6
+
+    o6 = true
+    i7 : Ksquare(d,sg,1)==-4
 
     o7 = true
-    i8 :     Ksquare(d,sg,1)==-4
+    i8 : HdotK(d,sg)==4
 
     o8 = true
-    i9 :     HdotK(d,sg)==4
+    i9 : R=residualInQuintics X;
 
-    o9 = true
-    i10 :     R=residualInQuintics X;
+    o9 : Ideal of P4
+    i10 : dim R,degree R
 
-    o10 : Ideal of P4
-    i11 :     dim R,degree R
+    o10 = (2, 2)
 
-    o11 = (2, 2)
-    o11 : Sequence
-    i12 :     elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
-      -- 32.723s elapsed
-    i13 :     numList
+    o10 : Sequence
+    i11 : elapsedTime (numList,L1,L2,Y)=adjunctionProcess(X,1);
+    -- 22.3514s elapsed
+    i12 : numList
 
-    o13 = {(4, 10, 8), 4, (7, 14, 8)}
-    o13 : List
-    i14 :     minimalBetti Y
+    o12 = {(4, 10, 8), 4, (7, 14, 8)}
+
+    o12 : List
+    i13 : minimalBetti Y
 
                  0  1  2  3  4 5
-    o14 = total: 1 12 40 56 35 8
+    o13 = total: 1 12 40 56 35 8
               0: 1  .  .  .  . .
-              1: .  7  5  .  . .
-              2: .  5 35 56 35 8
-    o14 : BettiTally
-    i15 :     2*sectionalGenus Y- 2== degree Y
+	      1: .  7  5  .  . .
+	      2: .  5 35 56 35 8
 
-    o15 = true
-    i16 :     fourPoints=saturate L2_0;
+    o13 : BettiTally
+    i14 : 2*sectionalGenus Y- 2 == degree Y
 
-    o16 : Ideal of kk[a ..a ]
+    o14 = true
+    i15 : fourPoints=saturate L2_0;
+
+    o15 : Ideal of kk[a ..a ]
                        0   7
-    i17 :     dim fourPoints,degree fourPoints
+    i16 : dim fourPoints,degree fourPoints
 
-    o17 = (1, 4)
-    o17 : Sequence
+    o16 = (1, 4)
+
+    o16 : Sequence
+  
   Text
     The first adjunction maps blows down 4 (-1)-lines. Hence the self-intersection number of the
     canonical divisor on Y is K_Y^2=K_X^2+4=0. Moreover H_Y.K_Y=0. So K_Y is numerically
@@ -16792,6 +16847,52 @@ SeeAlso
   LeBarzN6
   canonicalDivisor
 ///
+
+
+doc///
+Key
+ enriquesSurfaceD13S16
+ (enriquesSurfaceD13S16, PolynomialRing)
+ [enriquesSurfaceD13S16,Special]
+Headline
+ construct a Popescu surface of degree 13 and sectional genus 16 (2 families) 
+Usage
+ X=enriquesSurfaceD13S16(P4)
+ X=enriquesSurfaceD13S16(P4,Special=>true)
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of an Enriques surface of degree 13 and sectional genus 16
+Description
+  Text
+    We construct an Enriques surface of degree 13 and sectional genus 16.
+  Example
+    d=13,sg=16
+    Ksquare(d,sg,1)==-17
+    HdotK(d,sg)==17   
+    LeBarzN6(d,sg,1)==17
+    chiITable(d,sg,1)
+    kk=ZZ/nextPrime 10^3
+    P4=kk[x_0..x_4]
+    minimalBetti(X=enriquesSurfaceD13S16(P4))
+    minimalBetti(Xs=enriquesSurfaceD13S16(P4,Special=>true))
+    (degree X, sectionalGenus X)==(13,16)
+  Text
+    Both families have the same adjunction behavior.
+  --Example
+    --elapedTime (L0,L1,L2,J) = adjunctionProcess(X,1)
+    --L0
+    --minimalBetti J
+References
+   Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+SeeAlso
+  selfIntersectionNumber
+  residualInQuintics
+  LeBarzN6
+  canonicalDivisor
+///
 -* for CannedExample in K3surfaceD13
   Example
    kk=ZZ/nextPrime 10^3;
@@ -16915,7 +17016,6 @@ Description
     o10 : BettiTally
     i11 : elapsedTime D=canonicalDivisor X;
      -- 8.82468s elapsed
-
     o11 : Ideal of P4
     i12 : (degree D,genus D) == (17,-10)
 
