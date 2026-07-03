@@ -16979,7 +16979,7 @@ SeeAlso
   selfIntersectionNumber
   residualInQuintics
   LeBarzN6
-  canonicalDivisor
+  canonicalDivisor  
 ///
 -* for CannedExample in K3surfaceD13
   Example
