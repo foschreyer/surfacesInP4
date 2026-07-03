@@ -16851,6 +16851,32 @@ SeeAlso
   canonicalDivisor
 ///
 
+-* for CannedExample in enriquesSurfaceD13S16
+  Example
+    d=13,sg=16
+    Ksquare(d,sg,1)==-17
+    HdotK(d,sg)==17   
+    LeBarzN6(d,sg,1)==17
+    chiITable(d,sg,1)
+    kk=ZZ/nextPrime 10^3
+    P4=kk[x_0..x_4]
+    minimalBetti(X=enriquesSurfaceD13S16(P4))
+    minimalBetti(Xs=enriquesSurfaceD13S16(P4,Special=>true))
+    (degree X, sectionalGenus X)==(13,16)
+  Text
+    Both families have the same adjunction behavior. L0={(4, 13, 16), 17, (15, 30, 16)}.
+    The first adjunction map blows down seventy (-1)-lines. The resulting surface X1 in P15
+    hence K_1^2=0. Both X1 and Xs1 is a minimal Enriques surface with betti table
+  Example
+     new BettiTally from {(0,{0},0) => 1, (1,{2},2) => 75, (2,{3},3) => 520, (3,{4},4) => 1755, (3,{5},5) => 12,
+      (4,{5},5) => 3444, (4,{6},6) => 152, (5,{6},6) => 3727, (5,{7},7) => 1092, (6,{7},7) => 1092, (6,{8},8) =>
+      6435, (7,{9},9) => 11440, (8,{10},10) => 11583, (9,{11},11) => 7800, (10,{12},12) => 3575, (11,{13},13) =>
+      1080, (12,{14},14) => 195, (13,{15},15) => 16}
+    elapsedTime (L0,L1,L2,J) = adjunctionProcess(Xs,1);
+    L0
+    minimalBetti J
+
+*-
 
 doc///
 Key
@@ -16871,23 +16897,82 @@ Outputs
 Description
   Text
     We construct an Enriques surface of degree 13 and sectional genus 16.
-  Example
-    d=13,sg=16
-    Ksquare(d,sg,1)==-17
-    HdotK(d,sg)==17   
-    LeBarzN6(d,sg,1)==17
-    chiITable(d,sg,1)
-    kk=ZZ/nextPrime 10^3
-    P4=kk[x_0..x_4]
-    minimalBetti(X=enriquesSurfaceD13S16(P4))
-    minimalBetti(Xs=enriquesSurfaceD13S16(P4,Special=>true))
-    (degree X, sectionalGenus X)==(13,16)
+  CannedExample
+    i1 : d=13,sg=16
+
+    o1 = (13, 16)
+
+    o1 : Sequence
+    i2 : Ksquare(d,sg,1)==-17
+
+    o2 = true
+    i3 : HdotK(d,sg)==17
+
+    o3 = true
+    i4 : LeBarzN6(d,sg,1)==17
+
+    o4 = true
+    i5 : chiITable(d,sg,1)
+
+                 -1  0  1  2 3 4 5  6  7   8
+    o5 = total: 140 85 44 16 6 5 7 26 70 146
+            -4:   1  .  .  . . . .  .  .   .
+	    -3: 139 85 44 16 . . .  .  .   .
+	    -2:   .  .  .  . 6 5 1  .  .   .
+	    -1:   .  .  .  . . . 1  .  .   .
+	     0:   .  .  .  . . . 5 26 70 146
+
+    o5 : BettiTally
+    i6 : kk=ZZ/nextPrime 10^3
+
+    o6 = kk
+
+    o6 : QuotientRing
+    i7 : P4=kk[x_0..x_4]
+
+    o7 = P4
+
+    o7 : PolynomialRing
+    i8 : minimalBetti(X=enriquesSurfaceD13S16(P4))
+
+                0 1  2 3 4
+    o8 = total: 1 6 10 6 1
+             0: 1 .  . . .
+	     1: . .  . . .
+	     2: . .  . . .
+	     3: . .  . . .
+	     4: . 5  . . .
+	     5: . 1 10 6 1
+
+    o8 : BettiTally
+    i9 : minimalBetti(Xs=enriquesSurfaceD13S16(P4,Special=>true))
+
+                0 1  2 3 4
+    o9 = total: 1 7 11 6 1
+             0: 1 .  . . .
+	     1: . .  . . .
+	     2: . .  . . .
+	     3: . .  . . .
+	     4: . 5  1 . .
+	     5: . 2 10 6 1
+
+    o9 : BettiTally
+    i10 : (degree X, sectionalGenus X)==(13,16)
+
+    o10 = true
   Text
-    Both families have the same adjunction behavior.
-  --Example
-    --elapsedTime (L0,L1,L2,J) = adjunctionProcess(X,1)
-    --L0
-    --minimalBetti J
+    Both families have the same adjunction behavior: L0={(4, 13, 16), 17, (15, 30, 16)}.
+    The first adjunction map blows down seventeen (-1)-lines. The resulting surface X1 and X1s in P15
+    are minimal with K^2=0 and hence Enriques surfaces. 
+  CannedExample
+                 0  1   2    3    4    5    6     7     8    9   10   11  12 13
+    o15 = total: 1 75 520 1767 3596 4819 7527 11440 11583 7800 3575 1080 195 16
+              0: 1  .   .    .    .    .    .     .     .    .    .    .   .  .
+              1: . 75 520 1755 3444 3727 1092     .     .    .    .    .   .  .
+	      2: .  .   .   12  152 1092 6435 11440 11583 7800 3575 1080 195 16
+  Text
+    is the betti table of both X1 and Xs1 in P15.
+    
 References
    Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
