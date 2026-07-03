@@ -18,8 +18,8 @@ elapsedTime installPackage("NongeneralTypeSurfacesInP4")    -- 47.3775s elapsed,
 
 newPackage(
     "NongeneralTypeSurfacesInP4",
-    Version => "0.9",
-    Date => "May 22, 2026",
+    Version => "1.0",
+    Date => "July 3, 2026",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
@@ -28,8 +28,8 @@ newPackage(
     AuxiliaryFiles => false,
     DebuggingMode => true,
     PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition","Varieties","FastMinors"},
-    Keywords => {"Algebraic Geometry"},
-    HomePage =>  "todo",
+    Keywords => {"Algebraic Geometry", "ProjectiveGeometry"},
+    --HomePage =>  "todo",
     )
 
 export {
@@ -4966,6 +4966,9 @@ Headline => "unirational families of rational surfaces",
 document {
 Key => featuredSurfaces,
 Headline => "Surface featured in the paper Nongeneral type surface in P4, an update",
+PARA{"In our paper we discuss with some details the following surfaces.
+      The documentation of these function gives some ideas and techniques for how we approached the 
+      investigation of various surfaces."},
    SUBSECTION "Linear systems and liaison",
      UL{
         TO bordigaSurface,
@@ -16882,7 +16885,7 @@ Description
   Text
     Both families have the same adjunction behavior.
   --Example
-    --elapedTime (L0,L1,L2,J) = adjunctionProcess(X,1)
+    --elapsedTime (L0,L1,L2,J) = adjunctionProcess(X,1)
     --L0
     --minimalBetti J
 References
