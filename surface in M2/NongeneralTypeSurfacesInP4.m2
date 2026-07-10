@@ -5139,7 +5139,7 @@ achieved by searching.
     SUBSECTION "References",
     UL{
      "Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026),",
-     "Abo, H.,Unpublished notes (2022)"
+     "Abo, H., Unpublished notes (2022)"
      },
 
 }
@@ -8849,16 +8849,20 @@ SeeAlso
 ///
 -*  for CannedExample of matrixFromAboRanestadSurface
   Example
-    kk=ZZ/19;
-    P4=kk[x_0..x_4];
-    setRandomSeed("fairly fast search")
-    elapsedTime (X,m4x2)=aboRanestadSurface(P4,6,Special=>2,Verbose=>true);
-    betti tateResolutionOfSurface X
-    elapsedTime X=aboRanestadSurfaceFromMatrix(P4,m4x2,Verbose=>true);   
-    m4x2'=matrixFromAboRanestadSurface X
-    m4x2
-    minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4))
-
+    kk=ZZ/nextPrime 10^2;P5=kk[b_0..b_5];
+    setRandomSeed("fix decomposition");
+    N=random(P5^5,P5^{5:-1});
+    minimalBetti (J=pfaffians(4,N-transpose N))
+    (degree J, sectionalGenus J)==(5,1)
+    paraJ=parametrizationOfDegreeFiveDelPezzo J;
+    P2=ring paraJ;
+    kk'=coefficientRing P2
+    betti (paraJ=map(P2^1,,paraJ))
+    P5'=kk'[gens P5]
+    J'=ker map(P2,P5',paraJ)
+    sub(J,P5')==J'
+    tally apply(decompose ideal paraJ,c->degree c)
+    ambient coefficientRing ring paraJ
 *-
 
 doc///
@@ -8884,14 +8888,71 @@ Description
     and the inverse of the projection from one of these basepoints to P2 gives the desired
     parametrization. In the process we might have to pass to an extension field.
     The code is written for finite ground fields.
-  Example
-    kk=ZZ/nextPrime 10^2;P5=kk[b_0..b_5];
-    N=random(P5^5,P5^{5:-1});
-    minimalBetti (J=pfaffians(4,N-transpose N))
-    (degree J, sectionalGenus J)==(5,1)
-    betti(paraJ=parametrizationOfDegreeFiveDelPezzo J)
-    tally apply(decompose ideal paraJ,c->degree c)
-    ambient coefficientRing ring paraJ
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^2;P5=kk[b_0..b_5];
+    i3 : setRandomSeed("fix decomposition");
+    -- setting random seed to 12083587043310343682659658793250664
+    i4 : N=random(P5^5,P5^{5:-1});
+
+    5       5
+    o4 : Matrix P5  <-- P5
+    i5 : minimalBetti (J=pfaffians(4,N-transpose N))
+
+                0 1 2 3
+    o5 = total: 1 5 5 1
+             0: 1 . . .
+	     1: . 5 5 .
+	     2: . . . 1
+
+    o5 : BettiTally
+    i6 : (degree J, sectionalGenus J)==(5,1)
+
+    o6 = true
+    i7 : paraJ=parametrizationOfDegreeFiveDelPezzo J;
+
+                                     1                            6
+    o7 : Matrix (GF 104060401[u ..u ])  <-- (GF 104060401[u ..u ])
+                               0   2                       0   2
+    i8 : P2=ring paraJ;
+    i9 : kk'=coefficientRing P2
+
+    o9 = kk'
+
+    o9 : GaloisField
+    i10 : betti (paraJ=map(P2^1,,paraJ))
+
+                 0 1
+    o10 = total: 1 6
+              0: 1 .
+	      1: . .
+	      2: . 6
+
+    o10 : BettiTally
+    i11 : P5'=kk'[gens P5]
+
+    o11 = P5'
+
+    o11 : PolynomialRing
+    i12 : J'=ker map(P2,P5',paraJ);
+
+    o12 : Ideal of P5'
+    i13 : sub(J,P5')==J'
+
+    o13 = true
+    i14 : tally apply(decompose ideal paraJ,c->degree c)
+
+    o14 = Tally{1 => 4}
+
+    o14 : Tally
+    i15 : ambient coefficientRing ring paraJ
+
+             kk[e]
+    o15 = -----------------
+           4    2
+          e  + e  - 23e + 2
+
+    o15 : QuotientRing
+
   Text
 
 SeeAlso
@@ -9838,24 +9899,42 @@ Description
   Text
     The canonical divisor of an Abo surface that is a non-minimal K3-surface, is a collection of
     six (-1)-curves of total degree 12. Which degrees occur depends on the surface.
-  Example
-    kk=ZZ/nextPrime 10^4;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    setRandomSeed("fix decompositions");
-    elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
-    elapsedTime K = partitionOfCanonicalDivisorOfAboSurface X   
-    (d,sg,xO)=(12,13,2);
-    Ksquare(d,sg,xO) , -#K
-    HdotK(d,sg), sum K
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : setRandomSeed("fix decompositions");
+    -- setting random seed to 1220442291374344711948625538118317179
+    i5 : elapsedTime (X,m3x4)=abo111333Surface(P4,E,Verbose=>false);
+    -- 8.64445s elapsed
+    i6 : elapsedTime K = partitionOfCanonicalDivisorOfAboSurface X
+    -- 4.91154s elapsed
+
+    o6 = {1, 1, 1, 3, 3, 3}
+
+    o6 : List
+    i7 : (d,sg,xO)=(12,13,2);
+    i8 : Ksquare(d,sg,xO) , -#K
+
+    o8 = (-6, -6)
+
+    o8 : Sequence
+    i9 : HdotK(d,sg), sum K
+
+    o9 = (12, 12)
+
+    o9 : Sequence
   Text
-    The partitions of 12 into 6 parts are in bijection with the partitions of 6. From the
-    11 partitions we have observed the following 9.
-  Example
-    #partitions(6)
-    #{{1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 1, 3, 3, 3}, {1, 1, 2, 2, 2, 4},	
-      {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 4, 4}, {1, 1, 1, 1, 2, 6},
-      {1, 1, 1, 1, 1, 7}}
+    The partitions of 12 into 6 parts are in bijection with the partitions of 6. From the 11 partitions we have observed the following 9.
+  CannedExample
+    i10 : #partitions(6)
+
+    o10 = 11
+    i11 : #{{1, 2, 2, 2, 2, 3}, {1, 1, 2, 2, 3, 3}, {1, 1, 1, 3, 3, 3}, {1, 1, 2, 2, 2, 4},
+	{1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 4, 4}, {1, 1, 1, 1, 2, 6},
+	{1, 1, 1, 1, 1, 7}}
+
+    o11 = 9
   Text
     In some cases, the 6 points blown-up are infinitesimal near. We 
     think that these are boundary cases, which hence give no new families.
@@ -10893,7 +10972,7 @@ Example
     E=kk[e_0..e_4,SkewCommutative=>true];
     mdKRs={};
     setRandomSeed("carefully choosen randomSeed");
-    elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) -- 31.8852s elapsed
+    elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) 
 
 *-
 
@@ -10931,13 +11010,30 @@ Description
     examples is reached.
     
     With the option Special=>true then the m3x4 Bordiga matrix has a rank 1 point.
-  Example
-    kk=ZZ/19;
-    P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true];
-    mdKRs={};
-    setRandomSeed("carefully choosen randomSeed");
-    elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1)   
+  CannedExample
+    i1 : kk=ZZ/19;
+    i2 : P4=kk[x_0..x_4];
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : mdKRs={};
+    i5 : setRandomSeed("carefully choosen randomSeed");
+    -- setting random seed to 130783826824055887938028823731402206818653657496837223808
+    i6 : elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1)
+    -- 10.7997s elapsed
+    K = {1, 1, 1, 3, 3, 3}
+    count1= 1
+    count=1, (K,R)= ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }), dim Hom = 1
+                                               ((2, 4), (1, 21)) => 1
+    count1= 1
+    -- 50.4777s elapsed
+
+    o6 = {(| 6e_0-5e_1+e_2-9e_3   -8e_0-6e_1+7e_4     e_0+6e_1-3e_2+e_3+4e_4   
+	   | -9e_0-2e_1+8e_2+4e_3 e_0-3e_1-8e_2-6e_4  -3e_0-2e_1+4e_2+3e_3-7e_4
+	   | 7e_0-3e_1+e_2-6e_3   4e_0-3e_1-9e_2-6e_4 -8e_0+5e_1-8e_2          
+	    ------------------------------------------------------------------------
+	    2e_0+8e_1-4e_2-8e_3+8e_4 |, 1, ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1,6)) => 4 }))}
+	    4e_0+4e_1-8e_2-e_3+e_4   |                               ((2, 4), 1,21)) => 1
+	    8e_0-3e_1+3e_2+7e_3-7e_4 |
+    o6 : List  
 SeeAlso
    residualInQuintics
    partitionOfCanonicalDivisorOfAboSurface
@@ -14234,14 +14330,42 @@ Outputs
   of a bielliptic surface of degree 10 
 Description
   Text
-    We construct a bielliptic surface of degree 10. 
-  Example
-    kk=ZZ/nextPrime 10^3;
-    P4=kk[x_0..x_4];
-    elapsedTime X=biellipticSurfaceD10 P4;
-    (d,sg)=(degree X, sectionalGenus X)
-    minimalBetti X
-    betti(T=tateResolutionOfSurface X)
+    We construct a bielliptic surface of degree 10.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^3;
+    i2 : P4=kk[x_0..x_4];
+    i3 : elapsedTime X=biellipticSurfaceD10 P4;
+    -- 32.4307s elapsed
+
+    o3 : Ideal of P4
+    i4 : (d,sg)=(degree X, sectionalGenus X)
+
+    o4 = (10, 6)
+
+    o4 : Sequence
+    i5 : minimalBetti X
+
+                0  1  2  3  4
+    o5 = total: 1 26 55 40 10
+             0: 1  .  .  .  .
+	     1: .  .  .  .  .
+	     2: .  .  .  .  .
+	     3: .  .  .  .  .
+	     4: .  1  .  .  .
+	     5: . 25 55 40 10
+
+    o5 : BettiTally
+    i6 : betti(T=tateResolutionOfSurface X)
+
+                -1  0  1 2 3  4  5  6  7
+    o6 = total: 81 45 20 6 5 10 11 30 85
+            -4:  1  .  . . .  .  .  .  .
+	    -3: 80 45 20 5 .  .  .  .  .
+	    -2:  .  .  . 1 .  .  .  .  .
+	    -1:  .  .  . . 5 10 10  .  .
+	     0:  .  .  . . .  .  1 30 85
+
+    o6 : BettiTally
  Text
    The construction uses Moore matrices and a search for 6 torsions point on an elliptic curve.
 References
@@ -16111,22 +16235,63 @@ Outputs
 Description
   Text
     We construct an irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
-  Example
-    kk=ZZ/nextPrime 10^4; 
-    P4=kk[x_0..x_4];
-    setRandomSeed("fix a fast canonical divisor");
-    X=irregularEllipticSurfaceD12 P4;
-    (d,sg)=(degree X, sectionalGenus X)
-    minimalBetti X
-    betti(T=tateResolutionOfSurface(X,7))
-    Ksquare(d,sg,3)
-    D=saturate canonicalDivisor X;
-    HdotK(d,sg)
-    degree D==HdotK(d,sg)
-    betti(fD=res D);
-    M=(coker transpose fD.dd_4)**P4^{-5};
-    hilbertFunction(0,M)+1==3 -- the number of connected components of D
-    selfIntersectionNumber(X,D)==0      
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;
+    i2 : P4=kk[x_0..x_4];
+    i3 : setRandomSeed("fix a fast canonical divisor");
+    -- setting random seed to 134812755737665017156720934136292209881691405812662541386
+    i4 : X=irregularEllipticSurfaceD12 P4;
+
+    o4 : Ideal of P4
+    i5 : (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (12, 13)
+
+    o5 : Sequence
+    i6 : minimalBetti X
+
+                0 1  2 3 4
+    o6 = total: 1 9 15 9 2
+             0: 1 .  . . .
+	     1: . .  . . .
+	     2: . .  . . .
+	     3: . .  . . .
+	     4: . 5  2 . .
+	     5: . 4 10 4 .
+	     6: . .  3 5 2
+
+    o6 : BettiTally
+    i7 : betti(T=tateResolutionOfSurface(X,7))
+
+                 -1  0  1  2 3 4  5  6  7   8
+    o7 = total: 124 75 39 16 6 5 10 29 75 156
+            -4:   1  .  .  . . .  .  .  .   .
+	    -3: 123 75 39 15 3 .  .  .  .   .
+	    -2:   .  .  .  1 2 1  .  .  .   .
+	    -1:   .  .  .  . 1 4  5  2  .   .
+	     0:   .  .  .  . . .  5 27 75 156
+
+    o7 : BettiTally
+    i8 : Ksquare(d,sg,3)
+
+    o8 = 0
+    i9 : D=saturate canonicalDivisor X;
+
+    o9 : Ideal of P4
+    i10 : HdotK(d,sg)
+
+    o10 = 12
+    i11 : degree D==HdotK(d,sg)
+
+    o11 = true
+    i12 : betti(fD=res D);
+    i13 : M=(coker transpose fD.dd_4)**P4^{-5};
+    i14 : hilbertFunction(0,M)+1==3 -- the number of connected components of D
+
+    o14 = true
+    i15 : selfIntersectionNumber(X,D)==0
+
+    o15 = true     
   Text
     Since K^2=0 this surface is minimal. X is fibered in elliptic curves of degree 4=12/3
     The canonical divisor is the pullback of a divisor of degree 3 on the albanese curve, which is
