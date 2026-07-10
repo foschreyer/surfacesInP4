@@ -5238,6 +5238,14 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
         "Abo, H., unpublished notes, 2022"},
 }
 
+/// -* degrees of the poalrization of the minimal K3 *-
+Ds={{1,2,2,2,2,3},{1,1,2,2,2,4},{1,1,2,2,3,3},{1,1,1,2,3,4},{1,1,1,2,2,5},
+    {1,1,1,3,3,3},{1,1,1,1,4,4},{1,1,1,1,2,6},{1,1,1,1,1,7}}
+apply(Ds,D->(12+sum(D,i->i^2))/2)
+
+specialDs={ {1,1,1,3,3,3}, {1,1,1,1,1,7}}
+apply(specialDs,D->(12+sum(D,i->i^2))/2)
+///
 
 
 /// -* searching 111135 abo surface *-
@@ -14374,6 +14382,58 @@ References
 SeeAlso
   tateResolutionOfSurface
 ///
+
+/// -* try to recover the ellptic curve with an 6-torsion point from the  H1-module *-
+betti (M1=T.dd_4)
+N1=symExt(M1,P4)
+betti (M2=(T.dd_5)_{1..10})
+betti(N2=symExt(M2,P4))
+ann coker transpose N2
+ann coker transpose N1
+ann coker  N2
+ann coker  N1
+
+Q=ideal(X_0)
+sQ=saturate ideal jacobian Q
+dim sQ, degree sQ
+betti(fsQ=res sQ)
+betti(Y=ann coker transpose fsQ.dd_3)
+dim Y, degree Y
+
+LeBarzN6(d,sg,0)
+betti(Z=sQ:Y)
+betti res Z
+Z+Y==Y
+dim Y, degree Y, genus Y
+singY= saturate ideal singularLocus(P4/Y)
+
+dim (Z+X), degree (Z+X), genus(Z+X)
+HH^0(sheaf(P4/(Z+X)))
+minimalBetti(ZX=saturate(Z+X))
+
+minimalBetti(A=abelianSurfaceD10(P4))
+HMlines=residualInQuintics A
+degree HMlines, degree HMlines, genus HMlines
+dim(HMlines+X), degree(HMlines+X)
+#(cHMlines = decompose HMlines)
+tally apply(cHMlines,c->(dim c, degree c, degree (c+A), degree( c+X)))
+elapsedTime #(cZX=decompose(ZX))
+dim (Y1+X), degree(Y1+Z)
+dim(first cY1+X), degree(first cY1+X)
+minimalBetti Y
+Z==ideal (gens Y)_{0..4}
+setRandomSeed("fix decomposition 2")
+betti(ZcapH=Z+ideal (gens Y*random(source gens Y,P4^{-4})))
+minimalBetti(Y1=saturate(ZcapH:Y))
+dim Y1, degree Y1, genus Y1
+elapsedTime #(cY1=decompose Y1)
+netList apply(cY1,c->(dim c, degree c, minimalBetti c))
+d1=lcm apply(cY1,c->degree c)
+kk'=GF(char kk, d1)
+P4'=kk'[gens P4]
+elapsedTime #(cY1'=decompose sub(Y1,P4'))
+tally apply(cY1',c->(dim c, degree c, minimalBetti c))
+///
 -* for CannedExample of biellipticSurfaceD15
   Example
    kk=ZZ/nextPrime 10^4; 
@@ -14443,6 +14503,38 @@ References
    Aure, A.,Decker, W., Hulek, K., Popescu, S.,Ranestad, K.,  Syzygies of abelian and bielliptic surfaces in. P4, Int. J. of Math., 8, (1997),  849-919
 SeeAlso
   tateResolutionOfSurface
+///
+/// -* try to recover the ellptic curve with an 6-torsion point from the  H1-module *-
+betti (M1=(T.dd_3)^{0})
+N1=symExt(transpose M1,P4)
+betti (M2=(T.dd_4))
+betti(N2=symExt(M2,P4))
+betti(M3=(T.dd_5)_{1..5})
+betti(N3=symExt(M3,P4))
+ann coker transpose N3
+ann coker transpose N2
+ann coker transpose N1
+minimalBetti(singQ=ideal jacobian (X_0))
+saturate singQ
+dim singQ, degree singQ
+betti(E=radical singQ)
+degree E, genus E, minimalBetti E
+saturate ideal singularLocus(P4/E)
+csQ=primaryDecomposition singQ
+betti(sQ2=trim(singQ+E^2))
+#(csQ2=primaryDecomposition sQ2)
+minimalBetti first csQ2
+minimalBetti saturate singQ
+betti(sQ1=singQ:E)
+minimalBetti sQ1
+degree sQ1
+minimalBetti(sQ2=(sQ1:E))
+sQ2==E^2
+minimalBetti(rQ2=singQ:sQ2)
+minimalBetti(sQ1:sQ2)
+minimalBetti(ideal X_0+E^2)
+minimalBetti (E^2:E)
+minimalBetti(module(E/E^2))
 ///
 
 -* for CannedExample in abelianSurfaceD10
