@@ -8,7 +8,7 @@ viewHelp "NongeneralTypeSurfacesInP4"
 
 check "NongeneralTypeSurfacesInP4"
 
-uninstallPackage "NongeneralTypeSurfacesInP4"
+uninstallPackage "NongeneralTypeSusrfacesInP4"
 restart
 needsPackage ("NongeneralTypeSurfacesInP4")
 elapsedTime installPackage("NongeneralTypeSurfacesInP4")   
@@ -10993,7 +10993,7 @@ Key
 Headline
  collect Abo surfaces
 Usage
- mdKR'= specificAboSurfaces(mdKRs,P4,E,N)
+ mdKR'= collectAboSurfaces(mdKRs,P4,E,N)
 Inputs
  mdKRs: List
    of Abo surface data m3x4,d,(K,R)
@@ -11181,6 +11181,53 @@ SeeAlso
    partitionOfCanonicalDivisorOfAboSurface
    
 ///
+
+/// -* investigate aboSurfaces *-
+kk=ZZ/19;P4=kk[x_0..x_4];P3=kk[y_0..y_3];
+E=kk[e_0..e_4,SkewCommutative=>true];
+setRandomSeed("111333 surface")
+setRandomSeed("111333 surface 2")
+setRandomSeed("another 111333 surface 3")
+elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+
+elapsedTime partitionOfCanonicalDivisorOfAboSurface X
+
+saturate ideal singularLocus(P4/X)
+betti(T=tateResolutionOfSurface X)
+
+betti (L1=T.dd_4^{0..2}_{3})
+line = ideal sub(L1,vars P4)
+betti(bordigaMatrix=map(P4^3,,sub(T.dd_5^{0..2}_{4..7},vars P4)))
+Y=minors(3,bordigaMatrix);
+saturate ideal singularLocus(P4/Y)
+
+P3xP4=P3**P4
+betti (m3x5=map(P3^3,,sub(diff(sub(vars P4,P3xP4),
+		sub(bordigaMatrix,P3xP4)*sub(transpose vars P3,P3xP4)),P3)))
+tenPts=minors(3,m3x5);
+dim tenPts, degree tenPts
+c10Pts=decompose tenPts;#c10Pts
+tally apply(c10Pts,c->(dim c, degree c))
+d1=lcm apply(c10Pts,c->degree c)
+kk'=GF(char kk, d1)
+P3'=kk'[gens P3]
+P4'=kk'[gens P4]
+cPts=decompose sub(tenPts,P3');#cPts
+first cPts
+cPts1=apply(cPts,c->sub(syz transpose jacobian c,kk'));
+m3x4'=sub(bordigaMatrix,vars P4')
+
+planes=apply(cPts1,c->trim ideal(m3x4'*c));
+sixPlanes=select(planes,p->dim(p+sub(line,P4'))==1);#sixPlanes
+
+
+dim(line+Y),degree(line+Y)
+saturate(line+Y)
+saturate ideal singularLocus(P4/Y)
+
+///
+
+
 -* For CannedExample of randomEllipticAboSurface
 Example
     kk=ZZ/19;
@@ -11229,7 +11276,7 @@ Key
  [randomEllipticAboSurface,PrintConstructionData]
  [randomEllipticAboSurface,NumberOfRank1Points]
 Headline
- Get random elliptic Abo surface
+ get random elliptic Abo surface
 Usage
  (X,m3x4,r)=randomEllipticAboSurface(P4,P3)
 Inputs
