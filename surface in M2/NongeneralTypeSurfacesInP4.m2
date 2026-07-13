@@ -18080,6 +18080,99 @@ apply(possible,m1->(autP4=vars E'*m1;apply(pos2,n1->sub(standardRow,autP4)==idea
 
 ///
 
+    -* Option Keys *-
+doc///
+Key
+ Count
+Headline
+ an option
+Description
+  Text
+    An option key which is usually used to obtain additonal output which gives the number of attemps to find
+    a certain object during a random search.
+///
+
+doc///
+Key
+ Equations
+Headline
+ an option
+Description
+  Text
+    An option key which is used to obtain in addition to numerical data also equations.
+///
+
+doc///
+Key
+ Special
+Headline
+ an option
+Description
+  Text
+    An option key which is used when we have a special construction for certain objects
+///
+
+doc///
+Key
+ Smooth
+Headline
+ an option
+Description
+  Text
+    An option key which is used when in a random search of surfaces we want a smooth surface
+///
+
+doc///
+Key
+ NumberOfRank1Points
+Headline
+ an option
+Description
+  Text
+    An option key which specifies the number of rank one points in a Bordiga tensor.
+///
+
+doc///
+Key
+ PrintConstructionData
+Headline
+ an option
+Description
+  Text
+    An option key which if true prints construction data
+///
+
+doc///
+Key
+ WithM3x13
+Headline
+ an option
+Description
+  Text
+    An option key 
+///
+
+doc///
+Key
+ WithX
+Headline
+ an option
+Description
+  Text
+    An option key 
+///
+
+doc///
+Key
+ SingX
+Headline
+ an option
+Description
+  Text
+    An option key 
+///
+
+
     -* Test section *-
 
 TEST /// -* tateResolutionOfSurface and chiITable *-
