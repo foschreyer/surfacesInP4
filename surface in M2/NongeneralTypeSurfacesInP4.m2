@@ -9642,7 +9642,7 @@ Description
   Text
     The matrix m3x4 gives rize to a surface if r1>5.
     Notice that testMatrix1 is faster than testMatrix2.
-    For a general 3x4 matrix, we have r=5.
+    For a general 3x4 matrix, we have r1=5.
   CannedExample
     i9 : setRandomSeed("really general");
     -- setting random seed to 13089166972629855410042251015
@@ -18203,7 +18203,7 @@ Description
 
     -* Test section *-
 
-TEST /// -* tateResolutionOfSurface and chiITable *-
+TEST /// -* 0 tateResolutionOfSurface and chiITable *-
 kk=ZZ/nextPrime 10^2
 P4=kk[x_0..x_4]
 minimalBetti(X=K3surfaceD13 P4)
@@ -18213,7 +18213,7 @@ b2=chiITable(d,sg,2)
 assert(values(b1-b2)=={0})
 ///
 
-TEST /// -* adjunctionProcess, (-1)-lines, 6-secants and LeBarzN6 
+TEST /// -* 1 adjunctionProcess, (-1)-lines, 6-secants and LeBarzN6 
            on Schreyer surface *-
 kk=ZZ/3
 P4=kk[x_0..x_4]
@@ -18228,7 +18228,7 @@ assert(all(decompose R,c->(dim c==2 and 6*degree c==degree (c+X))))
 assert(degree R + (L_0)_1==LeBarzN6(degree X, sectionalGenus X,1))
 ///
 
-TEST /// -* canonical divisor on Abo surface, HdotK, selfIntersectionNumber, 
+TEST /// -* 2 canonical divisor on Abo surface, HdotK, selfIntersectionNumber, 
            partitionOfCanonicalDivisorOfAboSurface *-
 kk=ZZ/19
 P4=kk[x_0..x_4]
