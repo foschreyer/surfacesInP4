@@ -51,7 +51,6 @@ export {
     "partitionOfCanonicalDivisorOfAboSurface",
     --"adjointMatrices",
     "Equations",
-    "SingX",
     "Count",
     "PrintConstructionData",
     "analyzeAboSurface",
@@ -61,11 +60,9 @@ export {
     "randomAboSurfaceWithLargeHomSpace",
     "randomAboSurfaceWithHomSpaceOfGivenDimension",
     "aboSurfaceFromMatrix",
-    "testMatrix",
+    --"testMatrix",
     "testMatrix1",
     "testMatrix2",
-    "WithM3x13",
-    "WithX",
     "abo112224Or111234Surface",
     "abo111333Surface",
     "abo111117Surface",
@@ -2122,7 +2119,7 @@ aboRanestadSurfaceFromMatrix=method(Options=>{Verbose=>false,Smooth=>true})
 aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
     -- 'kk' is the coeffieicnt ring of 'P4'
     kk:= coefficientRing P4;
-    -- Use 'prepareAboRanestadSurface' to get the data required to construct a surface
+    -- Use 'prepareAboRanestadSurface' to get the datsa required to construct a surface
     (E,m2x3,bs,as,B,ExB,E2,b4x2,a2x3,E3):=prepareAboRanestadSurfaces(P4);
     -- Replace the variables appearing in 'm4x2' with the variables of 'E'
     m4x2':=sub(m4x2,vars E);
@@ -2207,7 +2204,7 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
 
       -* Abo surfaces *-
 
-testMatrix1=method(Options=>{Verbose=>false,SingX=>true})
+testMatrix1=method(Options=>{Verbose=>false})
 testMatrix1(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     --toDo improve the code using a Hom computation of E-modules
     E:= ring mE3x4;
@@ -2232,7 +2229,7 @@ testMatrix1(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     )
 
 
-testMatrix=method(Options=>{Verbose=>false,SingX=>true})
+testMatrix=method(Options=>{Verbose=>false})
 testMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     E:= ring mE3x4;
     kk:= coefficientRing P4;
@@ -2251,7 +2248,7 @@ testMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
     m4x4 := (transpose a1x4) | (transpose sub(mE3x4,ExB));
     c := m4x4*m4x3;
     Is := trim ideal sub(contract(E3,flatten c),B);
-    if not opt.SingX then return betti Is;
+    --if not opt.SingX then return betti Is;
     sol := vars B%Is;
     if opt.Verbose then << betti Is <<endl;
     F := null; beta := null; beta0 := null; alpha':=null;
@@ -2275,7 +2272,7 @@ testMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
         not( degree I==12 and codim I ==2)) do ();
     saturate ideal singularLocus I)
 
-testMatrix2=method(Options=>{Verbose=>false,WithM3x13 =>false,WithX=>false})
+testMatrix2=method(Options=>{Verbose=>false})
 -- Input: m3x4 Matrix, linear matrix over the exterior algebra
 --        P4 Ring, coordinate ring of P4
 -- Output: d, ZZ, dimension of Hom(coker m3x4, coker m3x1**E^{1}
@@ -2286,10 +2283,10 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
     m3x1:=matrix{{E_0},{E_1},{E_2}};
     if o.Verbose then (
 	elapsedTime hom:=Hom(coker m3x4,coker m3x1**E^{2},DegreeLimit=>1)) else (
-        betti(hom=Hom(coker m3x4,coker m3x1**E^{2},DegreeLimit=>1)));
+        betti(hom=Hom(coker m3x4,coker m3x1**E^{2},DegreeLimit=>1))
+	);
     if hom==0 then r:=0 else (B:=betti hom;r=B#(0,{0},0));
     --r:=if member((0,{1},1),keys B) then B#(0,{1},1) else 0;
-    if not (o.WithM3x13 or o.WithX) then return r;
     if r==0 then return (r,null);
     kk:=coefficientRing ring m3x4;
     c:=null;
@@ -2299,13 +2296,12 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
    
     m3x13:=map(E^{3:1},,(m3x1**E^{1}|matrix m3x3));
     if not degrees source m3x13 == {{0}, {1}, {1}, {1}} then return (r,null);
-    if not o.WithX then return (r,m3x13);
     s1:=syz m3x13;
     if not degrees source s1 == {{2}, {2}, {2}, {2}, {3}, {3}, {3}, {3}, {3}} then return (r,null);
 --betti m3x13,  source s1== E^{0,3:1}
     s2:=s1*((id_(E^{4:-2})||map(E^{5:-3},E^{4:-3},0))|random(source s1,E^{4:-3}));
     --betti s2
-    T1:=res coker transpose s2;
+    T1:=res(coker transpose s2,LengthLimit=>6);
     T2:=res(coker transpose T1.dd_6,LengthLimit=>8);
     X:=saturate ideal syz symExt(T2.dd_8,P4);
     dimDegSGCorrect:= dim X==3 and degree X==12 and sectionalGenus X ==13;
@@ -2313,7 +2309,7 @@ testMatrix2(Matrix,Ring) := o -> (m3x4,P4) -> (
     if o.Verbose then (
 	elapsedTime dimSingX:=dim singularLocus(P4/X);
 	<<"dim SingX = " <<dimSingX <<flush<<endl;);
-    return (r,X)
+    return r
     )
     
 ///
@@ -9539,55 +9535,58 @@ SeeAlso
    residualInQuintics
    LeBarzN6   
 ///
--* for CannedExample in testMatrix
+
+-* for CannedExample in testMatrix1
   Example
-    kk=ZZ/19
+    kk=ZZ/19;
     P4=kk[x_0..x_4];
-    E=kk[e_0..e_4,SkewCommutative=>true]
-    m3x1=transpose matrix{{E_0,E_1,E_2}}
-    m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
-      -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
-      -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
-      9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+    E=kk[e_0..e_4,SkewCommutative=>true];
+    m3x1 = transpose matrix{{E_0,E_1,E_2}}
+    m3x4 = matrix {{2*e_0-6*e_1-5*e_2+e_3, -4*e_0+9*e_1+8*e_2+6*e_4, -6*e_0+6*e_1-5*e_2-2*e_3-2*e_4,
+      4*e_0-8*e_1-7*e_2+2*e_3-2*e_4}, {7*e_0-8*e_1-5*e_2-4*e_3, 9*e_0-4*e_1+9*e_2-8*e_4,
+      e_0-8*e_1+8*e_2-5*e_3-5*e_4, -4*e_0+2*e_1-6*e_2+5*e_3-5*e_4}, {e_0+5*e_1+3*e_2+e_3,
+      e_0-8*e_1-6*e_2-9*e_4, 5*e_0+6*e_1-8*e_2+e_3+e_4, -e_0-9*e_1+8*e_2+6*e_3-6*e_4}}    
     elapsedTime r1=testMatrix1(m3x4,P4)
     elapsedTime r2=testMatrix2(m3x4,P4)
     r1==r2+5
-    elapsedTime singX=testMatrix(m3x4,P4)
   Text
-    The matrix m3x4 gives rize to a surface if r>5.
-  Example
-    X= aboSurfaceFromMatrix(m3x4,P4);
-    betti tateResolutionOfSurface X
-    elapsedTime singX=testMatrix(m3x4,P4)
-  Text
-    The last function also checks whether there is a smooth surface with these matrices.
+    The matrix m3x4 gives rize to a surface if r1>5.
     For a general 3x4 matrix, we have r=5.
   Example
     setRandomSeed("really general");
     m3x4g=random(E^3,E^{4:-1});
     testMatrix1(m3x4g,P4)==5
+  Text
+    The matrix m3x4 does not determine the surface:  
+  Example
+    setRandomSeed("get twice a smooth surface")    
+    X=aboSurfaceFromMatrix(m3x4,P4);
+    saturate ideal singularLocus(P4/X)
+    X = aboSurfaceFromMatrix(m3x4,P4);
+    X' = aboSurfaceFromMatrix(m3x4,P4);
+    X==X'
+  Text
+    However the canonical divisors coincide:
+  Example
+    D = canonicalDivisor X;
+    betti D
+    D' = canonicalDivisor X';    
+    D==D' 
 *-
 
 doc///
 Key
- testMatrix
- (testMatrix,Matrix,Ring)
- [testMatrix,SingX]
- [testMatrix,Verbose]
  testMatrix1
  (testMatrix1,Matrix,Ring)
- [testMatrix1,SingX]
  [testMatrix1,Verbose]
  testMatrix2
  (testMatrix2,Matrix,Ring)
  [testMatrix2,Verbose]
- [testMatrix2,WithM3x13]
- [testMatrix2,WithX]
 Headline
  test whether a 3x4 matrix with entries over the exterior algebra leads to an Abo surface
 Usage
  r2 = testMatrix2(m3x4,P4)
- singX = testMatrix(m3x4,P4)
+ r1 = testMatrix1(m3x4,P4)
 Inputs
   m3x4:Matrix
     a 3x4 matrix with linear entries in the exterior algebra E
@@ -9596,8 +9595,6 @@ Inputs
 Outputs
  r2:ZZ
   the rank of the crucial Hom space
- singX: Ideal
-   ideal of the singular locus of an example of a surfaces from m3x4
 Description
   Text
     In the Tate resolution of Abo surfaces, there are linear 3x1 and linear 3x4 matrices.
@@ -9605,18 +9602,10 @@ Description
     together with the m3x1 matrix leads to a smooth surface can be tested with testMatrix1.
     We need that r1>5.
   CannedExample
-    i1 : kk=ZZ/19
-
-    o1 = kk
-
-    o1 : QuotientRing
+    i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
-    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
-
-    o3 = E
-
-    o3 : PolynomialRing, 5 skew commutative variable(s)
-    i4 : m3x1=transpose matrix{{E_0,E_1,E_2}}
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true];
+    i4 : m3x1 = transpose matrix{{E_0,E_1,E_2}}
 
     o4 = {-1} | e_0 |
          {-1} | e_1 |
@@ -9624,103 +9613,96 @@ Description
 
                  3      1
     o4 : Matrix E  <-- E
-    i5 : m3x4=matrix {{7*e_0+3*e_1-7*e_2-8*e_3, -4*e_0+3*e_1-7*e_2-8*e_4, 5*e_0+6*e_1+2*e_2+9*e_3-4*e_4,
-	    -6*e_0-7*e_1+3*e_3-3*e_4}, {e_0-5*e_1-e_2+7*e_3, -e_0-4*e_1+7*e_2-2*e_4, -e_0-8*e_1+2*e_3-3*e_4,
-	    -7*e_0+3*e_1-9*e_2+6*e_3-6*e_4}, {8*e_0-2*e_1+3*e_2+6*e_3, 9*e_0-2*e_1-e_2-e_4,
-	    9*e_0-9*e_1+7*e_2+e_3+8*e_4, -e_0+7*e_1-8*e_2+8*e_3-8*e_4}}
+    i5 : m3x4 = matrix {{2*e_0-6*e_1-5*e_2+e_3, -4*e_0+9*e_1+8*e_2+6*e_4, -6*e_0+6*e_1-5*e_2-2*e_3-2*e_4,
+	    4*e_0-8*e_1-7*e_2+2*e_3-2*e_4}, {7*e_0-8*e_1-5*e_2-4*e_3, 9*e_0-4*e_1+9*e_2-8*e_4,
+	    e_0-8*e_1+8*e_2-5*e_3-5*e_4, -4*e_0+2*e_1-6*e_2+5*e_3-5*e_4}, {e_0+5*e_1+3*e_2+e_3,
+	    e_0-8*e_1-6*e_2-9*e_4, 5*e_0+6*e_1-8*e_2+e_3+e_4, -e_0-9*e_1+8*e_2+6*e_3-6*e_4}}
 
-    o5 = | 7e_0+3e_1-7e_2-8e_3 -4e_0+3e_1-7e_2-8e_4 5e_0+6e_1+2e_2+9e_3-4e_4
-         | e_0-5e_1-e_2+7e_3   -e_0-4e_1+7e_2-2e_4  -e_0-8e_1+2e_3-3e_4     
-         | 8e_0-2e_1+3e_2+6e_3 9e_0-2e_1-e_2-e_4    9e_0-9e_1+7e_2+e_3+8e_4 
-    ------------------------------------------------------------------------
-          -6e_0-7e_1+3e_3-3e_4      |
-          -7e_0+3e_1-9e_2+6e_3-6e_4 |
-          -e_0+7e_1-8e_2+8e_3-8e_4  |
+    o5 = | 2e_0-6e_1-5e_2+e_3  -4e_0+9e_1+8e_2+6e_4 -6e_0+6e_1-5e_2-2e_3-2e_4
+         | 7e_0-8e_1-5e_2-4e_3 9e_0-4e_1+9e_2-8e_4  e_0-8e_1+8e_2-5e_3-5e_4  
+         | e_0+5e_1+3e_2+e_3   e_0-8e_1-6e_2-9e_4   5e_0+6e_1-8e_2+e_3+e_4   
+         ------------------------------------------------------------------------
+         4e_0-8e_1-7e_2+2e_3-2e_4  |
+         -4e_0+2e_1-6e_2+5e_3-5e_4 |
+         -e_0-9e_1+8e_2+6e_3-6e_4  |
 
                  3      4
     o5 : Matrix E  <-- E
     i6 : elapsedTime r1=testMatrix1(m3x4,P4)
-     -- .0334885s elapsed
+    -- .0434477s elapsed
 
     o6 = 6
     i7 : elapsedTime r2=testMatrix2(m3x4,P4)
-     -- .0486689s elapsed
+    -- 3.2833s elapsed
 
     o7 = 1
     i8 : r1==r2+5
 
     o8 = true
-    i9 : elapsedTime singX=testMatrix(m3x4,P4)
-    -- 16.2713s elapsed
-
-    o9 = ideal (x  + 8x , x  - 7x , x  + 9x , x  - 3x )
-                 3     4   2     4   1     4   0     4
-
-    o9 : Ideal of P4
-
   Text
     The matrix m3x4 gives rize to a surface if r1>5.
+    Notice that testMatrix1 is faster than testMatrix2.
+    For a general 3x4 matrix, we have r=5.
   CannedExample
-    i10 : X= aboSurfaceFromMatrix(m3x4,P4);
-
-    o10 : Ideal of P4
-    i11 : betti tateResolutionOfSurface X
-
-                  -1  0  1  2 3 4 5  6  7
-    o11 = total: 123 74 38 14 4 4 8 28 76
-             -4:   1  .  .  . . . .  .  .
-	     -3: 122 74 38 14 1 . .  .  .
-	     -2:   .  .  .  . 3 1 .  .  .
-	     -1:   .  .  .  . . 3 4  .  .
-	      0:   .  .  .  . . . 4 28 76
-
-    o11 : BettiTally
-    i12 : elapsedTime singX=testMatrix(m3x4,P4)
-    -- 16.4333s elapsed
-
-    o12 = ideal 1
-
-    o12 : Ideal of P4
-  Text   
-    The last function also checks whether there is a smooth surface with these matrices.
-    For a general 3x4 matrix, we have r1=5.
-  CannedExample
-    i13 : setRandomSeed("really general");
+    i9 : setRandomSeed("really general");
     -- setting random seed to 13089166972629855410042251015
-    i14 : m3x4g=random(E^3,E^{4:-1});
+    i10 : m3x4g=random(E^3,E^{4:-1});
 
                   3      4
-    o14 : Matrix E  <-- E
-    i15 : testMatrix1(m3x4g,P4)==5
+    o10 : Matrix E  <-- E
+    i11 : testMatrix1(m3x4g,P4)==5
 
-    o15 = true
+    o11 = true
+  Text
+    The matrix m3x4 does not determine the surface:
+  CannedExample
+    i12 : setRandomSeed("get twice a smooth surface");
+    -- setting random seed to 13338755184793560953740020146432441823726931368738496
+    i13 : X=aboSurfaceFromMatrix(m3x4,P4);
+
+    o13 : Ideal of P4
+    i14 : saturate ideal singularLocus(P4/X)
+
+    o14 = ideal 1
+
+    o14 : Ideal of P4
+    i15 : X = aboSurfaceFromMatrix(m3x4,P4);
+
+    o15 : Ideal of P4
+    i16 : X' = aboSurfaceFromMatrix(m3x4,P4);
+
+    o16 : Ideal of P4
+    i17 : X==X'
+
+    o17 = false
+  Text
+    However the canonical divisors coincide:
+  CannedExample
+    i18 : D = canonicalDivisor X;
+
+    o18 : Ideal of P4
+    i19 : betti D
+
+                 0  1
+    o19 = total: 1 19
+              0: 1  .
+	      1: .  .
+	      2: .  .
+	      3: . 16
+	      4: .  3
+
+    o19 : BettiTally
+    i20 : D' = canonicalDivisor X';
+
+    o20 : Ideal of P4
+    i21 : D==D'
+
+    o21 = true  
 SeeAlso
   aboSurfaceFromMatrix
-  
+  canonicalDivisor
 ///
-///
-B=betti(hom=Hom(coker m3x4,coker m3x1**E^{1},DegreeLimit=>2))
-r=if member((0,{0},0),keys B) then B#(0,{0},0) else 0
-kk=coefficientRing ring m3x4
-c:=null;
-genHomo=sum(r,i->(
-	while (c=random kk; c==0) do ();c*hom_i));
-m3x3=homomorphism genHomo
-betti (m3x4=matrix(m3x1**E^{1}|m3x3))
-betti (s1=syz m3x4)
-s2=s1*((id_(E^{4:-1})||map(E^{5:-2},E^{4:-2},0))|random(source s1,E^{4:-2}))
-betti (T1=res coker transpose s2)
-betti (T2=res(coker transpose T1.dd_6,LengthLimit=>8))
-X=saturate ideal syz symExt(T2.dd_8,P4);
-minimalBetti X
-dim X==3 and degree X==12 and sectionalGenus X ==13
-needsPackage "FastMinors"
-viewHelp "FastMinors"
-elapsedTime regularInCodimension(2,P4/X)
-elapsedTime (singX=singularLocus X; dim singX==0)
 
-
-///
 -*  For CannedExample of analyzeAboSurface
   Example
     kk=ZZ/nextPrime 10^4;
@@ -11185,46 +11167,73 @@ SeeAlso
 /// -* investigate aboSurfaces *-
 kk=ZZ/19;P4=kk[x_0..x_4];P3=kk[y_0..y_3];
 E=kk[e_0..e_4,SkewCommutative=>true];
+P2=kk[z_0..z_2];P1=kk[w_0,w_1]
 setRandomSeed("111333 surface")
-setRandomSeed("111333 surface 2")
-setRandomSeed("another 111333 surface 3")
-elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+--setRandomSeed("111333 surface 2")
 
-elapsedTime partitionOfCanonicalDivisorOfAboSurface X
+mdKR={}
+elapsedTime mdKRs=collectAboSurfaces(mdKR,P4,E,30);
 
-saturate ideal singularLocus(P4/X)
-betti(T=tateResolutionOfSurface X)
+tally apply(mdKRs,c->c_2_0)
+m111333s=apply(select(mdKRs,c->c_2_0=={1,1,1,3,3,3}),c->c_0);#m111333s
+elapsedTime tally apply(m111333s,m3x4->(X=aboSurfaceFromMatrix(m3x4,P4);
+	saturate ideal singularLocus(P4/X))) -- 517.892s elapsed
+elapsedTime linMats=apply(m111333s,m3x4->(X=aboSurfaceFromMatrix(m3x4,P4);
+	T=tateResolutionOfSurface X;
+	L1=T.dd_4^{0..2}_{3};
+	line = ideal sub(L1,vars P4);
+	bordigaMatrix=map(P4^3,,sub(T.dd_5^{0..2}_{4..7},vars P4));
+	(line,bordigaMatrix))); -- 192.12s elapsed
 
-betti (L1=T.dd_4^{0..2}_{3})
-line = ideal sub(L1,vars P4)
-betti(bordigaMatrix=map(P4^3,,sub(T.dd_5^{0..2}_{4..7},vars P4)))
-Y=minors(3,bordigaMatrix);
-saturate ideal singularLocus(P4/Y)
-
+tally apply(linMats,(L,bM) -> (Y=minors(3,bM);
+	singY=saturate ideal singularLocus Y;
+	(dim singY, degree singY,dim(line+Y),degree(line+Y))))
 P3xP4=P3**P4
-betti (m3x5=map(P3^3,,sub(diff(sub(vars P4,P3xP4),
-		sub(bordigaMatrix,P3xP4)*sub(transpose vars P3,P3xP4)),P3)))
-tenPts=minors(3,m3x5);
-dim tenPts, degree tenPts
-c10Pts=decompose tenPts;#c10Pts
-tally apply(c10Pts,c->(dim c, degree c))
-d1=lcm apply(c10Pts,c->degree c)
-kk'=GF(char kk, d1)
-P3'=kk'[gens P3]
-P4'=kk'[gens P4]
-cPts=decompose sub(tenPts,P3');#cPts
-first cPts
-cPts1=apply(cPts,c->sub(syz transpose jacobian c,kk'));
-m3x4'=sub(bordigaMatrix,vars P4')
 
-planes=apply(cPts1,c->trim ideal(m3x4'*c));
-sixPlanes=select(planes,p->dim(p+sub(line,P4'))==1);#sixPlanes
-
-
-dim(line+Y),degree(line+Y)
-saturate(line+Y)
-saturate ideal singularLocus(P4/Y)
-
+elapsedTime netList (sixPoints=apply(linMats,(L,bM) -> (
+	    (L,bM)=last linMats
+	m3x5=map(P3^3,,sub(diff(sub(vars P4,P3xP4),
+		sub(bM,P3xP4)*sub(transpose vars P3,P3xP4)),P3));
+        tenPts=minors(3,m3x5);
+	c10Pts=decompose(tenPts);
+	d1=lcm apply(c10Pts,c->degree c);
+	kk'=GF(char kk,d1);
+	P3'=kk'[gens P3];
+	P4'=kk'[gens P4];
+	P2'=kk'[gens P2];
+	cPts=decompose sub(tenPts,P3');
+	<< #cPts <<endl;
+	cPts1=apply(cPts,c->sub(syz transpose jacobian c,kk'));
+	m3x4'=sub(bM,vars P4');
+	planes=apply(cPts1,c->trim ideal(m3x4'*c));
+	sixPtsInP3=select(cPts1,c->dim (trim ideal(m3x4'*c)+sub(line,P4'))==1);
+	sixPtsInP2=apply(sixPtsInP3,c->syz( transpose (m3x4'*c),DegreeLimit=>0));
+        sixIdealsInP2=apply(sixPtsInP2,c->ideal (vars P2'*sub(syz transpose c,P2')));
+        betti intersect sixIdealsInP2
+	sixIdealsInP3=apply(sixPtsInP3,c->ideal(vars P3'*sub(syz transpose c,P3')))
+	F=res intersect sixIdealsInP3
+	betti(m3x2=F.dd_3^{2..4})
+	P1'=kk'[gens P1]
+	P1xP3=P1'**P3'
+	paraP1=syz transpose sub(diff(sub(transpose vars P3',P1xP3),sub(vars P1',P1xP3)*transpose sub(m3x2,P1xP3)),P1')
+        P1xP4=P1'**P4'
+	syz transpose syz sub(diff(sub(vars P4',P1xP4),sub(bM,P4')*sub(paraP1,P1xP4)),P1')
+	trim L
+	)))
+-*
+o16 = Tally{((-1, 0), (6, 10)) => 7}
+            ((1, 1), (5, 9)) => 3
+            ((1, 1), (6, 9)) => 3
+*-
+ambient kk', ambient kk
+apply(sixPlanes,p->(
+	p=first sixPlanes
+	sp=syz transpose jacobian trim(p+sub(line,P4'));
+	a3x4=(last linMats)_1
+	syz transpose
+	syz sub(a3x4,transpose sp)
+	)
+)
 ///
 
 
@@ -18189,35 +18198,7 @@ Description
     An option key which if true prints construction data
 ///
 
-doc///
-Key
- WithM3x13
-Headline
- an option
-Description
-  Text
-    An option key 
-///
 
-doc///
-Key
- WithX
-Headline
- an option
-Description
-  Text
-    An option key 
-///
-
-doc///
-Key
- SingX
-Headline
- an option
-Description
-  Text
-    An option key 
-///
 
 
     -* Test section *-
