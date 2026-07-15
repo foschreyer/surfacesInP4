@@ -18282,7 +18282,7 @@ needsPackage "NongeneralTypeSurfacesInP4"
 chiITable(14,18,1)
 k2=Ksquare(14,18,1)
 2*(-k2+9)-35
-LeBarzN6(14,1
+LeBarzN6(14,18,1)
 sv=syz vars E
 mats1={
 matrix {{e_0+e_1+e_4, e_0+e_3, e_1+e_3+e_4, e_2+e_3, e_0+e_2, e_1+e_3+e_4, e_1+e_2+e_3}, {e_0+e_3, e_3, e_0+e_4, e_3+e_4, e_1+e_2+e_4, e_0+e_1+e_2+e_3+e_4, e_0}, {e_2, e_2, e_2+e_3, e_0+e_2, e_0+e_1+e_2+e_3, e_1+e_4, e_0+e_2+e_3+e_4}, {e_1+e_3+e_4, e_0+e_1+e_3+e_4, e_0+e_2+e_3, e_0+e_1+e_3+e_4, e_2+e_3, e_0+e_1+e_4, e_0+e_2+e_4}, {e_0+e_3+e_4, e_3, e_0+e_1, e_1+e_3, e_1+e_4, e_0+e_1+e_2+e_3, e_2+e_3}, {e_0+e_2, e_1, e_1+e_2, e_2, e_1+e_2+e_4, e_1+e_2+e_3+e_4, e_0}},
