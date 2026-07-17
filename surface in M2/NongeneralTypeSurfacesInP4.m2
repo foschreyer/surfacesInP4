@@ -5180,6 +5180,197 @@ Headline => "Known families of K3 surfaces",
 	TO selfIntersectionNumber,
 	},
 }
+/// -* for computing the polarization on the minimal model of the K3 *-
+kk=ZZ/nextPrime 10^4; P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true]
+
+minimalBetti(X=K3surfaceD7 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+pD=apply(cD,c->degree c)
+degPol=d+sum(pD,k->k^2)
+degPol==8
+
+minimalBetti(X=K3surfaceD8 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+pD=apply(cD,c->degree c)
+degPol=d+sum(pD,k->k^2)
+degPol==12
+
+minimalBetti(X=K3surfaceD19 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+pD=apply(cD,c->degree c)
+degPol=d+sum(pD,k->k^2)
+degPol==18
+
+minimalBetti(X=K3surfaceD10S9L1 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+degPol=d+sum(pD,k->k^2)
+degPol==28
+
+minimalBetti(X=K3surfaceD10S9L3 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+degPol=d+sum(pD,k->k^2)
+degPol
+
+minimalBetti(X=K3surfaceD11S11Ln(P4,0))
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD={1,1,1,1,5}
+
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==40
+
+minimalBetti(X=K3surfaceD11S11Ln(P4,1))
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==34
+
+minimalBetti(X=K3surfaceD11S11Ln(P4,2))
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD={1,1}|{2,2,3} --?
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==30
+
+minimalBetti(X=K3surfaceD11S11Ln(P4,3))
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD={1,1,1}|{}
+#pD==-Ksquare(d,sg,2) and sum pD == HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol
+
+
+minimalBetti(X=K3surfaceD11S12 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD={1,1,1,1,1,1,1,1,1,2}
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==24
+
+minimalBetti(X=K3surfaceD12 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD=toList(10:1)|{4}
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==38
+
+minimalBetti(X=K3surfaceD13 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD=toList(10:1)|{7}
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==72
+
+minimalBetti(X=K3surfaceD14 P4)
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+Ksquare(d,sg,2)
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+D=canonicalDivisor X;degree D 
+cD=decompose D;
+tally apply(cD,c->(dim c, degree c , genus c))
+pD=apply(cD,c->degree c)
+pD=toList(10:1)|toList(4:2)|{4}
+#pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
+degPol=d+sum(pD,k->k^2)
+degPol==56
+
+{56,72,38,24
+///
+
+
 
 document {
 Key => aboSurfaces,
