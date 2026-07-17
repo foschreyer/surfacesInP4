@@ -22,12 +22,12 @@ newPackage(
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
-	        { Name => "Kristian Ranestad", Email => "ranestad@math.uio.no", HomePage => "https://add"},
+	        { Name => "Kristian Ranestad", Email => "ranestad@math.uio.no",HomePage => "https://www.mn.uio.no/math/english/people/aca/ranestad"},
 	        { Name => "Frank-Olaf Schreyer", Email => "schreyer@math.uni-sb.de", HomePage => "https://www.math.uni-sb.de/ag/schreyer"}},
     AuxiliaryFiles => false,
     DebuggingMode => true,
     PackageExports => {"BGG","AdjunctionForSurfaces","PrimaryDecomposition","Varieties","FastMinors"},
-    Keywords => {"Algebraic Geometry", "ProjectiveGeometry"},
+    Keywords => {"Algebraic Geometry", "Projective Algebraic Geometry"},
     --HomePage =>  "todo",
     )
 
@@ -9210,8 +9210,9 @@ Description
 SeeAlso
    aboRanestadSurfaceFromMatrix
    adjunctionProcess
-   tateResolutionOfSurface
+   tateResolutionOfSurface 
 ///
+
 -* For CannedExample of get4x2Matrix
   Example
     kk=ZZ/nextPrime 10^3
@@ -18290,7 +18291,9 @@ matrix {{e_0+e_1+e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_1+e_4, e_2+e_3+e_4, e_2+e_4, e_
 matrix {{e_1+e_3, e_0+e_3, e_0, e_1+e_3+e_4, e_0+e_1+e_2+e_4, e_0+e_2+e_4, e_2+e_3+e_4}, {e_0+e_1+e_2+e_3+e_4, e_1+e_2+e_3+e_4, e_3, e_0+e_1+e_2, e_0+e_2+e_4, e_1+e_2+e_3+e_4, e_1+e_2+e_4}, {e_1+e_3, e_1+e_2+e_4, 0, e_1+e_3+e_4, e_0+e_1+e_2+e_3+e_4, e_0+e_1+e_3, e_0+e_1}, {e_0+e_1+e_2+e_3+e_4, e_0+e_1+e_3, e_1+e_3, e_0+e_2+e_3+e_4, e_2+e_3, e_1+e_2+e_4, e_0}, {e_1+e_3, e_1+e_2+e_4, 0, e_0+e_2+e_3, e_0+e_1+e_2+e_4, e_0+e_1+e_3, e_0+e_1}, {e_1+e_2+e_3, e_1+e_4, e_2+e_3+e_4, e_1+e_2+e_4, e_0+e_4, e_0+e_1+e_2+e_3, e_1+e_2+e_3}},
 matrix {{e_1+e_2+e_3, e_0+e_1+e_2, e_4, e_1+e_2+e_3+e_4, e_0+e_2+e_3, e_1+e_3+e_4, e_0+e_1+e_3+e_4}, {e_0+e_1+e_2+e_3, e_0+e_1+e_2+e_3, 0, e_0+e_1+e_2+e_3, e_2+e_3, e_0+e_2+e_3, e_0}, {e_0+e_1+e_2+e_3, e_0+e_1+e_2+e_3, e_2+e_3, e_0+e_1+e_2+e_3, e_0+e_1+e_3+e_4, e_1+e_2+e_3, e_2+e_3}, {e_0+e_1+e_2, e_1+e_2+e_3, e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_2+e_3+e_4}, {0, 0, e_0+e_3+e_4, e_0+e_3+e_4, e_2+e_3, e_0+e_3+e_4, e_0+e_3+e_4}, {e_3+e_4, e_0, e_1+e_3, e_1+e_2+e_3, e_1+e_3+e_4, e_1+e_2, e_2+e_3}}
 }
-elapsedTime tally apply(2^10,c->(
+apply(mats1,m->betti res(coker transpose m,LengthLimit=>5))
+mats={}
+elapsedTime tally apply(2^20,c->(
 	while(
 	betti(a=sv*random(source sv,E^{7:-2}));
 	betti (b=random(E^{-1},E^{7:-2}));
@@ -18303,12 +18306,13 @@ elapsedTime tally apply(2^10,c->(
 	(B1,B2)
 	))
 --break
+2^19
 
 log_2 65248
 16-log_2 285 ,16-log_2 3
  659.192/60*2^3/60
 #mats
-tally apply(mats1,ab->(
+tally apply(mats,ab->(
 B1=betti (T1=res(coker ab,LengthLimit=>5));
 B2=betti (T2=res( coker transpose ab,LengthLimit=>5));
 (B1,B2)))
