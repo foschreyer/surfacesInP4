@@ -73,7 +73,7 @@ export {
     "irregularity",
     "geometricGenus",
     "chiNX",
-    "dominatesK3Moduli",
+    --"dominatesK3Moduli",
     --"chiI",
     "chiITable",
     "HdotK",
@@ -5201,7 +5201,7 @@ Headline => "Known families of K3 surfaces",
 	TO canonicalDivisor,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
-	TO dominatesK3Moduli,
+	--TO dominatesK3Moduli,
 	},
 }
 /// -* for computing the polarization on the minimal model of the K3 *-
@@ -5899,6 +5899,7 @@ SeeAlso
     degreeOfPolarization=d+sum(pD,k->k^2)
     genusOfPolarization=sub((degreeOfPolarization+2)/2,ZZ)
 *-
+-*
 doc///
 Key
  dominatesK3Moduli
@@ -6019,6 +6020,7 @@ SeeAlso
    canonicalDivisor
    tateResolutionOfSurface
 ///
+*-
 
 ///
 chiITable(10,8,1)
