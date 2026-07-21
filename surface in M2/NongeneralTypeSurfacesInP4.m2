@@ -5034,6 +5034,7 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 	TO Ksquare,
         TO HdotK,
 	TO sectionalGenus,
+	TO chiNX,
         },
     
      SUBSECTION "Tate resolutions",
@@ -5200,25 +5201,12 @@ Headline => "Known families of K3 surfaces",
 	TO canonicalDivisor,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
+	TO dominatesK3Moduli,
 	},
 }
 /// -* for computing the polarization on the minimal model of the K3 *-
 kk=ZZ/nextPrime 10^4; P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 
-dominatesK3Moduli=method(Options=>{Verbose=>true})
-dominatesK3Moduli(Ideal):= o -> X -> (
-    (d,sg) := (degree X, sectionalGenus X);
-    bT := betti(tateResolutionOfSurface X);
-    K2:=Ksquare(d,sg,2);
-    s := if member((3, {1}, 1),keys bT) then bT#(3, {1}, 1) else 0;
-    lowerDimensionBound:=19-2*K2+24-5*s;
-    NX:=sheaf(Hom(module X,P4^1/X));
-    upperDimensionBound:=rank HH^0(NX);
-    if o.Verbose then (
-	<< "chiNX = " <<chiNX X << ", h^0(NX) = "
-	<< rank HH^0(NX) <<", lowerDimensionBound = " << lowerDimensionBound <<endl;);
-    lowerDimensionBound == upperDimensionBound)
-     
     
 
     
@@ -5827,6 +5815,201 @@ SeeAlso
    sectionalGenus
    chiO
 ///
+-* for canned Example 
+  Example
+    kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    minimalBetti (X = K3surfaceD7 P4)
+    chiNX X
+    NX=sheaf(Hom(module X,P4^1/X));
+    apply(3,i->HH^i(NX))
+*-
+doc///
+Key
+ chiNX
+ (chiNX,Ideal)
+Headline
+ compute the Euler characteristic of the normal bundle of the surface X
+Usage
+ b = chiNX X
+Inputs
+ X:Ideal
+  of a smooth surface in P4
+Outputs
+  b:ZZ
+    the Euler characteristic of the Normal bundle of X
+Description
+  Text
+    The Euler characteristic of the normal bundle NX=sheaf(Hom(module X, P4^1/X))
+    can be computed form the numerical invariants of X.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    i3 : minimalBetti (X = K3surfaceD7 P4)
+
+                0 1 2
+    o3 = total: 1 3 2
+             0: 1 . .
+	     1: . . .
+	     2: . 3 1
+	     3: . . 1
+
+    o3 : BettiTally
+    i4 : chiNX X
+
+    o4 = 45
+    i5 : NX=sheaf(Hom(module X,P4^1/X));
+    i6 : apply(3,i->HH^i(NX))
+
+            45
+    o6 = {kk  , 0, 0}
+
+    o6 : List
+  
+SeeAlso
+   K3surfaceD7   
+///
+
+-* for CannedExample dominatesK3Moduli
+  Example
+    kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    setRandomSeed("fix decomposition of D");
+    minimalBetti (X = K3surfaceD9 P4)
+    dominatesK3Moduli X
+    D=canonicalDivisor X;
+    degree D, dim D
+    tally apply(cD=decompose D,c->(dim c, degree c, genus c))
+    matrix apply(cD,c->apply(cD,d->dim(c+d)))
+  Text
+    The divisor D consist of five (-1)-lines.
+  Example
+    (d,sg)=(degree X, sectionalGenus X)
+    HdotK(d,sg)
+    pD=toList(5:1)
+    bT=betti(tateResolutionOfSurface X)
+    s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+    bT#(3, {1}, 1)==s
+    LeBarzN6(d,sg,2)
+    degreeOfPolarization=d+sum(pD,k->k^2)
+    genusOfPolarization=sub((degreeOfPolarization+2)/2,ZZ)
+*-
+doc///
+Key
+ dominatesK3Moduli
+ (dominatesK3Moduli,Ideal)
+ [dominatesK3Moduli,Verbose]
+Headline
+ Does the component of the Hilbert scheme containing the K3 surface X dominates the moduli space Fg of the minimal model of X?
+ 
+Usage
+ B = dominatesK3Moduli X
+Inputs
+ X:Ideal
+  of a smooth surface in P4
+Outputs
+  B:Boolean
+    true if the sufficien criterion for dominance is satisfied
+Description
+  Text
+    The family of abstract surface of polarized K3 surface blown up in r points has dimesion
+    19+2r, in which the family of line bundles O_X'(H') which lead to a smooth surface
+    has codimension at most 5s
+    where s=h^1(O_X(H)) denotes the speciality of the linear system.
+    Thus
+    19+2r-5s+24 is a lowerbound for the dimension of the corresponding component of the Hilbert scheme
+    at the surface X. On the other hand h^0(NX) is an upperbound.
+    If these two numbers coincide then the component M of the Hilbert scheme containing X is smooth at X and
+
+    the rational map M -> Fg to the moduli space of polarized minimal K3 surfaces is dominant.
+ 
+    The condition is sufficient but not necessary: If X is not a smooth point of M, e.g.,
+    if the the component M of the Hilbert scheme is generically not reduced, then the map
+    might still be dominant.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    i3 : setRandomSeed("fix decomposition of D");
+    -- setting random seed to 126999714237773151837603464895432862570322709
+    i4 : minimalBetti (X = K3surfaceD9 P4)
+
+                0 1 2 3
+    o4 = total: 1 6 6 1
+             0: 1 . . .
+	     1: . . . .
+	     2: . . . .
+	     3: . 6 6 1
+
+    o4 : BettiTally
+    i5 : dominatesK3Moduli X
+    chiNX = 48, h^0(NX) = 48, lowerDimensionBound = 48
+
+    o5 = true
+    i6 : D=canonicalDivisor X;
+
+    o6 : Ideal of P4
+    i7 : degree D, dim D
+
+    o7 = (5, 2)
+
+    o7 : Sequence
+    i8 : tally apply(cD=decompose D,c->(dim c, degree c, genus c))
+
+    o8 = Tally{(2, 2, -1) => 1}
+               (2, 3, -2) => 1
+
+    o8 : Tally
+    i9 : matrix apply(cD,c->apply(cD,d->dim(c+d)))
+
+    o9 = | 2 0 |
+         | 0 2 |
+
+                  2       2
+    o9 : Matrix ZZ  <-- ZZ
+    The divisor D consist of five disjoint (-1)-lines.
+
+    i10 : (d,sg)=(degree X, sectionalGenus X)
+
+    o10 = (9, 8)
+
+    o10 : Sequence
+    i11 : HdotK(d,sg)
+
+    o11 = 5
+    i12 : pD=toList(5:1)
+
+    o12 = {1, 1, 1, 1, 1}
+
+    o12 : List
+    i13 : bT=betti(tateResolutionOfSurface X)
+
+                 -1  0  1 2 3 4  5  6   7
+    o13 = total: 85 50 25 9 2 6 24 61 125
+             -4:  1  .  . . . .  .  .   .
+	     -3: 84 50 25 9 1 .  .  .   .
+	     -2:  .  .  . . 1 .  .  .   .
+	     -1:  .  .  . . . .  .  .   .
+	      0:  .  .  . . . 6 24 61 125
+
+    o13 : BettiTally
+    i14 : s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+
+    o14 = 1
+    i15 : bT#(3, {1}, 1)==s
+
+    o15 = true
+    i16 : LeBarzN6(d,sg,2)
+
+    o16 = 5
+    i17 : degreeOfPolarization=d+sum(pD,k->k^2)
+
+    o17 = 14
+    i18 : genusOfPolarization=sub((degreeOfPolarization+2)/2,ZZ)
+
+    o18 = 8
+  
+SeeAlso
+   K3surfaceD9
+   canonicalDivisor
+   tateResolutionOfSurface
+///
+
 ///
 chiITable(10,8,1)
 tex chiITable(10,8,1)
