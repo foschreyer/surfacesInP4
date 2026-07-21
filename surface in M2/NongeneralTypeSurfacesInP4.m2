@@ -258,7 +258,7 @@ dominatesK3Moduli(Ideal):= o -> X -> (
     if o.Verbose then (
 	<< "chiNX = " <<chiNX X << ", h^0(NX) = "
 	<< rank HH^0(NX) <<", lowerDimensionBound = " << lowerDimensionBound <<endl;);
-    lowerDimensionBound == upperDimensionBound)
+    lowerDimensionBound == upperDimensionBound and HH^1(NX)==0)
      
 
 chiITable=method()
@@ -5454,6 +5454,14 @@ degPolarizations= {8, 12, 14, 28, 40, 40, 30, 28, 24, 38}
 
 aboPartitions={{1,2,2,2,2,3},{1,1,2,2,2,4},{1,1,2,2,3,3},{1,1,1,2,3,4},{1,1,1,2,2,5},{1,1,1,3,3,3},
     {1,1,1,1,4,4},{1,1,1,1,2,6},{1,1,1,1,1,7}}
+#aboPartitions
+
+kk=ZZ/19;
+P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+tally apply(9,k->(
+    elapsedTime minimalBetti (X=specificAboSurface(P4,E,k));
+    elapsedTime dominatesK3Moduli X))
+
 aboDegrees=apply(aboPartitions,pD->12+sum(pD,k->k^2))
 
 degPolarizations=degPolarizations|aboDegrees
@@ -5916,12 +5924,14 @@ Description
     Thus
     19+2r-5s+24 is a lowerbound for the dimension of the corresponding component of the Hilbert scheme
     at the surface X. On the other hand h^0(NX) is an upperbound.
-    If these two numbers coincide then the component M of the Hilbert scheme containing X is smooth at X and
-
-    the rational map M -> Fg to the moduli space of polarized minimal K3 surfaces is dominant.
+    If moreover the obstruction space H^1(NX)=0, then h^0(NX) is the dimension
+    of the Hilbert scheme near X. Thus if H^1(NX)=0 and
+    the two numbers coincide then the image of the component M of the Hilbert scheme containing X has under the
+    the rational map M -> Fg to the moduli space of polarized minimal K3 surfaces a 19-dimensional
+    image.
  
     The condition is sufficient but not necessary: If X is not a smooth point of M, e.g.,
-    if the the component M of the Hilbert scheme is generically not reduced, then the map
+    if the component M of the Hilbert scheme is generically not reduced, then the map
     might still be dominant.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
