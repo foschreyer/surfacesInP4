@@ -5211,14 +5211,16 @@ kk=ZZ/nextPrime 10^4; P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 
     
 
-degPolarizations={}
+candidates={}
 
 minimalBetti(X=K3surfaceD7 P4)
-expectedCodimensionInNonminimalK3Moduli X
 
+ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
-betti(T=tateResolutionOfSurface X)
+--betti(T=tateResolutionOfSurface X)
 K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1 sheaf(P4^1/X**P4^{1})
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
@@ -5226,51 +5228,68 @@ cD=decompose D;
 pD=apply(cD,c->degree c)
 degPol=d+sum(pD,k->k^2)
 degPol==8
-degPolarizations=append(degPolarizations,degPol);
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
 
 
 
 minimalBetti(X=K3surfaceD8 P4)
-expectedCodimensionInNonminimalK3Moduli X
 
+ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
 K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
 cD=decompose D;
 pD=apply(cD,c->degree c)
 degPol=d+sum(pD,k->k^2)
-degPolarizations=append(degPolarizations,degPol)
+degPol==12
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
 
+#candidates
 
 
 minimalBetti(X=K3surfaceD9 P4)
-expectedCodimensionInNonminimalK3Moduli X
 
+ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
-bT=betti(T=tateResolutionOfSurface X)
+betti(T=tateResolutionOfSurface X)
 K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
 cD=decompose D;
 pD=apply(cD,c->degree c)
+
 tally apply(cD,c->(dim c, degree c , genus c))
 pD=toList(5:1)
 degPol=d+sum(pD,k->k^2)
 degPol==14
-degPolarizations=append(degPolarizations,degPol)
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
-degPolarizations
 
 minimalBetti(X=K3surfaceD10S9L1 P4)
-expectedCodimensionInNonminimalK3Moduli X
 
+ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
-bT=betti(T=tateResolutionOfSurface X)
+betti(T=tateResolutionOfSurface X)
 K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r>=5*s
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
@@ -5280,72 +5299,105 @@ tally apply(cD,c->(dim c, degree c , genus c))
 pD={1,1,4}
 degPol=d+sum(pD,k->k^2)
 degPol==28
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
-degPolarizations=append(degPolarizations,degPol);
+
 
 
 
 minimalBetti(X=K3surfaceD10S9L3 P4)
-elapsedTime expectedCodimensionInNonminimalK3Moduli X
 
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
 cD=decompose D;
-tally apply(cD,c->(dim c, degree c , genus c))
 pD=apply(cD,c->degree c)
+
+tally apply(cD,c->(dim c, degree c , genus c))
+
+
 degPol=d+sum(pD,k->k^2)
 degPol
-degPolarizations=append(degPolarizations,degPol);
-
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,0))
-elapsedTime expectedCodimensionInNonminimalK3Moduli X
 
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
 cD=decompose D;
-tally apply(cD,c->(dim c, degree c , genus c))
 pD=apply(cD,c->degree c)
+
+tally apply(cD,c->(dim c, degree c , genus c))
+
 pD={1,1,1,1,5}
 
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==40
-degPolarizations=append(degPolarizations,degPol);
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
-degPolarizations
+candidates={(7, 5, 1, 0, 8), (8, 6, 1, 0, 12), (9, 8, 5, 1, 14), (10, 9, 3, 1, 28), (11, 11, 5, 2, 40)}
+
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,1))
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
 D=canonicalDivisor X;degree D 
 cD=decompose D;
-tally apply(cD,c->(dim c, degree c , genus c))
 pD=apply(cD,c->degree c)
-pD={1,1,1,1,5}
+
+tally apply(cD,c->(dim c, degree c , genus c))
+
+pD={1,1,1,2,4}
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
-degPol==40
-if dom then degPolarizations=append(degPolarizations,degPol);
-
+degPol==34
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,2))
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
+
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 43, h^0(NX) = 43, lowerDimensionBound = 43
  -- 1036.26s elapsed 
@@ -5353,9 +5405,14 @@ chiNX = 43, h^0(NX) = 43, lowerDimensionBound = 43
  
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
-LeBarzN6(d,sg,2)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
+LeBarzN6(d,sg,2)==4
 HdotK(d,sg)
+R5=residualInQuintics X; dim R5,degree R5
+tally apply(decompose R5,c->(dim c, degree c, degree (c+X)))
 -*
 D=canonicalDivisor X;degree D 
 cD=decompose D;
@@ -5366,26 +5423,33 @@ pD={1,1}|{2,2,3}
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==30
-if dom then degPolarizations=append(degPolarizations,degPol);
-
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,3))
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 43, h^0(NX) = 43, lowerDimensionBound = 43
  -- 1647.09s elapsed
 *-
-
-
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
 LeBarzN6(d,sg,2)
 HdotK(d,sg)
+
 R5=residualInQuintics X; dim R5,degree R5
-cR5=decompose R5;
-tally apply(cR5,c->(dim c, degree c))
+tally apply(decompose R5,c->(dim c, degree c, degree (c+X)))
+tally apply(decompose R5,c->(dim c, degree c, degree (c+X),
+	tally apply(primaryDecomposition(c+X),c-> (dim c, degree c, degree radical c))))
+
 -*
 elapsedTime D=canonicalDivisor X;degree D 
 elapsedTime cD=decompose saturate D;
@@ -5396,12 +5460,23 @@ pD={1}|{2,2,2,2}
 #pD==-Ksquare(d,sg,2) and sum pD == HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==11+17
-if dom then degPolarizations=append(degPolarizations,degPol);
-
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
 
 minimalBetti(X=K3surfaceD11S12 P4)
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
+
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
+
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 48, h^0(NX) = 48, lowerDimensionBound = 48
  -- 14.8543s elapsed
@@ -5422,21 +5497,28 @@ pD={1,1,1,1,1,1,1,1,1,2}
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==24
-if dom then degPolarizations=append(degPolarizations,degPol);
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
+netList candidates
 
 
 
 minimalBetti(X=K3surfaceD12 P4)
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
+
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 45, h^0(NX) = 45, lowerDimensionBound = 45
  -- 15.8188s elapsed
 *-
-(d,sg)=(degree X, sectionalGenus X)
-betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
-LeBarzN6(d,sg,2)
-HdotK(d,sg)
+
 -*
 D=canonicalDivisor X;degree D 
 cD=decompose D;
@@ -5447,40 +5529,27 @@ pD=toList(10:1)|{4}
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==38
-if dom then degPolarizations=append(degPolarizations,degPol);
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
 
-degPolarizations= {8, 12, 14, 28, 40, 40, 30, 28, 24, 38}
---                {8, 12, 14, 28, 46, 40, 34, 30, 28, 24, 38}
-
-aboPartitions={{1,2,2,2,2,3},{1,1,2,2,2,4},{1,1,2,2,3,3},{1,1,1,2,3,4},{1,1,1,2,2,5},{1,1,1,3,3,3},
-    {1,1,1,1,4,4},{1,1,1,1,2,6},{1,1,1,1,1,7}}
-#aboPartitions
-
-kk=ZZ/19;
-P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-tally apply(9,k->(
-    elapsedTime minimalBetti (X=specificAboSurface(P4,E,k));
-    elapsedTime expectedCodimensionInNonminimalK3Moduli X))
-
-aboDegrees=apply(aboPartitions,pD->12+sum(pD,k->k^2))
-
-degPolarizations=degPolarizations|aboDegrees
-
-genusOfAboK3s=apply(aboDegrees,d->sub((d+2)/2,ZZ))
-genusOfK3s=apply(degPolarizations,d->sub((d+2)/2,ZZ))
-sort genusOfK3s
 
 minimalBetti(X=K3surfaceD13 P4)
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
+
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
+LeBarzN6(d,sg,2)==10
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 40, h^0(NX) = 40, lowerDimensionBound = 40
  -- 54.497s elapsed
 *-
-(d,sg)=(degree X, sectionalGenus X)
-betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
-LeBarzN6(d,sg,2)
-HdotK(d,sg)
+
 R5=residualInQuintics X;dim R5,degree R5
 -*
 D=canonicalDivisor  X;degree D
@@ -5494,25 +5563,29 @@ pD=toList(10:1)|{7}
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==72
-if dom then degPolarizations=append(degPolarizations,degPol);
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
 
-genusOfAboK3s=apply(aboDegrees,d->sub((d+2)/2,ZZ))
-genusOfK3s=apply(degPolarizations,d->sub((d+2)/2,ZZ))
-sort genusOfK3s
 
 
 minimalBetti(X=K3surfaceD14 P4)
-elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
+
+(d,sg)=(degree X, sectionalGenus X)
+betti(T=tateResolutionOfSurface X)
+K2=Ksquare(d,sg,2)
+r=-K2
+s=rank HH^1(sheaf(P4^1/X**P4^{1}))
+2*r >= 5*s
+LeBarzN6(d,sg,2)
+HdotK(d,sg)
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 38, h^0(NX) = 42, lowerDimensionBound = 38
  -- 27.5808s elapsed
 
 *-
-(d,sg)=(degree X, sectionalGenus X)
-betti(T=tateResolutionOfSurface X)
-Ksquare(d,sg,2)
-LeBarzN6(d,sg,2)
-HdotK(d,sg)
 R5=residualInQuintics X;dim R5, degree R5
 tally apply(primaryDecomposition R5,c->(dim c, degree c, degree radical c, degree (radical c+X)))
 D=canonicalDivisor X;degree D 
@@ -5523,9 +5596,47 @@ pD=toList(10:1)|toList(4:2)|{4}
 #pD==-Ksquare(d,sg,2) and sum pD ==HdotK(d,sg)
 degPol=d+sum(pD,k->k^2)
 degPol==56
-if dom then degPolarizations=append(degPolarizations,degPol);
+if 2*r >= 5*s and ex then (
+    candidates=append(candidates,(d,sg,r,s,degPol))
+);
+#candidates
 
+netList candidates
+-*
+       +-------------------+
+o332 = |(7, 5, 1, 0, 8)    |
+       +-------------------+
+       |(8, 6, 1, 0, 12)   |
+       +-------------------+
+       |(9, 8, 5, 1, 14)   |
+       +-------------------+
+       |(10, 9, 3, 1, 28)  |
+       +-------------------+
+       |(11, 11, 5, 2, 40) |
+       +-------------------+
+       |(11, 11, 5, 2, 34) |
+       +-------------------+
+       |(11, 11, 5, 2, 30) |
+       +-------------------+
+       |(11, 11, 5, 2, 28) |
+       +-------------------+
+       |(11, 12, 10, 3, 24)|
+       +-------------------+
+       |(12, 14, 11, 4, 38)|
+       +-------------------+
+*-
 
+candidatesWithGenus={
+    (7, 5, 1, 0, 5),
+    (8, 6, 1, 0, 7),
+    (9, 8, 5, 1, 8),
+    (10, 9, 3, 1, 15),
+    (11, 11, 5, 2, 21),
+    (11, 11, 5, 2, 18),
+    (11, 11, 5, 2, 16),
+    (11, 11, 5, 2, 15),
+    (11, 12, 10, 3, 13),
+    (12, 14, 11, 4, 20)}
 ///
 
 
