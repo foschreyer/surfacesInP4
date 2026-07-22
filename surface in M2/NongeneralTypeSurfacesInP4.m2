@@ -8,7 +8,7 @@ viewHelp "NongeneralTypeSurfacesInP4"
 
 check "NongeneralTypeSurfacesInP4"
 
-uninstallPackage "NongeneralTypeSusrfacesInP4"
+uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
 needsPackage ("NongeneralTypeSurfacesInP4")
 elapsedTime installPackage("NongeneralTypeSurfacesInP4")   
@@ -73,7 +73,7 @@ export {
     "irregularity",
     "geometricGenus",
     "chiNX",
-    --"dominatesK3Moduli",
+    "expectedCodimensionInNonminimalK3Moduli",
     --"chiI",
     "chiITable",
     "HdotK",
@@ -240,13 +240,13 @@ chiNX(Ideal) := X -> (
 chiNX(12,13,2)
 ///
 
-dominatesK3Moduli=method(Options=>{Verbose=>true})
+expectedCodimensionInNonminimalK3Moduli=method(Options=>{Verbose=>true})
 -- Purpose : checks whether the blow-down map from th ecorresponding component of the
 --           Hilbert scheme to the moduli space of polarized K3 surfaces is dominant.
 --           The criterion sufficient but not necessary
 --  Input :  The ideal of a non-mimimal smooth K3 surface in P4
 --  Output:  Boolean
-dominatesK3Moduli(Ideal):= o -> X -> (
+expectedCodimensionInNonminimalK3Moduli(Ideal):= o -> X -> (
     (d,sg) := (degree X, sectionalGenus X);
     bT := betti(tateResolutionOfSurface X);
     K2:=Ksquare(d,sg,2);
@@ -5201,7 +5201,7 @@ Headline => "Known families of K3 surfaces",
 	TO canonicalDivisor,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
-	--TO dominatesK3Moduli,
+	TO expectedCodimensionInNonminimalK3Moduli,
 	},
 }
 /// -* for computing the polarization on the minimal model of the K3 *-
@@ -5214,7 +5214,7 @@ kk=ZZ/nextPrime 10^4; P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 degPolarizations={}
 
 minimalBetti(X=K3surfaceD7 P4)
-dominatesK3Moduli X
+expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
@@ -5231,7 +5231,7 @@ degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD8 P4)
-dominatesK3Moduli X
+expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
@@ -5247,7 +5247,7 @@ degPolarizations=append(degPolarizations,degPol)
 
 
 minimalBetti(X=K3surfaceD9 P4)
-dominatesK3Moduli X
+expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 bT=betti(T=tateResolutionOfSurface X)
@@ -5266,7 +5266,7 @@ degPolarizations=append(degPolarizations,degPol)
 degPolarizations
 
 minimalBetti(X=K3surfaceD10S9L1 P4)
-dominatesK3Moduli X
+expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 bT=betti(T=tateResolutionOfSurface X)
@@ -5286,7 +5286,7 @@ degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD10S9L3 P4)
-elapsedTime dominatesK3Moduli X
+elapsedTime expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
@@ -5304,7 +5304,7 @@ degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,0))
-elapsedTime dominatesK3Moduli X
+elapsedTime expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
@@ -5325,7 +5325,7 @@ degPolarizations=append(degPolarizations,degPol);
 degPolarizations
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,1))
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
@@ -5345,7 +5345,7 @@ if dom then degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,2))
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 43, h^0(NX) = 43, lowerDimensionBound = 43
  -- 1036.26s elapsed 
@@ -5371,7 +5371,7 @@ if dom then degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,3))
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 43, h^0(NX) = 43, lowerDimensionBound = 43
  -- 1647.09s elapsed
@@ -5401,7 +5401,7 @@ if dom then degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD11S12 P4)
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 48, h^0(NX) = 48, lowerDimensionBound = 48
  -- 14.8543s elapsed
@@ -5427,7 +5427,7 @@ if dom then degPolarizations=append(degPolarizations,degPol);
 
 
 minimalBetti(X=K3surfaceD12 P4)
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 45, h^0(NX) = 45, lowerDimensionBound = 45
  -- 15.8188s elapsed
@@ -5460,7 +5460,7 @@ kk=ZZ/19;
 P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 tally apply(9,k->(
     elapsedTime minimalBetti (X=specificAboSurface(P4,E,k));
-    elapsedTime dominatesK3Moduli X))
+    elapsedTime expectedCodimensionInNonminimalK3Moduli X))
 
 aboDegrees=apply(aboPartitions,pD->12+sum(pD,k->k^2))
 
@@ -5471,7 +5471,7 @@ genusOfK3s=apply(degPolarizations,d->sub((d+2)/2,ZZ))
 sort genusOfK3s
 
 minimalBetti(X=K3surfaceD13 P4)
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 40, h^0(NX) = 40, lowerDimensionBound = 40
  -- 54.497s elapsed
@@ -5502,7 +5502,7 @@ sort genusOfK3s
 
 
 minimalBetti(X=K3surfaceD14 P4)
-elapsedTime dom=dominatesK3Moduli X
+elapsedTime dom=expectedCodimensionInNonminimalK3Moduli X
 -*
 chiNX = 38, h^0(NX) = 42, lowerDimensionBound = 38
  -- 27.5808s elapsed
@@ -5876,12 +5876,12 @@ SeeAlso
    K3surfaceD7   
 ///
 
--* for CannedExample dominatesK3Moduli
+-* for CannedExample expectedCodimensionInNonminimalK3Moduli
   Example
     kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
     setRandomSeed("fix decomposition of D");
     minimalBetti (X = K3surfaceD9 P4)
-    dominatesK3Moduli X
+    expectedCodimensionInNonminimalK3Moduli X
     D=canonicalDivisor X;
     degree D, dim D
     tally apply(cD=decompose D,c->(dim c, degree c, genus c))
@@ -5899,27 +5899,27 @@ SeeAlso
     degreeOfPolarization=d+sum(pD,k->k^2)
     genusOfPolarization=sub((degreeOfPolarization+2)/2,ZZ)
 *-
--*
+
 doc///
 Key
- dominatesK3Moduli
- (dominatesK3Moduli,Ideal)
- [dominatesK3Moduli,Verbose]
+ expectedCodimensionInNonminimalK3Moduli
+ (expectedCodimensionInNonminimalK3Moduli,Ideal)
+ [expectedCodimensionInNonminimalK3Moduli,Verbose]
 Headline
- Does the component of the Hilbert scheme containing the K3 surface X dominates the moduli space Fg of the minimal model of X?
+ Does the the family of nonminimal K3 surfaces X' has the expected codimension 5s?
  
 Usage
- B = dominatesK3Moduli X
+ B = expectedCodimensionInNonminimalK3Moduli X
 Inputs
  X:Ideal
   of a smooth surface in P4
 Outputs
   B:Boolean
-    true if the sufficien criterion for dominance is satisfied
+    true if the sufficient criterion for the expected codimension is satisfied
 Description
   Text
-    The family of abstract surface of polarized K3 surface blown up in r points has dimesion
-    19+2r, in which the family of line bundles O_X'(H') which lead to a smooth surface
+    The family of abstract surfaces of polarized K3 surface blown up in r points has dimesion
+    19+2r, in which the family of line bundles O_X'(H') which lead to a smooth surface in P4
     has codimension at most 5s
     where s=h^1(O_X(H)) denotes the speciality of the linear system.
     Thus
@@ -5927,13 +5927,11 @@ Description
     at the surface X. On the other hand h^0(NX) is an upperbound.
     If moreover the obstruction space H^1(NX)=0, then h^0(NX) is the dimension
     of the Hilbert scheme near X. Thus if H^1(NX)=0 and
-    the two numbers coincide then the image of the component M of the Hilbert scheme containing X has under the
-    the rational map M -> Fg to the moduli space of polarized minimal K3 surfaces a 19-dimensional
-    image.
+    the two numbers coincide then the expected codimension 5s holds.
  
     The condition is sufficient but not necessary: If X is not a smooth point of M, e.g.,
     if the component M of the Hilbert scheme is generically not reduced, then the map
-    might still be dominant.
+    might still have expected codimension.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
     i3 : setRandomSeed("fix decomposition of D");
@@ -5948,7 +5946,7 @@ Description
 	     3: . 6 6 1
 
     o4 : BettiTally
-    i5 : dominatesK3Moduli X
+    i5 : expectedCodimensionInNonminimalK3Moduli X
     chiNX = 48, h^0(NX) = 48, lowerDimensionBound = 48
 
     o5 = true
@@ -6020,7 +6018,7 @@ SeeAlso
    canonicalDivisor
    tateResolutionOfSurface
 ///
-*-
+
 
 ///
 chiITable(10,8,1)
