@@ -17492,7 +17492,7 @@ Description
 
     o10 = 6
   Text
-    X is nonminimal with two exceptional lines and an exceptional rational quartic curve.
+    X is nonminimal with two exceptional line and an exceptional rational quartic curve.
 References
    Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 SeeAlso
