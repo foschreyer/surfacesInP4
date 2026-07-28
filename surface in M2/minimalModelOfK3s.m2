@@ -137,3 +137,65 @@ g^2_10,
 binomial(10-1,2)-15
 *-
 ------ to be continued
+
+
+-- case (11, 11, 5, 2, 15)
+restart
+needsPackage"NongeneralTypeSurfacesInP4"
+kk=ZZ/nextPrime 10^5;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+setRandomSeed("fix very good decomposition of D");
+--viewHelp "NongeneralTypeSurfacesInP4"
+
+minimalBetti(X=K3surfaceD11S11Ln(P4,3))
+(d,sg) =(degree X, sectionalGenus X)
+HdotK(d,sg)==9
+Ksquare(d,sg,2)==-5
+R5=residualInQuintics X; dim R5, degree R5, degree (R5+X)
+LeBarzN6(d,sg,2)==4
+pd={1,2,2,2,2}
+
+elapsedTime betti (D=canonicalDivisor X)  -- 2931.75s elapsed
+elapsedTime selfIntersectionNumber(X,D)
+elapsedTime tally apply(cD=decompose D,c->(dim c, degree c, genus c))
+
+
+polarizationDegree=d+sum(pd,k->k^2)
+polGenus=sub((polarizationDegree+2)/2,ZZ)
+netList apply(cD,c->(dim c, degree c, genus c))
+elapsedTime sD2s=apply(toList(1..3),i->saturate((cD_i)^2+X));
+betti(D1=intersect(sD2s|{cD_0}))
+betti(H5=ideal(gens D1*random(source gens D1,P4^{-5})))
+betti(residual=(X+H5):D1)
+degree residual
+betti (res1=trim ideal((gens residual)%X))
+betti (H6=trim ideal( (gens intersect((ideal vars P4)^6,res1))%X))
+betti(h6a=gens trim ideal (((gens H6))%(X+H5)))
+betti (h6b=map(P4^1,,vars P4*H5_0))
+P15=kk[y_0..y_15]
+elapsedTime betti(Y=trim ker map(P4/X,P15, h6b|h6a))  
+
+dim Y, degree Y, genera Y
+L4=ideal(y_0..y_4)
+betti(pts1=saturate (L4+Y))
+degree pts1, dim pts1
+elapsedTime pts=apply(cD,c->(elapsedTime p=trim ker map(P4/c,P15, h6b|h6a);
+	<< betti p <<endl;p));
+netList apply(pts_{0..2}, p-> transpose syz transpose sub(jacobian p,kk))	
+tally apply(cpts1=decompose pts1,c->betti c)
+
+P12=kk[y_1..y_11,y_13..y_14]
+dim P12==13
+Y0=sub(Y,P12); dim Y0, degree Y0
+elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>7)  -- 49.1828s elapsed
+-*
+             0  1   2    3    4    5    6    7
+o60 = total: 1 78 560 2002 4368 6006 5311 5311
+          0: 1  .   .    .    .    .    .    .
+          1: . 78 560 2002 4368 6006 4576  735
+          2: .  .   .    .    .    .  735 4576
+735/7==105
+-- => this special X does not give a general K3 of genus 15 by Claire's theorem 
+--    on the generic Green's Conjecture.
+--    expecte 105 g^1_8's on a curve section (counted with multiplcity)
+*-
+------ to be continued
