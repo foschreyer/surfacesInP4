@@ -23,7 +23,50 @@ setRandomSeed("fix very good decomposition of D");-- works
 --viewHelp "NongeneralTypeSurfacesInP4"
 
 minimalBetti(X=K3surfaceD10S9L1 P4)
-D=canonicalDivisor X;
+
+-* -- study of (4,5) linked surface *-
+
+ci=ideal(gens X*random(source gens X,P4^{-4,-5}));
+minimalBetti(Z=ci:X)
+dim Z, degree Z, sectionalGenus Z, genera Z
+betti tateResolutionOfSurface Z
+betti tateResolutionOfSurface X
+betti(fX=res X)
+betti (singX0=saturate ideal jacobian ideal X_0)
+
+L=trim ideal fX.dd_2^{10}_{15..17}
+betti(s1=saturate(singX0,L))
+dim s1, degree s1
+betti(s2=saturate(singX0,s1))
+dim s2,degree s2
+betti(s3=s2:L)
+s3==saturate(X+L)
+-- => the quartic is singular along the line L with transversal A1-singularities
+--    and pinch points at the 6 intersection points of the secant line L with X
+saturate ideal singularLocus(P4/Z)==L
+minimalBetti(C=saturate(Z+X)) -- the intersection curve
+dim C, degree C, genus C
+saturate(C,L)==C
+betti(C1=(ideal(C_0,C_1)+X):C) -- turns out to be the canonical divisor
+dim C1, degree C1, genus C1
+netList apply(cC1=decompose C1,d->(dim d, degree d, genus d))
+H=ideal (intersect(cC1_0,cC1_1))_0
+H1=saturate(((H+X):cC1_0):cC1_1);
+dim H1, degree H1, sectionalGenus H1, betti H1
+H1==H1+X
+ideal(H1_0,H1_1)
+minimalBetti cC1_2
+dim (cC1_2+H1),degree (cC1_2+H1)
+H2=ideal(gens cC1_2*random(source gens cC1_2,P4^{-2}))
+betti(H2a=(X+H2):cC1_2)
+
+--cC=decompose C;#cC
+betti (E2=intersect(cC1))
+H3=ideal(gens E2*random(source gens E2,P4^{-3}));
+betti(E3=(X+H3):E2)
+degree E3
+elapsedTime D=canonicalDivisor X;
+C1==D
 selfIntersectionNumber(X,D)
 elapsedTime tally apply(cD=decompose D,c->(dim c, degree c, genus c))
 (d,sg) =(degree X, sectionalGenus X)
@@ -56,6 +99,17 @@ elapsedTime pts=apply(cD,c->(elapsedTime p=trim ker map(P4/c,P15, h6b|h6a);
 	<< betti p <<endl;p));
 netList apply(pts, p-> transpose syz transpose sub(jacobian p,kk))	
 tally apply(cpts1=decompose pts1,c->betti c)
+elapsedTime H1'=trim ker map(P4/H1,P15, h6b|h6a);
+dim H1', degree H1', genus H1'
+betti H1'
+elapsedTime betti(E3'=trim  ker map(P4/E3,P15, h6b|h6a))
+dim E3', degree E3', genus E3', betti Y
+elapsedTime betti(H2a'=trim  ker map(P4/H2a,P15, h6b|h6a)) -- 115.006s elapsed
+dim H2a',degree H2a', genus H2a',betti Y
+elapsedTime betti(ZX'=trim  ker map(P4/(Z+X),P15, h6b|h6a)) -- 1015.09s elapsed
+dim ZX',degree ZX', genus ZX',betti Y
+-- all 4 curves tested are linearly equivalent to a multiple of the hyperplane class
+
 
 P12=kk[y_0..y_12]
 Y0=sub(Y,P12); dim Y0, degree Y0
@@ -254,7 +308,7 @@ elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>8)
 
 *-
 
-
+restart
 -- computations for the (11, 11, 5, 2, 21) example:
 needsPackage"NongeneralTypeSurfacesInP4"
 kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
