@@ -339,14 +339,21 @@ degree sD3
 betti (D1=intersect(sD3,cD_0,cD_1,cD_2))
 matrix apply(cD,c->apply(cD,d-> dim(c+d)))
 betti(H7=ideal(gens D1*random(source gens D1,P4^{-7})))
-betti(residual=(X+H7):D1)
+elapsedTime betti(residual=(X+H7):D1) -- 14.4742s elapsed
 degree residual
 betti (res1=trim ideal((gens residual)%X))
 betti (H8=trim ideal( (gens intersect((ideal vars P4)^8,res1))%X))
 betti(h8a=gens trim ideal (((gens H8)_{0..21})%(X+H7)))
 betti (h8b=map(P4^1,,vars P4*H7_0))
 P21=kk[y_0..y_21]
-elapsedTime betti(Y=trim ker map(P4/X,P21, h8b|h8a))
+elapsedTime betti(Y=trim ker map(P4/X,P21, h8b|h8a)) -- 4880.71s elapsed
+
+g=21
+h={1,g-2,g-2,1}
+apply(23,i->sum(4,j->(-1)^(2*i-j-1)*h_j*binomial(19,i-j)))
+i=11
+m=sum(2,j->(-1)^(2*i-j-1)*h_j*binomial(19,i-j))
+m==1679600
 
 dim Y, degree Y, genera Y
 
@@ -369,6 +376,21 @@ degree m5a, degree m5
 
 P18=kk[y_0..y_18]
 Y0=sub(Y,P18);dim Y0, degree Y0
+
+betti(b2=sub(basis(2,P18/Y0),P18))
+betti(m19x19=(transpose b2*vars P18)%Y0)
+betti(b3=sub(basis(3,P18/Y0),P18))
+b3
+m19x19a=sub(contract(b3,m19x19),kk)
+betti(b2a=sub(inverse(m19x19a),P18)*map(P18^{19:0},,transpose b2))
+b2a
+m19x19b=contract(b3,(b2a*vars P18)%Y0)
+betti (K10=koszul(10,vars P18))
+elapsedTime betti(K10a=(K10**vars P18)%Y0)
+
+elapsedTime betti(K10b=contract(b2a,K10a))
+
+
 
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>10)
 -*

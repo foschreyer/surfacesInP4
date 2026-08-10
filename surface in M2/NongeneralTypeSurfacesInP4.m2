@@ -19049,3 +19049,38 @@ n45=0;elapsedTime while (
 n20,n45 betti (fm=res(coker m, LengthLimit=>4,DegreeLimit=>5))
 m0=m
 betti fm
+
+-*  non-unirational Hilb components? *-
+kk=ZZ/nextPrime 10^3;
+P4=kk[x_0..x_4];
+elapsedTime X=biellipticSurfaceD10 P4;
+minimalBetti X
+betti(T=tateResolutionOfSurface X)
+betti(m1x5=T.dd_3^{0})
+E=ring m1x5
+trim ideal m1x5
+betti (Tm1x5=res(coker m1x5,LengthLimit=>6))
+betti (Tm5x1=res(coker transpose m1x5,LengthLimit=>6))
+a=symExt(Tm5x1.dd_3,P4)
+betti (fa=res coker a)
+betti res (Y=ideal fa.dd_2)
+betti (sXY=saturate(X+Y))
+dim sXY, degree sXY, genus sXY
+HH^0(sheaf(P4^1/sXY))
+minimalBetti X
+betti res trim ideal(gens X%Y)
+minimalBetti sXY
+betti T
+
+kk=ZZ/nextPrime 10^3;
+P4=kk[x_0..x_4];
+elapsedTime X=biellipticSurfaceD15 P4;
+minimalBetti X
+ci=ideal(gens X*random(source gens X,P4^{-5,-6}));
+Y=ci:X;
+betti(TY=tateResolutionOfSurface (Y,8))
+degree Y, sectionalGenus Y, minimalBetti Y
+betti(TX=tateResolutionOfSurface (X,7))
+(d,sg)=(degree X, sectionalGenus X)
+HdotK(d,sg)
+LeBarzN6(d,sg,0)
