@@ -18,7 +18,7 @@ candidatesWithGenus={
 -- case (10, 9, 3, 1, 15) -- most likely is not dominant
 restart
 needsPackage"NongeneralTypeSurfacesInP4"
-kk=ZZ/nextPrime 10^5;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+kk=ZZ/nextPrime (2*10^4);P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 setRandomSeed("fix very good decomposition of D");-- works
 --viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -65,8 +65,8 @@ betti (E2=intersect(cC1))
 H3=ideal(gens E2*random(source gens E2,P4^{-3}));
 betti(E3=(X+H3):E2)
 degree E3
-elapsedTime D=canonicalDivisor X;
-C1==D
+elapsedTime D=canonicalDivisor X; -- 5.84683s elapsed
+--C1==D
 selfIntersectionNumber(X,D)
 elapsedTime tally apply(cD=decompose D,c->(dim c, degree c, genus c))
 (d,sg) =(degree X, sectionalGenus X)
@@ -79,8 +79,9 @@ polarizationDegree=d+sum(pd,k->k^2)
 polGenus=sub((polarizationDegree+2)/2,ZZ)
 netList apply(cD,c->(dim c, degree c, genus c))
 betti(sD2=saturate(X+cD_2^4))
+betti(sD1=saturate(X+cD_1^4))
 degree sD2
-betti (D1=intersect(sD2,cD_0,cD_1))
+betti (D1=intersect(sD1,cD_0))
 betti(H5=ideal(gens D1*random(source gens D1,P4^{-5})))
 betti(residual=(X+H5):D1)
 degree residual
@@ -91,7 +92,15 @@ betti (h6b=map(P4^1,,vars P4*H5_0))
 P15=kk[y_0..y_15]
 elapsedTime betti(Y=trim ker map(P4/X,P15, h6b|h6a))  -- 313.096s elapsed
 
-dim Y, degree Y, genera Y
+elapsedTime betti(TX= tateResolutionOfSurface X)
+
+elapsedTime(dim Y, degree Y, genera Y)
+
+degrees ring Y
+degrees P15
+elapsedTime betti(fY=resolution(Y,DegreeLimit=>2,LengthLimit=>3))
+-- 660.072s elapsed for Length 2
+
 L4=ideal(y_0..y_4)
 betti(pts1=saturate (L4+Y))
 degree pts1, dim pts1
@@ -115,11 +124,14 @@ P12=kk[y_0..y_12]
 Y0=sub(Y,P12); dim Y0, degree Y0
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>7)  -- 46.8379s elapsed
 -*
+--Get the following betti numbers in example over three differnet 4 digits 
+--primes:
              0  1   2    3    4    5    6    7
 o56 = total: 1 78 560 2002 4368 6006 5801 5801
           0: 1  .   .    .    .    .    .    .
           1: . 78 560 2002 4368 6006 4576 1225
           2: .  .   .    .    .    . 1225 4576
+betti tateresolustionOfSurface X
 -- => Y is not general
 -- => map M->Fg is not dominant with high probability
 
@@ -165,9 +177,12 @@ betti (H6=trim ideal( (gens intersect((ideal vars P4)^6,res1))%X))
 betti(h6a=gens trim ideal (((gens H6))%(X+H5)))
 betti (h6b=map(P4^1,,vars P4*H5_0))
 P15=kk[y_0..y_15]
-elapsedTime betti(Y=trim ker map(P4/X,P15, h6b|h6a))  
+elapsedTime betti(Y=trim ker map(P4/X,P15, h6b|h6a))  -- 272.168s elapsed
 
-dim Y, degree Y, genera Y
+elapsedTime (dim Y, degree Y, genera Y)
+
+elapsedTime betti(fY=res(Y,LengthLimit=>2,DegreeLimit=>2)) 
+
 L4=ideal(y_0..y_4)
 betti(pts1=saturate (L4+Y))
 degree pts1, dim pts1
@@ -388,12 +403,24 @@ m19x19b=contract(b3,(b2a*vars P18)%Y0)
 betti (K10=koszul(10,vars P18))
 elapsedTime betti(K10a=(K10**vars P18)%Y0)
 
-elapsedTime betti(K10b=contract(b2a,K10a))
+elapsedTime betti(K10b=contract(transpose b2,K10a))
 
+elapsedTime betti( M=map(kk^1755182,,sub(K10b,kk)))
 
 
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>10)
 -*
-
+ "X='doneLL'",PARA{},
+	"Y='doneData.dbm'",PARA{},
+	"openOutAppend X",PARA{},
+	    "X << ',' ",PARA{},
+        "X<<close;",PARA{},
+	"doneLL=getFromDisk X;#doneLL",PARA{},
+	"Y=openDatabase Xdbm",PARA{},
+	"#keys Y",PARA{},
+	"keys Y",PARA{},
+	"listOfIdeals=apply(doneLL,L->(R=value Y#(toString L|'ring');
+	        I=value (Y#(toString L|ideal))));",PARA{},
+        "close Y",PARA{},
 *-
 -------- to be continued ---------
