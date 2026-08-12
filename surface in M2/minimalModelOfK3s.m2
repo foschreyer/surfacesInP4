@@ -18,7 +18,7 @@ candidatesWithGenus={
 -- case (10, 9, 3, 1, 15) -- most likely is not dominant
 restart
 needsPackage"NongeneralTypeSurfacesInP4"
-kk=ZZ/nextPrime (2*10^4);P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+kk=ZZ/nextPrime (3*10^4);P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 setRandomSeed("fix very good decomposition of D");-- works
 --viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -124,7 +124,8 @@ P12=kk[y_0..y_12]
 Y0=sub(Y,P12); dim Y0, degree Y0
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>7)  -- 46.8379s elapsed
 -*
-
+-- Get the following betti numbers in examples over three differnet 4 digits 
+-- primes:
              0  1   2    3    4    5    6    7
 o56 = total: 1 78 560 2002 4368 6006 5801 5801
           0: 1  .   .    .    .    .    .    .
@@ -196,7 +197,7 @@ dim P12==13
 Y0=sub(Y,P12); dim Y0, degree Y0
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>7)  -- 49.1828s elapsed
 -*
--- Get the following betti numbers in example over three differnet 4 digits 
+-- Get the following betti numbers in examples over three differnet 4 digits 
 -- primes:
              0  1   2    3    4    5    6    7
 o60 = total: 1 78 560 2002 4368 6006 5311 5311
