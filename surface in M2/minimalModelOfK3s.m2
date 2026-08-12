@@ -124,8 +124,7 @@ P12=kk[y_0..y_12]
 Y0=sub(Y,P12); dim Y0, degree Y0
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>7)  -- 46.8379s elapsed
 -*
---Get the following betti numbers in example over three differnet 4 digits 
---primes:
+
              0  1   2    3    4    5    6    7
 o56 = total: 1 78 560 2002 4368 6006 5801 5801
           0: 1  .   .    .    .    .    .    .
@@ -147,7 +146,7 @@ binomial(10-1,2)-15
 -- case (11, 11, 5, 2, 15) -- most likely not dominant
 restart
 needsPackage"NongeneralTypeSurfacesInP4"
-kk=ZZ/nextPrime 10^5;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 setRandomSeed("fix very good decomposition of D");
 --viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -168,6 +167,7 @@ polarizationDegree=d+sum(pd,k->k^2)
 polGenus=sub((polarizationDegree+2)/2,ZZ)
 netList apply(cD,c->(dim c, degree c, genus c))
 elapsedTime sD2s=apply(toList(1..3),i->saturate((cD_i)^2+X));
+elapsedTime sD2s=apply(toList(1..2),i->saturate((cD_i)^2+X));
 betti(D1=intersect(sD2s|{cD_0}))
 betti(H5=ideal(gens D1*random(source gens D1,P4^{-5})))
 betti(residual=(X+H5):D1)
@@ -196,6 +196,8 @@ dim P12==13
 Y0=sub(Y,P12); dim Y0, degree Y0
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>7)  -- 49.1828s elapsed
 -*
+-- Get the following betti numbers in example over three differnet 4 digits 
+-- primes:
              0  1   2    3    4    5    6    7
 o60 = total: 1 78 560 2002 4368 6006 5311 5311
           0: 1  .   .    .    .    .    .    .
@@ -205,8 +207,32 @@ o60 = total: 1 78 560 2002 4368 6006 5311 5311
 -- => this special X does not give a general K3 of genus 15 by Claire's theorem 
 --    on the generic Green's Conjecture.
 --    expecte 105 g^1_8's on a curve section (counted with multiplcity)
+-- If the curve sections have a model in P3 of degree 12, then the 105 4-secant lines give the desired
+-- 105 g^1_8.
+-- Any C \subset P3 of genus 15 and degree 12 lies on a unique quartic:
+-- h^0(O_C(2))=2*12+1-15=10, assuming h^1(O_C(2))=0, (unless O_C(2)=omegaC(-4pts) since 28-2*12=4 )
+-- => h^0(O_C(4))=10+2*12=34, h^0(O_P3(4))=binomial(3+4,3)=35.
 *-
------- to be continued
+
+-- Get a K3 with intersection matrix
+M=matrix{{4,12},{12,28}}   
+det M==-32
+N=matrix{{1,-1},{0,1}}
+transpose N*M*N==matrix {{4, 8}, {8, 8}}
+-- => a genus 5 curve of degree 8
+ 8+1-5==4
+-- which is non special
+{1,4,12,20,28,36,44}-apply(7,i->binomial(i+3,3))
+matrix{{1,0,0},{0,0,0},{2,8,5}}
+
+P3=kk[z_0..z_3]
+betti (B=(syz (vars P3++vars P3))*random(P3^{12:-1},P3^{5:-1}))
+betti (sB=syz transpose B)
+minimalBetti(G=ann coker transpose sB)
+betti(K3=ideal (gens G*random(source gens G,P3^{-4})))
+-- number of such K3's
+3*5-3+6==18
+    ------ to be continued
 
 -- case (11, 11, 5, 2, 16)
 restart
