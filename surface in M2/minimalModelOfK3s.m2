@@ -18,7 +18,7 @@ candidatesWithGenus={
 -- case (10, 9, 3, 1, 15) -- most likely is not dominant
 restart
 needsPackage"NongeneralTypeSurfacesInP4"
-kk=ZZ/nextPrime (3*10^4);P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+kk=ZZ/nextPrime (10^4);P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 setRandomSeed("fix very good decomposition of D");-- works
 --viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -81,6 +81,7 @@ netList apply(cD,c->(dim c, degree c, genus c))
 betti(sD2=saturate(X+cD_2^4))
 betti(sD1=saturate(X+cD_1^4))
 degree sD2
+betti (D1=intersect(sD2,cD_0,cD_1))
 betti (D1=intersect(sD1,cD_0))
 betti(H5=ideal(gens D1*random(source gens D1,P4^{-5})))
 betti(residual=(X+H5):D1)
@@ -108,6 +109,56 @@ elapsedTime pts=apply(cD,c->(elapsedTime p=trim ker map(P4/c,P15, h6b|h6a);
 	<< betti p <<endl;p));
 netList apply(pts, p-> transpose syz transpose sub(jacobian p,kk))	
 tally apply(cpts1=decompose pts1,c->betti c)
+cpts1
+-- Experiment: Is every point on X possible for the 4p condition?:
+p=first cpts1
+betti(sp4=saturate(p^4+Y))
+--betti(H1=ideal(gens sp4*random(source gens sp4,P15^{-1}))
+h5=(gens sp4)_{0..5}
+P5=kk[z_0..z_5]
+elapsedTime betti(Z=trim ker map(P15/Y,P5,h5))
+minimalBetti Z
+betti(fZ=res Z)
+prune (ker transpose fZ.dd_5/image transpose fZ.dd_4)
+
+p=last cpts1
+betti(sp4=saturate(p^4+Y))
+--betti(H1=ideal(gens sp4*random(source gens sp4,P15^{-1}))
+h5=(gens sp4)_{0..5}
+P5=kk[z_0..z_5]
+elapsedTime betti(Z=trim ker map(P15/Y,P5,h5))
+minimalBetti Z
+betti(fZ=res Z)
+singPtZ=prune (ker transpose fZ.dd_5/image transpose fZ.dd_4)
+h4=presentation singPtZ
+minimalBetti(X'=trim ker map(P5/Z,P4,h4))
+singX'=ideal singularLocus(P4/X');
+dim singX'
+
+-- experiment 1 completed, the answer suggested is yes.
+L=ideal random(P15^1,P15^{2:-1})
+dim (Y+L)
+pts=decompose(Y+L);
+netList apply(pts,c->(dim c, degree c))
+p=first pts
+elapsedTime betti(sp4=saturate(p^4+Y))
+--betti(H1=ideal(gens sp4*random(source gens sp4,P15^{-1}))
+h5=(gens sp4)_{0..5}
+P5=kk[z_0..z_5]
+elapsedTime betti(Z=trim ker map(P15/Y,P5,h5))
+minimalBetti Z
+betti(fZ=res Z)
+singPtZ=prune (ker transpose fZ.dd_5/image transpose fZ.dd_4)
+h4=presentation singPtZ
+minimalBetti(X'=trim ker map(P5/Z,P4,h4))
+singX'=ideal singularLocus(P4/X');
+dim singX'
+-- with high probability any point on X can be the 4-fold point.
+-- The other two points are preimage of the singular point of
+-- the projection to P5.
+-- => Picard rank of Y=Xmin should be 2!
+
+
 elapsedTime H1'=trim ker map(P4/H1,P15, h6b|h6a);
 dim H1', degree H1', genus H1'
 betti H1'
@@ -396,7 +447,7 @@ apply(23,i->sum(4,j->(-1)^(2*i-j-1)*h_j*binomial(19,i-j)))
 i=11
 m=sum(2,j->(-1)^(2*i-j-1)*h_j*binomial(19,i-j))
 m==1679600
-
+-- expect a g^1_11
 dim Y, degree Y, genera Y
 
 L4=ideal(y_0..y_4)
