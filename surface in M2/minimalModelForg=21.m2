@@ -63,8 +63,7 @@ assert(dim Y0==0)
 -* two much memory on my machine
 elapsedTime minimalBetti(Y0,DegreeLimit=>3,LengthLimit=>10)
 *-
--* computing the middle Koszul matrix of the complex with betti numbers
- {75582, 1755182, 1755182, 75582} *-
+
 betti(b2=sub(basis(2,P18/Y0),P18))
 betti(m19x19=(transpose b2*vars P18)%Y0)
 betti(b3=sub(basis(3,P18/Y0),P18))
@@ -74,20 +73,25 @@ betti(b2a=sub(inverse(m19x19a),P18)*map(P18^{19:0},,transpose b2))
 -- b2a is the dual basis to y_0..y_18
 m19x19b=contract(b3,(b2a*vars P18)%Y0)
 
+-* computing the middle Koszul matrix of the complex with betti numbers
+ {75582, 1755182, 1755182, 75582} *-
 
 betti (K10=koszul(10,vars P18))
 
-elapsedTime betti(K10a=(K10**vars P18)%Y0) -- 497.972s elapsed
-
-elapsedTime betti(K10b=map(P18^92378,,contract(transpose b2,K10a))) -- 3187.18s elapsed
-
+elapsedTime betti(K10a=map(P18^92378,,(K10**vars P18)%Y0)) -- 497.972s elapsed
 -*
-elapsedTime betti (sK10b=syz(K10b,DegreeLimit=>1))
-numberOfExtraSyzygies=rank source sK10b-75582
+elapsedTime betti (sK10a=syz(K10a,DegreeLimit=>1))
+-- maybe DegreeLimit=>2 is the correct choice
+
+numberOfExtraSyzygies=rank source sK10a-75582
 *-
 
+
+
+elapsedTime betti(K10b=contract(transpose b2,K10a))) -- 3187.18s elapsed
 char kk==10007
 
+-- the big KoszulMatrix
 elapsedTime betti( M=map(kk^1755182,,sub(K10b,kk))) -- 319.991s elapsed
 
 -*
