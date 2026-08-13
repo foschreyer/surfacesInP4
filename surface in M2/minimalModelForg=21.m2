@@ -51,8 +51,10 @@ elapsedTime betti(Y=trim ker map(P4/X,P21, h8b|h8a)) -- 4880.71s elapsed
 elapsedTime (dim Y, degree Y, genera Y)
 
 L4=ideal(y_0..y_4)
-elapsedTime X'=trim ker(P21/Y,P4,gens L4);
-assert(X==X')
+elapsedTime X'=trim ker map(P21/Y,P4,gens L4);
+assert(
+    X==X'
+    )
 
 -* computing betti numbers using the artinian reduction *-
 P18=kk[y_0..y_18]
@@ -75,11 +77,17 @@ m19x19b=contract(b3,(b2a*vars P18)%Y0)
 
 betti (K10=koszul(10,vars P18))
 
-elapsedTime betti(K10a=(K10**vars P18)%Y0)
+elapsedTime betti(K10a=(K10**vars P18)%Y0) -- 497.972s elapsed
 
-elapsedTime betti(K10b=contract(transpose b2,K10a))
+elapsedTime betti(K10b=map(P18^92378,,contract(transpose b2,K10a))) -- 3187.18s elapsed
 
-elapsedTime betti( M=map(kk^1755182,,sub(K10b,kk)))
+-*
+elapsedTime betti (sK10b=syz(K10b,DegreeLimit=>1))
+*-
+
+char kk==10007
+
+elapsedTime betti( M=map(kk^1755182,,sub(K10b,kk))) -- 319.991s elapsed
 
 elapsedTime betti (sM=syz M)
 
@@ -93,8 +101,9 @@ numberOfExtraSyzygies=rank source sM-75582
         close Y;
 *-
 
-sparseMatrix = flatten for i from 0 to 1755182-1 list (
+elapsedTime sparseMatrix = flatten for i from 0 to 1755182-1 list (
     for j from 0 to 1755182-1 list (
-	if M_(i,j) != 0 then (i,j,M_(i,j)) else continue));
-#sparseMatrix, 10*1755182
+	if M_(i,j) != 0 then (i,j,M_(i,j)) else continue)); --
+
+#sparseMatrix, 10*1755182, 19*10*1755182
   
