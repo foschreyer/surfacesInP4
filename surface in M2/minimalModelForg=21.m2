@@ -83,16 +83,17 @@ elapsedTime betti(K10b=map(P18^92378,,contract(transpose b2,K10a))) -- 3187.18s 
 
 -*
 elapsedTime betti (sK10b=syz(K10b,DegreeLimit=>1))
+numberOfExtraSyzygies=rank source sK10b-75582
 *-
 
 char kk==10007
 
 elapsedTime betti( M=map(kk^1755182,,sub(K10b,kk))) -- 319.991s elapsed
 
+-*
 elapsedTime betti (sM=syz M)
-
 numberOfExtraSyzygies=rank source sM-75582
-
+*-
 
 -* how to comunicate with a .dbm file
 	Xdbm="koszulMatrix.dbm";
@@ -101,6 +102,7 @@ numberOfExtraSyzygies=rank source sM-75582
         close Y;
 *-
 
+-* the following needed too much memory on my machine and produced too much heat *-
 elapsedTime sparseMatrix = flatten for i from 0 to 1755182-1 list (
     for j from 0 to 1755182-1 list (
 	if M_(i,j) != 0 then (i,j,M_(i,j)) else continue)); --
