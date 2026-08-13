@@ -275,7 +275,8 @@ transpose N*M*N==matrix {{4, 8}, {8, 8}}
  8+1-5==4
 -- which is non special
 {1,4,12,20,28,36,44}-apply(7,i->binomial(i+3,3))
-matrix{{1,0,0},{0,0,0},{2,8,5}}
+matrix{{1,0,0},{0,0,0},{2,8,5}}\
+
 restart
 kk=ZZ/nextPrime 10^2
 P3=kk[z_0..z_3]
@@ -298,19 +299,42 @@ ann L == Z
 minimalBetti L
 P15=kk[y_0..y_15]
 betti (m16=prune truncate(-1,coker transpose B1))
+PK3=P3/K3
+betti (sm16t=syz sub(transpose presentation m16,PK3))
+betti syz sm16t
+trim sub(ideal sm16t,P3)
+binomial(5+3,3)
+sm16t
+P3w=kk[w_0..w_3]
+P3xP3=P3w**P3
+betti(m2x4=map(P3xP3^2,,sub(vars P3w,P3xP3)||sub(vars P3,P3xP3)))
+
+K3xK3=sub(K3,P3xP3)+sub(sub(K3,vars P3w),P3xP3)
+mP3xP3a=sub(ideal vars P3,P3xP3)
+mP3xP3b=sub(ideal vars P3w,P3xP3)
+betti(diag=saturate(saturate(minors(2,m2x4)+K3xK3,mP3xP3a),mP3xP3b))
+betti(fdiag=res diag)
+apply(6,i->tally degrees fdiag_i)
+
+
+degrees source gens diag
+map(P3xP3^1,,matrix {apply(5,i->diag_(5+i))})
+
 P3xP15=P3**P15
 betti(gra=ideal (sub(vars P15,P3xP15)*sub(presentation m16,P3xP15)))
 gra1=gra+sub(K3,P3xP15);
-elapsedTime betti(gra2=saturate(gra1,ideal sub(vars P3,P3xP15)))
+elapsedTime betti(gra2=saturate(gra1,ideal sub(vars P3,P3xP15))) -- 13.5612s elapsed
 betti(Y=trim sub(gra2,P15))
 betti(L'=prune coker sub(diff(transpose sub(vars P3,P3xP15),gens gra2),P15))
 ann L' == Y
-elapsedTime betti(fY=res(Y,Strategy=>Nonminimal,LengthLimit=>7))
-betti(M=fY.dd_7_{0..9499})
-colums=
+-*
+elapsedTime betti(fY=res(Y,Strategy=>Nonminimal,LengthLimit=>7))  -- 300.018s elapsed
+
 pos=positions( degrees fY_7,d->d=={8});#pos
-betti(M=fY.dd_7_pos)
-elapsedTime betti(pM=prune coker transpose M)
+pos1=positions(degrees fY_6,d->d=={8});#pos1
+betti(constantPart=fY.dd_7^pos1_pos)
+elapsedTime betti(sconst=syz constantPart) -- takes too long
+*-
 
 
 -- number of such K3's
