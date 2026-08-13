@@ -276,15 +276,89 @@ transpose N*M*N==matrix {{4, 8}, {8, 8}}
 -- which is non special
 {1,4,12,20,28,36,44}-apply(7,i->binomial(i+3,3))
 matrix{{1,0,0},{0,0,0},{2,8,5}}
-
+restart
+kk=ZZ/nextPrime 10^2
 P3=kk[z_0..z_3]
 betti (B=(syz (vars P3++vars P3))*random(P3^{12:-1},P3^{5:-1}))
 betti (sB=syz transpose B)
 minimalBetti(G=ann coker transpose sB)
 betti(K3=ideal (gens G*random(source gens G,P3^{-4})))
+
+betti(B1= (syz (vars P3++vars P3)*random(P3^{12:-2},P3^{6:-2})))
+K3=ann coker transpose B1
+P5=kk[u_0..u_5]
+P3xP5=P3**P5
+graph=sub(vars P5,P3xP5)*sub(transpose B1,P3xP5)
+graph1=ideal graph+sub(K3,P3xP5)
+betti(graph2=saturate(graph1,ideal sub(vars P3,P3xP5)))
+betti(Z=trim sub(graph2,P5))
+dim Z, degree Z, minimalBetti Z
+L=prune coker sub(diff(transpose sub(vars P3,P3xP5),gens graph2),P5)
+ann L == Z
+minimalBetti L
+P15=kk[y_0..y_15]
+betti (m16=prune truncate(-1,coker transpose B1))
+P3xP15=P3**P15
+betti(gra=ideal (sub(vars P15,P3xP15)*sub(presentation m16,P3xP15)))
+gra1=gra+sub(K3,P3xP15);
+elapsedTime betti(gra2=saturate(gra1,ideal sub(vars P3,P3xP15)))
+betti(Y=trim sub(gra2,P15))
+betti(L'=prune coker sub(diff(transpose sub(vars P3,P3xP15),gens gra2),P15))
+ann L' == Y
+elapsedTime betti(fY=res(Y,Strategy=>Nonminimal,LengthLimit=>7))
+
+
 -- number of such K3's
 3*5-3+6==18
-    ------ to be continued
+restart
+kk=ZZ/nextPrime 10^4;P2=kk[w_0..w_2]
+E=homogenize(ideal(w_2^2-w_1^3+random(kk)*w_1+random(kk)),w_0)
+p=ideal(w_0,w_1)
+betti(eightP=saturate(p^8+E))
+H4=ideal(gens eightP*random(source gens eightP,P2^{-4}))
+betti(residual=(E+H4):eightP)
+degree residual==degree H4*degree E - degree eightP
+betti (h8=gens trim ideal(gens truncate(4,residual)%E))
+P7=kk[u_0..u_7]
+betti(E8=trim ideal ker map(P2/E,P7,h8))
+fourPairsOfPoints=apply(4,i->apply(2,j->(
+	    while ( threePoints=decompose(E+ideal random(1,P2));
+		degree first threePoints >1) do ();
+	    first threePoints)))
+fourInP7=apply(fourPairsOfPoints,c->(midPt=sum(c,q->
+	    syz transpose jacobian ker map(P2/q,P7,h8));
+	ideal(vars P7*syz transpose midPt)))
+betti(h4=(gens intersect(fourInP7))_{0..3})
+P3=kk[z_0..z_3]
+minimalBetti(G=ker map(P7/E8,P3,h4))	
+degree G, genus G
+singG=radical saturate ideal singularLocus(P3/G)
+decompose singG
+Z=ideal(gens G*random(source gens G,P3^{-4}))
+assert(dim ideal jacobian Z==0)
+betti(C=intersect(Z+ideal random(1,P3),G))
+betti(H5=ideal(gens C*random(source gens C,P3^{-5})))
+betti(res1=(H5+Z):C)
+betti(doublePoints=saturate(singG^2+Z))
+dim doublePoints, degree doublePoints
+betti(res2=intersect(res1,doublePoints))
+betti(H5'=ideal(gens res1*random(source gens res1 ,P3^{-5})))
+betti(C'=(H5'+Z):res1)
+degree C', genus C'
+dim singularLocus(P3/C')
+betti(H5''=ideal(gens C'*random(source gens C' ,P3^{-5})))
+betti(res2=(H5''+Z):C')
+betti(res3=intersect(res2,doublePoints))
+betti(H5s=ideal(gens res3*random(source gens res3 ,P3^{-5})))
+betti(Cs=(H5s+Z):res2)
+tally apply(decompose saturate ideal singularLocus(P3/Cs),c->(dim c, degree c, betti c))
+tally apply(decompose Cs,c->(dim c, degree c))
+--=> all double linked curves with the four double points at the singlar points of G
+--   are reducible.
+--=> my naive guess, that the 4 special nodes coincide with the singularies
+--   of the geometric genus 1  curve G, is wrong.
+
+------ to be continued
 
 -- case (11, 11, 5, 2, 16)
 restart

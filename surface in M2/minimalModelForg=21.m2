@@ -49,6 +49,9 @@ elapsedTime betti(Y=trim ker map(P4/X,P21, h8b|h8a)) -- 4880.71s elapsed
 
 
 elapsedTime (dim Y, degree Y, genera Y)
+-* if the following works, then this computation might be good enough
+elapsedTime betti(fnonMinY=res(Y,Strategy=>FastNonminimal,LengthLimit=>10))
+*-
 
 L4=ideal(y_0..y_4)
 elapsedTime X'=trim ker map(P21/Y,P4,gens L4);
