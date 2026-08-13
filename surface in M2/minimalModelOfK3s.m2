@@ -306,6 +306,11 @@ betti(Y=trim sub(gra2,P15))
 betti(L'=prune coker sub(diff(transpose sub(vars P3,P3xP15),gens gra2),P15))
 ann L' == Y
 elapsedTime betti(fY=res(Y,Strategy=>Nonminimal,LengthLimit=>7))
+betti(M=fY.dd_7_{0..9499})
+colums=
+pos=positions( degrees fY_7,d->d=={8});#pos
+betti(M=fY.dd_7_pos)
+elapsedTime betti(pM=prune coker transpose M)
 
 
 -- number of such K3's
