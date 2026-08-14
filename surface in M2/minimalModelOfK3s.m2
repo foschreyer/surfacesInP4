@@ -1,5 +1,5 @@
 
--*
+ -*
 (degree, sectionalGenus, number of points blownup, s=h^1(O_X(1)), genus of polarization)
 candidatesWithGenus={
     (7, 5, 1, 0, 5),

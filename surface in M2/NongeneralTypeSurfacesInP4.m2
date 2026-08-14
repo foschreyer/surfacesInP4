@@ -32,6 +32,7 @@ newPackage(
     )
 
 export {
+    "minimalModelOfK3",
     "enriquesSurfaceD13S16",
     "parametrizationOfDegreeFiveDelPezzo",
     "linkedNonspecialAlexanderSurfaceD16",
@@ -385,6 +386,48 @@ canonicalDivisor(Ideal) := X -> (
 --    D
     ann coker (omegaX|rSect))
 
+minimalModelOfK3=method(Options=>{Verbose=>false})
+--  PURPOSE : Compute the minimal model  
+--   INPUTS : 'X',the ideal of a non-minimal K3 surface in P4
+--   OUTPUT : the ideal of the minimal model
+minimalModelOfK3(Ideal) := o -> X -> (
+    P4 := ring X;
+    kk := coefficientRing P4;
+    assert((genera X)_0==1);
+    if o.Verbose then (
+	<<"time to compute the canonical divisor:"<<endl;
+	elapsedTime D:=canonicalDivisor X ) else (
+	D = canonicalDivisor X);
+    if o.Verbose then (
+	<<"time to decompose the canonical divisor:"<<endl;
+	elapsedTime cD:=decompose D ) else (
+	cD =decompose D);
+    pD:=flatten apply(cD,c->toList(-genus c+1:lift(degree c/(-genus c+1),ZZ)));    
+    g:=lift((degree X+ sum(pD,k->k^2)+2)/2,ZZ);
+    <<"multilicities of canonical divisor = " << pD<<endl;
+    <<"genus of the minimal model = "<<g<<endl;
+    m:=null;
+    sD:=apply(cD,c->(m=lift(degree c/(-genus c+1),ZZ);
+	    saturate(c^m+X))
+	);
+    mD:=intersect sD;
+    r:=(max (degrees source gens mD))_0;
+    Hr:=ideal(gens mD*random(source gens mD,P4^{-r}));
+    betti(residual:=(X+Hr):mD);
+    betti(res1:=trim ideal (gens truncate(r+1,residual)%X));    
+    assert(numgens res1 == g+1);
+    betti(hb:=gens trim ideal (gens res1%(X+Hr)));
+    betti(ha:=map(P4^1,,vars P4*(Hr_0)));
+    y:=symbol y;
+    Pg:=kk[y_0..y_g];
+    if o.Verbose then (
+	<< "time to compute the minimal model:" <<endl;
+	elapsedTime Y:=trim ker map(P4/X,Pg,(ha|hb)); ) else (
+	Y=trim ker map(P4/X,Pg,(ha|hb)));
+    if o.Verbose then (
+	<<"genus = " << g << ", betti numbers = " <<betti Y <<endl);
+    --pts:=apply(cD,c->(trim ker map(P4/c,P15,(ha|hb)),lift(degree c/(genus c+1),ZZ));
+    Y)
 
 
 
@@ -5199,6 +5242,7 @@ Headline => "Known families of K3 surfaces",
 	TO LeBarzN6,
 	TO residualInQuintics,
 	TO canonicalDivisor,
+	TO minimalModelOfK3,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
 	TO expectedCodimensionInNonminimalK3Moduli,
@@ -5712,6 +5756,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
 	TO LeBarzN6,
 	TO residualInQuintics,
 	TO canonicalDivisor,
+	TO minimalModelOfK3,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
 	},
@@ -6855,6 +6900,161 @@ SeeAlso
    canonicalDivisor
    Ksquare
 ///
+-* for CannedExample minimalModelOfK3
+  Example
+    kk=ZZ/nextPrime (10^4);P4=kk[x_0..x_4];
+    setRandomSeed("fix very good decomposition of D");
+    minimalBetti(X=K3surfaceD10S9L1 P4)
+    (d,sg)=(degree X, sectionalGenus X)
+    Ksquare(d,sg,2)
+    HdotK(d,sg)
+    LeBarzN6(d,sg,2)
+    sixSecantLine=residualInQuintics X;
+    (dim sixSecantLine, degree sixSecantLine, degree(sixSecantLine+X))
+    elapsedTime Y=minimalModelOfK3(X,Verbose=>true);
+    (dim Y, degree Y, genera Y)
+  Text
+    The first 5 coordinate of Y in Pg define the projection to P4.
+  Example
+    P15=ring Y;L=(vars P15)_{0..4}
+    X'=trim ker map(P15/Y,P4,L);
+    X==X'
+    pts=primaryDecomposition(Y+ideal L);
+    netList apply(pts,c->(dim c, degree c, degree radical c, betti radical c))
+  Text
+    Thus X is the blown-up of a minimal K3-surface Y of genus 15 in 3 point
+    and the rational map Y - -> X is defined
+    by the linear system of hyperplanes wich vanish with multiplicity 3 in the
+    in the first point and simple in the two other points.
+    Since 16-(10+1+1)=4 we have h^0(O_X(1))=1.
+    
+*-
+doc///
+Key
+ minimalModelOfK3
+ (minimalModelOfK3,Ideal)
+ [minimalModelOfK3,Verbose]
+Headline
+ compute the minimal model of a K3 surface
+Usage
+ Y = minimalModelOfK3 X
+Inputs
+ X:Ideal
+  homogenous ideal of a smooth non-minimal K3 surface in P4 
+Outputs
+ Y:Ideal
+  the ideal of the minimal model
+Description
+  Text
+    The function computes the minimal model of a K3 surface. 
+    Warning: This function might take a long time.
+  CannedExample
+    i1 : kk=ZZ/nextPrime (10^4);P4=kk[x_0..x_4];
+    i3 : setRandomSeed("fix very good decomposition of D");
+    -- setting random seed to 14028669450344154133846105804879655517801147979171833052623432152
+    i4 : minimalBetti(X=K3surfaceD10S9L1 P4)
+
+                0  1  2  3 4
+    o4 = total: 1 11 18 10 2
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  1  .  . .
+	     4: .  9 15  7 1
+	     5: .  1  3  3 1
+
+    o4 : BettiTally
+    i5 : (d,sg)=(degree X, sectionalGenus X)
+
+    o5 = (10, 9)
+
+    o5 : Sequence
+    i6 : Ksquare(d,sg,2)
+
+    o6 = -3
+    i7 : HdotK(d,sg)
+
+    o7 = 6
+    i8 : LeBarzN6(d,sg,2)
+
+    o8 = 3
+    i9 : sixSecantLine=residualInQuintics X;
+
+    o9 : Ideal of P4
+    i10 : (dim sixSecantLine, degree sixSecantLine, degree(sixSecantLine+X))
+
+    o10 = (2, 1, 6)
+
+    o10 : Sequence
+    i11 : elapsedTime Y=minimalModelOfK3(X,Verbose=>true);
+    time to compute the canonical divisor:
+       5.92024s elapsed
+    time to decompose the canonical divisor:
+      .817015s elapsed
+    multilicities of canonical divisor = {1, 1, 4}
+    genus of the minimal model = 15
+    time to compute the minimal model:
+       321.213s elapsed
+                                       0  1
+    genus = 15, betti numbers = total: 1 78
+                                    0: 1  .
+                                    1: . 78
+       340.974s elapsed
+
+    o11 : Ideal of kk[y ..y  ]
+                       0   15
+    i12 : (dim Y, degree Y, genera Y)
+
+    o12 = (3, 28, {1, 15, 27})
+
+    o12 : Sequence
+  Text
+    The first 5 coordinate of Y in Pg define the projection to P4.
+  CannedExample
+    i13 : P15=ring Y;L=(vars P15)_{0..4}
+
+    o14 = | y_0 y_1 y_2 y_3 y_4 |
+
+                    1        5
+    o14 : Matrix P15  <-- P15
+    i15 : X'=trim ker map(P15/Y,P4,L);
+
+    o15 : Ideal of P4
+    i16 : X==X'
+
+    o16 = true
+    i17 : pts=primaryDecomposition(Y+ideal L);
+    i18 : netList apply(pts,c->(dim c, degree c, degree radical c, betti radical c))
+
+          +-----------------------+
+          |                  0  1 |
+    o18 = |(1, 10, 1, total: 1 15)|
+          |               0: 1 15 |
+	  +-----------------------+
+          |                 0  1  |
+	  |(1, 1, 1, total: 1 15) |
+          |              0: 1 15  |
+	  +-----------------------+
+	  |                 0  1  |
+	  |(1, 1, 1, total: 1 15) |
+	  |              0: 1 15  |
+	  +-----------------------+
+  Text
+    Thus X is the blown-up of a minimal K3-surface Y of genus 15 in 3 point
+    and the rational map Y - -> X is defined by the linear system of 
+    hyperplanes wich vanish with multiplicity 3 in the in the first point
+    and simple in the two other points.
+    Since 16-(10+1+1)=4 we have h^0(O_X(1))=1.
+
+SeeAlso
+   LeBarzN6
+   sectionalGenus
+   HdotK
+   Ksquare
+   residualInQuintics
+///
+
+
 -* for CannedExample in selfIntersectionNumber
 
   Example
@@ -18928,6 +19128,18 @@ assert(all(cK,c->(-genus c+1== -selfIntersectionNumber(X,c))))
 elapsedTime assert(partitionOfCanonicalDivisorOfAboSurface X == {1,2,2,2,2,3})
 ///
 
+TEST /// -* 3 minimalModelOfK3 *-
+kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4]
+minimalBetti(X=K3surfaceD9 P4)
+betti(D=canonicalDivisor X)
+cD=decompose D;
+apply(cD,c->(dim c, degree c, genus c))
+elapsedTime Y=minimalModelOfK3 X;
+Pg=ring Y
+L=(vars Pg)_{0..4}
+X'=trim ker map(Pg/Y,P4,L);
+assert(X==X')
+///
 end--
 
 -* Development section *-
