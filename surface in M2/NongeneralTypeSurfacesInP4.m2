@@ -415,8 +415,9 @@ minimalModelOfK3(Ideal) := o -> X -> (
     Hr:=ideal(gens mD*random(source gens mD,P4^{-r}));
     betti(residual:=(X+Hr):mD);
     betti(res1:=trim ideal (gens truncate(r+1,residual)%X));    
-    assert(numgens res1 == g+1);
-    betti(hb:=gens trim ideal (gens res1%(X+Hr)));
+    assert(#select(degrees source gens res1,d->d_0==r+1)==g+1);   
+    pos:=positions(degrees source (gens trim ideal (gens res1%(X+Hr))),d->d_0==r+1);
+    betti (hb:=(gens trim ideal (gens res1%(X+Hr)))_pos);	
     betti(ha:=map(P4^1,,vars P4*(Hr_0)));
     y:=symbol y;
     Pg:=kk[y_0..y_g];
