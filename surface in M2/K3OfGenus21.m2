@@ -2,8 +2,8 @@
 needsPackage"NongeneralTypeSurfacesInP4"
 kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 setRandomSeed("fix decomposition of D");
-minimalBetti(X=K3surfaceD11S11Ln(P4,1))
-elapsedTime betti(Y=minimalModelOfK3(X,Verbeose=>true))
+minimalBetti(X=K3surfaceD11S11Ln(P4,0))
+elapsedTime betti(Y=minimalModelOfK3(X,Verbose=>true))
 P21=ring Y
 
 elapsedTime (dim Y, degree Y, genera Y)
