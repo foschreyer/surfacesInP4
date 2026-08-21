@@ -18,7 +18,7 @@ elapsedTime installPackage("NongeneralTypeSurfacesInP4")
 newPackage(
     "NongeneralTypeSurfacesInP4",
     Version => "1.0",
-    Date => "July 3, 2026",
+    Date => "August 20, 2026",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
@@ -32,6 +32,7 @@ newPackage(
     )
 
 export {
+    "kodairaSpencerSequence",
     "minimalModelOfK3",
     "enriquesSurfaceD13S16",
     "parametrizationOfDegreeFiveDelPezzo",
@@ -241,8 +242,31 @@ chiNX(Ideal) := X -> (
 chiNX(12,13,2)
 ///
 
+kodairaSpencerSequence=method()
+-- compute the dimesion of the cohomlogy groups of the Kodaira-Spencer sequence
+-- Input: X ideal of a surface in P4
+-- Output : cohoDims, 3x3 Matrix of
+--          dimension of the cohomology groups in the long exact sequence
+--     of 
+--      0 -> TX -> TP4restrictedToX -> NX -> 0
+kodairaSpencerSequence(Ideal) := X -> (
+    P4:= ring X;
+    PX:= P4/X;
+    NX:=sheaf(Hom(X,P4^1/X));
+    TP4restrictedToX:=sheaf((coker transpose (map(P4^1,,vars P4)))**PX);
+    eulerVector:=(transpose map(PX^1,,vars PX));
+    K:=ker transpose eulerVector;
+    B:=image map(source transpose eulerVector,,(jacobian X)**PX);
+    OmegaX:=sheaf(K/B);
+    TX:=sheaf(Hom(K/B,PX));
+    cohoDims:=matrix{{rank HH^0 TX, rank HH^0 TP4restrictedToX, rank HH^0 NX},
+       {rank HH^1 TX, rank HH^1 TP4restrictedToX, rank HH^1 NX},
+       {rank HH^2 TX, rank HH^2 TP4restrictedToX, rank HH^2 NX}}; 
+    cohoDims)
+
+
 expectedCodimensionInNonminimalK3Moduli=method(Options=>{Verbose=>true})
--- Purpose : checks whether the blow-down map from th ecorresponding component of the
+-- Purpose : checks whether the blow-down map from the corresponding component of the
 --           Hilbert scheme to the moduli space of polarized K3 surfaces is dominant.
 --           The criterion sufficient but not necessary
 --  Input :  The ideal of a non-mimimal smooth K3 surface in P4
@@ -4986,6 +5010,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO canonicalDivisor,
 	TO selfIntersectionNumber,
 	TO tateResolutionOfSurface,
+	TO kodairaSpencerSequence,
 	TO numericalFunctions,
         },
     PARA{},
@@ -5079,6 +5104,7 @@ Headline => "Various numerical functions to investigate surfaces in P4",
         TO HdotK,
 	TO sectionalGenus,
 	TO chiNX,
+	TO kodairaSpencerSequence,
         },
     
      SUBSECTION "Tate resolutions",
@@ -5858,8 +5884,8 @@ Headline => "surface of Kodaira dimension 1 (15 families)",
 document {
 Key => adjunctionProcessData,
 Headline => "explains the output of the function adjunctionProcess",
-    "We explain the output of the function adjunctionProcess from the package adjunctionForSurfaces. 
-    Notice the typo: adjointMatrix should be adjunctionProcess.",
+    "We explain the output of the function adjunctionProcess from
+     the package adjunctionForSurfaces.",
 help adjunctionProcess,                
 }
 
@@ -6059,6 +6085,160 @@ Description
 SeeAlso
    K3surfaceD7   
 ///
+
+-* for cannedExample kodairaSpencerSequence
+  Example
+    kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    minimalBetti(X1=bordigaSurface P4)
+    elapsedTime kodairaSpencerSequence X1
+  Text
+    The Bordiga surface P2 blown-up in 10 points depends abstractly on 2*6 parameters.
+    HH^0(NX) is the tangent space of the Hilbert scheme in the point X.
+  Example
+    minimalBetti(X2=K3surfaceD7 P4)
+    elapsedTime kodairaSpencerSequence X2
+  Text
+    The one dimensional group HH^1(TP4restrictedToX) is the obstruction space for the abstract
+    first order deformations HH^1(TX) that the deformed surface stays algebraic.
+  Example
+    minimalBetti(X3=cubicScroll P4)
+    elapsedTime kodairaSpencerSequence X3
+  Text
+    The cubic scroll has a 6-dimansional automorphism group.
+  Example
+    minimalBetti(X4=delPezzoSurface P4)
+    elapsedTime kodairaSpencerSequence X4
+  Text
+    The Del Pezzo surface is isomorphic to P2 blown-up in 5 points. Thus up to automorphism of P2
+    the surface depends on 2 parameters.
+*-
+
+doc///
+Key
+ kodairaSpencerSequence
+ (kodairaSpencerSequence,Ideal)
+Headline
+ ompute the dimensions of the cohomology groups of the Kodaira-Spencer sequence
+ 
+Usage
+ M = kodairaSpencerSequence X
+Inputs
+ X:Ideal
+  of a smooth surface in P4
+Outputs
+  M:Matrix
+    the 3x3 matrix of dimensions of the cohomology groups
+Description
+  Text
+    The long exact sequence of in cohomology of the short exact sequence
+
+    0 -> TX -> TP4restrictedToX -> NX -> 0
+
+    can have up to nine nonzero terms starting with HH^0 TX and ending with HH^2 NX.
+    We compute their dimensions and return the corresponding 3x3 matrix.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    i3 : minimalBetti(X1=bordigaSurface P4)
+
+                0 1 2
+    o3 = total: 1 4 3
+             0: 1 . .
+	     1: . . .
+	     2: . 4 3
+
+    o3 : BettiTally
+    i4 : elapsedTime kodairaSpencerSequence X1
+     - 3.73667s elapsed
+
+    o4 = | 0  24 36 |
+         | 12 0  0  |
+         | 0  0  0  |
+
+                  3       3
+    o4 : Matrix ZZ  <-- ZZ
+  Text
+    The Bordiga surface P2 blown-up in 10 points depends abstractly on 2*6 parameters.
+    HH^0(NX) is the tangent space of the Hilbert scheme in the point X.
+  CannedExample
+    i5 : minimalBetti(X2=K3surfaceD7 P4)
+
+                0 1 2
+    o5 = total: 1 3 2
+             0: 1 . .
+	     1: . . .
+	     2: . 3 1
+	     3: . . 1
+
+    o5 : BettiTally
+    i6 : elapsedTime kodairaSpencerSequence X2
+     - 12.1701s elapsed
+
+    o6 = | 0  24 45 |
+         | 22 1  0  |
+         | 0  0  0  |
+
+                  3       3
+    o6 : Matrix ZZ  <-- ZZ
+  Text
+    X is a K3 surface blown up in one point. Thus the abstract surface depends on 20+2 parameters.
+   The one dimensional group HH^1(TP4restrictedToX) is the obstruction space for the abstract first order deformations HH^1(TX) that the deformed surface stays algebraic.
+  CannedExample
+    i7 : minimalBetti(X3=cubicScroll P4)
+
+                0 1 2
+    o7 = total: 1 3 2
+             0: 1 . .
+             1: . 3 2
+
+    o7 : BettiTally
+    i8 : elapsedTime kodairaSpencerSequence X3
+     - .0676616s elapsed
+
+    o8 = | 6 24 18 |
+         | 0 0  0  |
+         | 0 0  0  |
+
+                  3       3
+    o8 : Matrix ZZ  <-- ZZ
+  Text
+    The cubic scroll has a 6-dimansional automorphism group.
+  CannedExample
+    i9 : minimalBetti(X4=delPezzoSurface P4)
+
+                0 1 2
+    o9 = total: 1 2 1
+             0: 1 . .
+	     1: . 2 .
+	     2: . . 1
+
+    o9 : BettiTally
+    i10 : elapsedTime kodairaSpencerSequence X4
+     - 1.02202s elapsed
+
+    o10 = | 0 24 26 |
+          | 2 0  0  |
+          | 0 0  0  |
+
+                   3       3
+    o10 : Matrix ZZ  <-- ZZ
+  Text
+    The Del Pezzo surface is isomorphic to P2 blown-up in 5 points.
+    Thus up to automorphism of P2 the surface depends on 2 parameters.
+
+
+Caveat
+  This function might take a lot of time.
+
+SeeAlso
+   bordigaSurface
+   K3surfaceD7
+   cubicScroll
+   delPezzoSurface
+///
+
+
+
+
 
 -* for CannedExample expectedCodimensionInNonminimalK3Moduli
   Example
