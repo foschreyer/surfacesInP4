@@ -6066,7 +6066,7 @@ Key
  kodairaSpencerSequence
  (kodairaSpencerSequence,Ideal)
 Headline
- ompute the dimensions of the cohomology groups of the Kodaira-Spencer sequence
+ compute the dimensions of the cohomology groups of the Kodaira-Spencer sequence
  
 Usage
  M = kodairaSpencerSequence X
@@ -17944,7 +17944,7 @@ Description
     o15 : Tally
   Text
     The plane intersects X in a quartic curve and three points. The three lines through
-    two of these points are the thee 6-secant lines.
+    two of these points are the three 6-secant lines.
 References
    Ranestad, K., On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ of Oslo, (1988) 
 SeeAlso
@@ -19038,7 +19038,7 @@ betti syz(map(E'^1,,entry*vars E'),DegreeLimit=>3)))
   
 
 /// -* Test unstable planes *-
-restart
+
 needsPackage "NongeneralTypeSurfacesInP4"
 
 kk=ZZ/2;
@@ -19282,8 +19282,10 @@ viewHelp "NongeneralTypeSurfacesInP4"
 
 check "NongeneralTypeSurfacesInP4"
 
+-- perhape delete evry thing below
 
--* candidate tables for a surface with irregularity 3 *-
+
+-* candidate tables for a surface with irregularity >= 3 *-
 chiITable(15,14,-2)
 chiITable(15,14,-3)
 chiITable(15,14,-4)
