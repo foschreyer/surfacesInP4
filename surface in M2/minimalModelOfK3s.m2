@@ -275,7 +275,7 @@ transpose N*M*N==matrix {{4, 8}, {8, 8}}
  8+1-5==4
 -- which is non special
 {1,4,12,20,28,36,44}-apply(7,i->binomial(i+3,3))
-matrix{{1,0,0},{0,0,0},{2,8,5}}\
+matrix{{1,0,0},{0,0,0},{2,8,5}}
 
 restart
 kk=ZZ/nextPrime 10^2

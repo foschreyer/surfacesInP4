@@ -267,7 +267,7 @@ kodairaSpencerSequence(Ideal) := X -> (
 
 expectedCodimensionInNonminimalK3Moduli=method(Options=>{Verbose=>true})
 -- Purpose : checks whether the blow-down map from the corresponding component of the
---           Hilbert scheme to the moduli space of polarized K3 surfaces is dominant.
+--           Hilbert scheme to the moduli space of polarized K3 surfaces could be dominant.
 --           The criterion sufficient but not necessary
 --  Input :  The ideal of a non-mimimal smooth K3 surface in P4
 --  Output:  Boolean
@@ -486,7 +486,7 @@ selfIntersectionNumber(X,D)
 --      Pn : projective n-space
 --   OO_Pn : the structure sheaf of Pn
 --    F(d) : the sheaf twisted by d
--- Omega^1 : the sheaf of differen
+-- Omega^1 : the sheaf of differentials
 -- Omega^i : the ith exterior power of Omega^i
 --  F ++ G : the direct sum of sheaves F and G
 --     a*F : the direct sum of a copies of a sheaf F
@@ -618,15 +618,6 @@ degree8OkonekSurface(PolynomialRing,PolynomialRing) := (P4,P2) -> (
     assert(dim X==3 and  degree X==8 and  (genera X)_1==6);
     X)
 *-
-///
-
-needsPackage"NongeneralTypeSurfacesInP4"
-kk=ZZ/nextPrime 10^4
-P2=kk[y_0..y_2]
-pencil=ideal(y_0*(y_1-y_2),y_1*(y_0-y_2))
-decompose pencil
-
-///
 
 ionescuOkonekSurfaceD8S5=method()
 -- A rational surface of degree 8 and sectional genus 5 (B1.10)
@@ -759,10 +750,7 @@ enriquesSurfaceOfDegree10(PolynomialRing) := P4 -> (
     X:= trim ideal(transpose (syz transpose (faa.dd_2_{0..14}*m15x5))_{2}*faa.dd_2);
     assert(dim X==3 and degree X==10 and sectionalGenus X==8);
     X)
-///
-tex betti res coker random(P4^{2:-2},P4^{5:-3,2:-4})
-tex betti res coker random(P4^{2:-2},P4^{5:-3})
-///
+
 
 degree10pi9RanestadSurface=method()
 -- A rational surface of degree 10 and sectional genus 9 (B1.16)
@@ -809,17 +797,7 @@ degree10DESSurface(PolynomialRing,Ring) := (P4,E) -> (
     -- %and is given by the quintics in the ideal of desired X.
     assert(dim X ==3 and degree X==10 and (genera X)_1==9);
     X)
-///
-kk=ZZ/nextPrime 10^4
-P4=kk[x_0..x_4]
-E=kk[e_0..e_4,SkewCommutative=>true]
-X=degree10DESSurface(P4,E);
-minimalBetti X
-(degree X, sectionalGenus X, chiO(X))
-betti tateResolutionOfSurface X
 
-
-///
 
 enriqueSurfaceD13S16=method(Options=>{Special=>false})
 
@@ -966,25 +944,7 @@ twolines1:=saturate intersect(minus2line,line3);
    assert( (dim X, degree X, (genera X)_1)==(3,11,11));
    X)
 
-
--- presumably not used
-randomSurfaceDegreeAndSectionalGenus=method()
-randomSurfaceDegreeAndSectionalGenus(Function,List) := (F,ringList) -> (
-    (P4,E,P2):=(ringList_0,ringList_1,ringList_2);
-    Larg:=toList first methods F;
-    arguments :=drop(Larg,1);
-    <<endl;
-    <<Larg_0; <<endl;
-    n:= #arguments; X:=null;
-    (if n==1 then X=F(P4) ;
-    if n==2 and member(Ring,arguments) then X=F(P4,E);
-    if n==2 and not member(Ring,arguments) then X=F(P4,P2)); 
-    (d,sg):=(degree X, sectionalGenus X);
-    <<minimalBetti X << " cohomology: "<<betti tateResolutionOfSurface X<<endl;
-    <<"K2=" <<Ksquare(d,sg,1) <<", N6=" <<LeBarzN6(d,sg,1) <<endl;
-    numberOfExceptionalLines:=if d>5 then ((numList,L1,L2,J):=adjunctionProcess(X,1);numList_1) else 0;
-    <<"degree="<<d<<", sectional genus="<<sg<<", number of exceptional line=" << numberOfExceptionalLines <<endl;
-    {d,sg,numberOfExceptionalLines})
+-* functions investigating surfaces in P4 *-
 
 tateResolutionOfSurface=method()
 -- Most surfaces are 6 regular, if not one has truncate at the real regularity,
@@ -1012,17 +972,7 @@ tateResolutionOfSurface(Ideal,ZZ) := (X,n) -> (
     m':=symExt(m,E);
     T1:=res(coker m',LengthLimit=>n+2);
     T:=(dual T1)[-n-1]**E^{-n})
-///
-kk=ZZ/nextPrime 10^4
-P4=kk[x_0..x_4]
-X=K3surfaceD10S9L1 P4;
-X=ellipticSurfaceD12S14Linfinite P4;
-minimalBetti X
-T=tateResolutionOfSurface X;
-betti T
-betti tateResolutionOfSurface(X,7)
 
-///
 
 tangentToMonad = method();
 -- DESCTRIPTION : This command computes the dimension of the tangent space to the space 'M' of monads of the form a*OMega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example
@@ -1246,15 +1196,6 @@ findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
 	 dim singX !=0) do ();
    X)
 
-/// -* does not exists *-
-kk=ZZ/nextPrime(10^3)
-P4=kk[x_0..x_4]
-elapsedTime X=unirationalConstructionOfSchreyerSurfaces(P4,KodairaDimension=>-1);
-minimalBetti X
-M=moduleFromSchreyerSurface X;
-minimalBetti M
-tangentDimension M
-///
 
 
 
@@ -1427,6 +1368,7 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
       {(4,11,10), 0, (9,19,11), 6, (10,15,6), 5, (5,5,1)}};
     (Ms,adjTypes)
     )
+
 ///
 restart
 loadPackage"NongeneralTypeSurfacesInP4"
@@ -1436,7 +1378,11 @@ X=specificSchreyerSurface(P4,1);
 elapsedTime (L0,L1,L2,L3)=adjunctionProcess(X,5);
 L0
 ///
+
 parametrizationOfDegreeFiveDelPezzo=method()
+-- Input: J a degree 5 Del Pezzo surface in P5 over a finite filed
+-- Outputs: a parametrization possibly after a field extension
+--
 parametrizationOfDegreeFiveDelPezzo(Ideal) := J -> (
     P5 := ring J;
     kk := coefficientRing P5;
@@ -2773,7 +2719,7 @@ abo111117Surface(Ring,Ring) := o -> (P4,E) -> (
     )
 
 
-///
+/// -* Test abo111117 surfaces *-
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true];
@@ -4584,7 +4530,7 @@ K3surfaceD14(PolynomialRing):=P4->(
     X:=ideal syz transpose (ftphi.dd_4 | random(target ftphi.dd_4,P4^{15:0,1:-1}));
     -- Check whether 'X' is a surface with the desired degree and sectional genus
     assert(dim X==3 and degree X==14 and sectionalGenus X==19);
-    X)
+    trim X)
 
 
 ellipticSurfaceD7=method()
@@ -4778,9 +4724,9 @@ specificEllipticSurfaceD13S16(PolynomialRing,Ring,ZZ):= o -> (P4,E,k) -> (
     betti(ci:=ideal(gens X*random(source gens X,P4^{2:-5})));
     Y:=ci:X;
     return Y)
-///
 
 
+/// -* test specificAboSurfaces and specificEllipticSurfaceD13S16 *-
 
 kk=ZZ/19
 P4=kk[x_0..x_4]
@@ -4826,11 +4772,14 @@ tally apply(cR,c->(dim c, degree c,(dim(c+X),degree (c+X))))
 
 ///
 
-///
+/// -* test linked surface Y of X = specificAboSurface(P4,E,0) is a surface of general type *-
 kk=ZZ/19
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
-X=specificAboSurface(P4,E,1);
+X=specificAboSurface(P4,E,0);
+DX=canonicalDivisor X;
+cDX=decompose DX;
+tally apply(cDX,c->(dim c,degree c, genus c))
 betti(ci=ideal(gens X*random(source gens X,P4^{2:-5})))
 minimalBetti (Y=ci:X)
 betti tateResolutionOfSurface Y
@@ -5275,12 +5224,10 @@ Headline => "Known families of K3 surfaces",
 	TO expectedCodimensionInNonminimalK3Moduli,
 	},
 }
+
+
 /// -* for computing the polarization on the minimal model of the K3 *-
 kk=ZZ/nextPrime 10^4; P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
-
-    
-
-    
 
 candidates={}
 
@@ -5641,8 +5588,9 @@ if 2*r >= 5*s and ex then (
 
 
 
-minimalBetti(X=K3surfaceD14 P4)
-
+minimalBetti(X=trim K3surfaceD14 P4)
+betti X
+elapsedTime kodairaSpencerSequence X
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
 K2=Ksquare(d,sg,2)
@@ -19335,23 +19283,10 @@ viewHelp "NongeneralTypeSurfacesInP4"
 check "NongeneralTypeSurfacesInP4"
 
 
-kk=ZZ/19
-P4=kk[x_0..x_4]
-E=kk[e_0..e_4,SkewCommutative=>true]
-X=specificAboSurface(P4,E,6,Verbose=>true);
-minimalBetti X
-betti(T=tateResolutionOfSurface(X))
-ci=ideal(gens X*random(source gens X,P4^{-5,-5}));
-minimalBetti (Y=ci:X)
-betti(TY=tateResolutionOfSurface(Y,8))
-(d,sg)=(degree Y, sectionalGenus Y)
-chiITable(d+1,sg,2)
+-* candidate tables for a surface with irregularity 3 *-
 chiITable(15,14,-2)
-elapsedTime betti (T1=res(coker random(E^{3:1,3:0},E^{5:-1,2:-2}),LengthLimit=>6))
-betti(T2=res(coker transpose T1.dd_3,LengthLimit=>8))
-3*1-(5*4+2*6)+15*4-23
--(3*1+3*4)+(5*6+2*4)-15
-
+chiITable(15,14,-3)
+chiITable(15,14,-4)
 
 -* problem 9.9 rational surface of degree 14 *-
 kk=ZZ/2
@@ -19368,7 +19303,7 @@ matrix {{e_0+e_1+e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_1+e_4, e_2+e_3+e_4, e_2+e_4, e_
 matrix {{e_1+e_3, e_0+e_3, e_0, e_1+e_3+e_4, e_0+e_1+e_2+e_4, e_0+e_2+e_4, e_2+e_3+e_4}, {e_0+e_1+e_2+e_3+e_4, e_1+e_2+e_3+e_4, e_3, e_0+e_1+e_2, e_0+e_2+e_4, e_1+e_2+e_3+e_4, e_1+e_2+e_4}, {e_1+e_3, e_1+e_2+e_4, 0, e_1+e_3+e_4, e_0+e_1+e_2+e_3+e_4, e_0+e_1+e_3, e_0+e_1}, {e_0+e_1+e_2+e_3+e_4, e_0+e_1+e_3, e_1+e_3, e_0+e_2+e_3+e_4, e_2+e_3, e_1+e_2+e_4, e_0}, {e_1+e_3, e_1+e_2+e_4, 0, e_0+e_2+e_3, e_0+e_1+e_2+e_4, e_0+e_1+e_3, e_0+e_1}, {e_1+e_2+e_3, e_1+e_4, e_2+e_3+e_4, e_1+e_2+e_4, e_0+e_4, e_0+e_1+e_2+e_3, e_1+e_2+e_3}},
 matrix {{e_1+e_2+e_3, e_0+e_1+e_2, e_4, e_1+e_2+e_3+e_4, e_0+e_2+e_3, e_1+e_3+e_4, e_0+e_1+e_3+e_4}, {e_0+e_1+e_2+e_3, e_0+e_1+e_2+e_3, 0, e_0+e_1+e_2+e_3, e_2+e_3, e_0+e_2+e_3, e_0}, {e_0+e_1+e_2+e_3, e_0+e_1+e_2+e_3, e_2+e_3, e_0+e_1+e_2+e_3, e_0+e_1+e_3+e_4, e_1+e_2+e_3, e_2+e_3}, {e_0+e_1+e_2, e_1+e_2+e_3, e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_1+e_2+e_4, e_0+e_2+e_3+e_4}, {0, 0, e_0+e_3+e_4, e_0+e_3+e_4, e_2+e_3, e_0+e_3+e_4, e_0+e_3+e_4}, {e_3+e_4, e_0, e_1+e_3, e_1+e_2+e_3, e_1+e_3+e_4, e_1+e_2, e_2+e_3}}
 }
-apply(mats1,m->betti res(coker transpose m,LengthLimit=>5))
+tally apply(mats1,m->betti res(coker transpose m,LengthLimit=>5))
 mats={}
 elapsedTime tally apply(2^20,c->(
 	while(
