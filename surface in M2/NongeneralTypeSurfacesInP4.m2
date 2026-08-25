@@ -32,6 +32,7 @@ newPackage(
     )
 
 export {
+    "numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr",
     "kodairaSpencerSequence",
     "minimalModelOfK3",
     "enriquesSurfaceD13S16",
@@ -167,6 +168,14 @@ export {
 
 -* Code section *-
 -* numerical functions *-
+
+numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr=method()
+
+numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(ZZ,ZZ,ZZ) := (d,g,r) -> (
+    lift(sum(r,i->(-1)^i/(r-i)*binomial(d-r-i+1,r-1-i)*binomial(d-r-i,r-1-i)*binomial(g,i)),ZZ)
+    )
+
+
 sectionalGenus=method()
 --  PURPOSE : Find the sectional genus of a variety
 --    INPUT : 'X', the ideal of a variety
@@ -5845,6 +5854,40 @@ help symExt,
 }
 
 -- numerical functions
+
+doc///
+Key
+ numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr
+ (numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr,ZZ,ZZ,ZZ)
+Headline
+ number of 2r-2 secant r-2 planes of a curve in P^r
+Usage
+ C=numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(d,g,r)
+Inputs
+ d:ZZ
+  the degree of a curve
+ g:ZZ
+  the genus of a curve
+ r:ZZ
+  dimension of P^r
+Outputs
+  C:ZZ
+    the expected number of 2r-2 secant r-2 planes of a curve in P2
+Description
+  Text
+    The number of 2r-2 secant r-2 planes of a curve in P^r is expected to be finite,
+    since it is a codimension 1 condition for a plane P in the Grassmannian G(r-1,r+1)
+    to intersect a curve, and dim G(r-1,r+1)=2(r-1).
+    Going back to Castelnuovo there is polynomial function C(d,g,r) \in QQ[d,g] depeding on r
+    which computes the expected number.
+  Example
+    d=12,g=15,r=3
+    numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(d,g,r)==105
+    d=14,g=15,r=4
+    numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(d,g,r)==175
+    d=15,g=21,r=3
+    numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(d,g,r)==540
+///  
  -* CannedExample for chiITable
   Example 
     chiITable(11,10,1)
