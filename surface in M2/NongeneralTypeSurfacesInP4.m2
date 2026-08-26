@@ -4963,6 +4963,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
         },
      SUBSECTION "Investigating embedded surfaces",
      UL{
+	TO featuredSurfaces,
 	TO adjunctionProcessData,
 	TO residualInQuintics,
 	TO canonicalDivisor,
@@ -5009,7 +5010,7 @@ Headline => "unirational families of rational surfaces",
 
 document {
 Key => featuredSurfaces,
-Headline => "Surface featured in the paper Nongeneral type surface in P4, an update",
+Headline => "Surfaces featured in our paper -- Nongeneral type surfaces in P4, an update",
 PARA{"In our paper we discuss with some details the following surfaces.
       The documentation of these function gives some ideas and techniques for how we approached the 
       investigation of various surfaces."},
@@ -5017,7 +5018,7 @@ PARA{"In our paper we discuss with some details the following surfaces.
      UL{
         TO bordigaSurface,
 	TO okonekSurfaceD8S6, 
-        TO degree10pi9RanestadSurface,,
+        TO degree10pi9RanestadSurface,
         },
     SUBSECTION "Hilbert-Burch",
      UL{
