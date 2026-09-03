@@ -23,6 +23,46 @@ setRandomSeed("fix very good decomposition of D");-- works
 --viewHelp "NongeneralTypeSurfacesInP4"
 
 minimalBetti(X=K3surfaceD10S9L1 P4)
+elapsedTime betti(Y=minimalModelOfK3(X,Verbose=>true))  -- 339.883s elapsed
+-*
+time to compute the canonical divisor:
+ -- 5.84334s elapsed
+time to decompose the canonical divisor:
+ -- .45341s elapsed
+multilicities of canonical divisor = {1, 1, 4}
+genus of the minimal model = 15
+time to compute the minimal model:
+ -- 321.414s elapsed
+                                   0  1
+genus = 15, betti numbers = total: 1 78
+                                0: 1  .
+                                1: . 78
+*-
+P15=ring Y
+L=ideal((gens P15)_{0..4})
+betti(X'=trim ker map(P15/Y,P4,gens L))
+X==X'
+pts=primaryDecomposition(Y+L);#pts
+netList apply(pts,c->(dim c, degree c, betti c))
+Es=apply(pts,c->(p=radical c;ker map(P15/p,P4,gens L)));
+D=canonicalDivisor X;
+cD=decompose D;
+netList apply(cD,E->(dim E,degree E, betti E))
+betti (H=intersect cD_{0,1})
+cH=decompose (X+(ideal H_0));#cH
+netList apply(cH,h->(dim h, degree h, betti h))
+kk2=GF(char kk,2)
+P4'=kk2[gens P4]
+AB=decompose sub(cH_2,P4');#AB
+tally apply(AB,c->(dim c, degree c, betti c))
+betti (sixSec=trim sum(AB))
+dim sixSec, degree sixSec
+radical sixSec
+sixSecLine=ideal (gens P4')_{2..4}
+degree (sixPts=trim (sixSecLine+sub(X,P4')))
+fourPts=sixPts:sixSec;
+degree fourPts
+tally apply(decompose sixPts,c->(dim c, degree c, betti c))
 
 -* -- study of (4,5) linked surface *-
 
@@ -198,7 +238,7 @@ binomial(10-1,2)-15
 -- case (11, 11, 5, 2, 15) -- most likely not dominant
 restart
 needsPackage"NongeneralTypeSurfacesInP4"
-kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
+kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
 setRandomSeed("fix very good decomposition of D");
 --viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -212,7 +252,13 @@ pd={1,2,2,2,2}
 
 elapsedTime betti (D=canonicalDivisor X)  -- 2931.75s elapsed
 elapsedTime selfIntersectionNumber(X,D)
-elapsedTime tally apply(cD=decompose D,c->(dim c, degree c, genus c))
+elapsedTime netList apply(cD=decompose D,c->(dim c, degree c, genus c))
+
+betti saturate cD_2
+
+
+
+
 
 
 polarizationDegree=d+sum(pd,k->k^2)
@@ -222,7 +268,7 @@ elapsedTime sD2s=apply(toList(1..3),i->saturate((cD_i)^2+X));
 elapsedTime sD2s=apply(toList(1..2),i->saturate((cD_i)^2+X));
 betti(D1=intersect(sD2s|{cD_0}))
 betti(H5=ideal(gens D1*random(source gens D1,P4^{-5})))
-betti(residual=(X+H5):D1)
+elapsedTime betti(residual=(X+H5):D1)
 degree residual
 betti (res1=trim ideal((gens residual)%X))
 betti (H6=trim ideal( (gens intersect((ideal vars P4)^6,res1))%X))
@@ -233,7 +279,7 @@ elapsedTime betti(Y=trim ker map(P4/X,P15, h6b|h6a))  -- 272.168s elapsed
 
 elapsedTime (dim Y, degree Y, genera Y)
 
-elapsedTime betti(fY=res(Y,LengthLimit=>2,DegreeLimit=>2)) 
+--elapsedTime betti(fY=res(Y,LengthLimit=>2,DegreeLimit=>2)) 
 
 L4=ideal(y_0..y_4)
 betti(pts1=saturate (L4+Y))
@@ -242,6 +288,90 @@ elapsedTime pts=apply(cD,c->(elapsedTime p=trim ker map(P4/c,P15, h6b|h6a);
 	<< betti p <<endl;p));
 netList apply(pts_{0..2}, p-> transpose syz transpose sub(jacobian p,kk))	
 tally apply(cpts1=decompose pts1,c->betti c)
+betti(e2=intersect(apply(cpts1,c->saturate(c^2+Y))))
+betti(e3=ideal (gens e2)_{0..2})
+betti(eq3=intersect(e3,Y))
+betti(feq3=res(eq3,LengthLimit=>2,DegreeLimit=>3))
+betti (q2=(gens eq3)_{0,1})
+P1=kk[s_0,s_1]
+P15xP1=P15**P1
+q2g=sub(q2,P15xP1)*transpose sub(vars P1,P15xP1)
+betti(hess =diff(transpose sub(vars P15,P15xP1), diff(sub(vars P15,P15xP1),q2g)))
+betti(J=trim minors(3,map(P1^16,,sub(hess,P1))))
+dim J
+ring Y
+
+L4=ideal( (vars P15)_{0..4})
+betti(eq=intersect(L4,Y))
+betti(eqg=(gens eq)_{0..24})
+P1=kk[t_0..t_24]
+P15xP1=P15**P1
+betti(q2g=sub(eqg,P15xP1)*transpose sub(vars P1,P15xP1))
+betti(hess =diff(transpose sub(vars P15,P15xP1), diff(sub(vars P15,P15xP1),q2g)))
+elapsedTime betti(J=trim minors(5,map(P1^16,,sub(hess,P1))))
+
+
+
+
+
+B0plusA=intersect cpts1
+betti B0plusA
+betti(qs=(gens B0plusA)_{11..20})
+P4y=kk[support qs];dim P4y==5
+betti(qs1=ideal sub(qs,P4y))
+minimalBetti qs1
+betti(fqs1=res qs1)
+fqs1.dd_4
+-*
+P3=kk[w_0..w_3]
+P4xP3=P4y**P3
+betti transpose (sub(fqs1.dd_4,P4xP3)*transpose sub(vars P3,P4xP3))
+betti(m5x15=diff(transpose sub(vars P4y,P4xP3),transpose (sub(fqs1.dd_4,P4xP3)*transpose sub(vars P3,P4xP3))))
+betti (m5x15P3=map(P3^5,,sub(m5x15,P3)))
+R=ann coker m5x15P3
+minimalBetti R
+dim R, degree R
+elapsedTime (cR=decompose R)
+netList apply(cR,c->(dim c, degree c, betti c))
+I1=trim ideal(fqs1.dd_4*sub(syz transpose jacobian first cR,kk))
+syz transpose jacobian I1
+*-
+dim qs1,degree qs1
+cqs1=decompose qs1;#cqs1
+netList apply(cqs1,c->(dim c, degree c , betti c))
+betti (a=intersect(cqs1_{0,2}))
+betti (b=intersect(cqs1_{1,2}))
+betti(A=ideal (gens trim(sub(ideal(a_0),P15)+B0plusA))_{0..11})
+betti(B=ideal (gens trim(sub(ideal(b_0),P15)+B0plusA))_{0..11})
+dim A, dim B
+dim (A+Y),degree (A+Y)
+betti intersect(B,L4)
+
+
+
+
+
+P9=kk[z_0..z_9]
+P15xP9=P15**P9
+betti(qg=sub(qs,P15xP9)*sub(transpose vars P9,P15xP9))
+v5=sub(gens ideal support qs,P15xP9)
+betti(hess=map(P9^5,,sub(diff(transpose v5,diff(v5,qg)),P9)))
+betti(I3=saturate minors(3,hess))
+dim I3
+minimalBetti I3
+betti(I2=saturate minors(2,hess))
+I2
+elapsedTime cI3=decompose I3;#cI3
+
+
+
+
+
+
+
+
+
+
 
 P12=kk[y_1..y_11,y_13..y_14]
 dim P12==13
@@ -286,7 +416,10 @@ minimalBetti(G=ann coker transpose sB)
 betti(K3=ideal (gens G*random(source gens G,P3^{-4})))
 
 betti(B1= (syz (vars P3++vars P3)*random(P3^{12:-2},P3^{6:-2})))
-K3=ann coker transpose B1
+minimalBetti(K3=ann coker transpose B1)
+
+
+
 P5=kk[u_0..u_5]
 P3xP5=P3**P5
 graph=sub(vars P5,P3xP5)*sub(transpose B1,P3xP5)

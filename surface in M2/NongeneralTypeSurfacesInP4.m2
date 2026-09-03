@@ -210,7 +210,7 @@ irregularity=method()
 --      PURPOSE : Find the irregularity of a surface 
 --        INPUT : 'X', the ideal of a surface
 --       OUTPUT : an integer
---  DESCRIPTION : The function determines the irregularity by computing the dimension of HH^2(OO_X)
+--  DESCRIPTION : The function determines the irregularity by computing the dimension of HH^1(OO_X)
 --      COMMENT : The function uses 'HH'
 irregularity(Ideal) := X -> (
     if dim X !=3 then error "expected the ideal of a projective surface";
@@ -252,7 +252,7 @@ chiNX(12,13,2)
 ///
 
 kodairaSpencerSequence=method()
--- compute the dimesion of the cohomlogy groups of the Kodaira-Spencer sequence
+-- compute the dimesion of the cohomology groups of the Kodaira-Spencer sequence
 -- Input: X ideal of a surface in P4
 -- Output : cohoDims, 3x3 Matrix of
 --          dimension of the cohomology groups in the long exact sequence
@@ -421,7 +421,7 @@ canonicalDivisor(Ideal) := X -> (
 
 minimalModelOfK3=method(Options=>{Verbose=>false})
 --  PURPOSE : Compute the minimal model  
---   INPUTS : 'X',the ideal of a non-minimal K3 surface in P4
+--   INPUT  : 'X',the ideal of a non-minimal K3 surface in P4
 --   OUTPUT : the ideal of the minimal model
 minimalModelOfK3(Ideal) := o -> X -> (
     P4 := ring X;
@@ -1139,7 +1139,7 @@ schreyerSurface(Ring,Number) := opt -> (P4,s) -> (
 P4=ZZ/3[x_0..x_4]
 2^6,3^6, 5^6
 setRandomSeed("repeat")
-elapsedTime X=schreyerSurface(P4,3,Verbose=>true);
+elapsedTime X=schreyerSurface(P4,2,Verbose=>true);-- 19.0306s elapsed
 minimalBetti X
 singX=X+minors(2,jacobian X);
 dim saturate singX
@@ -1378,18 +1378,17 @@ exampleOfSchreyerSurfaces(Ring) := P4 -> (
     (Ms,adjTypes)
     )
 
-///
-restart
-loadPackage"NongeneralTypeSurfacesInP4"
+/// -* check adjunction type of example 1 *-
 kk=ZZ/3
 P4=kk[x_0..x_4]
 X=specificSchreyerSurface(P4,1);
-elapsedTime (L0,L1,L2,L3)=adjunctionProcess(X,5);
+elapsedTime (L0,L1,L2,J)=adjunctionProcess(X,5);
 L0
+minimalBetti J
 ///
 
 parametrizationOfDegreeFiveDelPezzo=method()
--- Input: J a degree 5 Del Pezzo surface in P5 over a finite filed
+-- Input: J a degree 5 Del Pezzo surface in P5 over a finite field
 -- Outputs: a parametrization possibly after a field extension
 --
 parametrizationOfDegreeFiveDelPezzo(Ideal) := J -> (
@@ -2049,12 +2048,14 @@ specificAboRanestadSurface(PolynomialRing,Ring,Number) := (P4,E,k) -> (
 	<<" no example in characteristic = "<< char P4<<" recorded yet." <<endl);
     )
 
-/// -* Test the list of examples of aboRanestad surfaces *-
+/// -* Test the list of examples of specificAboRanestad surfaces, 
+-- check whether they are sorted the same way as in the paper  *-
 restart
 needsPackage"NongeneralTypeSurfacesInP4"
 kk=ZZ/19;
 P4=kk[x_0..x_4];
 E=kk[e_0..e_4,SkewCommutative=>true]
+
 (X,L0)=specificAboRanestadSurface(P4,E,0);
 minimalBetti X
 elapsedTime L=adjunctionProcess X;
@@ -2096,14 +2097,8 @@ elapsedTime L=adjunctionProcess X;
 L_0
 L_0==L0,minimalBetti L_3
 
-
-minimalBetti X
-elapsedTime L=adjunctionProcess X;
-L_0
-L_0  ,minimalBetti L_3
-///
+/// -* end testing the sorting of specificAboRanestadSurfaces *-
    
-
 veroneseImagesInG25=method()
 --     PURPOSE : Find the intersection points of the Veronese surface and the Veronese threefold associated with the 3x2 and 2x4 matrices with linear entries in the Beilinson monad 
 --       INPUT : 'm4x2', a 4x2 matrix (the 2x3 matrix 'm2x3'is fixed) 
@@ -2207,7 +2202,9 @@ aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
     dim singX !=0) do (countSmooth=countSmooth+1);
     if opt.Verbose then (<<"trials to get a smooth surface = "<<countSmooth <<endl);
     X)
-///
+
+/// -* checks whether aboRanestadSurfaceFromMatrix and matrixFromAboRanestadSurface are basially inverses 
+--    of each other, takes too long for an honest test *-
 kk=ZZ/19
 P4=kk[x_0..x_4]
 setRandomSeed("fairly fast search")
@@ -2217,6 +2214,7 @@ m4x2'=matrixFromAboRanestadSurface X
 m4x2
 assert(minors(2,sub(m4x2,vars P4))==minors(2,sub(m4x2',vars P4)))
 ///
+
 matrixFromAboRanestadSurface=method()
 -- PURPOSE : Obtain the 4x2 matrix from a smooth surface 
 --   INPUT : 'X', the ideal of a surface
@@ -2247,7 +2245,7 @@ collectSmoothAboRanestadSurfaces(Ring,Number,Number) :=(P4,n,N) -> (
 
 
 
-      -* Abo surfaces *-
+ -* Abo surfaces *-
 
 testMatrix1=method(Options=>{Verbose=>false})
 testMatrix1(Matrix,Ring) := opt -> (mE3x4,P4) -> (
@@ -2435,7 +2433,8 @@ aboSurfaceFromMatrix(Matrix,Ring) := opt -> (mE3x4,P4) -> (
 I)
 
 abo112224Or111234Surface=method(Options=>{Verbose=>false,Count=>false})
-  ---finds Abo surfaces with canonical divisor (1,1,1,1,4,4) from (3x5) matrices over P3, s.t. the Bordiga surface is smooth and has seven rank two planes meeting the 1x3 line
+  ---finds Abo surfaces with canonical divisor (1,1,1,1,4,4) from (3x5) matrices over P3,
+  -- s.t. the Bordiga surface is smooth and has seven rank two planes meeting the 1x3 line
 abo112224Or111234Surface( Ring, Ring, ZZ):= opt -> (P4,P3,h) -> (
  kk := coefficientRing P4;
     e:= symbol e;
@@ -2502,7 +2501,7 @@ m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*su
       (I, m3x4, hdim))
 
 
-///-* Test abo112224Or111234AboSurface *-
+///-* Test abo112224Or111234AboSurface, takes too long for an honest test *-
 restart
 loadPackage "NongeneralTypeSurfacesInP4"
 
@@ -2666,14 +2665,15 @@ abo111333Surface(Ring,Ring) := opt -> (P4,E) -> (
     X:=aboSurfaceFromMatrix(mE3x4,P4,Verbose=>opt.Verbose);
     (X,mE3x4))
 
-///
+/// -* checks that the canonical divisor depends only on m3x4 and not on X 
+--     in case of a abo111333Surface *-
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true];
-elapsedTime (X,m3x4)=abo111333Surface(P4,E);
-elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X
+elapsedTime (X,m3x4)=abo111333Surface(P4,E);  -- 13.0976s elapsed
+elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X -- 11.5553s elapsed
 R=residualInQuintics X;
-cR=primaryDecomposition R;
+elapsedTime cR=primaryDecomposition R; -- 8.68557s elapsed
 tally apply(cR,c->((dim c, degree c),(dim(c+X),degree(c+X))))
 testMatrix1(m3x4,P4)
 testMatrix2(m3x4,P4)
@@ -2682,8 +2682,8 @@ X1=aboSurfaceFromMatrix(m3x4,P4);
 K=partitionOfCanonicalDivisorOfAboSurface(X,Equations=>true);
 betti K
 K1=partitionOfCanonicalDivisorOfAboSurface(X1,Equations=>true);
-K==K1
-X==X1
+K==K1 -- answer true
+X==X1 -- answer false
 betti tateResolutionOfSurface X
 ///
 
@@ -2728,12 +2728,13 @@ abo111117Surface(Ring,Ring) := o -> (P4,E) -> (
     )
 
 
-/// -* Test abo111117 surfaces *-
+/// -* checks an abo111117Surfaces the partion and the residualInQuintics 
+--     takes too long for an honest test *-
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true];
-elapsedTime (X,m3x4)=abo111117Surface(P4,E);
-elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X
+elapsedTime (X,m3x4)=abo111117Surface(P4,E);  -- 9.94154s elapsed
+elapsedTime K=partitionOfCanonicalDivisorOfAboSurface X -- 47.1481s elapsed
 R=residualInQuintics X;
 cR=primaryDecomposition R;
 tally apply(cR,c->((dim c, degree c),(dim(c+X),degree(c+X))))
@@ -2746,11 +2747,11 @@ K1=partitionOfCanonicalDivisorOfAboSurface(X1,Equations=>true);
 K==K1
 betti(T=tateResolutionOfSurface X)
 betti(m3x31=(T.dd_4)^{0..2})
-betti(T1=res coker m3x31)
+betti(T1=res(coker m3x31,LengthLimit=>3))
 E'=ring T1
 betti(m13x44=T1.dd_2*random(T1_2,E'^{4:-4,4:-5}))
-betti(T2=res coker transpose m13x44)
-betti(T3=res coker transpose T2.dd_3)
+betti(T2=res(coker transpose m13x44,LengthLimit=>4))
+betti(T3=res(coker transpose T2.dd_3,LengthLimit=>7))
 X2=saturate ideal syz symExt(T3.dd_5,P4);
 K2=partitionOfCanonicalDivisorOfAboSurface(X2,Equations=>true);
 K==K2
@@ -2788,22 +2789,27 @@ adjointMatrices(Matrix,Ring,Ring,Ring):= opt -> (mE3x4,P2,P3,P4) -> (
       )
 
 
-///
+/// -* checks collectAboSurfaces, takes much too long for an honest test *-
 mKs={}
 kk=ZZ/19;
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
- (X,m3x4)=randomAboSurface(P4,E,Verbose=>false);
-elapsedTime mKs'=collectAboSurfaces(mKs,P4,E,2);#mKs'
+elapsedTime (X,m3x4)=randomAboSurface(P4,E,Verbose=>false);  -- 49.1127s elapsed
+elapsedTime mKs'=collectAboSurfaces(mKs,P4,E,2);#mKs'   -- 126.258s elapsed
 ///
 
-///
+/// -* checks analyzeAboSurface, too long for an honest test *-
 kk=ZZ/nextPrime 10^4
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
-elapsedTime X=abo111333Surface(P4,E);
-analyzeAboSurface X
+elapsedTime (X,m3x4)=abo111333Surface(P4,E); -- 16.6983s elapsed
+elapsedTime (partOfCanDiv,R)=analyzeAboSurface X; -- 13.8507s elapsed
+partOfCanDiv == {1, 1, 1, 3, 3, 3}
+elapsedTime netList apply(decompose R,c->(dim c, degree c, genus c))  -- 4.30103s elapsed
+(d,sg)=(degree X, sectionalGenus X)
+LeBarzN6(12,13,2) ==3+4
 ///
+
 randomAboSurfaceWithLargeHomSpace=method(Options=>{Verbose=>false,Count=>false})
 randomAboSurfaceWithLargeHomSpace(Ring,Ring,ZZ) := opt -> (P4,E,h) -> (
     assert(char P4==char E);
@@ -2892,7 +2898,6 @@ randomAboSurfaceWithLargeHomSpace(Ring,Ring,ZZ) := opt -> (P4,E,h) -> (
       (I,m3x4,dHom))
 
 /// -*test randomAboSurfaceWithLargeHomSpace *-
-needsPackage"NongeneralTypeSurfacesInP4"
 kk=ZZ/19;
 P4=kk[x_0..x_4];
 E=kk[e_0..e_4,SkewCommutative=>true]
@@ -2985,7 +2990,7 @@ randomAboSurfaceWithHomSpaceOfGivenDimension(Ring,Ring,ZZ) := opt -> (P4,E,h) ->
       if opt.Count then << "count2= " << count2 <<endl;      
       (I,m3x4,dHom))
 
-/// -*test randomAboSurfaceWithLargeHomSpace *-
+/// -*check randomAboSurfaceWithLargeHomSpace, takes too long for an honest test *-
 needsPackage"NongeneralTypeSurfacesInP4"
 kk=ZZ/19;
 P4=kk[x_0..x_4];
@@ -3085,85 +3090,6 @@ randomAboSurface(Ring,Ring) := opt -> (P4,E) -> (
       (I,m3x4))
 
     
-
--*
-randomAboSurface(Ring):= opt -> P4 -> (
-    kk := coefficientRing P4;
-    e:= symbol e;
-    E := kk[e_0..e_4,SkewCommutative=>true];
-    m1x3 := matrix{{e_0,e_1,e_2}};
-    p1 := matrix{{e_0,e_1,e_2,e_3}};
-    p2 := matrix{{e_0,e_1,e_2,e_4}};
-    p3 := matrix{{e_0,e_1,e_2,e_4+e_3}};
-    p4 := matrix{{e_0,e_1,e_2,e_4-e_3}};
-    a:=symbol a;
-    b:=symbol b;
-    bs := flatten apply(3,i->flatten apply(3,j->apply(10,k->b_(i,j,k))));
-    as := flatten apply(1,i->flatten apply(4,j->apply(10,k->a_(i,j,k))));
-    B := kk[bs,as];
-    ExB := E**B;
-    E2 := sub(basis(2,E),ExB);
-    a1x4 := matrix apply(1,i->apply(4,j->sum(10,k->(sub(a_(i,j,k),ExB)*E2_(0,k)))));
-    b3x3 := matrix apply(3,i->apply(3,j->sum(10,k->(sub(b_(i,j,k),ExB)*E2_(0,k)))));
-    E3 := sub(basis(3,E),ExB);
-    m4x3 := transpose((transpose sub(m1x3,ExB)) | b3x3);
-    count:=1;count1:=1;count2:=1;
-    isSurface := false;
-    ek1:= null;k31:=null;ek2:= null;k32:=null;ek3:= null;k33:=null;ek4:= null;k34:=null;
-    m3x4:=null;m4x4:=null;c :=null;Is:=null;sol:=null;randsol:=null;a1x4s:=null;
-    m4x4s:=null;bb:=null;tau:=null;beta0:=null;alpha':=null;alpha0:=null;
-    beta:=null;alpha:=null;F:=null;delta:=null;I:=null;randSols:=null;
-    while ( --get smooth surface
-    count1=1;	
-    while ( -- get surface of degree 12
-	  count=1;
-          while ( -- syz bb as desired
-	      ek1 = random(E^2,E^4)*transpose p1;
-	      k31 = random(E^3,E^2)*ek1;
-	      ek2 = random(E^2,E^4)*transpose p2;
-	      k32 = random(E^3,E^2)*ek2;
-	      ek3 = random(E^2,E^4)*transpose p3;
-	      k33 = random(E^3,E^2)*ek3;
-	      ek4 = random(E^2,E^4)*transpose p4;
-	      k34 = random(E^3,E^2)*ek4;
-	      m3x4 = k31|k32|k33|k34;
-	      m4x4 = (transpose a1x4) | (transpose sub(m3x4,ExB));
-	      c = m4x4*m4x3;
-	      Is = trim ideal sub(contract(E3,flatten c),B);
-	      if opt.PrintConstructionData and opt.Verbose then (
-		  <<"betti Is= " << betti Is <<endl);
-	      sol = vars B%Is;
-	      randSols = sub(sol,random(kk^1,kk^130));
-	      a1x4s = sub(a1x4,vars E|randSols);
-	      m4x4s = (transpose a1x4s) | (transpose m3x4);
-	      bb = map(E^4,,m4x4s);
-	      tau = syz bb;
-	      if opt.PrintConstructionData and opt.Verbose then (
-		  <<"betti syz bb = " << betti tau <<endl);
-	      not ((tally degrees source tau)_{3} == 3 and 
-		  (tally degrees source tau)_{4} == 5 )) do count=count+1;
-	  if opt.Verbose then << "count= " <<count << endl;
-          beta0 = bb;
-	  alpha' = submatrix(tau,,{0,1,2});
-	  alpha0 = alpha' | (sub(tau,E)*random(source sub(tau,E),E^{1:-4}));
-	  beta = beilinson(beta0,P4);
-	  alpha = beilinson(alpha0,P4);
-	  F = prune homology(beta,alpha);
-	  delta = syz transpose presentation F;
-	  I = ideal (delta);
-          not (degree I == 12 and codim I == 2) )
-      do (count1=count1+1);
-      if opt.Count then << "count1= " << count1 <<endl;
-      if opt.PrintConstructionData then (
-	      <<"betti Is= " << betti Is <<endl);
-	     -- <<"betti syz bb = " << betti tau <<endl);
-      singX:= singularLocus I; 
-      if opt.PrintConstructionData then (
-	  <<"codim singX = " << codim singX <<endl);
-      not codim singX == 5) do (count2=count2+1);
-      if opt.Count then << "count2= " << count2 <<endl;      
-      I)
-*-
 
 
 randomEllipticAboSurface=method(Options=>{Verbose=>false,Count=>false,
@@ -3557,15 +3483,15 @@ numericalTypeOfResidualInQuintics(Ideal,Ideal) := (R,X) -> (
 		else {((dim c, degree c),(dim(c+X),degree(c+X)))}
 		)
 	    )
-///
+/// -* check randomSpecialAboSurface, takes too long for an honest test *-
 kk=ZZ/7
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
 setRandomSeed("same start");
-elapsedTime (X,m3x4)=randomAboSurface(P4,E);
+elapsedTime (X,m3x4)=randomAboSurface(P4,E); -- 7.98145s elapsed
 setRandomSeed("same start");
 saturate minors(2,sub(m3x4,vars P4))
-elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E);
+elapsedTime (Xs,m3x4s)=randomSpecialAboSurface(P4,E); -- 21.7833s elapsed
 pt=saturate minors(2,sub(m3x4s,vars P4))
 sub(m3x4s,vars P4)%pt
 
@@ -3688,30 +3614,6 @@ collectAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mdKRs,P4,E,N) -> (
     mdKRs')
 
 
--*
-collectSpecialAboSurfaces=method(Options=>{Verbose=>true})	
-collectSpecialAboSurfaces(List,Ring,Ring,ZZ) := opt -> (mdKRs,P4,E,N) -> (
-    count:= #mdKRs;count1:=0;
-    ms:=apply(mdKRs,m->m_0);KRs:=apply(mKRs,m->m_2);mKRs':=mKRs;
-    X:=null; m3x4:= null;K:=null; R:= null; R1:=null; cR1:=null; T0:=null;Xs':=null;KRs':=KRs;
-    n:=0;d:=null;
-    while (count<N) do (
-	(X,m3x4,n)=randomSpecialAboSurface(P4,E,Verbose=>false);
-	d=testMatrix2(m3x4,P4);
-	K = partitionOfCanonicalDivisorOfAboSurface(X,Verbose=>true);
-	if opt.Verbose then << "K = " << K <<endl;
-	R1 = residualInQuintics X; count1=count1+1;
-	R = tally numericalTypeOfResidualInQuintics(R1,X);
-	if opt.Verbose then << "count1= "<<count1 <<endl;
-	if #select(KRs,KR-> (K,R)==KR)<20 then (
-	    count=count+1;
-	    if opt.Verbose then <<"count=" <<count <<" (K,R)= " << (K,R) << endl;
-	    KRs=append(KRs,(K,R));
-	    mdKRs'=append(mKRs',(m3x4,d,(K,R))););
-	);
-    << "count1= "<<count1 <<endl;
-    mdKRs')
-*-
 
 specificEllipticAboSurfaceD12S13=method(Options=>{Verbose=>false})
 
@@ -3735,7 +3637,7 @@ specificEllipticAboSurfaceD12S13(Ring,Ring,Number) := o -> (P4,E,k) -> (
       return X)
   )
 
-/// -* Test elliptic Abo surface *-
+/// -* data for elliptic Abo surface *-
 kk=ZZ/31;
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
@@ -3926,7 +3828,7 @@ if o.Verbose then ( << "#mdKRs = " << #mdKRs <<endl);
 
 
 
--* from Hiro *-
+-* irregular surfaces and elliptic surfaces *-
 
 
 quinticEllipticScroll=method()
@@ -4254,6 +4156,8 @@ abelianSurfaceD15S21Popescu(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==15 and sectionalGenus X==21);
     X)
 
+-* K3 and Enriques surfaces *-
+
 K3surfaceD6=method()
 -- K3 surface of degree 6 and sectional genus 4 
 --     PURPOSE : Construct the (2,3) complete Intersection
@@ -4491,6 +4395,8 @@ K3surfaceD13(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==13 and sectionalGenus X==16);
     X)
 
+
+
 enriquesSurfaceD13S16=method(Options=>{Special=>false})
 
 enriquesSurfaceD13S16(PolynomialRing):= o -> P4 -> (
@@ -4541,6 +4447,7 @@ K3surfaceD14(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==14 and sectionalGenus X==19);
     trim X)
 
+-* elliptic surfaces *-
 
 ellipticSurfaceD7=method()
 -- Elliptic surface of degree 7 and sectional genus 6 (B7.1)
@@ -4804,6 +4711,7 @@ tally apply(cBaseLocus1,c->(dim c, degree c, genus c, selfIntersectionNumber(Y,c
 Ksquare(13,16,3)
 ///
 
+-* functions for vector bundles on P4 *-
 
 /// -* rank 2 vector bundle on P4 *-
 R=QQ[a,b,c1,c2]
@@ -4818,8 +4726,11 @@ h1minush2End=1-sub(xEnd1,{c1=>0,c2=>11})
 ///
 
 searchHMBundle=method()
---Input: exterior algebra dual to P4
---       over s small finite prime field, e.g. kk=ZZ/2
+--Input: E
+--       exterior algebra dual to P4
+--       over s small finite prime field ZZ/p, e.g. kk=ZZ/2
+--       c
+--       integer, try p^c examples in the search space
 searchHMBundle(Ring,ZZ) := (E,c) -> (
     p:=char E;
     Cs:={};
@@ -4827,7 +4738,7 @@ searchHMBundle(Ring,ZZ) := (E,c) -> (
     A:=null; B:=null; B1 :=null; C:=null;
     fC:=null;
     count:=0;
-    while(N<2^c and #Cs<1) do ( 
+    while(N<p^c and #Cs<1) do ( 
 	while (A=random(E^3,E^{2:-2});
 	    betti (B=syz(A,DegreeLimit=>5));
 	    B1=(B*random(source B, E^{5:-4}));
@@ -4902,14 +4813,15 @@ varietyOfUnstablePlanes(Matrix) := o -> m2x5 -> (
        );
     sortedComponents) 
 
-///
+/// -* timings for search HMbundle *-
 p=2
 kk=ZZ/p
 E=kk[e_0..e_4,SkewCommutative=>true]
 13752.3/60/60 --for 2^21
 setRandomSeed("run 2^12")
 c=12
-elapsedTime MCs=searchHMBundle(E,c)
+elapsedTime MCs=searchHMBundle(E,c)  -- 28.8779s elapsed
+28.8779*2^9/60/60
 ///
     
 -* Documentation section *-
@@ -5019,6 +4931,7 @@ PARA{"In our paper we discuss with some details the following surfaces.
         TO bordigaSurface,
 	TO okonekSurfaceD8S6, 
         TO degree10pi9RanestadSurface,
+	TO K3surfaceD10S9L1,
         },
     SUBSECTION "Hilbert-Burch",
      UL{
@@ -5240,6 +5153,10 @@ Headline => "Known families of K3 surfaces",
 kk=ZZ/nextPrime 10^4; P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
 
 candidates={}
+-- candidates will be the (d,sg,r,s,degPol) where the necessary conditions
+-- that the map form the Hilbert scheme to the moduli of minimal K3's could be dominant.
+-- Further investigations, convinced us that this is not true in the most interesting cases
+-- of K3's of genus 15 or 21, we have except for the featured example K3surfaceD10S9L1
 
 minimalBetti(X=K3surfaceD7 P4)
 
@@ -5259,8 +5176,6 @@ degPol==8
 if 2*r >= 5*s and ex then (
     candidates=append(candidates,(d,sg,r,s,degPol))
 );
-
-
 
 minimalBetti(X=K3surfaceD8 P4)
 
@@ -5334,9 +5249,6 @@ if 2*r >= 5*s and ex then (
 netList candidates
 
 
-
-
-
 minimalBetti(X=K3surfaceD10S9L3 P4)
 
 elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
@@ -5397,7 +5309,10 @@ candidates={(7, 5, 1, 0, 8), (8, 6, 1, 0, 12), (9, 8, 5, 1, 14), (10, 9, 3, 1, 2
 
 minimalBetti(X=K3surfaceD11S11Ln(P4,1))
 
-elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X
+elapsedTime ex=expectedCodimensionInNonminimalK3Moduli X  -- 222.45s elapsed
+-*
+chiNX = 43, h^0(NX) = 43, lowerDimensionBound = 43
+*-
 (d,sg)=(degree X, sectionalGenus X)
 betti(T=tateResolutionOfSurface X)
 K2=Ksquare(d,sg,2)
@@ -5693,6 +5608,20 @@ candidatesWithGenus={
     (11, 11, 5, 2, 15),
     (11, 12, 10, 3, 13),
     (12, 14, 11, 4, 20)}
+
+-- The cases of g=15 and g=21 are most interesting to investigate for dominance of Hilb -> Fg
+-- because in those cases the unirationality of Fg is not known.
+-- We can prove that in case (10, 9, 3, 1, 15) the Picard rank is 2 and have a construction of these
+-- K3 surfaces and the images in P4. The K3 surface has 1225 extra syzygies.
+--
+-- In case (11, 11, 5, 2, 15) the example minimal K3 has 735 extra syzygies in the examples. We believe that
+-- The Picard rank of the general minimal K3 is 2 with intersection matrix
+-- (A^2,A.B,B^2)=(4,8,8), H=|(A+B;2^4,1)|. We do not know how to find the points.
+--
+-- In case (11, 11, 5, 2, 21) we know nothing, but expect also extra syzygies.
+--
+-- In summary we do not expect the map to Fg is dominant in cases g=15 or 21.
+-- We have a proof in one case.
 ///
 
 
@@ -17807,6 +17736,18 @@ SeeAlso
    Ksquare(degree X,sectionalGenus X,2)
    LeBarzN6(10,9,2)
    HdotK(10,9)
+--- perhaps add:
+   Y=minimalModelOfK3(X,Verbose=>true);
+   P15=ring Y
+   X'=ker map(P15/Y,P4,(vars P15)_{0..4});
+   X==X'
+--- do not add:
+   elapsedTime while( L=random(P15^1,P15^{2:-1});
+       pts=trim(ideal L+Y);
+       cpts=decompose pts;
+       pt=first cpts;
+       dim pt==1 and degree pt ==1) do ()
+   elapsedTime betti (sp4=saturate(pt^4+Y))
 *-
 doc ///
 Key
