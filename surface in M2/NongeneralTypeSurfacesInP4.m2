@@ -2,7 +2,7 @@
 restart 
 needsPackage"NongeneralTypeSurfacesInP4"
 
-elapsedTime installPackage "NongeneralTypeSurfacesInP4"  -- 34.8411s elapsed
+elapsedTime installPackage "NongeneralTypeSurfacesInP4"  -- 36.0635s elapsed
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
@@ -32,6 +32,8 @@ newPackage(
     )
 
 export {
+    "K3surfaceD10S9L1FromRank2MinimalK3",
+    "fanoVarietyOfGenus15",
     "numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr",
     "kodairaSpencerSequence",
     "minimalModelOfK3",
@@ -129,6 +131,7 @@ export {
     "get4x2Matrix",
     "Smooth",
     "Special",
+    "Sparse",
     "NumberOfRank1Points",
     "veroneseImagesInG25",
     "vBELSurface",
@@ -3005,6 +3008,7 @@ tally apply(decompose residualInQuintics X,c->(dim c -1 , degree c, genus c,(dim
 ///
 
 
+
 randomAboSurface=method(Options=>{Verbose=>false,Count=>false,
 	PrintConstructionData=>false})
 
@@ -4447,6 +4451,68 @@ K3surfaceD14(PolynomialRing):=P4->(
     assert(dim X==3 and degree X==14 and sectionalGenus X==19);
     trim X)
 
+K3surfaceD10S9L1FromRank2MinimalK3=method(Options=>{Sparse=>true})
+
+K3surfaceD10S9L1FromRank2MinimalK3(PolynomialRing) := o -> P4 -> (
+    (sF,fano) := fanoVarietyOfGenus15(P4,Sparse=>o.Sparse);
+    P16:= ring fano;
+    kk:= coefficientRing P16;
+    H:= ideal random(1,P16);
+    K3a:=ideal(gens fano%H);
+    P15:=kk[support K3a];
+    Y:= sub(K3a,P15);
+    pts:=null; pt:= null;
+    while ( --search a point
+	pts=decompose( Y+ideal random(P15^1,P15^{2:-1}));
+	pt = first pts;
+	not (dim pt==1 and degree pt==1)) do ();
+    betti(sp:=saturate(pt^4+Y));
+    a:= symbol a;
+    P5:= kk[a_0..a_5];
+    h:=(gens sp)_{0..5};
+    X1:= trim ker map(P15/Y,P5,h);
+    betti(fX1:=res X1);
+    singularPt:=ann Ext^3(X1,P5^{-6});
+    ha:=h*sub(jacobian singularPt,kk);
+    hb:=gens trim ideal (vars P15%ideal ha);
+    aut:=contract(transpose vars P15,ha|hb);
+    aut1:=vars P15*inverse aut;
+    Y1:=sub(Y,aut1);
+    minimalBetti(X := ker map(P15/Y1,P4,(vars P15)_{0..4}));
+    return(Y1,X))
+    
+fanoVarietyOfGenus15 = method(Options=>{Sparse=>true})
+
+fanoVarietyOfGenus15(PolynomialRing) := o -> P4 -> (
+    m2x4:=matrix apply(2,i->apply(4,j->P4_(i+j)));
+    R:=minors(2,m2x4);
+    if o.Sparse then (
+	Q:=ideal sum(6,i->R_i)
+	) else (
+	 Q=ideal(gens R*random(source gens R,P4^{-2})));
+    h:=gens trim ideal (gens R%Q);
+    y:=symbol y;x:= symbol x;
+    kk:=coefficientRing P4;  
+    P4xP4:=kk[toList(x_0..x_4)|toList(y_0..y_4),Degrees=>{5:{1,0},5:{0,1}}];
+    xx:=ideal(vars P4xP4)_{0..4};
+    yy:=ideal(vars P4xP4)_{5..9};
+    m5x8:=map(P4xP4^5,,sub(lift(syz (h**(P4/Q),DegreeLimit=>3),P4),gens xx));
+    F:=ideal (gens yy*m5x8);
+    betti(sF:=ideal (gens trim saturate(saturate(F,xx),yy))_{0..9});
+    betti(H:=gens trim ideal((gens xx**gens yy) % F));
+    w:=symbol w;
+    P16:=kk[w_0..w_16];
+    --P44:=kk[gens P4xP4];
+    --H':= map(P44^1,,sub(H,P44));
+    --sF':= ideal sub(gens sF,P44);
+    --elapsedTime betti(fano := trim ker map(P4xP4/sF,P16,H));
+    betti(H2:=symmetricPower(2,H));
+    eq1:=sub(syz(H2%sF,DegreeLimit=>{2,2}),kk);
+    betti(fano:=ideal(symmetricPower(2,vars P16)*eq1));
+    return(sF,fano))
+
+
+
 -* elliptic surfaces *-
 
 ellipticSurfaceD7=method()
@@ -4931,7 +4997,7 @@ PARA{"In our paper we discuss with some details the following surfaces.
         TO bordigaSurface,
 	TO okonekSurfaceD8S6, 
         TO degree10pi9RanestadSurface,
-	TO K3surfaceD10S9L1,
+	TO K3surfaceD10S9L1FromRank2MinimalK3,
         },
     SUBSECTION "Hilbert-Burch",
      UL{
@@ -17762,7 +17828,7 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of a K3 surface of degree 9
+  of a K3 surface of degree 10
 Description
   Text
     We construct a K3 surface of degree 10 and sectional genus 9 with one 6-secant line
@@ -17812,6 +17878,296 @@ References
 SeeAlso
   
 ///        
+
+-* for CannedExample K3surfaceD10S9L1FromRank2MinimalK3
+  Example
+    kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4]
+    elapsedTime (Y,X) =  K3surfaceD10S9L1FromRank2MinimalK3(P4,Sparse=>true);
+    P15=ring Y
+    genera Y, genera X
+    L=(vars P15)_{0..4}
+    X'= trim ker map(P15/Y,P4,L);
+    X==X'
+  Text
+    The projection Y - - > X is defined by the first 5 coordinates L of P15.
+    The intersection of the projection center intersect Y in three point.
+  Example
+    points=primaryDecomposition(Y+ideal L);
+    netList apply(points,p->(dim p, degree p, betti p))
+*-
+doc ///
+Key
+ K3surfaceD10S9L1FromRank2MinimalK3
+ (K3surfaceD10S9L1FromRank2MinimalK3, PolynomialRing)
+ [K3surfaceD10S9L1FromRank2MinimalK3,Sparse]
+Headline
+ construct a Popescu surface of degree 10 from a minimal K3 of genus 15
+Usage
+ (Y,X) = K3surfaceD10S9L1FromRank2MinimalK3 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ X:Ideal
+  of a K3 surface of degree 10
+ Y:Ideal
+  of a minimal K3 surface of genus 15
+Description
+  Text
+    These K3 surface X in P4 arise from a minimal K3 surface Y of genus 15 with a
+    linear system |(H;1^2,4)|. The Picard group of a general Y has rank 2 with
+    intersection matrix (A^2,A.B,B^2)=(6,8,6). The hyperplane is H=A+B.
+
+    The 4-fold base point p3 can be choosen arbitrarily. The image of Y under
+    |(H;4)| maps Y to a surface X1 in P5, which has a nonCM double points q.
+    The base points {p1,p2} are the preimage of q in Y, and X is the projection of X1 from q.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4]
+
+    o2 = P4
+
+    o2 : PolynomialRing
+    i3 : elapsedTime (Y,X) =  K3surfaceD10S9L1FromRank2MinimalK3(P4,Sparse=>true);
+    - - 22.3167s elapsed
+    i4 : P15=ring Y
+
+    o4 = P15
+
+    o4 : PolynomialRing
+    i5 : genera Y, genera X
+
+    o5 = ({1, 15, 27}, {1, 9, 9})
+
+    o5 : Sequence
+    i6 : L=(vars P15)_{0..4}
+
+    o6 = | w_1 w_2 w_3 w_4 w_5 |
+
+                   1        5
+    o6 : Matrix P15  <-- P15
+    i7 : X'= trim ker map(P15/Y,P4,L);
+
+    o7 : Ideal of P4
+    i8 : X==X'
+
+    o8 = true
+  Text
+    The projection Y - - > X is defined by the first 5 coordinates L of P15.
+    The intersection of the projection center intersect Y in three point.
+  CannedExample
+    i9 : points=primaryDecomposition(Y+ideal L);
+    i10 : netList apply(points,p->(dim p, degree p, betti p))
+
+          +--------------------+
+          |              0  1  |
+    o10 = |(1, 1, total: 1 15) |
+          |           0: 1 15  |
+	  +--------------------+
+	  |               0  1 |
+	  |(1, 10, total: 1 51)|
+	  |            0: 1  6 |
+	  |            1: . 45 |
+	  +--------------------+
+	  |              0  1  |
+	  |(1, 1, total: 1 15) |
+	  |           0: 1 15  |
+	  +--------------------+
+  
+References
+   Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
+
+   Popsecu,S. and Ranestad,K., Surfaces of Degree 10 in the Projective Fourspace via Linear
+         systems and Linkage, J. Alg. Geo. 5 (1996), 13-76.
+
+   S. Mori and S. Mukai, Classification of Fano 3-folds with B2 ≥ 2, Manuscr. Math. 36 (1981), 147–162.
+SeeAlso
+   K3surfaceD10S9L1
+   fanoVarietyOfGenus15
+///        
+-* for CannedExample of anoVarietyOfGenus15
+  Example
+    kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    (F,fano) = fanoVarietyOfGenus15(P4,Sparse=>true);
+    betti fano
+    P4xP4=ring F
+    gens P4xP4, tally degrees P4xP4
+    minimalBetti F
+  Text
+    The curve C of genus 15 which arises from fano by intersecting with a P14
+    has a g^4_14 cut out by |A|.
+  Example
+    xx = (gens P4xP4)_{0..4},yy =(gens P4xP4)_{5..9}
+    betti(C'=trim(F+sum(2,i->ideal random({1,1},P4xP4))))
+    betti(C=saturate(saturate(C',ideal xx),ideal yy))
+    C1=eliminate(C,yy);
+    minimalBetti C1
+  Text
+    From the last betti table we can conclude that any general pair 
+    (C,g^4_14)  of a curve of genus 15 with a g^1_14 lies on a pencil of
+    K3 surface, and hence on a unique Fano 3-fold of genus 15.
+    The g^4_14 computes the Clifford index of C. The canonical model of
+    C is a P14 section of the Fano 3-fold fano. The ideal art below
+    is an artinian reduction of the arithemtically Cohen-Macaulay ideal
+    fano. The ideal art and the canonical curve of C have 1225 extra syzygies.
+  Example
+    P16=ring fano
+    art' = ideal (gens fano% ideal random(P16^1,P16^{4:-1}));   
+    P12=kk[support art']
+    art=sub(art',P12);
+    dim art == 0
+    elapsedTime minimalBetti(sub(art,P12),LengthLimit=>7)
+*-
+
+
+doc ///
+Key
+ fanoVarietyOfGenus15
+ (fanoVarietyOfGenus15, PolynomialRing)
+ [fanoVarietyOfGenus15,Sparse]
+Headline
+ construct a Popescu surface of degree 10 from a minimal K3 of genus 15
+Usage
+ (F,fano) = fanoVarietyOfGenus15 P4
+Inputs
+ P4:PolynomialRing
+  coordinate ring of P4
+Outputs
+ F:Ideal
+  of a the Fano 3-fold in P4xP4
+ fano:Ideal
+  of the Fano 3-fold in P16
+Description
+  Text
+    According to Mori-Mukai the Fano 3-folds which are the blow-up of a quadric in
+    P4 along a rational normal curve have b2=2. They have a model in P4xP4 and in P16.
+    We construct an example and compute both models.
+  CannedExample
+    i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
+    i3 : (F,fano) = fanoVarietyOfGenus15(P4,Sparse=>true);
+    i4 : betti fano
+
+                0  1
+    o4 = total: 1 78
+             0: 1  .
+	     1: . 78
+
+    o4 : BettiTally
+    i5 : P4xP4=ring F
+
+    o5 = P4xP4
+
+    o5 : PolynomialRing
+    i6 : gens P4xP4, tally degrees P4xP4
+
+    o6 = ({x , x , x , x , x , y , y , y , y , y }, Tally{{0, 1} => 5})
+            0   1   2   3   4   0   1   2   3   4         {1, 0} => 5
+
+    o6 : Sequence
+    i7 : minimalBetti F
+
+                0  1  2  3  4 5
+    o7 = total: 1 10 16 16 10 1
+             0: 1  .  .  .  . .
+	     1: . 10 16  .  . .
+	     2: .  .  . 16 10 .
+	     3: .  .  .  .  . 1
+
+    o7 : BettiTally
+  Text
+    The curve C of genus 15 which arises from fano by intersecting with a P14 has a g^4_14 cut out by |A|.
+  CannedExample
+    i8 : xx = (gens P4xP4)_{0..4},yy =(gens P4xP4)_{5..9}
+
+    o8 = ({x , x , x , x , x }, {y , y , y , y , y })
+            0   1   2   3   4     0   1   2   3   4
+
+    o8 : Sequence
+    i9 : betti(C'=trim(F+sum(2,i->ideal random({1,1},P4xP4))))
+
+                0  1
+    o9 = total: 1 12
+             0: 1  .
+	     1: . 12
+
+    o9 : BettiTally
+    i10 : betti(C=saturate(saturate(C',ideal xx),ideal yy))
+
+                 0  1
+    o10 = total: 1 22
+              0: 1  .
+	      1: . 12
+	      2: .  4
+	      3: .  6
+
+    o10 : BettiTally
+    i11 : C1=eliminate(C,yy);
+
+    o11 : Ideal of P4xP4
+    i12 : minimalBetti C1
+
+                 0 1  2 3
+    o12 = total: 1 6 10 5
+              0: 1 .  . .
+	      1: . 1  . .
+	      2: . 2  . .
+	      3: . 3 10 5
+
+    o12 : BettiTally
+  Text
+    From the last betti table we can conclude that any general pair
+    (C,g^4_14) of a curve of genus 15 with a g^1_14 lies on a pencil of
+    K3 surface, and hence on a unique Fano 3-fold of genus 15.
+    The g^4_14 computes the Clifford index of C. The canonical model of C is
+    a P14 section of the Fano 3-fold fano.
+
+    The ideal art below is an artinian reduction of the arithemtically
+    Cohen-Macaulay ideal fano. The ideal art and the canonical curve of C
+    have 1225 extra syzygies.
+
+    i13 : P16=ring fano
+
+    o13 = P16
+
+    o13 : PolynomialRing
+    i14 : art' = ideal (gens fano% ideal random(P16^1,P16^{4:-1}));
+
+    o14 : Ideal of P16
+    i15 : P12=kk[support art']
+
+    o15 = P12
+
+    o15 : PolynomialRing
+    i16 : art=sub(art',P12);
+
+    o16 : Ideal of P12
+    i17 : dim art == 0
+
+    o17 = true
+    i18 : elapsedTime minimalBetti(sub(art,P12),LengthLimit=>7)
+    - - 44.9477s elapsed
+
+    0  1   2    3    4    5    6    7
+    o18 = total: 1 78 560 2002 4368 6006 5801 5801
+    0: 1  .   .    .    .    .    .    .
+    1: . 78 560 2002 4368 6006 4576 1225
+    2: .  .   .    .    .    . 1225 4576
+
+    o18 : BettiTally
+
+    
+    
+References
+   Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
+
+   Popsecu,S. and Ranestad,K., Surfaces of Degree 10 in the Projective Fourspace via Linear
+         systems and Linkage, J. Alg. Geo. 5 (1996), 13-76.
+
+    S. Mori and S. Mukai, Classification of Fano 3-folds with B2 ≥ 2, Manuscr. Math. 36 (1981), 147–162.	 
+SeeAlso
+   K3surfaceD10S9L1
+   K3surfaceD10S9L1FromRank2MinimalK3
+///  
+
 
 -*
 for CannedExample in K3surfaceD10S9L3
