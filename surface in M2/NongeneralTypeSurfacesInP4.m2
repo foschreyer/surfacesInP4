@@ -17050,9 +17050,9 @@ Description
     o10 : Ideal of P4
     i11 : dim R, degree R ,betti R, degree (R+X)
 
-    0 1
+                        0 1
     o11 = (3, 1, total: 1 2, 5)
-    0: 1 2
+                     0: 1 2
 
     o11 : Sequence
     i12 : cRX=primaryDecomposition (R+X)
@@ -17984,7 +17984,7 @@ SeeAlso
    K3surfaceD10S9L1
    fanoVarietyOfGenus15
 ///        
--* for CannedExample of anoVarietyOfGenus15
+-* for CannedExample of fanoVarietyOfGenus15
   Example
     kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
     (F,fano) = fanoVarietyOfGenus15(P4,Sparse=>true);
@@ -18146,11 +18146,11 @@ Description
     i18 : elapsedTime minimalBetti(sub(art,P12),LengthLimit=>7)
     - - 44.9477s elapsed
 
-    0  1   2    3    4    5    6    7
+                 0  1   2    3    4    5    6    7
     o18 = total: 1 78 560 2002 4368 6006 5801 5801
-    0: 1  .   .    .    .    .    .    .
-    1: . 78 560 2002 4368 6006 4576 1225
-    2: .  .   .    .    .    . 1225 4576
+              0: 1  .   .    .    .    .    .    .
+	      1: . 78 560 2002 4368 6006 4576 1225
+	      2: .  .   .    .    .    . 1225 4576
 
     o18 : BettiTally
 
