@@ -275,7 +275,10 @@ kodairaSpencerSequence(Ideal) := X -> (
        {rank HH^1 TX, rank HH^1 TP4restrictedToX, rank HH^1 NX},
        {rank HH^2 TX, rank HH^2 TP4restrictedToX, rank HH^2 NX}}; 
     cohoDims)
-
+-*
+elapsedTime rank HH^1 TP4restrictedToX
+elapsedTime  rank HH^1 NX
+*-
 
 expectedCodimensionInNonminimalK3Moduli=method(Options=>{Verbose=>true})
 -- Purpose : checks whether the blow-down map from the corresponding component of the
@@ -17734,7 +17737,7 @@ Key
  K3surfaceD9
  (K3surfaceD9, PolynomialRing)
 Headline
- construct a K3 surface of degree 8
+ construct a K3 surface of degree 9
 Usage
  X=K3surfaceD9 P4
 Inputs
@@ -19631,7 +19634,7 @@ chiITable(15,14,-2)
 chiITable(15,14,-3)
 chiITable(15,14,-4)
 
--* problem 9.9 rational surface of degree 14 *-
+-* problem 9.10 on rational surface of degree 14 *-
 kk=ZZ/2
 E=kk[e_0..e_4,SkewCommutative=>true]
 needsPackage "NongeneralTypeSurfacesInP4"
