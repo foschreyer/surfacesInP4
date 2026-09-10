@@ -5044,7 +5044,7 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 	TO Ksquare,
         TO HdotK,
 	TO sectionalGenus,
-	TO chiNX,
+	TO chiNX, 
 	TO kodairaSpencerSequence,
         },
     
@@ -6046,11 +6046,11 @@ Inputs
  X:Ideal
   of a smooth surface in P4
  d:ZZ
-   degree
+   degree,
  g:ZZ
-   sectional genus
+   sectional genus and
  x:ZZ
-   euler charcteristic of the structurs sheaf of a surface
+   Euler charcteristic of the structure sheaf of a surface in P4
 Outputs
   b:ZZ
     the Euler characteristic of the Normal bundle of X
