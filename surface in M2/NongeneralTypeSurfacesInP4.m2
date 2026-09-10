@@ -5742,6 +5742,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
 	TO minimalModelOfK3,
 	TO partitionOfCanonicalDivisorOfAboSurface,
 	TO selfIntersectionNumber,
+	TO tangentToMonad,
 	},
     SUBSECTION "References",
     UL{
@@ -6035,13 +6036,21 @@ doc///
 Key
  chiNX
  (chiNX,Ideal)
+ (chiNX,ZZ,ZZ,ZZ)
 Headline
  compute the Euler characteristic of the normal bundle of the surface X
 Usage
  b = chiNX X
+ b = chiNX(d,g,x)
 Inputs
  X:Ideal
   of a smooth surface in P4
+ d:ZZ
+   degree
+ g:ZZ
+   sectional genus
+ x:ZZ
+   euler charcteristic of the structurs sheaf of a surface
 Outputs
   b:ZZ
     the Euler characteristic of the Normal bundle of X
@@ -7554,13 +7563,18 @@ doc///
 Key
  tangentToMonad
  (tangentToMonad,Ideal)
+ (tangentToMonad,Matrix,Matrix)
 Headline
  Compute the tangent space to the monad for a surface
 Usage
   m = tangentToMonad X
+  m = tangentToMonad(alpha,beta)
 Inputs
   X:Ideal
     homogenous ideal of a smooth projective surface in P4
+  alpha:Matrix
+  beta:Matrix
+    of matrices over the exterior algebra defining a monad
 Outputs
   m:Matrix
    which describes the first order deformation space for the monad of X
@@ -12136,6 +12150,8 @@ Key
  randomSpecialAboSurface
  randomAboSurfaceWithLargeHomSpace
  randomAboSurfaceWithHomSpaceOfGivenDimension
+ (randomAboSurfaceWithHomSpaceOfGivenDimension,Ring,Ring,ZZ)
+ (randomAboSurfaceWithLargeHomSpace,Ring,Ring,ZZ)
  (randomAboSurface, Ring, Ring)
  [randomAboSurfaceWithLargeHomSpace,Verbose]
  [randomAboSurfaceWithLargeHomSpace,Count]
@@ -12153,7 +12169,7 @@ Headline
 Usage
  (X,m3x4)=randomAboSurface(P4,E)
  (X,m3x4)=randomSpecialAboSurface(P4,E)
- (X,m3x4,r)=randomAboSurfaceWithLargeHomSpace(P4,E,h)
+ (X,m3x4,r)=(randomAboSurfaceWithHomSpaceOfGivenDimension(P4,E,h)
  (X,m3x4,r)=randomAboSurfaceWithLargeHomSpace(P4,E,h)
 Inputs
  P4:Ring
@@ -12213,7 +12229,7 @@ Description
 
 
 References
-   Abo, H., Ranestad, K., Schreyer, F.-O., Non-general type surfaces in $\Pn 4$, an update, preprint (2026)       
+   Abo, H., Ranestad, K., Schreyer, F.-O., Non-general type surfaces in $P^4$, an update, preprint (2026)       
 SeeAlso
    residualInQuintics
    partitionOfCanonicalDivisorOfAboSurface
@@ -19534,6 +19550,16 @@ Headline
 Description
   Text
     An option key which is used when in a random search of surfaces we want a smooth surface
+///
+
+doc///
+Key
+ Sparse
+Headline
+ an option
+Description
+  Text
+    An option key which is used in some functions when we want to choose a sparse matrix
 ///
 
 doc///
