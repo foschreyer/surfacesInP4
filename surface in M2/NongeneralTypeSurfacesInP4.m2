@@ -5076,16 +5076,16 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 
 document {
 Key => schreyerSurfaces,
-Headline => "functions concerning Schreyer surfaces, degree 11 sectional genus 10 (8 families)",
+Headline => "functions concerning Schreyer surfaces of degree 11 and sectional genus 10 (8 families)",
    PARA{"[Schreyer,1996] discovered 4 families of surfaces X in P4 with d=11 and sectional genus pi=10 via a search over a finite field
-   of which 3 families consist of rational surfaces. 
-   Repeating such search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
+   three of which 3 consist of rational surfaces. 
+   Repeating such a search now, we found altogether 8 families of rational surfaces and 1 family of Enriques surfaces. 
    In the following, we give an overview of the functions used in that search."},
 
    EXAMPLE {"chiITable(11,10,1)"},
 
    PARA{"The H^1-module of the ideal sheaf has Hilbert function (1,5,5). A general module with this Hilbert function is determined by a 
-       10-dimension subspace of H^0(P4,O(2)) and has syzygies"},
+       10-dimension subspace of H^0(P4,O(2)) and has syzygies."},
 
    EXAMPLE {"kk=ZZ/3;P4=kk[x_0..x_4]; M = coker random(P4^1,P4^{10:-2});minimalBetti M"},
 
@@ -5760,7 +5760,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
         "Abo, H., unpublished notes, 2022"},
 }
 
-/// -* degrees of the poalrization of the minimal K3 *-
+/// -* degrees of the polarization of the minimal K3 *-
 Ds={{1,2,2,2,2,3},{1,1,2,2,2,4},{1,1,2,2,3,3},{1,1,1,2,3,4},{1,1,1,2,2,5},
     {1,1,1,3,3,3},{1,1,1,1,4,4},{1,1,1,1,2,6},{1,1,1,1,1,7}}
 apply(Ds,D->(12+sum(D,i->i^2))/2)
@@ -7570,6 +7570,25 @@ SeeAlso
     get locqlly a family of dimension at least
   Example
     2*6+19-3*5+24==40
+  Text
+    Thus the space of monads for the ideal sheaf is smooth of the expected dimension 40
+    at the given point. 
+    A transversal slice defined over ZZ to the space of monads through the given point
+    over ZZ/19 defines
+    an number field K, a prime with residue field ZZ/19 and a smooth family of surface over an open
+    part of Spec O_K, which specializes to the given surface.
+    The fiber over the generic point of
+    Spec O_K is a lifting to characteristic 0.
+  Example
+    elapsedTime netList for k from 0 to 8 list (
+      X=specificAboSurface(P4,E,k);
+      D=partitionOfCanonicalDivisorOfAboSurface X;
+      m=tangentToMonad X;    
+      r=rank source m ;
+      (k,D,r==85))
+  Text
+    Thus all 9 specific Abo surfaces lift to characteristic zero.
+
 *-
 doc///
 Key
@@ -7592,13 +7611,127 @@ Outputs
    which describes the first order deformation space for the monad of X
 Description
   Text
-    This command computes the dimension of the tangent space to the space 'V' of monads
-    of the form 'M' a*Omega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example
-    by taking the derivative of the composite of differentials 'alpha' and 'beta'.
-    The dimension of the space of isomophism classes of monads is at most
-    dim V-(a^2+b^2+c^2+5*b*c+d^2-1).
-    In the example below we have a=3, b=1, c=3, d=4
+    This command computes the dimension of the tangent space to the space 'V' of monads of the
+    form 'M' a*Omega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example by taking the
+    derivative of the composite of differentials 'alpha' and 'beta'. The dimension of the space
+    of isomophism classes of monads is at most dim V-(a^2+b^2+c^2+5*b*c+d^2-1).
+    In the example below we have a=3, b=1, c=3, d=4.
   CannedExample
+    i1 : kk=ZZ/19
+
+    o1 = kk
+
+    o1 : QuotientRing
+    i2 : P4=kk[x_0..x_4]
+
+    o2 = P4
+
+    o2 : PolynomialRing
+    i3 : E=kk[e_0..e_4,SkewCommutative=>true]
+
+    o3 = E
+
+    o3 : PolynomialRing, 5 skew commutative variable(s)
+    i4 : X=specificAboSurface(P4,E,1);
+
+    o4 : Ideal of P4
+    i5 : minimalBetti X
+
+                0  1  2  3 4
+    o5 = total: 1 12 24 17 4
+             0: 1  .  .  . .
+	     1: .  .  .  . .
+	     2: .  .  .  . .
+	     3: .  .  .  . .
+	     4: .  4  .  . .
+	     5: .  8 24 17 4
+
+    o5 : BettiTally
+    i6 : betti(T=tateResolutionOfSurface X)
+
+                 -1  0  1  2 3 4 5  6  7
+    o6 = total: 123 74 38 14 4 4 8 28 76
+            -4:   1  .  .  . . . .  .  .
+	    -3: 122 74 38 14 1 . .  .  .
+	    -2:   .  .  .  . 3 1 .  .  .
+	    -1:   .  .  .  . . 3 4  .  .
+	     0:   .  .  .  . . . 4 28 76
+
+    o6 : BettiTally
+    i7 : a=3, b=1, c=3, d=4
+
+    o7 = (3, 1, 3, 4)
+
+    o7 : Sequence
+    i8 : m=tangentToMonad X;
+
+                           28                 85
+    o8 : Matrix (kk[e ..e ])   <-- (kk[e ..e ])
+                     0   4              0   4
+    i9 : r = rank source m
+
+    o9 = 85
+    i10 : r - (a^2+b^2+5*b*c+c^2+d^2-1) == 36
+
+    o10 = true
+  Text
+    So the rank 2 reflexive sheaf E depends on at most 36 parameters and taking into acount h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
+
+    On the other hand X is the blowup of a polarized K3 surface in 6 points. So we get locqlly a family of dimension at least
+  CannedExample
+    i11 : 2*6+19-3*5+24==40
+
+    o11 = true
+  Text 
+    Thus the space of monads for the ideal sheaf is smooth of the expected dimension 40 at the given point. A transversal slice defined over ZZ to the space of monads through the given point over ZZ/19 defines an number field K, a prime with residue field ZZ/19 and a smooth family of surface over an open part of Spec O_K, which specializes to the given surface. The fiber over the generic point of Spec O_K is a lifting to characteristic 0.
+  CannedExample
+    i12 : elapsedTime netList for k from 0 to 8 list (
+          X=specificAboSurface(P4,E,k);
+          D=partitionOfCanonicalDivisorOfAboSurface X;
+          m=tangentToMonad X;
+          r=rank source m;
+          (k,D,r==85))
+    -- 261.662s elapsed
+
+          +-----------------------------+
+    o12 = |(0, {1, 2, 2, 2, 2, 3}, true)|
+          +-----------------------------+
+	  |(1, {1, 1, 2, 2, 3, 3}, true)|
+	  +-----------------------------+
+	  |(2, {1, 1, 1, 3, 3, 3}, true)|
+	  +-----------------------------+
+	  |(3, {1, 1, 2, 2, 2, 3}, true)|
+	  +-----------------------------+
+	  |(4, {1, 1, 1, 2, 3, 4}, true)|
+	  +-----------------------------+
+	  |(5, {1, 1, 1, 2, 2, 5}, true)|
+	  +-----------------------------+
+	  |(6, {1, 1, 1, 1, 4, 4}, true)|
+	  +-----------------------------+
+	  |(7, {1, 1, 1, 1, 2, 6}, true)|
+	  +-----------------------------+
+	  |(8, {1, 1, 1, 1, 1, 7}, true)|
+	  +-----------------------------+
+  Text
+    Thus all 9 specific Abo surfaces lift to characteristic zero.
+
+SeeAlso
+   specificAboSurface
+   partitionOfCanonicalDivisorOfAboSurface
+///
+
+/// -* check the tangentToMonad has dimension 36 for lift to caharcteristic 0 *-
+kk=ZZ/19;
+P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true]
+a=3, b=1, c=3, d=4
+elapsedTime netList for k from 0 to 8 list (
+     X=specificAboSurface(P4,E,k);
+     D=partitionOfCanonicalDivisorOfAboSurface X;
+     m=tangentToMonad X;    
+     r=rank source m ;
+     (k,D,r==85))
+
+   CannedExample
     i1 : kk=ZZ/19
 
     o1 = kk
@@ -7679,9 +7812,8 @@ Description
     part of Spec O_K, which specializes to the given surface.
     The fiber over the generic point of
     Spec O_K is a lifting to characteristic 0.
+
 ///
-
-
 
 
 -* schreyer surfaces *-
@@ -8727,12 +8859,13 @@ Outputs
   the ideal of a smooth Schreyer surface
 Description
   Text
-    The desired surface has a residual scheme R=X5:X, which is a quintic elliptic scroll.
+    Let X5 denote the scheme defined by the quintics in the ideal X.
+    The desired surface X has a residual scheme R=X5:X, which is a quintic elliptic scroll.
     The H^1-module is defined as the sum of the ideals of two elliptic curves on the scroll.
     Thus, the construction needs a point p on the Bring curve and two points on the conic of
     elliptic normal curves of degree 5. Over a finite field such data are easily found by a random search, whose running time
     is independent of the finite ground field. 
-    The two points on the conic are the intersection of the conic with the polar line to the point p of the conic, [Hulek,199x].
+    The two points on the conic are the intersection of the conic with the polar line to the point p of the conic, [Hulek,1987].
     The rest of the construction is unirational.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
@@ -8785,6 +8918,10 @@ Description
   Text
     These surfaces do not form a complete family, i.e., this family is part of a
     family of larger dimension.
+References
+  [Schreyer,1996] Schreyer, F.-O., Small fields in constructive algebraic geometry, in Moduli of Vector bundles, Sanda 1994, Lecture Notes in Pure and Appl. Math., 179, (1996), 221-228.
+
+  [Hulek,1987] Hulek,K., Geometry of the Horrocks-Mumford bundle, Algebraic geometry, Proc. Summer Res. Inst., Brunswick/Maine 1985, part 2, Proc. Symp. Pure Math. 46, No. 2, 69-85., 1987.
 ///
 
 ///
@@ -9434,7 +9571,7 @@ Inputs
   ideal defining a H^1-module with Hilbert function (1,5,5) with s extra syzygies
 Outputs
  d:Number
-  dimension of the tangent space of the correponding strata at the given point M
+  dimension of the tangent space of the correponding strata with s extra syzygies at the given point M
 Description
   Text
     To prove the existence of a lift of the corresponding surface to characteristic 0,
@@ -12600,7 +12737,7 @@ Outputs
   of the cubic scroll in P4
 Description
   Text
-    The smooth cubic scroll is uniquely determined up to projectivities.
+    The smooth cubic scroll is uniquely determined up to projective equivalence.
     It is define by the 2x2 minors of a 2x3 matrix.
     The function returns this ideal.
   Example
@@ -12789,7 +12926,9 @@ Outputs
 Description
   Text
     We construct the surface from a randomly choosen differential T.dd_3
-    of the Tate resolution of the desired ideal.
+    of the Tate resolution of the desired ideal. (From the shape of the Betti table
+    of the Tate resolution T below, one can deduce that this matrix determines the Tate resolution,
+    and hence the ideal.)
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -13038,6 +13177,9 @@ References
 
    Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026),
 
+SeeAlso
+   tateResolutionOfSurface
+   parametrizationOfDegreeFiveDelPezzo
 ///
 
 ///
@@ -13091,7 +13233,8 @@ Outputs
 Description
   Text
     We construct an Ionescu-Okonek surface from its rational parametrization.
-    X=P2(6;2^6,1^5);
+    X=P2(6;2^6,1^5) is the image of P2 under the rational map defined by sextics which pass doubly through
+    6 points and simple through 5 points. The surface is non-special, i.e. h^1(O_X(1))=0.
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -13132,7 +13275,8 @@ Outputs
 Description
   Text
     We construct an Ionescu-Okonek surface from its rational parametrization:
-    X=P2(7;2^10,1); 
+    X=P2(7;2^10,1) is the image of P2 defined by septics vanishing doubly in ten points and
+    simple at one point. 
   Example
     kk=ZZ/nextPrime 10^3;
     P4=kk[x_0..x_4];
@@ -13235,8 +13379,8 @@ Description
     o6 : BettiTally
     i7 : betti(T.dd_4)
 
-                0 1
-    o7 = total: 2 3
+                 0 1
+    o7 =  total: 2 3
               1: 2 .
 	      2: . 2
 	      3: . 1
@@ -13362,7 +13506,7 @@ Description
 
     o10 : Tally
   Text
-    There are four 6-secant lines, three of them are in the plane
+    There are four 6-secant lines. Three of them are in the plane
     which intersects X in a plane quartic and three points. Hence
     X contains two (-1)-lines.
   CannedExample
@@ -14427,8 +14571,8 @@ Outputs
 Description
   Text
     We construct a nonspecial Alexander surface of degree 9 from its rational parametrization,
-    or what is faster from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module has
-    a special presentation which gives rize to a 6-secant line.
+    or more quickly from a presentation of the H^1_*(I_X) module. The dual of this (3,5,1) module has
+    a special presentation which gives rise to a 6-secant line.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -14448,7 +14592,7 @@ Description
     i4 : elapsedTime (L0,adjList,ptsList, J)=adjunctionProcess X;
     -- .873775s elapsed
   Text
-    LeBarz formula computes the number of 6-secant lines + the number of (-1)-lines.
+    Le Barz formula computes the number of 6-secant lines + the number of (-1)-lines.
   CannedExample
     i5 : LeBarzN6(degree X, sectionalGenus X,1)
 
@@ -14494,7 +14638,8 @@ Description
 
     o11 : Tally
   Text
-    H is a linear system of forms of degree which vanish in 10 points with multiplicity 4. However over the field the 10 point split into orbits under the Frobenius. In the second version of the function we start with a rational P2 - -> P4 defined by forms of degree 13 which vanishes on 10 randomly chosen points with multiplicity 4.
+    H is a linear system of forms of degree which vanish in 10 points with multiplicity 4.
+    However over the field the 10 point split into orbits under the Frobenius. In the second version of the function we start with a rational P2 - -> P4 defined by forms of degree 13 which vanishes on 10 randomly chosen points with multiplicity 4.
   CannedExample
     i12 : P2=kk[y_0..y_2];
     i13 : elapsedTime minimalBetti(X=nonspecialAlexanderSurface(P4,P2))
@@ -14513,7 +14658,7 @@ Description
     i14 : (L0,adjList,ptsList,J)=adjunctionProcess(X);
     i15 : betti(H=parametrization(ring J,adjList))
 
-    0 1
+                 0 1
     o15 = total: 1 5
               0: 1 .
 	      1: . .
@@ -14537,7 +14682,7 @@ Description
 
     o17 : Tally
   Text
-    This times the ideal H decomposes in to 10 points of degree 1 defined over kk
+    This times the ideal H decomposes into 10 points of degree 1 defined over kk
     and an embedded (y_0..y_2)-primary ideal.
 References
    Alexander, J., Surfaces rationelles non-speciales dans P4, Math. Z., 200, (1988), 87-110
@@ -14945,7 +15090,7 @@ Description
     o9 : BettiTally
 
   Text
-    Thus a random choice of the differential T.dd_4 leads to a surface and the component of the Hilbert scheme is unirational.
+    Thus a random choice of the differential T.dd_4 leads to a surface and hence the component of the Hilbert scheme is unirational.
 References
    Alexander, J., Speciality one rational surfaces in P4, LNS,London Math. Soc., LNS, 179, (1992), 1-23
 
@@ -15006,7 +15151,6 @@ Description
     The Popescu surfaces come in three families, distinguished by their
     number of 6-secant lines.
     One has to choose the differential T.dd_4 suitable.
-    In the first case X has no 6-secant, since the ideal is generated by quintics.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -15143,7 +15287,7 @@ Key
  (vBELSurface, PolynomialRing)
  (vBELSurface, Ring,Ring)
 Headline
- construct a von Bothmer-Erdenberger-Ludwig surface, degree 11, sectional genus 11
+ construct a von Bothmer-Erdenberger-Ludwig surface of degree 11 and sectional genus 11
 Usage
  X= vBElSurface(P4,P2)
  X= vBELSurface(P4) 
