@@ -4959,7 +4959,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 document {
 Key => unirationalFamiliesOfRationalSurfaces,
 Headline => "unirational families of rational surfaces",
-   "Most of the families constructed in [DES], [Popescu1] and earlier are actually unirational. We list the links to the corresponding functions.
+   "Most of the families constructed in [DES], [Popescu93] and earlier are actually unirational. We list the links to the corresponding functions.
     Exceptions are certain families of Schreyer and Abo-Ranestad surfaces, where we only know that some of the families are unirational.",
    
    PARA{},
@@ -4985,7 +4985,12 @@ Headline => "unirational families of rational surfaces",
      UL{
         TO schreyerSurfaces,
 	TO aboRanestadSurfaces
-	}
+	},
+     SUBSECTION "References",
+     UL{
+        "[DES] Decker, W., Ein, L., Schreyer, F-O., Construction of surfaces in P4, J. Algebraic Geom., 2,  (1993), 185-237",
+        "[Popescu93], Popescu, S., Surfaces of degree >= 11 in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)",
+       }
 }
 
 document {
@@ -5033,7 +5038,7 @@ PARA{"In our paper [ARS2026], we discuss with some details the following surface
     ,
     SUBSECTION "References",
     UL{
-     "[ARS2026] Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026)",
+          "[ARS2026] Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026)",
      },
     }
 
@@ -7205,7 +7210,8 @@ Description
 
     o12 : Sequence
   Text
-    The first 5 coordinate of Y in Pg define the projection to P4.
+    The surface Y is embedded into a Pg (with g=15 in this specific case).
+    The first 5 coordinates of Pg define the projection to P4.
   CannedExample
     i13 : P15=ring Y;L=(vars P15)_{0..4}
 
@@ -7238,9 +7244,9 @@ Description
   Text
     Thus X is the blown-up of a minimal K3-surface Y of genus 15 in 3 point
     and the rational map Y - -> X is defined by the linear system of 
-    hyperplanes which vanish with multiplicity 3 in the in the first point
+    hyperplanes which vanish with multiplicity 3 in the first point
     and simple in the two other points.
-    Since 16-(10+1+1)=4 we have h^0(O_X(1))=1.
+    Since 16-(10+1+1)=4 we have h^1(O_X(1))=1.
 
 SeeAlso
    LeBarzN6
