@@ -337,7 +337,7 @@ chiITable(ZZ,ZZ,ZZ) := (d,sg,xO) -> (
     -- Use 'BettiTally' to display the Betti diagram 
     new BettiTally from (H4|H3|H2|H1|H0))
 
-/// -* Test chiTable *-
+/// -* Test chiITable *-
 kk=ZZ/nextPrime 10^4
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
@@ -4937,9 +4937,8 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO biellipticSurfaceD15,
 	TO irregularEllipticSurfaceD12,
         },
-    SUBSECTION "Elliptic surfaces",
+    SUBSECTION "Kodaira dimension 1",
      UL{
-        TO irregularEllipticSurfaceD12,
 	TO surfacesOfKodairaDimension1,
         },
      SUBSECTION "Investigating embedded surfaces",
@@ -5040,17 +5039,21 @@ PARA{"In our paper [ARS2026], we discuss with some details the following surface
 
 document {
 Key => numericalFunctions,
-Headline => "Various numerical functions to investigate surfaces in P4",
+Headline => "Various functions to investigate surfaces in P4",
    
-   PARA{},
+   PARA{"We list functions for studying surfaces in P4. 
+        The functions are categorized by their intended use."},
      SUBSECTION "Intersection numbers",
      UL{
-        TO LeBarzN6,
 	TO Ksquare,
         TO HdotK,
 	TO sectionalGenus,
+	},
+    SUBSECTION "Deformations",
+    UL{
 	TO chiNX, 
 	TO kodairaSpencerSequence,
+	TO tangentToMonad,
         },
     
      SUBSECTION "Tate resolutions",
@@ -5064,6 +5067,7 @@ Headline => "Various numerical functions to investigate surfaces in P4",
 
     SUBSECTION "6-secants and canonical divisors",
      UL{
+	TO LeBarzN6,
 	TO canonicalDivisor,
         TO partitionOfCanonicalDivisorOfAboSurface,
 	TO residualInQuintics,      
@@ -5147,9 +5151,9 @@ if the images of these maps in G(2,5) intersect in at least 3 points.
 
 EXAMPLE {"kk=ZZ/101;E=kk[e_0..e_4,SkewCommutative=>true];m2x3=matrix{{e_0,e_1,e_3},{e_1,e_2,e_4}}"},
 
-PARA{"The varieties of matrices m4x2 with 3 or 4 intersection points are unirational. 
+PARA{"The varieties of 4x2 matrices with 3 or 4 intersection points are unirational. 
 To find example with 5 or 6 intersection points can be achieved by a search over a 
-finite field. A special situation occurs if the 4x2 matrix has 2x2 submatix 
+finite field. A special situation occurs if the 4x2 matrix has 2x2 submatrix 
 which also depends only on e_0..e_2. Then we have two conics in the e_0..e_2 plane 
 which intersect in four point and specifying one or two more intersection points 
 in the Grassmannian gives further unirational components. To get 7 intersection points can be 
@@ -5707,13 +5711,12 @@ candidatesWithGenus={
 
 document {
 Key => aboSurfaces,
-Headline => "functions for investigating Abo surfaces, degree 12, sectional genus 13 and pg=1 (9 families)",
+Headline => "functions for investigating Abo surfaces, degree 12, sectional genus 13 and geometric genus pg=1 (9 families)",
 
-PARA{"A regular smooth surface X of degree 12, sectional genus 13 and geometric genus
-pg=1 has a Tate resolution for the ideal sheaf of shape:"},
+PARA{"A regular smooth surface X of degree 12, sectional genus 13 and geometric genus pg=1 has a Tate resolution for the ideal sheaf of shape:"},
 EXAMPLE {"chiITable(12,13,2)"},
 
-PARA {"We construct the surface from the 3x1 and 3x4 linear matrices 
+PARA {"We construct the surfaces from the 3x1 and 3x4 linear matrices 
 in the Tate resolution, which define a line and a Bordiga surface. 
 These matrices can be completed to a differential of the Tate resolution, 
 if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. 
@@ -5819,11 +5822,13 @@ o29 = Tally{{1, 1, 1, 1, 1, 6} => 1 }
 
 document {
 Key => surfacesOfKodairaDimension1,
-Headline => "surface of Kodaira dimension 1 (15 families)",
+Headline => "surfaces of Kodaira dimension 1 (15 families)",
    "",
     
-   PARA{},
-     SUBSECTION "elliptic surfaces",
+   PARA{"Surfaces of Kodaira dimension 1 are elliptic surfaces with a canonical
+       divisor containing an elliptic curve. Various families of minimal and non-minimal
+       such surfaces are known. We enumerate the families by the degree D and
+       the sectional genus S and compute the components of a canonical divisor."},
      UL{	
         TO ellipticSurfaceD7,
 	TO ellipticSurfaceD8,
@@ -5831,10 +5836,10 @@ Headline => "surface of Kodaira dimension 1 (15 families)",
 	TO ellipticSurfaceD10S9,
 	TO ellipticSurfaceD10S10,
 	TO ellipticSurfaceD11S12,
+	TO ellipticSurfaceD12S13,
 	TO ellipticSurfaceD12S14L0,
 	TO ellipticSurfaceD12S14Linfinite,
-	TO ellipticSurfaceD12S13,
-	TO irregularEllipticSurfaceD12,	
+	TO irregularEllipticSurfaceD12,
 	TO specificEllipticAboSurfaceD12S13,	
 	TO specificEllipticSurfaceD13S16,
         },
@@ -5933,14 +5938,13 @@ Outputs
     plausible Betti tally of the cohomology of the desired ideal sheaf
 Description
   Text
-    Since
-
-    chi(I_X(m))=chi(O_P4(m))-chi(O_X(m))
-
-    one can compute chi(I_X(m)) using Riemann-Roch which depends only
-    degree d, the sectional genus sg, the Euler characteristic xO and m.
-    Assuming that I_X has natural cohomology for m in {-4..8} and that m -> chi(I_X(m)) has enough
-    sign changes, we get a plausible table.
+    The Euler characteristic of the ideal sheaf of a surface X twisted by an integer m
+    equals the difference between the Euler characteristics of the structure sheaves of P4 and X,
+    both twisted by m. Thus, it can be computed using the Riemann-Roch theorem, which depends only
+    on the degree, sectional genus, and Euler characteristic of X and on the integer m.
+    If the ideal sheaf has natural cohomology, if m ranges from -4 to 8, and if the function
+    that maps m to the Euler characteristic of the ideal sheaf of X twisted by m changes
+    sign sufficiently, then the cohomology table for X is uniquely determined. 
   CannedExample
     i1 : chiITable(11,10,1)
 
@@ -6066,7 +6070,7 @@ Outputs
     the Euler characteristic of the Normal bundle of X
 Description
   Text
-    The Euler characteristic of the normal bundle NX=sheaf(Hom(module X, P4^1/X))
+    The Euler characteristic of the normal bundle NX
     can be computed form the numerical invariants of X.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
@@ -6490,21 +6494,21 @@ Inputs
  sg:ZZ
   the sectional genus of X
  xO:ZZ
-  the Euler charcteristic (1-q+pg) of O_X
+  the Euler charcteristic (1-q+pg) of the structure sheaf of X
 Outputs
  k2:ZZ
 
 Description
   Text
    The self-intersection number of the canonical divisor of a smooth surface in P4
-   is determined by the degree d, the sectional genus and the Euler characteristic
-   of chi(O_X)=h^0(O_X)-h^1(O_X)+h^2(O_X):
+   is determined by the degree, sectional genus, and Euler characteristic of the surface
+   via the double point formula:
   
       d^2-10d-5HK+2K2+12chi(O_X)==0
 
    In general for a surface in P5 the right-hand side in this formula gives
    the number of non Cohen-Macaulay double points of the image under a projection from a
-   point p in P5 \setminus X. Hence the name.
+   point p in P5 \setminus X to P4. Hence the name.
   Example
     kk=ZZ/nextPrime 10^4
     P4=kk[x_0..x_4]
@@ -6777,7 +6781,7 @@ Description
    genus sg1=6, since
    2sg1-2=(H+K).(H+2K)=10. It follows that X1 is a minimal Enriques surface.
 
-   On the other hand the following surface has the same numerical invariants as the Enriques surface.
+   The following surface has the same numerical invariants as the Enriques surface.
   Example
    X=nonspecialAlexanderSurface P4;
    d=degree X
@@ -6791,7 +6795,7 @@ Description
    dim L, degree L
    dim (X+L),degree (X+L)
 References
-   Le Barz, P., Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981) Zbl 0492.14045) 
+   Le Barz, P., Formules pour les multisecants des surfaces, C. R. Acad. Sci., Paris, Sér. I 292, 797- 800 (1981)  
 SeeAlso
    residualInQuintics
 ///
@@ -7041,7 +7045,7 @@ Outputs
   the ideal of an effective canonical divisor on X
 Description
   Text
-    If X is a smooth projective surface with pg>0, then X has an effective canonical
+    If X is a smooth projective surface with geometric genus pg>0, then X has an effective canonical
     divisor, which can be computed from the presentation matrix omegaX=Ext^1(X,P4^{-5}).
     We compute the canonical divisor on a non-minimal K3 surface of degree 8. 
   CannedExample
@@ -8050,7 +8054,8 @@ Outputs
 Description
   Text
     The construction uses a 2-step liaison.
-    The desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
+    The desired surface X has a residual scheme R=X5:X in the ideal X5 generated by the quintics of X
+    consisting of the union of 3 planes.
     A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
     ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
@@ -8325,7 +8330,9 @@ Outputs
 Description
   Text
     The construction uses a 2-step liaison.
-    In case of s=2, the desired surface has a residual scheme R=X5:X consisting of the union of 3 planes.
+    In case of s=2, the desired surface X has a residual scheme R=X5:X
+    in the ideal X5 generated by the quintics of X
+    consisting of the union of 3 planes.
     A general (5,5) complete intersection ci has as residual scheme ci:X=R cup Y with
     Y a surface of degree 11 which lies on two quartics. The (4,4) complete intersection
     ci2 has residual Z=ci2:Y of degree 5 which decomposes in a cubic scroll and a quadric surface
@@ -10424,7 +10431,9 @@ Description
 
     o8 = true
   Text
-    The third adjoint surface is a del Pezzo surface of degree 4.  X=P2(12;4^5,2^12,1^4); 
+    The third adjoint surface is a del Pezzo surface of degree 4. The surface X=P2(12;4^5,2^12,1^4)
+    is the image of P2 defined by forms of degree 12 which vanish in 5 points fourfold,
+    in 12 points doubly and in 4 points simple. The points lie in special position.
 SeeAlso
    aboRanestadSurfaceFromMatrix
    adjunctionProcess
@@ -10622,7 +10631,7 @@ Outputs
 Description
   Text
     In the Tate resolution of Abo surfaces there are linear 3x1 and linear 3x4 matrices.
-    We assume that transpose m3x1= matrix{{e_0,e_1,e_2}}. Whether the given m3x4 matrix
+    We assume that  m3x1 is the transpose of the matrix{{e_0,e_1,e_2}}. Whether the given m3x4 matrix
     together with m3x1 leads to a smooth surface can be tested with testMatrix1.
 
     The resulting surface is either a K3-surfaces or an elliptic surface. If it is a K3 surface then
@@ -10817,7 +10826,7 @@ Outputs
 Description
   Text
     In the Tate resolution of Abo surfaces, there are linear 3x1 and linear 3x4 matrices.
-    We assume that the transpose of m3x1= matrix{{e_0,e_1,e_2}}. Whether the given m3x4 matrix
+    We assume that the matrix m3x1 is the transpose of matrix{{e_0,e_1,e_2}}. Whether the given m3x4 matrix
     together with the m3x1 matrix leads to a smooth surface can be tested with testMatrix1.
     We need that r1>5.
   CannedExample
@@ -11199,16 +11208,19 @@ Outputs
   dimension of the relevant HomSpace
 Description
   Text
-    The function performs a search in a particular linear family of 3x4 matrices m3x4 on P4 given a fixed 3x1 matrix m3x1.
-    We assume that the transpose of m3x1=transpose( matrix{{e_0,e_1,e_2}}). The general matrix m3x4 of linear forms in e_0,...,e_4 has a P3 of columns,
-    of which 10 columns have dependant entries, i.e. are socalled rank 2 columns. More generally, when a row entry in m3x1
-    together with the entries of a column in m3x4 we say
-    that the two matrices have a rank two incidence. 
-    This incidence corresponds to the adjoint 3x5 matrix m3x5 of m3x4 having rank at most 2 in a point where
-    the 3x2 submatrix of m3x5 formed by the last two columns, has rank 1.
-    The HomSpace turns out to have dimension at least r when m3x4 and m3x1 have r+3 rank two incidences. Using a linear family of 3x5 matrices m3x5 on P3
-    with three prescribed incidences, we find by random search, matrices m3x5 whose adjoint m3x4 has r+3 rank two incidences with m3x1.
-    With r=2, we find matrices m3x4, we believe in codimension 2, yielding smooth surfaces of two different components.
+    The function searches a particular linear family of 3x4 matrices m3x4 on P4 given a fixed 3x1
+    matrix m3x1. We assume that m3x1 is the transpose of matrix{{e_0,e_1,e_2}}.
+    The general matrix m3x4 of linear forms in e_0,...,e_4 has a web of columns. 
+    10 elements of the web have dependent entries, and we call such elements rank 2 columns. 
+    More generally, when a row entry in m3x1 and the entries of a column in m3x4 span a 2-dimensional subspace, 
+    we say that the two matrices have a rank-two incidence.
+    This incidence corresponds to the adjoint 3x5 matrix m3x5 of m3x4 having rank at most 2
+    in a point, where the 3x2 submatrix of m3x5 formed by the last two columns has rank 1.
+    The HomSpace turns out to have dimension at least r when m3x4 and m3x1 have r+3 rank-two
+    incidences. Using a linear family of 3x5 matrices m3x5 on P3 with three prescribed incidences,
+    we find, by random search, matrices m3x5 whose adjoint m3x4 has r+3 rank-two incidences with m3x1.
+    With r=2, we find matrices m3x4 that we believe are in codimension 2,
+    yielding two different components of smooth surfaces.
   CannedExample
     i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
@@ -11426,7 +11438,8 @@ Description
   Text
     This gives an (apparently) unirational construction of Abo surfaces with 111333 partition
     of the canonical divisor. This function constructs a 3x4 matrix m3x4 with linear entries
-    from E whose column space contains six rank 2 columns whose space of entries contain a row entry of m3x1 and returns
+    from E whose column space contains six rank 2 columns whose space of entries contain a row
+    entry of m3x1 and returns
     aboSurfaceFromMatrix(m3x4,P4).
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;
@@ -11733,7 +11746,7 @@ Inputs
  E: Ring
   exterior algebra dual to P4.
  k: Number
-  a number which  specifies the m3x4 matrix of linear forms over E to use. 
+  the number which  specifies the m3x4 matrix of linear forms over E to use. 
 Outputs
  X:Ideal
   ideal of a Abo surface
@@ -11747,7 +11760,7 @@ Description
     {1, 1, 1, 2, 3, 4}, {1, 1, 1, 2, 2, 5}, {1, 1, 1, 1, 4, 4}, {1, 1, 1, 1, 2, 6},
     {1, 1, 1, 1, 1, 7}
    
-    Other cases are p=11 and p=7.
+    The functions returns also some examples in characteristic p=11 and p=7.
   CannedExample
     i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
@@ -12059,9 +12072,8 @@ Outputs
   ideal of an Abo surface
 Description
   Text
-    In characteristic p=31 the function returns a non minimal elliptic surface with
-    six (-1)-curves of degrees {1,1,1,1,2,2}.
-    The canonical divisor has in addition a component that is an elliptic curve of degree 4.
+    We produce an elliptic surface of degree 12, sectional genus 13,
+    and geometric genus 1 in characteristic 31.
   CannedExample
     i2 :     kk=ZZ/31;
     i3 :     P4=kk[x_0..x_4];
@@ -12212,12 +12224,12 @@ Description
     The function collects N examples of surface  by choosing randomly 3x4 matrices over the exterior
     algebra and testing whether they lead to a surface.
     If the pair of (K,R) of the partition of the canonical divisor and the numerical type of
-    the residual scheme to the surface in the quintics containing it is new or for that type there are
+    the residual scheme to the surface in the quintics containing it is new or if for that type there are
     only a few examples in the list then the
     the example will be appended to the current list. The function stops when the total number N of
     examples is reached.
     
-    With the option Special=>true then the m3x4 Bordiga matrix has a rank 1 point.
+    With the option Special=>true the m3x4 Bordiga matrix has a rank 1 point.
   CannedExample
     i1 : kk=ZZ/19;
     i2 : P4=kk[x_0..x_4];
@@ -12338,10 +12350,8 @@ Outputs
 Description
   Text
     The function constructs an Abo surface by randomly choosing 3x4 matrices over the exterior
-    algebra and testing whether they lead to a surface.
-    
+    algebra and testing whether they lead to a surface.    
     In the case of randomSpecialAboSurface, the m3x4 Bordiga matrix has a rank 1 point.
-
     The two more specialized versions search for Abo surfaces with a lower bound or precise 
     dimension of the Hom space. These search functions can take a long time.
   CannedExample
@@ -13344,8 +13354,9 @@ Outputs
   of a degree 10 Decker-Ein-Schreyer surface in P4
 Description
   Text
-    We construct the surface from a randomly choosen differential T.dd_4
-    of the Tate resolution of the desired ideal. It has degree 10, sectional genus 9 and q=pg=0.
+    We construct a surface from a randomly chosen differential T.dd_4 of the Tate resolution of the desired ideal.
+    It has degree 10, sectional genus 9, and irregularity and geometric genus 0, and turns out to be
+    a rational surface.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -13394,7 +13405,7 @@ Description
 
     o9 : List
   Text
-    X is a rational surface, and the second adjoint is a del Pezzo surface of degree 5
+    X is a rational surface, and the second adjoint is a del Pezzo surface of degree 5.
 References
    Decker, W., Ein, L., Schreyer, F.-O., Construction of surfaces in P4, MJ. Algebraic Geom. 2, (1993), 185--237 
 SeeAlso
@@ -14725,7 +14736,7 @@ Key
  linkedNonspecialAlexanderSurfaceD16
  (linkedNonspecialAlexanderSurfaceD16, PolynomialRing)
 Headline
- construct a surface which is (5,5)-linked to a nonspecial Alexander surface of degree 9.
+ construct a surface which is (5,5)-linked to a nonspecial Alexander surface of degree 9
 Usage
  Y = linkedNonspecialAlexanderSurfaceD16 P4
 Inputs
@@ -14905,8 +14916,8 @@ Outputs
   of an Enriques surface of degree 9 in P4
 Description
   Text
-    We construct the Enriques surface from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module
-    is defined by 12 quadrics and completely determines X. In the dual projective space P4^*
+    We construct an Enriques surface from a presentation of the H^1_*(I_X) module. The dual of the (3,5,1) module
+    is defined by 12 quadrics and completely determines X. In the dual projective space
     this corresponds to a canonical curve of genus 5 defined by 3=15-12 quadrics.
     The Enriques surface is non-minimal. It is the projection of a Fano polarized minimal
     Enriques surface in P5. Thus the universal family of the Hilbert scheme of Fano polarized
@@ -16442,7 +16453,7 @@ Outputs
   of an elliptic surface of degree 7 
 Description
   Text
-    construct an elliptic surface of degree 7 and sectional genus 6.
+    We construct an elliptic surface.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -16511,7 +16522,7 @@ Outputs
   of an elliptic surface of degree 8 
 Description
   Text
-    Construct an elliptic surface of degree 8  and sectional genus 7.
+    We construct an elliptic surface. 
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -16810,7 +16821,7 @@ Outputs
   of an elliptic surface of degree 10 and sectional genus 10 
 Description
   Text
-    We construct an elliptic surface of degree 10 and sectional genus 10 and pg=2.
+    We construct an elliptic surface of degree 10, sectional genus 10, and geometric genus pg=2.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -16920,7 +16931,7 @@ Outputs
   of an elliptic surface of degree 11 and sectional genus 12.
 Description
   Text
-    We construct an elliptic surface of degree 11 and sectional genus 12 and pg=2.
+    We construct an elliptic surface of degree 11, sectional genus 12, and geometric genus pg=2.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
     i2 : P4=kk[x_0..x_4];
@@ -17338,7 +17349,7 @@ Outputs
   of a regular elliptic surface of degree 12 and sectional genus 13
 Description
   Text
-    We construct a regular elliptic surface of degree 12, sectional genus 13 and pg=2.
+    We construct a regular elliptic surface of degree 12, sectional genus 13, and geometric genus pg=2.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;
     i2 : P4=kk[x_0..x_4];
@@ -17610,7 +17621,8 @@ Outputs
   of an irregular elliptic surface of degree 12 sectional genus 13
 Description
   Text
-    We construct an irregular elliptic surface of degree 12 sectional genus 13 and pg=3.
+    We construct an irregular elliptic surface of degree 12, sectional genus 13, 
+    and geometric genus pg=3.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;
     i2 : P4=kk[x_0..x_4];
@@ -19009,7 +19021,8 @@ Description
   Text
     Both families have the same adjunction behavior. L0={(4, 13, 16), 17, (15, 30, 16)}.
     The first adjunction map blows down seventeen (-1)-lines. The resulting surfaces X1 and X1s
-    in P15 satisfy K_1^2=0. Thus they are minimal Enriques surfaces.
+    in P15 satisfy K_1^2=0. Thus they are minimal Enriques surfaces. In Popescu's thesis it proved that the two
+    families lie in different components of the Hilbert scheme.
 References
    Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
