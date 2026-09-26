@@ -18948,7 +18948,7 @@ Key
  (enriquesSurfaceD13S16, PolynomialRing)
  [enriquesSurfaceD13S16,Special]
 Headline
- construct a Popescu surface of degree 13 and sectional genus 16 (2 families) 
+ construct a Popescu surface of degree 13 and sectional genus 16 (2 constructions)
 Usage
  X=enriquesSurfaceD13S16(P4)
  X=enriquesSurfaceD13S16(P4,Special=>true)
@@ -18957,10 +18957,11 @@ Inputs
   coordinate ring of P4
 Outputs
  X:Ideal
-  of an Enriques surface of degree 13 and sectional genus 16
+  of an Enriques surface of degree 13 and sectional genus 16 
 Description
   Text
-    We construct an Enriques surface of degree 13 and sectional genus 16.
+    We construct an Enriques surface of degree 13 and sectional genus 16. We have two constructions.
+    The family of special surfaces might lie in the closure of the main family as a codimension 2 subscheme.
   CannedExample
     i1 : d=13,sg=16
 
