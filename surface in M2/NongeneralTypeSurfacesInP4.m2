@@ -15144,7 +15144,7 @@ Description
     o9 : BettiTally
 
   Text
-    Thus a random choice of the differential T.dd_4 leads to a surface and hence the component of the Hilbert scheme is unirational.
+    Thus a random choice of the differential T.dd_4 leads to a surface, and hence the component of the Hilbert scheme is unirational.
 References
    Alexander, J., Speciality one rational surfaces in P4, LNS,London Math. Soc., LNS, 179, (1992), 1-23
 
