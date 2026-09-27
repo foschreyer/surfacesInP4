@@ -11368,11 +11368,12 @@ Outputs
   dimension of the relevant Hom space
 Description
   Text
-    This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor (1,1,1,1,4,4)
-    from special 3x5 matrices over P3, such that the 3x4 matrix m3x4 has seven rank two incidences with m3x1.
-    These are obtained by considering 3x5 matrices m3x5 on P3 with a 3x2 submatrix m3x2 formed by the last
-    two columns, that has rank 1 in a plane and a line, such that m3x5 have rank two at six points in the plane and at one point on the line. 
-    The rank of the Hom space is 4.
+     This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor
+     (1,1,1,1,4,4) from special 3x5 matrices over P3, such that the 3x4 matrix m3x4 has seven
+     rank-two incidences with m3x1. These are obtained by considering 3x5 matrices m3x5 on P3
+     with a 3x2 submatrix m3x2 formed by the last two columns that has rank 1 on a plane and
+     on a line, such that m3x5 has rank two at six points on the plane and at one point on the line.
+     The rank of the Hom space is 4.
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;
     i2 : P4=kk[x_0..x_4];
@@ -11460,7 +11461,7 @@ Key
  (abo111333Surface,Ring,Ring)
  [abo111333Surface,Verbose]
 Headline
- get an Abo surface whose canonical divisor partitions into components of degrees {1,1,1,3,3,3}
+ get an Abo surface whose canonical divisor partitions into components of degrees (1,1,1,3,3,3)
  
 Usage
  (X,m3x4) = abo111333Surface(P4,E)
@@ -11477,11 +11478,10 @@ Outputs
   the 3x4 matrix of linear forms over the exterior algebra
 Description
   Text
-    This gives an (apparently) unirational construction of Abo surfaces with 111333 partition
-    of the canonical divisor. This function constructs a 3x4 matrix m3x4 with linear entries
-    from E whose column space contains six rank 2 columns whose space of entries contain a row
-    entry of m3x1 and returns
-    aboSurfaceFromMatrix(m3x4,P4).
+    This gives an (apparently) unirational construction of Abo surfaces with the (1,1,1,3,3,3)
+    partition of the canonical divisor. This function constructs a 3x4 matrix m3x4 with linear entries
+    from E whose column space contains six rank-2 columns, whose entries include a row entry of
+    m3x1, and returns aboSurfaceFromMatrix(m3x4,P4).
   CannedExample
     i1 : kk=ZZ/nextPrime 10^4;
     i2 : P4=kk[x_0..x_4];
@@ -11501,7 +11501,7 @@ Description
     i9 : tally apply(cResidual, c-> (dim c, degree c, betti c, dim(c+X), degree (c+X),
 	    tally apply(primaryDecomposition(c+X),d->(dim d, degree d, degree radical d))))
 
-    0 1
+                             0 1
     o9 = Tally{(2, 1, total: 1 3, 1, 6, Tally{(1, 1, 1) => 1}) => 2   }
                           0: 1 3              (1, 5, 5) => 1
                              0 1
@@ -11530,7 +11530,9 @@ Description
 
     o14 = true
   Text
-    In this example, X has four 6-secant lines. The intersection of these lines with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2) and length (6) respectively.
+    In this example, X has four 6-secant lines.
+    The intersections of these lines with X decompose into Frobenius orbits of lengths (1,5) (twice),
+    (1,1,2,2), and (6).
   CannedExample
     i15 : R=(select(cResidual,c->degree c==4))_0;-- a rational normal curve of degree 4
 
@@ -19970,7 +19972,7 @@ viewHelp "NongeneralTypeSurfacesInP4"
 
 check "NongeneralTypeSurfacesInP4"
 
--- perhape delete evry thing below
+-- perhape delete every thing below
 
 
 -* candidate tables for a surface with irregularity >= 3 *-
