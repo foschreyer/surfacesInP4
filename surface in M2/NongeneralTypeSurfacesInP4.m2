@@ -6130,7 +6130,39 @@ SeeAlso
     The Del Pezzo surface is isomorphic to P2 blown-up in 5 points. Thus up to automorphism of P2
     the surface depends on 2 parameters.
 *-
+///
+kk=ZZ/nextPrime 10^3;
+P4=kk[x_0..x_4];
+minimalBetti(X4=K3surfaceD11S11Ln(P4,0))
+--elapsedTime Y=minimalModelOfK3 X4;
+elapsedTime m=kodairaSpencerSequence X4  -- 32520s elapsed
+-*
+o16 = | 0  24 43 |
+      | 30 11 0  |
+      | 0  0  0  |
 
+               3       3
+o16 : Matrix ZZ  <-- ZZ
+*-
+
+kk=ZZ/19;
+P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true]
+minimalBetti(X5=specificAboSurface(P4,E,0,Verbose=>true))
+-*
+#mdKRs = 9
+(K,R) = ({1, 2, 2, 2, 2, 3}, Tally{((1, 1), (0, 6)) => 1}), dim Hom = 1
+                                   ((2, 1), (1, 6)) => 6
+*-
+elapsedTime m=kodairaSpencerSequence X5 -- 13450.3s elapsed
+-*
+o21 = | 0  24 40 |
+      | 32 16 0  |
+      | 0  0  0  |
+
+               3       3
+o21 : Matrix ZZ  <-- ZZ
+*-
+///
 doc///
 Key
  kodairaSpencerSequence
@@ -6198,8 +6230,8 @@ Description
                   3       3
     o6 : Matrix ZZ  <-- ZZ
   Text
-    X is a K3 surface blown up in one point. Thus the abstract surface depends on 20+2 parameters.
-   The one-dimensional group HH^1(TP4restrictedToX) is the obstruction space for the abstract first order deformations HH^1(TX) that the deformed surface stays algebraic.
+    X2 is a K3 surface blown up in one point. Thus the abstract surface depends on 20+2 parameters.
+    The one-dimensional group HH^1(TP4restrictedToX) is the obstruction space for the abstract first order deformations HH^1(TX) that the deformed surface stays algebraic.
   CannedExample
     i7 : minimalBetti(X3=cubicScroll P4)
 
@@ -8930,11 +8962,14 @@ Description
     o10 = true
   Text
     These surfaces do not form a complete family, i.e., this family is part of a
-    family of larger dimension.
+    family of larger dimension, perhaps the family containing the example constructed by
+    enriquesSurfaceD11S10.
+SeeAlso
+   enriquesSurfaceD11S10
 References
   [Schreyer,1996] Schreyer, F.-O., Small fields in constructive algebraic geometry, in Moduli of Vector bundles, Sanda 1994, Lecture Notes in Pure and Appl. Math., 179, (1996), 221-228.
 
-  [Hulek,1987] Hulek,K., Geometry of the Horrocks-Mumford bundle, Algebraic geometry, Proc. Summer Res. Inst., Brunswick/Maine 1985, part 2, Proc. Symp. Pure Math. 46, No. 2, 69-85., 1987.
+  [Hulek,1987] Hulek, K., Geometry of the Horrocks-Mumford bundle, Algebraic geometry, Proc. Summer Res. Inst., Brunswick/Maine 1985, part 2, Proc. Symp. Pure Math. 46, No. 2, 69-85., 1987.
 ///
 
 ///
@@ -18939,7 +18974,28 @@ SeeAlso
     Both families have the same adjunction behavior. L0={(4, 13, 16), 17, (15, 30, 16)}.
     The first adjunction map blows down seventy (-1)-lines. The resulting surfaces X1 and X1s
     in P15 satisfy K_1^2=0.
-    Thus they are minimal Enriques surfaces..
+    Thus they are minimal Enriques surfaces. We check that the special family is a codimansion 2 subvariety 
+    of the closure of the first family:
+  Example
+    (d,sg)=(degree Xs, sectionalGenus Xs)
+    betti(fX=res Xs)
+    elapsedTime betti(hom=Hom(ideal fX.dd_1,P4^1/ideal fX.dd_1))
+    elapsedTime betti(h0=homomorphism hom_{0})
+    hs=apply(23,i->(hi=homomorphism hom_{i}));
+    lifts=apply(hs,hi->lifti=(matrix hi*fX.dd_2)//fX.dd_1);
+    m2x1s=apply(lifts,lifti->lifti^{5,6}_{0});
+    apply(23,i->(betti fX.dd_1, betti lifts_i, betti hs_i, betti fX.dd_2))
+    AreFlatDeformations=all(23,i->(fX.dd_1*lifts_i)-(matrix hs_i*fX.dd_2)==0)
+    B=kk[t_5..t_18]
+    m2x1t=sum(toList(5..18),i->t_i*sub(m2x1s_i,kk))
+    codim trim ideal m2x1t == 2
+    chiNX(d,sg,1)==38
+    betti hom
+    NX=sheaf hom;
+    elapsedTime HH^2 NX
+ Text
+    Since the Euler characteristic of NX coincides with h^0(NX)=5*5-1+14=38 and\
+    H^2 NX=0 we have H^1(NX)=0 and the deformations are unopstructed.
 *-
 
 doc///
@@ -18961,7 +19017,7 @@ Outputs
 Description
   Text
     We construct an Enriques surface of degree 13 and sectional genus 16. We have two constructions.
-    The family of special surfaces might lie in the closure of the main family as a codimension 2 subscheme.
+    The family of special surfaces lies in the closure of the main family as a codimension 2 subscheme.
   CannedExample
     i1 : d=13,sg=16
 
@@ -19027,17 +19083,102 @@ Description
     o10 = true
   Text
     Both families have the same adjunction behavior. L0={(4, 13, 16), 17, (15, 30, 16)}.
-    The first adjunction map blows down seventeen (-1)-lines. The resulting surfaces X1 and X1s
-    in P15 satisfy K_1^2=0. Thus they are minimal Enriques surfaces. In Popescu's thesis it proved that the two
-    families lie in different components of the Hilbert scheme.
+    The first adjunction map blows down seventy (-1)-lines. The resulting surfaces X1 and X1s in P15
+    satisfy K_1^2=0. Thus they are minimal Enriques surfaces.
+    We check that the special family is a codimansion 2 subvariety of the closure of the first family:
+  CannedExample
+    i11 : (d,sg)=(degree Xs, sectionalGenus Xs)
+
+    o11 = (13, 16)
+
+    o11 : Sequence
+    i12 : betti(fX=res Xs)
+
+                 0 1  2 3 4
+    o12 = total: 1 7 11 6 1
+              0: 1 .  . . .
+	      1: . .  . . .
+	      2: . .  . . .
+	      3: . .  . . .
+	      4: . 5  1 . .
+	      5: . 2 10 6 1
+
+    o12 : BettiTally
+    i13 : elapsedTime betti(hom=Hom(ideal fX.dd_1,P4^1/ideal fX.dd_1))
+    -- 12.7707s elapsed
+
+                  0  1
+    o13 = total: 23 69
+             -1:  5  1
+	      0: 14 28
+	      1:  4 40
+
+    o13 : BettiTally
+    i14 : elapsedTime betti(h0=homomorphism hom_{0})
+    -- 61.3669s elapsed
+
+                 0 1
+    o14 = total: 1 7
+              0: 1 .
+	      1: . .
+	      2: . .
+	      3: . .
+	      4: . 5
+	      5: . 2
+
+    o14 : BettiTally
+    i15 : hs=apply(23,i->(hi=homomorphism hom_{i}));
+    i16 : lifts=apply(hs,hi->lifti=(matrix hi*fX.dd_2)//fX.dd_1);
+    i17 : m2x1s=apply(lifts,lifti->lifti^{5,6}_{0});
+    i18 : AreFlatDeformations=all(23,i->(fX.dd_1*lifts_i)-(matrix hs_i*fX.dd_2)==0)
+
+    o18 = true
+    i19 : B=kk[t_5..t_18]
+
+    o19 = B
+
+    o19 : PolynomialRing
+    i20 : m2x1t=sum(toList(5..18),i->t_i*sub(m2x1s_i,kk))
+
+    o20 = | -27t_5+352t_6+223t_7+69t_8-305t_9-406t_10-368t_11-283t_12+25t_13-502t
+          | 76t_5+303t_6+134t_7-108t_8+408t_9+41t_10-230t_11+379t_12-312t_13+272t
+          -----------------------------------------------------------------------
+          _14+38t_15-26t_16-361t_17-333t_18  |
+          _14+285t_15+316t_16+119t_17+87t_18 |
+
+                  2      1
+    o20 : Matrix B  <-- B
+    i21 : codim trim ideal m2x1t == 2
+
+    o21 = true
+    i22 : chiNX(d,sg,1)==38
+
+    o22 = true
+    i23 : betti hom
+
+                  0  1
+    o23 = total: 23 69
+             -1:  5  1
+	      0: 14 28
+	      1:  4 40
+
+    o23 : BettiTally
+    i24 : NX=sheaf hom;
+  Text
+    The Euler characteristic of NX coincides with h^0(NX)=5*5-1+14=38.
+    Moreover H^2(O_X(1))=0 implies H^2(NX)=0 by the Euler sequence.
+    Thus we have H^1(NX)=0 and the deformations are unobstructed.
 References
-   Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
+   Popescu, S., Surfaces of degree >= 11 in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
-  selfIntersectionNumber
-  residualInQuintics
+  Ksquare
+  HdotK
   LeBarzN6
-  canonicalDivisor  
+  chiITable
+  chiNX  
 ///
+
+
 -* for CannedExample in K3surfaceD13
   Example
    kk=ZZ/nextPrime 10^3;
