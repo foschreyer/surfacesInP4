@@ -5750,7 +5750,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
 	TO aboSurfaceFromMatrix,
-        TO testMatrix2,
+        TO testMatrix1,
 	TO randomAboSurface,
 	TO collectAboSurfaces,
 	TO specificAboSurface,
@@ -7139,7 +7139,7 @@ Description
     Thus, X is the projection from the tangent plane at a point p on a 
     minimal K3 surface X2 in P7 of degree 12=8+4. 
 References
-   Hartshorne, R., Algebraic Geometry , GTM 52, Springer (1977)
+   Hartshorne, R., Algebraic Geometry , GTM 52, Springer (1977), [V.1.4.4]
 SeeAlso
    chiO
    sectionalGenus
@@ -7385,7 +7385,7 @@ Description
     Thus, X is the projection from the tangent plane at a point p of
     a minimal K3 surface X2 in P7 of degree 12=8+4. 
 References
-   Hartshorne, R., Algebraic Geometry , GTM 52, Springer (1977) (V.1.5)
+   Hartshorne, R., Algebraic Geometry , GTM 52, Springer (1977), [V.1.4.1 and V.1.5]
 SeeAlso
    chiO
    sectionalGenus
@@ -10671,7 +10671,7 @@ Key
  (aboSurfaceFromMatrix,Matrix,Ring)
  [aboSurfaceFromMatrix,Verbose]
 Headline
- construct an Abo surface, a K3 surface of degree 12 and sectional genus 13
+ construct an Abo surface, a K3 surface of degree 12 and sectional genus 13 from a 3x4 matrix 
 Usage
  X= aboSurfaceFromMatrix(m3x4,P4)
 Inputs
