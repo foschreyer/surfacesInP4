@@ -18,7 +18,7 @@ elapsedTime installPackage("NongeneralTypeSurfacesInP4")
 newPackage(
     "NongeneralTypeSurfacesInP4",
     Version => "1.0",
-    Date => "August 20, 2026",
+    Date => "August 28, 2026",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
@@ -45,7 +45,7 @@ export {
     "searchHMBundle",
     "tangentToMonad",
     "randomEllipticAboSurface",
-    "numericalFunctions",
+    --"numericalFunctions",
     "specificAboRanestadSurface",
     "specificEllipticAboSurfaceD12S13",
     "specificEllipticSurfaceD13S16",
@@ -203,12 +203,13 @@ chiO=method()
 --       OUTPUT : an integer
 --  DESCRIPTION : The function calculates the alternating sum of the dimensions of HH^i OO_X
 --      COMMENT : The function uses 'HH'
-chiO(Ideal) := X -> (
+chiO(Ideal) := X -> 1+(genera X)_0
+-*chiO(Ideal) := X -> (
     Pn:= ring X;
     OX := sheaf(Pn^1/X);
     sum(toList(0..dim X),i-> (-1)^i*rank HH^i(OX))
     )
-
+*-
 irregularity=method()
 --      PURPOSE : Find the irregularity of a surface 
 --        INPUT : 'X', the ideal of a surface
@@ -4949,8 +4950,19 @@ Headline => "Construction of smooth non-general type surfaces in P4",
 	TO canonicalDivisor,
 	TO selfIntersectionNumber,
 	TO tateResolutionOfSurface,
+	TO irregularity,
+	TO geometricGenus,
 	TO kodairaSpencerSequence,
-	TO numericalFunctions,
+	},
+     SUBSECTION "Numerical functions",
+     UL{
+	TO Ksquare,
+        TO HdotK,
+	TO LeBarzN6,
+	TO chiO,
+	TO sectionalGenus,	
+	TO chiITable,
+	TO chiNX,
         },
     PARA{},
 
@@ -5041,7 +5053,7 @@ PARA{"In our paper [ARS2026], we discuss with some details the following surface
           "[ARS2026] Abo, H., Ranestad, K., Schreyer, F-O., Non-general type surfaces in P4, an update, preprint (2026)",
      },
     }
-
+-*
 document {
 Key => numericalFunctions,
 Headline => "Various functions to investigate surfaces in P4",
@@ -5080,7 +5092,7 @@ Headline => "Various functions to investigate surfaces in P4",
     
    
 }
-
+*-
 
 
 document {
@@ -11442,7 +11454,7 @@ For CannedExample of abo111333Surface
     numberOfSixSecants=sum(select(cResidual,c->dim c == 2 and degree (c+X)==6),d->degree d)
     LeBarzN6(d,sg,xO)==numberOfMinusOneLines+numberOfSixSecants
   Text
-    In this example, X has four 6-secant lines. The intersection of these lines
+    In this example, X has four 6-secant lines. The intersections of these lines
     with X decomposes into Frobenius orbits of length (1,5) (twice), length (1,1,2,2)
     and length (6) respectively.
   Example
@@ -19907,7 +19919,7 @@ Description
 
     -* Test section *-
 
-TEST /// -* 0 tateResolutionOfSurface and chiITable *-
+TEST /// -* 0 tateResolutionOfSurface and chiITable, chiO, irregularity, geometricGenus  *-
 kk=ZZ/nextPrime 10^2
 P4=kk[x_0..x_4]
 minimalBetti(X=K3surfaceD13 P4)
@@ -19915,6 +19927,7 @@ minimalBetti(X=K3surfaceD13 P4)
 elapsedTime b1=betti tateResolutionOfSurface(X,7)
 b2=chiITable(d,sg,2)
 assert(values(b1-b2)=={0})
+assert(chiO(X) == 1 - irregularity X + geometricGenus X)
 ///
 
 TEST /// -* 1 adjunctionProcess, (-1)-lines, 6-secants and LeBarzN6 
