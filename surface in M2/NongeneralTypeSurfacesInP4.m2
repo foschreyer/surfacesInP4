@@ -6,7 +6,7 @@ elapsedTime installPackage "NongeneralTypeSurfacesInP4"  -- 36.0635s elapsed
 
 viewHelp "NongeneralTypeSurfacesInP4"
 
-check "NongeneralTypeSurfacesInP4"
+elapsedTime check "NongeneralTypeSurfacesInP4"
 
 uninstallPackage "NongeneralTypeSurfacesInP4"
 restart
@@ -19920,7 +19920,7 @@ Description
 
     -* Test section *-
 
-TEST /// -* 0 tateResolutionOfSurface and chiITable, chiO, irregularity, geometricGenus  *-
+TEST /// -* 0 tateResolutionOfSurface, chiITable, chiO, irregularity, geometricGenus, chiNX on K3SurfaceD13 *-
 kk=ZZ/nextPrime 10^2
 P4=kk[x_0..x_4]
 minimalBetti(X=K3surfaceD13 P4)
@@ -19929,10 +19929,11 @@ elapsedTime b1=betti tateResolutionOfSurface(X,7)
 b2=chiITable(d,sg,2)
 assert(values(b1-b2)=={0})
 assert(chiO(X) == 1 - irregularity X + geometricGenus X)
+assert(chiNX(X)==40)
 ///
 
-TEST /// -* 1 adjunctionProcess, (-1)-lines, 6-secants and LeBarzN6 
-           on Schreyer surface *-
+TEST /// -* 1 adjunctionProcess, (-1)-lines, LeBarzN6, 6-secants and residualInQuintics 
+           on a Schreyer surface *-
 kk=ZZ/3
 P4=kk[x_0..x_4]
 elapsedTime minimalBetti(X=specificSchreyerSurface(P4,1))
@@ -19946,8 +19947,8 @@ assert(all(decompose R,c->(dim c==2 and 6*degree c==degree (c+X))))
 assert(degree R + (L_0)_1==LeBarzN6(degree X, sectionalGenus X,1))
 ///
 
-TEST /// -* 2 canonical divisor on Abo surface, HdotK, selfIntersectionNumber, 
-           partitionOfCanonicalDivisorOfAboSurface *-
+TEST /// -* 2 canonicalDivisor, HdotK, selfIntersectionNumber, 
+           partitionOfCanonicalDivisorOfAboSurface on a specificAboSurface*-
 kk=ZZ/19
 P4=kk[x_0..x_4]
 E=kk[e_0..e_4,SkewCommutative=>true]
@@ -19961,7 +19962,7 @@ assert(all(cK,c->(-genus c+1== -selfIntersectionNumber(X,c))))
 elapsedTime assert(partitionOfCanonicalDivisorOfAboSurface X == {1,2,2,2,2,3})
 ///
 
-TEST /// -* 3 minimalModelOfK3 *-
+TEST /// -* 3 minimalModelOfK3 on K3surfaceD9, kodairaSpencerSEquence on K3surfaceD7 *-
 kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4]
 minimalBetti(X=K3surfaceD9 P4)
 betti(D=canonicalDivisor X)
@@ -19972,6 +19973,8 @@ Pg=ring Y
 L=(vars Pg)_{0..4}
 X'=trim ker map(Pg/Y,P4,L);
 assert(X==X')
+elapsedTime m=kodairaSpencerSequence K3surfaceD7 P4
+assert(m==matrix{{0,24,45},{22,1,0},{0,0,0}})
 ///
 end--
 
