@@ -203,7 +203,7 @@ chiO=method()
 --       OUTPUT : an integer
 --  DESCRIPTION : The function calculates the alternating sum of the dimensions of HH^i OO_X
 --      COMMENT : The function uses 'HH'
-chiO(Ideal) := X -> 1+(genera X)_0
+chiO(Ideal) := X -> 1+(-1)^(dim X-1)*(genera X)_0
 -*chiO(Ideal) := X -> (
     Pn:= ring X;
     OX := sheaf(Pn^1/X);
@@ -6597,7 +6597,7 @@ Key
  chiO
  (chiO,Ideal)
 Headline
- compute the Euler characteristic chiO(X)
+ compute the Euler characteristic chiO(X) of a variety
 Usage
  xO = chiO(X)
 Inputs
