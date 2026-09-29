@@ -18269,7 +18269,7 @@ Key
  (fanoVarietyOfGenus15, PolynomialRing)
  [fanoVarietyOfGenus15,Sparse]
 Headline
- construct a Popescu surface of degree 10 from a minimal K3 of genus 15
+ construct a Fano variety of genus 15
 Usage
  (F,fano) = fanoVarietyOfGenus15 P4
 Inputs
