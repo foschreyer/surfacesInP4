@@ -5911,7 +5911,7 @@ Description
     The number of 2r-2 secant r-2 planes of a curve in P^r is expected to be finite,
     since it is a codimension 1 condition for a plane P in the Grassmannian G(r-1,r+1)
     to intersect a curve, and dim G(r-1,r+1)=2(r-1).
-    Going back to Castelnuovo there is polynomial function C(d,g,r) \in QQ[d,g] depeding on r
+    Going back to Castelnuovo there is polynomial function C(d,g,r) \in QQ[d,g] depending on r
     which computes the expected number.
   Example
     d=12,g=15,r=3
@@ -18260,6 +18260,17 @@ SeeAlso
     art=sub(art',P12);
     dim art == 0
     elapsedTime minimalBetti(sub(art,P12),LengthLimit=>7)
+  Text
+    Any 6-secant 2-plane of C1 in P4 induces a g^1_8 on C, each of which contributes a 7-dimensional subspace of
+    syzygies to Tor^S_7(S_C,kk)_8. The expected number of such secants
+    is computed by Castelnuovo's formula.
+  Example    
+    numberOfDegree8Pencils=numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(14,15,4)
+    (binomial(7,4))^2==1225 and 7*numberOfDegree8Pencils==1225 
+  Text
+    Note that $1225={7 \choose 4}^2$ is the Betti number beta_{7,8} of the ideal of 2x2 minors of the generic 4x4 matrix.
+    Although, the Fano variety fano is not a transversal section of this ideal, this particular Tor-groups
+    survives in the restiction.
 *-
 
 
@@ -18285,7 +18296,7 @@ Description
     According to Mori-Mukai the Fano 3-folds which are the blow-up of a quadric in
     P4 along a rational normal curve have b2=2. They have a model in P4xP4 and in P16.
     We construct an example and compute both models.
-  CannedExample
+  CannedExample  
     i1 : kk=ZZ/nextPrime 10^4;P4=kk[x_0..x_4];
     i3 : (F,fano) = fanoVarietyOfGenus15(P4,Sparse=>true);
     i4 : betti fano
@@ -18318,7 +18329,8 @@ Description
 
     o7 : BettiTally
   Text
-    The curve C of genus 15 which arises from fano by intersecting with a P14 has a g^4_14 cut out by |A|.
+    The curve C of genus 15 which arises from fano by intersecting with a P14
+    has a g^4_14 cut out by |A|.
   CannedExample
     i8 : xx = (gens P4xP4)_{0..4},yy =(gens P4xP4)_{5..9}
 
@@ -18358,14 +18370,11 @@ Description
 
     o12 : BettiTally
   Text
-    From the last betti table we can conclude that any general pair
-    (C,g^4_14) of a curve of genus 15 with a g^1_14 lies on a pencil of
-    K3 surface, and hence on a unique Fano 3-fold of genus 15.
-    The g^4_14 computes the Clifford index of C. The canonical model of C is
-    a P14 section of the Fano 3-fold fano.
-
-    The ideal art below is an artinian reduction of the arithemtically
-    Cohen-Macaulay ideal fano. The ideal art and the canonical curve of C
+    From the last betti table we can conclude that any general pair (C,g^4_14) of a curve
+    of genus 15 with a g^1_14 lies on a pencil of K3 surface, and hence on a unique Fano 3-fold
+    of genus 15. The g^4_14 computes the Clifford index of C. The canonical model of C is a P14 section
+    of the Fano 3-fold fano. The ideal art below is an artinian reduction of the
+    arithemtically Cohen-Macaulay ideal fano. The ideal art and the canonical curve of C
     have 1225 extra syzygies.
   CannedExample
     i13 : P16=ring fano
@@ -18388,29 +18397,51 @@ Description
 
     o17 = true
     i18 : elapsedTime minimalBetti(sub(art,P12),LengthLimit=>7)
-    - - 44.9477s elapsed
+    - - 44.6105s elapsed
 
                  0  1   2    3    4    5    6    7
     o18 = total: 1 78 560 2002 4368 6006 5801 5801
               0: 1  .   .    .    .    .    .    .
-	      1: . 78 560 2002 4368 6006 4576 1225
+              1: . 78 560 2002 4368 6006 4576 1225
 	      2: .  .   .    .    .    . 1225 4576
 
     o18 : BettiTally
+  Text
+    Any 6-secant 2-plane of C1 in P4 induces a g^1_8 on C,
+    each of which contributes a 7-dimensional subspace of syzygies to Tor^S_7(S_C,kk)_8.
+    The expected number of such secants is computed by Castelnuovo's formula.
+  CannedExample
+    i19 : numberOfDegree8Pencils=numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr(14,15,4)
 
-    
-    
+    o19 = 175
+    i20 : (binomial(7,4))^2==1225 and 7*numberOfDegree8Pencils==1225
+
+    o20 = true  
+  Text
+    The last equality - "every pencil contributes 7 independent syzygies" - is plausible by work of
+    [Kemeny, 2022].
+    Note that 1225=(binomial(7,4))^2 is the Betti number beta_{7,8} of the ideal of 2x2 minors of
+    the generic 5x5 matrix.
+    Although, the Fano variety fano in P16 is a non-transversal linear section of the
+    Segre-product P4xP4 in P24, this particular Tor-group
+    survives in total under the restiction.  
+        
 References
+   Kemeny, M., Betti numbers of curves and multiple-point loci, J. Pure Appl. Algebra 226 (2022), no. 11.
+
+   Mori, S. and Mukai, S., Classification of Fano 3-folds with B2 ≥ 2, Manuscr. Math. 36 (1981), 147–162.	 
+
    Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)  
 
    Popsecu,S. and Ranestad,K., Surfaces of Degree 10 in the Projective Fourspace via Linear
          systems and Linkage, J. Alg. Geo. 5 (1996), 13-76.
-
-   Mori, S. and Mukai, S., Classification of Fano 3-folds with B2 ≥ 2, Manuscr. Math. 36 (1981), 147–162.	 
+	 
 SeeAlso
    K3surfaceD10S9L1
    K3surfaceD10S9L1FromRank2MinimalK3
-///  
+   numberOf2rMinus2SecantrMinus2PlanesToCurvesInPr
+///
+
 
 
 -*
