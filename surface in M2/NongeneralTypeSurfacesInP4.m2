@@ -5962,7 +5962,8 @@ Description
     on the degree, sectional genus, and Euler characteristic of X and on the integer m.
     If the ideal sheaf has natural cohomology, if m ranges from -4 to 8, and if the function
     that maps m to the Euler characteristic of the ideal sheaf of X twisted by m changes
-    sign sufficiently, then the cohomology table for X is uniquely determined. 
+    sign sufficiently, then the cohomology table for X is uniquely determined. Note that the entry
+    1 in position (-1,-4) corresponds to m=-5.
   CannedExample
     i1 : chiITable(11,10,1)
 
@@ -7289,7 +7290,7 @@ Description
   Text
     Thus X is the blown-up of a minimal K3-surface Y of genus 15 in 3 point
     and the rational map Y - -> X is defined by the linear system of 
-    hyperplanes which vanish with multiplicity 3 in the first point
+    hyperplanes which vanish with multiplicity 4 in the first point
     and simple in the two other points.
     Since 16-(10+1+1)=4 we have h^1(O_X(1))=1.
 
@@ -7591,8 +7592,6 @@ Description
 				6: . .  3 5 2
 
     o22 : Tally
-  Text
-    Say something sensisible
 
 References
    Eisenbud, D., Floystad, G., Schreyer, F.-O.,  Sheaf cohomology and free resolutions over exterior algebras, Trans. Am. Math. Soc. 355, No. 11, 4397-4426 (2003; Zbl 1063.14021)
@@ -9743,7 +9742,7 @@ Key
  veroneseImagesInG25
  (veroneseImagesInG25, Matrix)
 Headline
- compute the Veronese images of P2 and P3 in the Grassamnnain G25 and their intersection 
+ compute the Veronese images of P2 and P3 in the Grassmannian G25 and their intersection 
 Usage
  (pts,vP2,vP3,g25) = veroneseImagesInG25(m4x2)
 Inputs
@@ -10807,7 +10806,7 @@ Description
   Text
     X=X_min(p1..p6) is a minimal K3 surface blown up in 6 points embedded by the
     linear system H = |(Hmin;3,2^4,1)|. The four (-1)-conics decompose into two Frobenius orbits
-    of length 2 and 2 in this specific example.
+    of length 2 in this specific example.
 SeeAlso
    partitionOfCanonicalDivisorOfAboSurface
    canonicalDivisor
@@ -10876,7 +10875,10 @@ Inputs
     coordinate ring of P4
 Outputs
  r2:ZZ
-  the rank of the crucial Hom space
+  the dimension of the crucial space of Homomorphism over the exterior algebra
+ r1:ZZ
+   the value r2+5
+  
 Description
   Text
     In the Tate resolution of Abo surfaces, there are linear 3x1 and linear 3x4 matrices.
