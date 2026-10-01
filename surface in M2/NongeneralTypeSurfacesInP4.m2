@@ -256,7 +256,7 @@ chiNX(12,13,2)
 ///
 
 kodairaSpencerSequence=method()
--- compute the dimesion of the cohomology groups of the Kodaira-Spencer sequence
+-- compute the dimension of the cohomology groups of the Kodaira-Spencer sequence
 -- Input: X ideal of a surface in P4
 -- Output : cohoDims, 3x3 Matrix of
 --          dimension of the cohomology groups in the long exact sequence
@@ -991,7 +991,8 @@ tateResolutionOfSurface(Ideal,ZZ) := (X,n) -> (
 
 
 tangentToMonad = method();
--- DESCTRIPTION : This command computes the dimension of the tangent space to the space 'M' of monads of the form a*OMega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example
+-- DESCTRIPTION : This command computes the dimension of the tangent space to the space 'M' of monads of the form a*OMega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO
+--                at a specific example
 --                by taking the derivative of the composite of differentials. The dimension of the space of isomophism classes of monads is
 --                dim (M)-(a^2+b^2+c^2+5*b*c+d^2-1). 
 tangentToMonad(Ideal) := X -> (
@@ -1108,7 +1109,7 @@ schreyerSurfaceFromModule(Ideal) := M -> (
 schreyerSurface=method(Options=>{Smooth=>true,Verbose=>false})
 --Input: P4: coordinate ring of P4
 --       s: integer desired number of extra syzygies
--- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+-- Output: X, homogeenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
 --           is either rational or non-minimal Enriques
 -- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
 schreyerSurface(Ring,Number) := opt -> (P4,s) -> (
@@ -1155,7 +1156,7 @@ dim saturate singX
 findRandomSchreyerSurface=method()
 --Input: P4: coordinate ring of P4
 --       s: integer desired number of extra syzygies
--- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+-- Output: X, homogeneous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
 --          if X is smooth then X is either rational or non-minimal Enriques
 -- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
 findRandomSchreyerSurface(Ring) := P4 -> (
@@ -1164,7 +1165,7 @@ findRandomSchreyerSurface(Ring) := P4 -> (
 findRandomSchreyerSurface(Ring,Number) := (P4,s) -> (
     --Input: P4: coordinate ring of P4
     --       s: integer desired number of extra syzygies
-    -- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+    -- Output: X, homogeneous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
     --           is either rational or non-minimal Enriques
     -- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
 
@@ -1193,7 +1194,7 @@ findRandomSmoothSchreyerSurface=method(Options=>{Verbose=>true})
 findRandomSmoothSchreyerSurface(Ring,Number) := opt -> (P4,s) -> (
     -- Input: P4: coordinate ring of P4
     --       s: integer desired number of extra syzygies
-    -- Output: X, homogenous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
+    -- Output: X, homogeneous ideal of a surface of degree 11 sectionalGenus 10 and pg=q=0.
     --           is either rational or non-minimal Enriques
     -- Method: search for a H^1-module M with s extra syzygies leading to a surface X, so s>=2.
 
@@ -1563,7 +1564,7 @@ schreyerSurfaceWith2LinearSyzygies(Ring) := opt -> P4 -> (
     scroll:=minors(2,m2x3);
     hypPlane:=ideal P4_1;
     lines1:={ideal(P4_4,P4_2,P4_1),ideal(P4_3,P4_1,P4_0),ideal(P4_2,P4_1,P4_0)};
-    -- two rulings ond the directrix of the scroll
+    -- two rulings and the directrix of the scroll
     q2x2 := matrix{{P4_0,P4_2}}||random(P4^1,P4^{2:-1})%hypPlane;
     quadric := hypPlane+minors(2,q2x2);
     -- a quadric surface with a ruling containing the directrix
@@ -1627,7 +1628,7 @@ schreyerSurfaceWith2or3LinearSyzygies(Ring,ZZ) := opt -> (P4,s) -> (
     scroll:=minors(2,m2x3);
     hypPlane:=ideal P4_1;
     lines1:={ideal(P4_4,P4_2,P4_1),ideal(P4_3,P4_1,P4_0),ideal(P4_2,P4_1,P4_0)};
-    -- two rulings ond the directrix of the scroll
+    -- two rulings and the directrix of the scroll
     q2x2 := matrix{{P4_0,P4_2}}||random(P4^1,P4^{2:-1})%hypPlane;
     quadric := hypPlane+minors(2,q2x2);
     -- a quadric surface with a ruling containing the directrix
@@ -2472,7 +2473,7 @@ abo112224Or111234Surface( Ring, Ring, ZZ):= opt -> (P4,P3,h) -> (
 	 -- count=1;
           while ( -- syz bb as desired
 	      while (
-		  --- A 3x5 matrix with 3x2 rigth submatrix of rank 1 along three lines in chain that contains at least 4 of the 3x5 matrix' rank 2 points, the middle line has three points where the 3x5 matrix has rank 2
+		  --- A 3x5 matrix with 3x2 right submatrix of rank 1 along three lines in chain that contains at least 4 of the 3x5 matrix' rank 2 points, the middle line has three points where the 3x5 matrix has rank 2
 --m3x5=random(P3^3,P3^2)*matrix{ {P3_0},{P3_1}}|random(P3^3,P3^2)*matrix{ {P3_0},{P3_3}}|random(P3^3,P3^{1:-1})|matrix{ {0,P3_0},{P3_1,0},{P3_2,P3_3}};
 m3x5=transpose(transpose(random(P3^2,P3^3)*matrix{ {P3_0},{P3_2},{P3_3}})|matrix{ {0}})|random(P3^3,P3^3)*matrix{ {P3_0},{P3_2},{P3_3}}|random(P3^3,P3^2)*matrix{ {P3_1},{P3_2}}|matrix{ {0,P3_0},{P3_1,P3_2},{P3_2,P3_3}};
 m3x4=sub(transpose (sub(diff(sub(vars P3,P3xP4),transpose (sub(vars P4,P3xP4)*sub(transpose m3x5,P3xP4))),P4)), vars E);
@@ -2735,7 +2736,7 @@ abo111117Surface(Ring,Ring) := o -> (P4,E) -> (
     )
 
 
-/// -* checks an abo111117Surfaces the partion and the residualInQuintics 
+/// -* checks an abo111117Surfaces the partition and the residualInQuintics 
 --     takes too long for an honest test *-
 kk=ZZ/nextPrime 10^3
 P4=kk[x_0..x_4]
@@ -4306,7 +4307,7 @@ H1module(PolynomialRing,ZZ):= (P4,a)->(
     )
 
 K3surfaceD11S11Ln=method()
--- K3 surface of degree 11 and sectional genus 11 witha 6-secant lines (B4.8-11)
+-- K3 surface of degree 11 and sectional genus 11 with a 6-secant lines (B4.8-11)
 --     PURPOSE : Construct a nonsingular K3 surface of degree 11 and sectional genus 11 with 'n' 6-secant lines
 --       INPUT : 'P4', the homogeneous coordinate ring of projective fourspace and an integer between 0 and 3 
 --      OUTPUT : Ideal of the K3 surface of degree 10 with 'n' 6-secant lines
@@ -5737,7 +5738,7 @@ EXAMPLE {"chiITable(12,13,2)"},
 PARA {"We construct the surfaces from the 3x1 and 3x4 linear matrices 
 in the Tate resolution, which define a line and a Bordiga surface. 
 These matrices can be completed to a differential of the Tate resolution, 
-if the line intersects enough of the 10 planes of the Bordiga surface containig cubic curves. 
+if the line intersects enough of the 10 planes of the Bordiga surface containing cubic curves. 
 In some special cases we choose the Bordiga matrix to have some rank 1 points. 
 "
 },
@@ -5745,7 +5746,7 @@ In some special cases we choose the Bordiga matrix to have some rank 1 points.
     
    PARA{"These surfaces are mainly non-minimal K3 surfaces with K^2=-6 and H.K=12.
        Thus the canonical divisor decomposes into six (-1)-curves whose degrees form a partition of 12 into six parts.
-       There are examples correponding to the partitions
+       There are examples corresponding to the partitions
        122223,112224,112233,111234,111225,111333,111144,111126,111117."},
      SUBSECTION "K3 surfaces of degree 12 and sectional genus 13",
      UL{
@@ -6050,7 +6051,7 @@ Description
 
     o12 = 0
   Text
-    If chi(I_X(m))\in ZZ[m] has an integral zero then B contains a superflous key.   
+    If chi(I_X(m))\in ZZ[m] has an integral zero then B contains a superfluous key.   
 SeeAlso
    tateResolutionOfSurface
    ellipticSurfaceD12S13
@@ -6083,7 +6084,7 @@ Inputs
  g:ZZ
    sectional genus and
  x:ZZ
-   Euler charcteristic of the structure sheaf of a surface in P4
+   Euler characteristic of the structure sheaf of a surface in P4
 Outputs
   b:ZZ
     the Euler characteristic of the Normal bundle of X
@@ -6346,7 +6347,7 @@ Outputs
     true if the sufficient criterion for the expected codimension is satisfied
 Description
   Text
-    The family of abstract surfaces of polarized K3 surface blown up in r points has dimesion
+    The family of abstract surfaces of polarized K3 surface blown up in r points has dimension
     19+2r, in which the family of line bundles O_X'(H') which lead to a smooth surface in P4
     has codimension at most 5s
     where s=h^1(O_X(H)) denotes the speciality of the linear system.
@@ -6545,7 +6546,7 @@ Inputs
  sg:ZZ
   the sectional genus of X
  xO:ZZ
-  the Euler charcteristic (1-q+pg) of the structure sheaf of X
+  the Euler characteristic (1-q+pg) of the structure sheaf of X
 Outputs
  k2:ZZ
 
@@ -6606,7 +6607,7 @@ Inputs
   of a smooth projective variety
 Outputs
  xO:ZZ
-  the Euler characteristic of the strucure sheaf
+  the Euler characteristic of the structure sheaf
 Description
   Text
    The Euler characteristic of the structure sheaf O_X is
@@ -6867,7 +6868,7 @@ Usage
  Z = residualInQuintics X
 Inputs
  X:Ideal
-  homogenous ideal of a smooth projective surface in P4
+  homogeneous ideal of a smooth projective surface in P4
 Outputs
  Z:Ideal
   the residual ideal in the ideal generated by the quintics in X
@@ -6994,16 +6995,16 @@ Usage
  L = numericalTypeOfResidualInQuintics(R,X)
 Inputs
  X:Ideal
-  homogenous ideal of a smooth projective surface in P4
+  homogeneous ideal of a smooth projective surface in P4
  R:Ideal
-  the ideal of the residual scheme of X in the ideal generated by the quintics containg X
+  the ideal of the residual scheme of X in the ideal generated by the quintics containing X
 Outputs
  L:List
-   of tupels ((dim c, degree c),(dim (c+X),degree (c+X)) for each component of X\cap R
+   of tuples ((dim c, degree c),(dim (c+X),degree (c+X)) for each component of X\cap R
 Description
   Text
     Compute the numerical type of the intersection of R \cap X, where R is the ideal
-    generated by the quintics containg a surface X.
+    generated by the quintics containing a surface X.
   CannedExample
     i1 : kk=ZZ/19;P4=kk[x_0..x_4];E=kk[e_0..e_4,SkewCommutative=>true];
     i4 : (X,m4x3)=specificAboRanestadSurface(P4,E,5);
@@ -7090,7 +7091,7 @@ Usage
  D = canonicalDivisor X
 Inputs
  X:Ideal
-  homogenous ideal of a smooth projective surface in P4 
+  homogeneous ideal of a smooth projective surface in P4 
 Outputs
  D:Ideal
   the ideal of an effective canonical divisor on X
@@ -7171,7 +7172,7 @@ SeeAlso
   Text
     Thus X is the blown-up of a minimal K3-surface Y of genus 15 in 3 point
     and the rational map Y - -> X is defined
-    by the linear system of hyperplanes wich vanish with multiplicity 3 in the
+    by the linear system of hyperplanes which vanish with multiplicity 3 in the
     in the first point and simple in the two other points.
     Since 16-(10+1+1)=4 we have h^0(O_X(1))=1.
     
@@ -7187,7 +7188,7 @@ Usage
  Y = minimalModelOfK3 X
 Inputs
  X:Ideal
-  homogenous ideal of a smooth non-minimal K3 surface in P4 
+  homogeneous ideal of a smooth non-minimal K3 surface in P4 
 Outputs
  Y:Ideal
   the ideal of the minimal model
@@ -7332,7 +7333,7 @@ Usage
  DdotD = selfIntersectionNumber(X,D)
 Inputs
  X:Ideal
-   homogenous ideal of a smooth projective surface
+   homogeneous ideal of a smooth projective surface
  D:Ideal
    homogeneous ideal of an effective divisor D on X 
 Outputs
@@ -7415,7 +7416,7 @@ SeeAlso
     by using the Tate resolution rather than sheaf cohomology.
     
     If the homogeneous ideal is generated by forms of degree <=6, then the truncation used in the computation
-    can be choosen to be 6. If there are generatorsog higher degree, we might need a larger truncation.
+    can be chosen to be 6. If there are generatorsog higher degree, we might need a larger truncation.
   Example
     X=irregularEllipticSurfaceD12 P4;
     minimalBetti X
@@ -7451,7 +7452,7 @@ Usage
  T = tateResolutionOfSurface(X,n)
 Inputs
  X:Ideal
-  homogenous ideal of a smooth projective surface in P4
+  homogeneous ideal of a smooth projective surface in P4
 Outputs
  T: Complex
   the Tate resolution of the ideal sheaf of surface in P4
@@ -7517,7 +7518,7 @@ Description
     a surface by using the Tate resolution rather than sheaf cohomology.
 
     If the homogeneous ideal is generated by forms of degree <=6, then the truncation used
-    in the computation can be choosen to be 6. If there are generatorsog higher degree,
+    in the computation can be chosen to be 6. If there are generatorsog higher degree,
     we might need a larger truncation.
   CannedExample
     i9 : X=irregularEllipticSurfaceD12 P4;
@@ -7617,7 +7618,7 @@ SeeAlso
     rank V - (a^2+b^2+5*b*c+c^2+d^2-1) == 36
   Text
     So the rank 2 reflexive sheaf E depends on at most 36 parameters and
-    taking into acount h^0(E)=5
+    taking into account h^0(E)=5
     we have an atmost 34+4=40 dimensional family of surfaces. 
     
     On the other hand X is the blowup of a polarized K3 surface in 6 points. So we
@@ -7656,7 +7657,7 @@ Usage
   m = tangentToMonad(alpha,beta)
 Inputs
   X:Ideal
-    homogenous ideal of a smooth projective surface in P4
+    homogeneous ideal of a smooth projective surface in P4
   alpha:Matrix
   beta:Matrix
     of matrices over the exterior algebra defining a monad
@@ -7666,7 +7667,7 @@ Outputs
 Description
   Text
     This command computes the dimension of the tangent space to the space 'V' of monads of the
-    form 'M' a*Omega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specfic example by taking the
+    form 'M' a*Omega^3(3)->b*Omega^2(2)++c*Omega^1(1)->d*OO at a specific example by taking the
     derivative of the composite of differentials 'alpha' and 'beta'. The dimension of the space
     of isomophism classes of monads is at most dim V-(a^2+b^2+c^2+5*b*c+d^2-1).
     In the example below we have a=3, b=1, c=3, d=4.
@@ -7729,7 +7730,7 @@ Description
 
     o10 = true
   Text
-    So the rank 2 reflexive sheaf E depends on at most 36 parameters and taking into acount h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
+    So the rank 2 reflexive sheaf E depends on at most 36 parameters and taking into account h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
 
     On the other hand X is the blowup of a polarized K3 surface in 6 points. So we get locqlly a family of dimension at least
   CannedExample
@@ -7850,7 +7851,7 @@ elapsedTime netList for k from 0 to 8 list (
     o10 = true
   Text
     So the rank 2 reflexive sheaf E depends on at most 36 parameters
-    and taking into acount h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
+    and taking into account h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
     On the other hand X is the blowup of a polarized K3 surface in 6 points. So we get locally
     a family of dimension at least
   CannedExample
@@ -9499,7 +9500,7 @@ SeeAlso
 -* for CannedExample in findRandomSmoothSchreyerSurface
 Example
     P4=ZZ/3[x_0..x_4];
-    setRandomSeed("carefully choosen good randomSeed ");
+    setRandomSeed("carefully chosen good randomSeed ");
     elapsedTime X=findRandomSmoothSchreyerSurface(P4,2);  
     minimalBetti X
     singX=X+minors(2,jacobian X);
@@ -9534,13 +9535,18 @@ Description
     more than 3^8 examples of modules.
   CannedExample
     i1 : P4=ZZ/3[x_0..x_4];
-    i2 : setRandomSeed("carefully choosen good randomSeed ");
-    -- setting random seed to 138829667546446909693617136322436953342431360411403175217286822495497
+    i2 : setRandomSeed("carefully chosen good randomSeed ");
+     -- setting random seed to 1374551163826207026669476597718446062516322785733807474238809552086
     i3 : elapsedTime X=findRandomSmoothSchreyerSurface(P4,2);
-    -- .305077s elapsed
-    1
-    -- 4.78983s elapsed
-
+    -- 3.43072s elapsed
+    trials to get a surface = 4
+    -- 12.8419s elapsed
+    trials to get a surface = 7
+    -- 5.68296s elapsed
+    trials to get a surface = 11
+    -- 1.14677s elapsed
+    trials to get a surface = 12
+    -- 46.0453s elapsed
     o3 : Ideal of P4
     i4 : minimalBetti X
 
@@ -9596,7 +9602,7 @@ Description
     more then 3^8 examples of modules.
   Example
     P4=ZZ/3[x_0..x_4];
-    setRandomSeed("carefully choosen good randomSeed ");
+    setRandomSeed("carefully chosen good randomSeed ");
     (Ms,adjTypes)=exampleOfSchreyerSurfaces P4;
     netList adjTypes
   Text
@@ -9631,7 +9637,7 @@ Inputs
   ideal defining a H^1-module with Hilbert function (1,5,5) with s extra syzygies
 Outputs
  d:Number
-  dimension of the tangent space of the correponding strata with s extra syzygies at the given point M
+  dimension of the tangent space of the corresponding strata with s extra syzygies at the given point M
 Description
   Text
     To prove the existence of a lift of the corresponding surface to characteristic 0,
@@ -11383,7 +11389,7 @@ Outputs
   dimension of the relevant Hom space
 Description
   Text
-     This gives an (apparantly) unirational construction of Abo surfaces with canonical divisor
+     This gives an (apparently) unirational construction of Abo surfaces with canonical divisor
      (1,1,1,1,4,4) from special 3x5 matrices over P3, such that the 3x4 matrix m3x4 has seven
      rank-two incidences with m3x1. These are obtained by considering 3x5 matrices m3x5 on P3
      with a 3x2 submatrix m3x2 formed by the last two columns that has rank 1 on a plane and
@@ -12249,7 +12255,7 @@ Example
     P4=kk[x_0..x_4];
     E=kk[e_0..e_4,SkewCommutative=>true];
     mdKRs={};
-    setRandomSeed("carefully choosen randomSeed");
+    setRandomSeed("a carefully chosen randomSeed");
     elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1) 
 
 *-
@@ -12293,16 +12299,15 @@ Description
     i2 : P4=kk[x_0..x_4];
     i3 : E=kk[e_0..e_4,SkewCommutative=>true];
     i4 : mdKRs={};
-    i5 : setRandomSeed("carefully choosen randomSeed");
-    -- setting random seed to 130783826824055887938028823731402206818653657496837223808
+    i5 : setRandomSeed("a carefully chosen randomSeed");
+    -- setting random seed to 12859679952387275013532894778375581621061831532490241355126
     i6 : elapsedTime mdKRs'=collectAboSurfaces(mdKRs,P4,E,1)
-    -- 10.7997s elapsed
-    K = {1, 1, 1, 3, 3, 3}
+    -- 29.851s elapsed
+    K = {1, 1, 2, 2, 3, 3}
     count1= 1
-    count=1, (K,R)= ({1, 1, 1, 3, 3, 3}, Tally{((2, 1), (1, 6)) => 4 }), dim Hom = 1
-                                               ((2, 4), (1, 21)) => 1
+    count=1, (K,R)= ({1, 1, 2, 2, 3, 3}, Tally{((2, 1), (1, 6)) => 5}), dim Hom = 1
     count1= 1
-    -- 50.4777s elapsed
+    -- 38.2455s elapsed
 
     o6 = {(| 6e_0-5e_1+e_2-9e_3   -8e_0-6e_1+7e_4     e_0+6e_1-3e_2+e_3+4e_4   
 	   | -9e_0-2e_1+8e_2+4e_3 e_0-3e_1-8e_2-6e_4  -3e_0-2e_1+4e_2+3e_3-7e_4
@@ -12339,7 +12344,7 @@ pos=apply(reverse sort keys Ta,K->position(mdKRs,mdKR->K==mdKR_2_0))
 toString mdKRs_pos
 --     1) use cut and paste into specificAboSurface
 --     2) replace e->E use replace nEw -> new
---     3) adapt the coments and error handling in specificAboSurface
+--     3) adapt the comments and error handling in specificAboSurface
 #pos
 kk=ZZ/7;
 P4=kk[x_0..x_4];
@@ -12354,7 +12359,7 @@ elapsedTime apply(7,k->minimalBetti (X=specificAboSurface(P4,E,k)))
     kk=ZZ/7;
     P4=kk[x_0..x_4];
     E=kk[e_0..e_4,SkewCommutative=>true];    
-    setRandomSeed("carefully choosen fast randomSeed");
+    setRandomSeed("a carefully chosen fast randomSeed");
     elapsedTime (X,m3x4)=randomAboSurface(P4,E);
     saturate minors(2,sub(m3x4,vars P4))
     setRandomSeed("same start");
@@ -12416,10 +12421,10 @@ Description
     i1 : kk=ZZ/7;
     i2 : P4=kk[x_0..x_4];
     i3 : E=kk[e_0..e_4,SkewCommutative=>true];
-    i4 : setRandomSeed("carefully choosen fast randomSeed");
-    -- setting random seed to 1374551163826207026669476597251851023179306320125668960254614211770
+    i4 : setRandomSeed("a carefully chosen fast randomSeed");
+    -- setting random seed to 135156528710285155265756859190185484361550416639925961092515395802088
     i5 : elapsedTime (X,m3x4)=randomAboSurface(P4,E);
-    -- 37.8333s elapsed
+    -- 69.7315s elapsed
     i6 : saturate minors(2,sub(m3x4,vars P4))
 
     o6 = ideal 1
@@ -12993,7 +12998,7 @@ Outputs
   of a degree 8 surface
 Description
   Text
-    We construct the surface from a randomly choosen differential T.dd_3
+    We construct the surface from a randomly chosen differential T.dd_3
     of the Tate resolution of the desired ideal. (From the shape of the Betti table
     of the Tate resolution T below, one can deduce that this matrix determines the Tate resolution,
     and hence the ideal.)
@@ -13502,7 +13507,7 @@ Outputs
   of a degree 10 sectional genus 8 Ranestad surface in P4
 Description
   Text
-    We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
+    We construct the surface from a carefully chosen H^1_*(I_X) module of the ideal sheaf I_X
     with Hilbert function (2,5,3).
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
@@ -13664,7 +13669,7 @@ Outputs
   of an Enriques surface of degree 10 in P4
 Description
   Text
-    We construct the surface from a carefully choosen H^1_*(I_X) module of the ideal sheaf I_X
+    We construct the surface from a carefully chosen H^1_*(I_X) module of the ideal sheaf I_X
     with Hilbert function (2,5,3).
   CannedExample
     i1 : kk=ZZ/nextPrime 10^3;
@@ -16251,7 +16256,7 @@ Outputs
 Description
   Text
    These abelian surfaces are linked via two quintics to a Horrocks-Mumford surface.
-   The construction uses this liason.
+   The construction uses this liaison.
   CannedExample
    i1 : kk=ZZ/nextPrime 10^3;
    i2 : P4=kk[x_0..x_4];
@@ -17236,7 +17241,7 @@ Key
  ellipticSurfaceD12S14Linfinite
  (ellipticSurfaceD12S14Linfinite,PolynomialRing)
 Headline
- construct a Popescu surface, an elliptic surface of degree 12, sectional genus 14 and infinitly many 6-secant line
+ construct a Popescu surface, an elliptic surface of degree 12, sectional genus 14 and infinitley many 6-secant line
 Usage
  X=ellipticSurfaceD12S14Linfinite P4
 Inputs
@@ -17515,7 +17520,7 @@ Outputs
 Description
   Text
    We construct a specific elliptic surface of degree 13 and sectional genus 16 from
-   a specficAboSurface of number k via linkage. The function needs the ground field
+   a specificAboSurface of number k via linkage. The function needs the ground field
    kk=ZZ/19 and a number k in {1,2,4,6}.
   CannedExample
    i1 : kk=ZZ/19;
@@ -18164,7 +18169,7 @@ Description
     linear system |(H;1^2,4)|. The Picard group of a general Y has rank 2 with
     intersection matrix (A^2,A.B,B^2)=(6,8,6). The hyperplane is H=A+B.
 
-    The 4-fold base point p3 can be choosen arbitrarily. The image of Y under
+    The 4-fold base point p3 can be chosen arbitrarily. The image of Y under
     |(H;4)| maps Y to a surface X1 in P5, which has a nonCM double points q.
     The base points {p1,p2} are the preimage of q in Y, and X is the projection of X1 from q.
   CannedExample
@@ -18272,7 +18277,7 @@ SeeAlso
   Text
     Note that $1225={7 \choose 4}^2$ is the Betti number beta_{7,8} of the ideal of 2x2 minors of the generic 4x4 matrix.
     Although, the Fano variety fano is not a transversal section of this ideal, this particular Tor-groups
-    survives in the restiction.
+    survives in the restriction.
 *-
 
 
@@ -18426,7 +18431,7 @@ Description
     the generic 5x5 matrix.
     Although, the Fano variety fano in P16 is a non-transversal linear section of the
     Segre-product P4xP4 in P24, this particular Tor-group
-    survives in total under the restiction.  
+    survives in total under the restriction.  
         
 References
    Kemeny, M., Betti numbers of curves and multiple-point loci, J. Pure Appl. Algebra 226 (2022), no. 11.
@@ -19568,7 +19573,7 @@ Description
     Horrocks-Mumford matrix compared to 3*2*10-1 dimenensional family of all matrices.
     So the codimsion is
     20=3*2*10-1-(2*(5-3)+8+3+24). 
-    Thus the runnig time to find an example is about 3.5 hours
+    Thus the running time to find an example is about 3.5 hours
     over ZZ/2.
 SeeAlso
   horrocksMumfordSurface
@@ -19628,7 +19633,7 @@ Description
   Text
     The matrix m2x5 defines a vector bundle of rank 2 and chern polynomial
     1-t+4t^2. The functions computes partial information about the variety
-    of unstable planes, which following [BHM] is the interesction of a
+    of unstable planes, which following [BHM] is the intersection of a
     the Grassmannian G(2,5) with a P1xP4 in P9. By [DS] this variety should coincide with
     Shioda's modular variety. We verify some of the assertians. In particular,
     that the singular fibers are 12 pentagons, which come in pairs.
@@ -19884,7 +19889,7 @@ Headline
  an option
 Description
   Text
-    An option key which is usually used to obtain additonal output which gives the number of attemps to find
+    An option key which is usually used to obtain additional output which gives the number of attempts to find
     a certain object during a random search.
 ///
 
