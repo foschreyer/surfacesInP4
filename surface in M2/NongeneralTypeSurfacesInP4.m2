@@ -18,7 +18,7 @@ elapsedTime installPackage("NongeneralTypeSurfacesInP4")
 newPackage(
     "NongeneralTypeSurfacesInP4",
     Version => "1.0",
-    Date => "August 28, 2026",
+    Date => "October 30, 2026",
     Headline => "Construction of smooth non-general type surfaces in P4",
     Authors => {
 	        { Name => "Hirotachi Abo",Email => "abo@uidaho.edu", HomePage => "https://sites.google.com/view/hirotachiabo/home"},
@@ -72,7 +72,6 @@ export {
     "abo111333Surface",
     "abo111117Surface",
     "abo111144Surface",
-    "symExtFunction",
     "sectionalGenus",
     "chiO",
     "irregularity",
@@ -122,7 +121,6 @@ export {
     "schreyerSurfaceWith2or3LinearSyzygies",
     "unirationalConstructionOfSchreyerSurface",
     "specialEnriquesSchreyerSurface",
-    "adjunctionProcessData",
     --"prepareAboRanestadSurfaces",
     "aboRanestadSurface",
     --"collectSmoothAboRanestadSurfaces",
@@ -778,7 +776,7 @@ degree10pi9RanestadSurface=method()
 --    COMMENTS : See the paper (need to specify it) for motivation of this construction and compare with enriquesSurfaceOfDegree10
 --               using the Tate resolution simplifies the construction
 degree10pi9RanestadSurface(PolynomialRing,Ring) := (P4,E) -> (
-    -- In the next two lins, construct an 'E'-module homomorphism 'a2' from 'E'^{2:-2} ++ 'E'^{2:-3}' to 'E'^{2:0}, whose transpose corresponds to a map 2*Omega^3(3) -> 2*Omega^1(1) ++ 2O.  
+    -- In the next two lines, construct an 'E'-module homomorphism 'a2' from 'E'^{2:-2} ++ 'E'^{2:-3}' to 'E'^{2:0}, whose transpose corresponds to a map 2*Omega^3(3) -> 2*Omega^1(1) ++ 2O.  
     a1:=(syz matrix{{E_0,E_1}})*random(E^{3:-1},E^{2:-2});
     a2:=map(E^2,,random(E^2,E^{2:-3})|transpose a1);
     -- Compute the resolution of the cokernel of 'a2' up to length 4
@@ -2211,7 +2209,7 @@ aboRanestadSurfaceFromMatrix(Ring,Matrix) := opt -> (P4,m4x2) -> (
     if opt.Verbose then (<<"trials to get a smooth surface = "<<countSmooth <<endl);
     X)
 
-/// -* checks whether aboRanestadSurfaceFromMatrix and matrixFromAboRanestadSurface are basially inverses 
+/// -* checks whether aboRanestadSurfaceFromMatrix and matrixFromAboRanestadSurface are basically inverses 
 --    of each other, takes too long for an honest test *-
 kk=ZZ/19
 P4=kk[x_0..x_4]
@@ -2520,7 +2518,7 @@ P2=kk[z_0..z_2]
 E= kk[e_0..e_4,SkewCommutative=>true];
 
 h=2
---- Homs is 2-dimensional  (at least 5 rank two points of 3x5 matrix are rank one points of right 3x2 submatrix)
+--- The space "Homs" is 2-dimensional  (at least 5 rank two points of 3x5 matrix are rank one points of right 3x2 submatrix)
   setRandomSeed("get a 111234 surface in a minute");
 elapsedTime (X,m3x4,r)=abo112224Or111234Surface(P4,P3,h,Verbose=>true,Count=>true);
 minimalBetti X
@@ -4949,7 +4947,7 @@ Headline => "Construction of smooth non-general type surfaces in P4",
      SUBSECTION "Investigating embedded surfaces",
      UL{
 	TO featuredSurfaces,
-	TO adjunctionProcessData,
+	TO "AdjunctionForSurfaces::adjunctionProcess",
 	TO residualInQuintics,
 	TO canonicalDivisor,
 	TO selfIntersectionNumber,
@@ -4984,6 +4982,7 @@ Headline => "unirational families of rational surfaces",
      UL{
         TO cubicScroll,
 	TO delPezzoSurface,
+	TO veroneseSurface,
 	TO castelnuovoSurface,
 	TO bordigaSurface,        
         TO ionescuOkonekSurfaceD7,
@@ -5875,7 +5874,7 @@ Headline => "surfaces of Kodaira dimension 1 (15 families)",
 	TO selfIntersectionNumber,
 	},
 }
-
+-*
 document {
 Key => adjunctionProcessData,
 Headline => "explains the output of the function adjunctionProcess",
@@ -5890,6 +5889,7 @@ Headline => "symExt",
     "documentation of the symExt function from the BGG package",
 help symExt,                
 }
+*-
 
 -- numerical functions
 
@@ -7623,7 +7623,7 @@ SeeAlso
   Text
     So the rank 2 reflexive sheaf E depends on at most 36 parameters and
     taking into account h^0(E)=5
-    we have an atmost 34+4=40 dimensional family of surfaces. 
+    we have an at most 34+4=40 dimensional family of surfaces. 
     
     On the other hand X is the blowup of a polarized K3 surface in 6 points. So we
     get locqlly a family of dimension at least
@@ -7734,7 +7734,7 @@ Description
 
     o10 = true
   Text
-    So the rank 2 reflexive sheaf E depends on at most 36 parameters and taking into account h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
+    So the rank 2 reflexive sheaf E depends on at most 36 parameters and taking into account h^0(E)=5 we have an at most 34+4=40 dimensional family of surfaces.
 
     On the other hand X is the blowup of a polarized K3 surface in 6 points. So we get locqlly a family of dimension at least
   CannedExample
@@ -7855,7 +7855,7 @@ elapsedTime netList for k from 0 to 8 list (
     o10 = true
   Text
     So the rank 2 reflexive sheaf E depends on at most 36 parameters
-    and taking into account h^0(E)=5 we have an atmost 34+4=40 dimensional family of surfaces.
+    and taking into account h^0(E)=5 we have an at most 34+4=40 dimensional family of surfaces.
     On the other hand X is the blowup of a polarized K3 surface in 6 points. So we get locally
     a family of dimension at least
   CannedExample
@@ -8986,7 +8986,7 @@ SeeAlso
 References
   [Schreyer,1996] Schreyer, F.-O., Small fields in constructive algebraic geometry, in Moduli of Vector bundles, Sanda 1994, Lecture Notes in Pure and Appl. Math., 179, (1996), 221-228.
 
-  [Hulek,1987] Hulek, K., Geometry of the Horrocks-Mumford bundle, Algebraic geometry, Proc. Summer Res. Inst., Brunswick/Maine 1985, part 2, Proc. Symp. Pure Math. 46, No. 2, 69-85., 1987.
+  [Hulek,1987] Hulek, K., Geometry of the Horrocks-Mumford bundle, Algebraic geometry, Proc. Summer Res. Inst., Brunswick/Maine 1985, part 2,  Proc. Symp. Pure Math. 46, No. 2, 69-85., 1987.
 ///
 
 ///
@@ -9198,7 +9198,7 @@ Description
     Hence X lifts to a surface defined over some number field, yielding a surface over
     CC.
 SeeAlso
-   adjunctionProcessData
+   "AdjunctionForSurfaces::adjunctionProcess"
    LeBarzN6
    Ksquare
    tateResolutionOfSurface
@@ -9838,7 +9838,7 @@ Description
      in the plane V(x_3,x_4). We do not have a theoretical proof of the observation that the
      number degree pts +1 coincides with the number of (-1)-lines. 
 SeeAlso
-   adjunctionProcessData
+   "AdjunctionForSurfaces::adjunctionProcess"
    aboRanestadSurface
 ///
 -*
@@ -9900,7 +9900,7 @@ CannedExample
 *-
 
 SeeAlso
-   adjunctionProcessData
+   "AdjunctionForSurfaces::adjunctionProcess"
    aboRanestadSurface
 
 
@@ -10136,7 +10136,7 @@ Description
 
     o31 = true 
 SeeAlso
-   adjunctionProcessData
+   "AdjunctionForSurfaces::adjunctionProcess"
 ///
 -*  for CannedExample of matrixFromAboRanestadSurface
   Example
@@ -13613,7 +13613,7 @@ References
    Ranestad, K., On smooth surfaces of degree ten in the projective fourspace, Thesis, Univ. of Oslo, (1988)
 SeeAlso
    enriquesSurfaceOfDegree10
-   adjunctionProcessData
+   "AdjunctionForSurfaces::adjunctionProcess"
 ///
 
 -* possibly to add to degree10pi8RanestadSurface documentation.
@@ -13762,7 +13762,7 @@ References
    Decker, W., Ein, L., Schreyer, F.-O., Construction of surfaces in P4, J. Algebraic Geom., 2,  (1993), 185-237
 SeeAlso
     degree10pi8RanestadSurface
-    adjunctionProcessData
+    "AdjunctionForSurfaces::adjunctionProcess"
 ///
 
 /// -- experiments about the adjoint surface Y=X_1 of the Enriques surface.
@@ -14072,7 +14072,7 @@ References
 SeeAlso
     specialEnriquesSchreyerSurface
     specificSchreyerSurface
-    adjunctionProcessData
+    "AdjunctionForSurfaces::adjunctionProcess"
     tateResolutionOfSurface
     LeBarzN6
     Ksquare
@@ -15066,7 +15066,7 @@ References
    Decker, W., Ein, L., Schreyer, .F-O., Construction of surfaces in P4, J. Algebraic Geom. 2, (1993), 185–237
 SeeAlso
    nonspecialAlexanderSurface
-   adjunctionProcessData
+   "AdjunctionForSurfaces::adjunctionProcess"
 ///
 
 
@@ -15328,7 +15328,7 @@ Description
 References
    Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993)
 SeeAlso
-  adjunctionProcessData
+  "AdjunctionForSurfaces::adjunctionProcess"
   residualInQuintics
 
 ///
@@ -15497,7 +15497,7 @@ References
 
    Graf von Bothmer, H-C., Ranestad, K.,  Classification of rational surfaces of degree 11 and sectional genus 11 in P4, Math. Scand., 104, (2009), 60-94
 SeeAlso
-  adjunctionProcessData
+  "AdjunctionForSurfaces::adjunctionProcess"
 
 ///
 
@@ -16351,7 +16351,7 @@ References
    Popescu, S., Surfaces of degree $\ge 11$ in the Projective Fourspace, Dissertation, Universit\"at des Saarlandes, (1993) 
 SeeAlso
   horrocksMumfordSurface
-  adjunctionProcessData
+  "AdjunctionForSurfaces::adjunctionProcess"
   abelianSurfaceD15S21Popescu
 ///
 -*
@@ -17245,7 +17245,7 @@ Key
  ellipticSurfaceD12S14Linfinite
  (ellipticSurfaceD12S14Linfinite,PolynomialRing)
 Headline
- construct a Popescu surface, an elliptic surface of degree 12, sectional genus 14 and infinitley many 6-secant line
+ construct a Popescu surface, an elliptic surface of degree 12, sectional genus 14 and infinitely many 6-secant line
 Usage
  X=ellipticSurfaceD12S14Linfinite P4
 Inputs
